@@ -80,7 +80,8 @@ def card_html(it: dict) -> str:
     item_id = escape(str(it.get("id") or ""))
     url = escape(it.get("url") or "")
     titulo = escape(it.get("titulo") or "(sem título)")
-    preco = escape(it.get("preco_total") or it.get("preco") or "")
+    # Usar só preco do vendedor (preco_total do Vinted é instável)
+    preco = escape(it.get("preco") or "")
     tamanho = escape(it.get("tamanho") or "?")
 
     return f"""<article class="card" data-id="{item_id}" data-aba="{aba}">
