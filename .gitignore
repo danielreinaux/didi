@@ -1,9 +1,22 @@
+.venv/
+.claude/
+.DS_Store
+
+# Dados temporários e backups
 data/coleta-backup*.json
 data/coleta-classificada-backup*.json
+data/coleta-classificada.backup*.json
+data/visualizar.html
 data/screenshots/
+
+# Python
 __pycache__/
 *.pyc
+
+# Env e secrets
 .env
+
+# Node / Next / Vercel
 node_modules/
 .next/
 .vercel/
