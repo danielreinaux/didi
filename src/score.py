@@ -67,12 +67,15 @@ def _tamanho_key(tamanho: str | None) -> str:
     return "L"
 
 
-def _tamanho_numerico(tamanho: str | None) -> int | None:
-    """Retorna o tamanho numérico se for boardshort (ex: '32', '34'), senão None."""
-    if not tamanho:
-        return None
-    m = re.search(r"\b(2[5-9]|3[0-9])\b", (tamanho or ""))
-    return int(m.group()) if m else None
+def _tamanho_numerico(tamanho: str | None, titulo: str | None = None) -> int | None:
+    """Retorna tamanho numérico se houver (campo tamanho OU título do anúncio)."""
+    for txt in (tamanho, titulo):
+        if not txt:
+            continue
+        m = re.search(r"\b(2[5-9]|3[0-9])\b", txt)
+        if m:
+            return int(m.group())
+    return None
 
 
 def calcular_teto(tier_final: str, tamanho: str, tem_elastico: bool, tem_etiqueta: bool) -> float:
@@ -132,8 +135,8 @@ def calcular_score(item: dict) -> dict:
         exclusoes.append("tamanho_XS")
     if tam_key == "XXL":
         exclusoes.append("tamanho_XXL")
-    # Tamanho numérico fora de 31-34 = exclusão sempre (vendedor pode mentir no campo tamanho)
-    num = _tamanho_numerico(tamanho)
+    # Tamanho numérico fora de 31-34 = exclusão sempre (checa campo E título)
+    num = _tamanho_numerico(tamanho, item.get("titulo"))
     if num is not None and not (31 <= num <= 34):
         exclusoes.append(f"tamanho_numerico_{num}")
 
