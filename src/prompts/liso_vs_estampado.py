@@ -148,6 +148,36 @@ REGRA CRÍTICA — seja CONSERVADOR:
 tem_bolso_traseiro = false quando as fotos mostram a traseira e claramente não há bolso visível.
 tem_bolso_traseiro = null quando não há vista traseira disponível nas fotos para julgar.
 
+IDENTIFIQUE SE O BOLSO TRASEIRO TEM O NOME "SUNDEK" (bolso_traseiro_tem_nome = true|false|null):
+
+Avalie SOMENTE se tem_bolso_traseiro = true. O bolso pode ter:
+  - Patch/etiqueta com SÓ o LOGO (montanha/sol/onda em laranja sobre fundo preto) — coleção ANTIGA
+  - Patch/etiqueta com o LOGO + a palavra "SUNDEK" escrita junto — coleção MODERNA, é o que queremos
+
+bolso_traseiro_tem_nome = true SOMENTE se você vê CLARAMENTE a palavra "SUNDEK" no patch/bordado
+  do bolso traseiro. Pode ser texto bordado, impresso ou em etiqueta ao lado/junto do logo.
+
+bolso_traseiro_tem_nome = false quando o bolso tem APENAS o logo (sol/montanha/onda) sem texto.
+  Importante: coleções antigas frequentemente têm só o logo, e essas são EXCLUÍDAS para revenda.
+
+bolso_traseiro_tem_nome = null quando tem_bolso_traseiro = null OU quando o detalhe do bolso
+  não é visível com clareza nas fotos.
+
+IDENTIFIQUE A ESPESSURA DO CORDÃO (cordao_fino = true|false|null):
+
+cordao_fino = true quando o cordão da cintura é VISIVELMENTE FINO/ESTREITO, fitinha de tecido
+  estreita ou cordel muito magro. Característico de coleções ANTIGAS do Sundek e modelos
+  considerados excluídos para revenda.
+
+cordao_fino = false quando o cordão é GROSSO/LARGO — fita de tecido larga, cordão chato
+  encorpado, estilo padrão das coleções modernas.
+
+cordao_fino = null quando não há cordão visível, está dobrado/escondido, ou as fotos não
+  permitem julgar a espessura com clareza.
+
+REGRA: na dúvida entre fino e grosso, prefira null. Só marque true se o cordão for
+NITIDAMENTE estreito/fininho.
+
 IDENTIFIQUE SE TEM LISTRAS NA FRENTE (listra_na_frente = true|false):
 
 listra_na_frente = true quando o corpo FRONTAL do short tem listras visíveis — ou seja,
@@ -166,7 +196,7 @@ Se tem_listra_lateral_sundek = true E listra_na_frente = true → as listras vã
 
 Responda APENAS com JSON válido neste formato exato (sem cercas de código, sem texto extra):
 
-{"tipo":"liso"|"logo_grande"|"estampado"|"indefinido","cor_principal":"<cor>","tem_listra_lateral_sundek":true|false,"cores_listras":["<cor>",...] ,"listra_na_frente":true|false,"tem_bolso_traseiro":true|false|null,"tem_logo_grande":true|false,"corpo_tem_padrao_repetido":true|false,"bicolor":true|false,"aparencia":"ok"|"desbotado"|"indefinido","tecido_brilhoso":true|false,"tem_bolso_frontal":true|false,"justificativa":"<frase curta>"}
+{"tipo":"liso"|"logo_grande"|"estampado"|"indefinido","cor_principal":"<cor>","tem_listra_lateral_sundek":true|false,"cores_listras":["<cor>",...] ,"listra_na_frente":true|false,"tem_bolso_traseiro":true|false|null,"bolso_traseiro_tem_nome":true|false|null,"cordao_fino":true|false|null,"tem_logo_grande":true|false,"corpo_tem_padrao_repetido":true|false,"bicolor":true|false,"aparencia":"ok"|"desbotado"|"indefinido","tecido_brilhoso":true|false,"tem_bolso_frontal":true|false,"justificativa":"<frase curta>"}
 
 Onde:
 - tem_listra_lateral_sundek = true só se há listras VERTICAIS no painel traseiro/lateral do short.
