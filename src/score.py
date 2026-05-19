@@ -104,6 +104,7 @@ def calcular_score(item: dict) -> dict:
     tecido_brilhoso = cl.get("tecido_brilhoso", False)
     tem_bolso_frontal = cl.get("tem_bolso_frontal", False)
     listra_na_frente = cl.get("listra_na_frente", False)
+    tem_bolso_traseiro = cl.get("tem_bolso_traseiro")  # None = indefinido (não exclui)
 
     # Filtros de exclusão → score 0
     exclusoes = []
@@ -123,6 +124,10 @@ def calcular_score(item: dict) -> dict:
         exclusoes.append("bolso_frontal")
     if listra_na_frente:
         exclusoes.append("listra_na_frente")
+    if tem_bolso_traseiro is False:
+        exclusoes.append("sem_bolso_traseiro")
+    if tam_key == "S" and tamanho.strip().upper().startswith("XS"):
+        exclusoes.append("tamanho_XS")
     # Tamanho numérico fora de 31-34 sem elástico = exclusão (doc 1.2)
     num = _tamanho_numerico(tamanho)
     if num is not None and not tem_elastico and not (31 <= num <= 34):

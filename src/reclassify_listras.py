@@ -43,6 +43,7 @@ def _processar(item: dict, idx: int, total: int) -> dict:
         tecido_brilhoso = c.get("tecido_brilhoso", False)
         tem_bolso_frontal = c.get("tem_bolso_frontal", False)
         listra_na_frente = c.get("listra_na_frente", False)
+        tem_bolso_traseiro = c.get("tem_bolso_traseiro", None)
 
         cl_atual = item.get("classificacao") or {}
         cl_atual["cores_listras"] = cores_listras
@@ -50,6 +51,7 @@ def _processar(item: dict, idx: int, total: int) -> dict:
         cl_atual["tecido_brilhoso"] = tecido_brilhoso
         cl_atual["tem_bolso_frontal"] = tem_bolso_frontal
         cl_atual["listra_na_frente"] = listra_na_frente
+        cl_atual["tem_bolso_traseiro"] = tem_bolso_traseiro
 
         # 2. Reclassifica elastico — captura tipo_fechamento
         el = verificar_elastico(item)
@@ -72,6 +74,7 @@ def _processar(item: dict, idx: int, total: int) -> dict:
         if tecido_brilhoso: flags.append("brilhoso!")
         if tem_bolso_frontal: flags.append("bolso_frontal!")
         if listra_na_frente: flags.append("listra_frente!")
+        if tem_bolso_traseiro is False: flags.append("sem_bolso_traseiro!")
         if tipo_fechamento in ("botao", "velcro"): flags.append(f"{tipo_fechamento}!")
         flag_str = f" ⚠ {', '.join(flags)}" if flags else ""
 

@@ -4,18 +4,26 @@ SISTEMA = """Você é especialista em classificar shorts da marca Sundek por pad
 
 Olhe TODAS as fotos fornecidas (frente, costas, detalhes) e decida o tipo do short.
 
-DEFINIÇÃO IMPORTANTE — "listra lateral Sundek":
-São listras localizadas APENAS na costura lateral do short (a linha vertical entre frente e costas).
-Podem ser finas ou largas, de 1 a 4 listras, de uma ou VÁRIAS cores (ex: laranja + verde, arco-íris).
-É um detalhe PONTUAL e ESTREITO na lateral — não cobre o tecido do corpo. Esse é o padrão característico Sundek e é SEMPRE considerado LISO.
+DEFINIÇÃO IMPORTANTE — "listra traseira Sundek" (o padrão clássico da marca):
+São listras que correm VERTICALMENTE ao longo do painel TRASEIRO do short — uma ou mais faixas estreitas que descem da cintura até a barra, visíveis principalmente nas costas e na lateral. É o detalhe característico da marca Sundek.
 
-DISTINÇÃO CRÍTICA — listra vs painel bicolor:
-- LISTRA SUNDEK: faixa ESTREITA (alguns milímetros a poucos centímetros) exatamente na costura lateral. O corpo do short tem UMA cor dominante e a listra é apenas um detalhe na borda.
-- PAINEL BICOLOR: o lado/lateral do short é formado por um PAINEL LARGO de cor diferente do corpo central — ocupa uma área visível e significativa do short. Isso é BICOLOR, NÃO listra Sundek.
+NÃO É listra Sundek:
+- Faixa HORIZONTAL na barra/hem do short (na borda inferior) — isso é detalhe de acabamento, não listra Sundek
+- Faixa APENAS no cós
+- Faixa horizontal decorativa no meio do corpo
+
+DISTINÇÃO CRÍTICA — listra traseira vs painel bicolor vs faixa na barra:
+- LISTRA SUNDEK (tem_listra_lateral_sundek = true): faixa ESTREITA e VERTICAL correndo ao longo da lateral traseira do short, do cós até a barra. Visível nas costas/lateral.
+- FAIXA NA BARRA (tem_listra_lateral_sundek = false): faixa HORIZONTAL apenas na borda inferior do short. NÃO é listra Sundek.
+- PAINEL BICOLOR (bicolor = true): o lado do short é formado por um PAINEL LARGO de cor diferente do corpo central — duas zonas de cor visíveis no corpo.
+
+EXEMPLO EXATO DE NÃO-LISTRA SUNDEK (piping/acabamento):
+Short kaki/cinza com acabamento azul nas bordas — faixa azul fina que contorna a barra (hem), as aberturas das pernas e a lateral como ACABAMENTO DE COSTURA. Isso é "piping" decorativo, NÃO é listra Sundek. tem_listra_lateral_sundek = false.
+A listra Sundek real é uma faixa DISTINTA que corre verticalmente no painel traseiro como elemento gráfico separado do tecido, não como acabamento da borda.
 
 EXEMPLO EXATO DE BICOLOR (muito comum, não confundir com listra):
-Short cinza claro com PAINÉIS LARGOS pretos (ou cinza escuro) nos dois lados — os painéis cobrem uma faixa larga da lateral e da barra do short, não apenas uma linha estreita na costura. O resultado é um short com "miolo" cinza e "bordas" pretas. Isso é bicolor = true, tem_listra_lateral_sundek = false.
-Se você vê o short e pensa "tem dois tons claramente diferentes no corpo" → bicolor = true, não importa se estão nas laterais.
+Short cinza claro com PAINÉIS LARGOS pretos (ou cinza escuro) nos dois lados — os painéis cobrem uma faixa larga da lateral e da barra do short, não apenas uma linha estreita na costura. Isso é bicolor = true, tem_listra_lateral_sundek = false.
+Se você vê o short e pensa "tem dois tons claramente diferentes no corpo" → bicolor = true.
 
 CATEGORIAS:
 
@@ -124,6 +132,15 @@ Exemplos:
 - Listra laranja única → ["laranja"]
 - Sem listras → []
 
+IDENTIFIQUE SE TEM BOLSO TRASEIRO (tem_bolso_traseiro = true|false|null):
+
+tem_bolso_traseiro = true quando o short tem um bolso PEQUENO nas costas — o bolso característico
+dos Sundeks clássicos, normalmente com o nome/logo Sundek bordado ou impresso. É um bolso discreto,
+pequeno, sem aba grande.
+
+tem_bolso_traseiro = false quando claramente não tem bolso traseiro.
+tem_bolso_traseiro = null quando as fotos das costas não estão disponíveis ou não permitem ver.
+
 IDENTIFIQUE SE TEM LISTRAS NA FRENTE (listra_na_frente = true|false):
 
 listra_na_frente = true quando o corpo FRONTAL do short tem listras visíveis — ou seja,
@@ -142,12 +159,13 @@ Se tem_listra_lateral_sundek = true E listra_na_frente = true → as listras vã
 
 Responda APENAS com JSON válido neste formato exato (sem cercas de código, sem texto extra):
 
-{"tipo":"liso"|"logo_grande"|"estampado"|"indefinido","cor_principal":"<cor>","tem_listra_lateral_sundek":true|false,"cores_listras":["<cor>",...] ,"listra_na_frente":true|false,"tem_logo_grande":true|false,"corpo_tem_padrao_repetido":true|false,"bicolor":true|false,"aparencia":"ok"|"desbotado"|"indefinido","tecido_brilhoso":true|false,"tem_bolso_frontal":true|false,"justificativa":"<frase curta>","confianca":0.0-1.0}
+{"tipo":"liso"|"logo_grande"|"estampado"|"indefinido","cor_principal":"<cor>","tem_listra_lateral_sundek":true|false,"cores_listras":["<cor>",...] ,"listra_na_frente":true|false,"tem_bolso_traseiro":true|false|null,"tem_logo_grande":true|false,"corpo_tem_padrao_repetido":true|false,"bicolor":true|false,"aparencia":"ok"|"desbotado"|"indefinido","tecido_brilhoso":true|false,"tem_bolso_frontal":true|false,"justificativa":"<frase curta>","confianca":0.0-1.0}
 
 Onde:
-- tem_listra_lateral_sundek = true só se vê listras SÓ na costura lateral.
-- cores_listras = lista de cores das listras laterais (vazia se não houver).
-- listra_na_frente = true se há listras visíveis no corpo frontal do short (além da costura lateral).
+- tem_listra_lateral_sundek = true só se há listras VERTICAIS no painel traseiro/lateral do short.
+- cores_listras = lista de cores das listras (vazia se não houver).
+- listra_na_frente = true se há listras visíveis no corpo frontal do short.
+- tem_bolso_traseiro = true/false/null — bolso pequeno nas costas (padrão Sundek). null se não dá para ver.
 - tem_logo_grande = true se houver texto/logo SUNDEK GRANDE e dominante (ex: "SUNDEK" escrito gigante na perna).
 - corpo_tem_padrao_repetido = true se o tecido do corpo tem qualquer padrão repetido (listras por todo o tecido, floral, quadriculado, etc).
 - bicolor = true se o corpo tem DOIS painéis de cores sólidas distintas sem padrão gráfico.
