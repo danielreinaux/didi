@@ -134,12 +134,19 @@ Exemplos:
 
 IDENTIFIQUE SE TEM BOLSO TRASEIRO (tem_bolso_traseiro = true|false|null):
 
-tem_bolso_traseiro = true quando o short tem um bolso PEQUENO nas costas — o bolso característico
-dos Sundeks clássicos, normalmente com o nome/logo Sundek bordado ou impresso. É um bolso discreto,
-pequeno, sem aba grande.
+tem_bolso_traseiro = true APENAS quando você VÊ CLARAMENTE o bolso traseiro nas fotos.
+O bolso característico do Sundek clássico é PEQUENO, na costas, normalmente com o nome/logo
+Sundek bordado ou impresso. Discreto, sem aba grande.
 
-tem_bolso_traseiro = false quando claramente não tem bolso traseiro.
-tem_bolso_traseiro = null quando as fotos das costas não estão disponíveis ou não permitem ver.
+REGRA CRÍTICA — seja CONSERVADOR:
+  - Se as fotos NÃO mostram uma vista CLARA da parte traseira do short → tem_bolso_traseiro = null
+  - Se as fotos mostram a traseira MAS você não consegue confirmar bolso → tem_bolso_traseiro = false
+  - NÃO assuma que tem bolso só porque é Sundek. Modelos modernos (incluindo costume donna,
+    modelo curto, modelo "elastic", "boxer") frequentemente NÃO têm bolso traseiro.
+  - tem_bolso_traseiro = true SOMENTE se você vê o bolso explicitamente na foto.
+
+tem_bolso_traseiro = false quando as fotos mostram a traseira e claramente não há bolso visível.
+tem_bolso_traseiro = null quando não há vista traseira disponível nas fotos para julgar.
 
 IDENTIFIQUE SE TEM LISTRAS NA FRENTE (listra_na_frente = true|false):
 

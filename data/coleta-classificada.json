@@ -6201,12 +6201,12 @@
       "justificativa": "Coral não é neon e é aceitável no mercado.",
       "cores_listras": [
         "azul",
-        "verde",
-        "roxo"
+        "roxo",
+        "verde"
       ],
       "listra_tier": "salva",
       "tier_final": "boa",
-      "combo_motivo": "listras ['azul', 'verde', 'roxo'] neutras salvam 'coral': ok→boa"
+      "combo_motivo": "listras ['azul', 'roxo', 'verde'] neutras salvam 'coral': ok→boa"
     },
     "upload": "hace una hora",
     "envio": "desde 2,99 €",
@@ -6243,8 +6243,8 @@
       "tem_listra_lateral_sundek": true,
       "cores_listras": [
         "azul",
-        "verde",
-        "roxo"
+        "roxo",
+        "verde"
       ],
       "listra_na_frente": false,
       "tem_bolso_traseiro": true,
@@ -6254,7 +6254,9 @@
       "aparencia": "ok",
       "tecido_brilhoso": false,
       "tem_bolso_frontal": false,
-      "justificativa": "Short com listra traseira Sundek e bolso traseiro."
+      "justificativa": "Short com listra traseira Sundek e bolso traseiro.",
+      "confianca": null,
+      "_model": "gpt-4o"
     },
     "elastico": {
       "tem_elastico": true,
@@ -8517,9 +8519,11 @@
       "corpo_tem_padrao_repetido": false,
       "bicolor": false,
       "aparencia": "ok",
-      "tecido_brilhoso": false,
+      "tecido_brilhoso": true,
       "tem_bolso_frontal": false,
-      "justificativa": "Short com listra lateral e bolso traseiro."
+      "justificativa": "Short com listra lateral e bolso traseiro.",
+      "confianca": null,
+      "_model": "gpt-4o"
     },
     "elastico": {
       "tem_elastico": true,
@@ -8531,20 +8535,11 @@
       "evidencia": "Não há hang tag visível nas fotos, apenas etiquetas costuradas."
     },
     "score": {
-      "score": 70,
-      "teto": 30,
-      "preco_num": 19.9,
-      "decisao": "compravel",
-      "motivo": "",
-      "breakdown": {
-        "tier": 15,
-        "tamanho": 20,
-        "elastico": 15,
-        "etiqueta": 0,
-        "listra_bonus": 0,
-        "preco": 20,
-        "ratio_preco_teto": 0.66
-      }
+      "score": 0,
+      "teto": 0,
+      "decisao": "descartado",
+      "motivo_exclusao": "tecido_brilhoso",
+      "breakdown": {}
     }
   },
   {
@@ -9700,11 +9695,11 @@
       "cores_listras": [
         "vermelho",
         "amarelo",
-        "preto"
+        "azul"
       ],
       "listra_tier": "salva",
       "tier_final": "boa",
-      "combo_motivo": "listras ['vermelho', 'amarelo', 'preto'] neutras salvam 'Verde médio': ok→boa"
+      "combo_motivo": "listras ['vermelho', 'amarelo', 'azul'] neutras salvam 'Verde médio': ok→boa"
     },
     "upload": "hace una hora",
     "envio": "desde 2,99 €",
@@ -9743,7 +9738,7 @@
       "cores_listras": [
         "vermelho",
         "amarelo",
-        "preto"
+        "azul"
       ],
       "listra_na_frente": false,
       "tem_bolso_traseiro": true,
@@ -9753,7 +9748,9 @@
       "aparencia": "ok",
       "tecido_brilhoso": false,
       "tem_bolso_frontal": false,
-      "justificativa": "Short com listras verticais na lateral traseira."
+      "justificativa": "Short com listras verticais na lateral traseira.",
+      "confianca": null,
+      "_model": "gpt-4o"
     },
     "elastico": {
       "tem_elastico": true,
@@ -11783,13 +11780,13 @@
       "tier": "maravilhoso",
       "justificativa": "Cor dominante é azul marinho, que tem alta procura.",
       "cores_listras": [
-        "branco",
         "rosa",
+        "branco",
         "azul"
       ],
       "listra_tier": "neutra",
       "tier_final": "maravilhoso",
-      "combo_motivo": "listras ['branco', 'rosa', 'azul'] confirmam tier 'maravilhoso'"
+      "combo_motivo": "listras ['rosa', 'branco', 'azul'] confirmam tier 'maravilhoso'"
     },
     "upload": "hace 16 horas",
     "envio": "desde 2,99 €",
@@ -11827,8 +11824,8 @@
       "cor_principal": "azul",
       "tem_listra_lateral_sundek": true,
       "cores_listras": [
-        "branco",
         "rosa",
+        "branco",
         "azul"
       ],
       "listra_na_frente": false,
@@ -11837,9 +11834,11 @@
       "corpo_tem_padrao_repetido": false,
       "bicolor": false,
       "aparencia": "ok",
-      "tecido_brilhoso": false,
+      "tecido_brilhoso": true,
       "tem_bolso_frontal": false,
-      "justificativa": "Short com listra traseira Sundek e bolso traseiro."
+      "justificativa": "Short com listra traseira Sundek e bolso traseiro.",
+      "confianca": null,
+      "_model": "gpt-4o"
     },
     "elastico": {
       "tem_elastico": true,
@@ -11851,20 +11850,11 @@
       "evidencia": "Não há etiqueta de papel/papelão pendente visível nas fotos."
     },
     "score": {
-      "score": 79,
-      "teto": 35,
-      "preco_num": 16.0,
-      "decisao": "compravel",
-      "motivo": "",
-      "breakdown": {
-        "tier": 30,
-        "tamanho": 4,
-        "elastico": 15,
-        "etiqueta": 0,
-        "listra_bonus": 0,
-        "preco": 30,
-        "ratio_preco_teto": 0.46
-      }
+      "score": 0,
+      "teto": 0,
+      "decisao": "descartado",
+      "motivo_exclusao": "tecido_brilhoso",
+      "breakdown": {}
     }
   },
   {
@@ -12228,12 +12218,13 @@
       "tier": "ok",
       "justificativa": "A cor não é fluorescente e se encaixa na categoria aceitável.",
       "cores_listras": [
+        "verde",
         "branco",
-        "verde"
+        "preto"
       ],
       "listra_tier": "salva",
       "tier_final": "boa",
-      "combo_motivo": "listras ['branco', 'verde'] neutras salvam 'Verde médio': ok→boa"
+      "combo_motivo": "listras ['verde', 'branco', 'preto'] neutras salvam 'Verde médio': ok→boa"
     },
     "upload": "hace 14 minutos",
     "envio": "desde 1,95 €",
@@ -12270,18 +12261,21 @@
       "cor_principal": "verde",
       "tem_listra_lateral_sundek": true,
       "cores_listras": [
+        "verde",
         "branco",
-        "verde"
+        "preto"
       ],
       "listra_na_frente": false,
       "tem_bolso_traseiro": true,
       "tem_logo_grande": false,
       "corpo_tem_padrao_repetido": false,
-      "bicolor": false,
+      "bicolor": true,
       "aparencia": "ok",
       "tecido_brilhoso": false,
       "tem_bolso_frontal": false,
-      "justificativa": "Short com listra lateral e bolso traseiro."
+      "justificativa": "Short com listra lateral e bolso traseiro.",
+      "confianca": null,
+      "_model": "gpt-4o"
     },
     "elastico": {
       "tem_elastico": true,
@@ -12293,20 +12287,11 @@
       "evidencia": "Não há hang tag visível nas imagens, apenas etiquetas costuradas internamente."
     },
     "score": {
-      "score": 69,
-      "teto": 20,
-      "preco_num": 9.0,
-      "decisao": "compravel",
-      "motivo": "elástico + preço ≤ €9 + cor boa",
-      "breakdown": {
-        "tier": 15,
-        "tamanho": 4,
-        "elastico": 15,
-        "etiqueta": 0,
-        "listra_bonus": 5,
-        "preco": 30,
-        "ratio_preco_teto": 0.45
-      }
+      "score": 0,
+      "teto": 0,
+      "decisao": "descartado",
+      "motivo_exclusao": "bicolor",
+      "breakdown": {}
     }
   },
   {
@@ -12442,11 +12427,12 @@
       "tier": "muito_boa",
       "justificativa": "Cinza é uma cor com alta liquidez no mercado.",
       "cores_listras": [
-        "azul"
+        "azul",
+        "branco"
       ],
       "listra_tier": "neutra",
       "tier_final": "muito_boa",
-      "combo_motivo": "listras ['azul'] confirmam tier 'muito_boa'"
+      "combo_motivo": "listras ['azul', 'branco'] confirmam tier 'muito_boa'"
     },
     "upload": "hace un día",
     "envio": "desde 2,83 €",
@@ -12485,7 +12471,8 @@
       "cor_principal": "cinza",
       "tem_listra_lateral_sundek": true,
       "cores_listras": [
-        "azul"
+        "azul",
+        "branco"
       ],
       "listra_na_frente": false,
       "tem_bolso_traseiro": true,
@@ -12495,7 +12482,9 @@
       "aparencia": "ok",
       "tecido_brilhoso": false,
       "tem_bolso_frontal": false,
-      "justificativa": "Short com listra vertical na parte traseira e bolso traseiro."
+      "justificativa": "Short com listra vertical na parte traseira e bolso traseiro.",
+      "confianca": null,
+      "_model": "gpt-4o"
     },
     "elastico": {
       "tem_elastico": true,
@@ -23502,13 +23491,13 @@
       "tier": "maravilhoso",
       "justificativa": "Cor dominante é azul marinho, que tem alta procura.",
       "cores_listras": [
+        "azul",
         "branco",
-        "laranja",
-        "rosa"
+        "salmão"
       ],
       "listra_tier": "neutra",
       "tier_final": "maravilhoso",
-      "combo_motivo": "listras ['branco', 'laranja', 'rosa'] confirmam tier 'maravilhoso'"
+      "combo_motivo": "listras ['azul', 'branco', 'salmão'] confirmam tier 'maravilhoso'"
     },
     "upload": "hace 2 días",
     "envio": "desde 2,29 €",
@@ -23547,9 +23536,9 @@
       "cor_principal": "azul",
       "tem_listra_lateral_sundek": true,
       "cores_listras": [
+        "azul",
         "branco",
-        "laranja",
-        "rosa"
+        "salmão"
       ],
       "listra_na_frente": false,
       "tem_bolso_traseiro": true,
@@ -23559,7 +23548,9 @@
       "aparencia": "ok",
       "tecido_brilhoso": false,
       "tem_bolso_frontal": false,
-      "justificativa": "Short com listra traseira Sundek e bolso traseiro."
+      "justificativa": "Short com listra traseira Sundek e bolso traseiro.",
+      "confianca": null,
+      "_model": "gpt-4o"
     },
     "elastico": {
       "tem_elastico": true,
@@ -25876,8 +25867,10 @@
       "bicolor": false,
       "aparencia": "ok",
       "tecido_brilhoso": false,
-      "tem_bolso_frontal": false,
-      "justificativa": "Short com listras verticais na parte traseira e bolso traseiro."
+      "tem_bolso_frontal": true,
+      "justificativa": "Short com listras verticais na parte traseira e bolso traseiro.",
+      "confianca": null,
+      "_model": "gpt-4o"
     },
     "elastico": {
       "tem_elastico": true,
@@ -25889,20 +25882,11 @@
       "evidencia": "Não há hang tag visível nas imagens, apenas etiquetas costuradas."
     },
     "score": {
-      "score": 71,
-      "teto": 27,
-      "preco_num": 11.0,
-      "decisao": "compravel",
-      "motivo": "",
-      "breakdown": {
-        "tier": 22,
-        "tamanho": 4,
-        "elastico": 15,
-        "etiqueta": 0,
-        "listra_bonus": 0,
-        "preco": 30,
-        "ratio_preco_teto": 0.41
-      }
+      "score": 0,
+      "teto": 0,
+      "decisao": "descartado",
+      "motivo_exclusao": "bolso_frontal",
+      "breakdown": {}
     }
   },
   {
@@ -27370,7 +27354,9 @@
       "aparencia": "ok",
       "tecido_brilhoso": false,
       "tem_bolso_frontal": false,
-      "justificativa": "Short com listras verticais na parte traseira."
+      "justificativa": "Short com listras verticais na parte traseira.",
+      "confianca": null,
+      "_model": "gpt-4o"
     },
     "elastico": {
       "tem_elastico": true,
@@ -27396,7 +27382,9 @@
         "preco": 30,
         "ratio_preco_teto": 0.43
       }
-    }
+    },
+    "manual_exclusao": true,
+    "motivo_manual": "sem bolso traseiro (modelo classificou True por erro)"
   },
   {
     "id": "8904388698",
@@ -35088,12 +35076,13 @@
       "tier": "maravilhoso",
       "justificativa": "Cor azul marinho é altamente procurada e tem máxima liquidez.",
       "cores_listras": [
-        "verde",
-        "rosa"
+        "amarelo",
+        "rosa",
+        "verde"
       ],
       "listra_tier": "neutra",
       "tier_final": "maravilhoso",
-      "combo_motivo": "listras ['verde', 'rosa'] confirmam tier 'maravilhoso'"
+      "combo_motivo": "listras ['amarelo', 'rosa', 'verde'] confirmam tier 'maravilhoso'"
     },
     "upload": "hace un día",
     "envio": "desde 2,89 €",
@@ -35132,8 +35121,9 @@
       "cor_principal": "azul",
       "tem_listra_lateral_sundek": true,
       "cores_listras": [
-        "verde",
-        "rosa"
+        "amarelo",
+        "rosa",
+        "verde"
       ],
       "listra_na_frente": false,
       "tem_bolso_traseiro": true,
@@ -35143,7 +35133,9 @@
       "aparencia": "ok",
       "tecido_brilhoso": false,
       "tem_bolso_frontal": false,
-      "justificativa": "Short com listra traseira Sundek e bolso traseiro."
+      "justificativa": "Short com listra traseira Sundek e bolso traseiro.",
+      "confianca": null,
+      "_model": "gpt-4o"
     },
     "elastico": {
       "tem_elastico": true,
@@ -35169,7 +35161,9 @@
         "preco": 5,
         "ratio_preco_teto": 1.0
       }
-    }
+    },
+    "manual_exclusao": true,
+    "motivo_manual": "listras feias amarelo+rosa em azul marinho"
   },
   {
     "id": "8905436085",
@@ -40850,12 +40844,10 @@
       "cor_principal": "Kaki escuro",
       "tier": "boa",
       "justificativa": "Cor aceitável com boa liquidez no mercado.",
-      "cores_listras": [
-        "azul"
-      ],
-      "listra_tier": "neutra",
+      "cores_listras": [],
+      "listra_tier": "sem_listra",
       "tier_final": "boa",
-      "combo_motivo": "listras ['azul'] confirmam tier 'boa'"
+      "combo_motivo": "sem listras laterais"
     },
     "upload": "hace un día",
     "envio": "desde 2,29 €",
@@ -40891,10 +40883,8 @@
     "classificacao": {
       "tipo": "liso",
       "cor_principal": "cinza",
-      "tem_listra_lateral_sundek": true,
-      "cores_listras": [
-        "azul"
-      ],
+      "tem_listra_lateral_sundek": false,
+      "cores_listras": [],
       "listra_na_frente": false,
       "tem_bolso_traseiro": true,
       "tem_logo_grande": false,
@@ -40903,7 +40893,9 @@
       "aparencia": "ok",
       "tecido_brilhoso": false,
       "tem_bolso_frontal": false,
-      "justificativa": "Short com listra lateral azul e bolso traseiro."
+      "justificativa": "Short com listra lateral azul e bolso traseiro.",
+      "confianca": null,
+      "_model": "gpt-4o"
     },
     "elastico": {
       "tem_elastico": true,
@@ -40915,20 +40907,11 @@
       "evidencia": "Não há etiqueta pendente visível nas fotos, apenas etiquetas costuradas internamente."
     },
     "score": {
-      "score": 80,
-      "teto": 30,
-      "preco_num": 9.0,
-      "decisao": "compravel",
-      "motivo": "elástico + preço ≤ €9 + cor boa",
-      "breakdown": {
-        "tier": 15,
-        "tamanho": 20,
-        "elastico": 15,
-        "etiqueta": 0,
-        "listra_bonus": 0,
-        "preco": 30,
-        "ratio_preco_teto": 0.3
-      }
+      "score": 0,
+      "teto": 0,
+      "decisao": "descartado",
+      "motivo_exclusao": "sem_listra_sundek",
+      "breakdown": {}
     }
   },
   {

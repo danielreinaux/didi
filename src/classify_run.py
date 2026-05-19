@@ -279,6 +279,25 @@ def main() -> None:
     print(f"  Duração:         {time.time() - t0:.1f}s")
     print(f"\n  Salvo em data/coleta-classificada.json")
 
+    # Recalcula scores antes do gpt-4o (ele só roda em compráveis/ambíguos)
+    from .score import calcular_score
+    final = json.loads(checkpoint_path.read_text())
+    for it in final:
+        if not it.get("manual_exclusao"):
+            it["score"] = calcular_score(it)
+    checkpoint_path.write_text(json.dumps(final, indent=2, ensure_ascii=False))
+
+    # Auto-double-check com gpt-4o em compráveis e ambíguos estruturais
+    print("\n=== Double-check automático com gpt-4o ===")
+    from .reclassify_ambiguos import main as reclassify_main
+    import sys as _sys
+    _argv = _sys.argv
+    _sys.argv = ["reclassify_ambiguos"]
+    try:
+        reclassify_main()
+    finally:
+        _sys.argv = _argv
+
 
 if __name__ == "__main__":
     main()
