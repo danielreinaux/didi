@@ -187,11 +187,6 @@ def calcular_score(item: dict) -> dict:
         decisao = "descartado"
         motivo = "score baixo"
 
-    # Até €10: ok passa, ruim já foi excluído acima
-    if preco and preco <= 10 and tier_final != "ruim" and decisao == "descartado":
-        decisao = "compravel"
-        motivo = "preço ≤ €10"
-
     return {
         "score": score,
         "teto": round(teto, 2),
