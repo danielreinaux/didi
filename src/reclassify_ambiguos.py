@@ -1,9 +1,9 @@
-"""Re-roda gpt-4o nos lisos com confiança baixa ou casos suspeitos de bicolor/brilhoso.
+"""Re-roda gpt-4o nos lisos estruturalmente ambíguos.
 
-Critério de ambiguidade (qualquer um):
-  - confianca < 0.8
-  - bicolor = False mas sem listras e sem cor ruim (possível painel não detectado)
-  - tecido_brilhoso = False mas confianca < 0.85
+O modelo retorna confianca≈0.9 pra tudo — usamos critérios estruturais:
+  - sem listra E sem bicolor (possível painel não detectado)
+  - listra_na_frente = True (confirmar)
+  - comprável sem brilhoso/bicolor detectado (double-check)
 
 Uso: python -m src.reclassify_ambiguos [--workers N]
 """

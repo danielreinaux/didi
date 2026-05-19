@@ -46,7 +46,7 @@ REGRA DO BRILHO: cinza fosco = muito_boa. Tecido com brilho metálico/acetinado 
 
 Responda APENAS com JSON válido (sem cercas, sem texto extra):
 
-{"cor_principal":"<nome em português>","tier":"maravilhoso"|"muito_boa"|"boa"|"ok"|"ruim","justificativa":"<frase curta>","confianca":0.0-1.0}"""
+{"cor_principal":"<nome em português>","tier":"maravilhoso"|"muito_boa"|"boa"|"ok"|"ruim","justificativa":"<frase curta>"}"""
 
 
 def usuario(titulo: str, cor_extraida: str | None) -> str:

@@ -114,7 +114,7 @@ def _processar(item: dict, idx: str, total: int) -> tuple[dict, int, int]:
             else "✗ S/LIS" if tipo == "liso_sem_listra"
             else "? IND"
         )
-        linha = f"{prefix} → {tag} conf={c.get('confianca')}"
+        linha = f"{prefix} → {tag}"
 
         cor = elastico = etiqueta = None
 
@@ -135,6 +135,12 @@ def _processar(item: dict, idx: str, total: int) -> tuple[dict, int, int]:
                 linha += f" | cor={cor.get('cor_principal')} [{cor.get('tier')}→{combo['tier_final']}] listras={cores_listras}"
             except Exception as e:
                 cor = {"tier": "erro", "erro": str(e)}
+
+            # Short-circuit: se cor é ruim sem chance de salvar, pula elástico+etiqueta
+            if cor and cor.get("tier_final") == "ruim":
+                linha += " | ✗ cor ruim → skip elas/etiq"
+                _log(linha)
+                return {**item, "marca_check": marca, "classificacao": c, "cor": cor, "elastico": None, "etiqueta": None}, in_tok, out_tok
 
             # 5. Elástico
             try:
@@ -197,10 +203,28 @@ def main() -> None:
         except Exception:
             pass
 
-    pendentes = [(i, item) for i, item in enumerate(itens) if item.get("id") not in ja_processados]
+    # Pular só se ID já processado E fotos não mudaram (mesma URL list)
+    def _mesmas_fotos(item_novo: dict, item_velho: dict) -> bool:
+        f_novo = tuple((item_novo.get("fotos") or []))
+        f_velho = tuple((item_velho.get("fotos") or []))
+        return f_novo == f_velho and bool(f_novo)
+
+    pendentes = []
+    reprocessados = 0
+    for i, item in enumerate(itens):
+        cached = ja_processados.get(item.get("id"))
+        if cached and _mesmas_fotos(item, cached):
+            continue  # mesmo item, mesmas fotos → skip
+        if cached:
+            reprocessados += 1  # fotos mudaram, reprocessar
+        pendentes.append((i, item))
+
     pulados = total - len(pendentes)
     if pulados:
-        print(f"  {pulados} itens já classificados — pulando. {len(pendentes)} pendentes.\n")
+        print(f"  {pulados} itens já classificados (fotos idênticas) — pulando.")
+    if reprocessados:
+        print(f"  {reprocessados} itens com fotos modificadas — reprocessando.")
+    print(f"  {len(pendentes)} itens para processar.\n")
 
     with ThreadPoolExecutor(max_workers=workers) as pool:
         futures = {

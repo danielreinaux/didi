@@ -33,7 +33,7 @@ DÚVIDA: se a foto não mostra o cós com clareza, responda tem_elastico = null 
 
 Responda APENAS com JSON válido (sem cercas de código, sem texto extra):
 
-{"tem_elastico":true|false|null,"tipo_fechamento":"elastico"|"cordao"|"botao"|"velcro"|"sem"|"indefinido","evidencia":"<o que viu no cós>","confianca":0.0-1.0}"""
+{"tem_elastico":true|false|null,"tipo_fechamento":"elastico"|"cordao"|"botao"|"velcro"|"sem"|"indefinido","evidencia":"<o que viu no cós>"}"""
 
 
 def usuario(titulo: str) -> str:

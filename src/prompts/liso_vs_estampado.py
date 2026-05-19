@@ -159,7 +159,7 @@ Se tem_listra_lateral_sundek = true E listra_na_frente = true → as listras vã
 
 Responda APENAS com JSON válido neste formato exato (sem cercas de código, sem texto extra):
 
-{"tipo":"liso"|"logo_grande"|"estampado"|"indefinido","cor_principal":"<cor>","tem_listra_lateral_sundek":true|false,"cores_listras":["<cor>",...] ,"listra_na_frente":true|false,"tem_bolso_traseiro":true|false|null,"tem_logo_grande":true|false,"corpo_tem_padrao_repetido":true|false,"bicolor":true|false,"aparencia":"ok"|"desbotado"|"indefinido","tecido_brilhoso":true|false,"tem_bolso_frontal":true|false,"justificativa":"<frase curta>","confianca":0.0-1.0}
+{"tipo":"liso"|"logo_grande"|"estampado"|"indefinido","cor_principal":"<cor>","tem_listra_lateral_sundek":true|false,"cores_listras":["<cor>",...] ,"listra_na_frente":true|false,"tem_bolso_traseiro":true|false|null,"tem_logo_grande":true|false,"corpo_tem_padrao_repetido":true|false,"bicolor":true|false,"aparencia":"ok"|"desbotado"|"indefinido","tecido_brilhoso":true|false,"tem_bolso_frontal":true|false,"justificativa":"<frase curta>"}
 
 Onde:
 - tem_listra_lateral_sundek = true só se há listras VERTICAIS no painel traseiro/lateral do short.

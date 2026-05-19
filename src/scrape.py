@@ -13,6 +13,7 @@ from playwright.sync_api import sync_playwright
 from .browser import abrir_sessao_vinted
 from .config import MAX_ITEMS_POR_RODADA
 from .extract import extract_item
+from .historico import atualizar_com_scrape
 from .sources.vinted import listar_urls_items, montar_url_sundek_hombre
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -75,7 +76,16 @@ def main() -> None:
         out = DATA / "coleta.json"
         out.write_text(json.dumps(coletados, indent=2, ensure_ascii=False))
         print(f"\n[5] {len(coletados)} itens salvos em data/coleta.json")
-        print(f"    duração: {time.time() - t0:.1f}s")
+
+        # [6] Atualiza histórico longitudinal (preços, vendidos)
+        stats = atualizar_com_scrape(coletados)
+        print(f"\n[6] Histórico:")
+        print(f"    novos:           {stats['novos']}")
+        print(f"    ainda listados:  {stats['ainda_listados']}")
+        print(f"    baixaram preço:  {stats['preco_baixou']}")
+        print(f"    vendidos agora:  {stats['vendidos_agora']}")
+        print(f"    total tracking:  {stats['total_historico']}")
+        print(f"\n    duração total: {time.time() - t0:.1f}s")
 
         browser.close()
 

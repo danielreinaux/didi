@@ -1,24 +1,9 @@
-# Data
+data/coleta-backup*.json
+data/coleta-classificada-backup*.json
 data/screenshots/
-data/*.backup*.json
-data/visualizar.html
-
-# Python
 __pycache__/
 *.pyc
-*.pyo
 .env
-.venv/
-venv/
-
-# Node
-votacao/node_modules/
-votacao/.next/
-
-# OS
-.DS_Store
-
-# Claude internals
-.claude/
-
-# Votacao embedded git handled separately
+node_modules/
+.next/
+.vercel/

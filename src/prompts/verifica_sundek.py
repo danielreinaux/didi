@@ -39,7 +39,7 @@ ATENÇÃO: muitas vezes o título diz "costume", "swim", "boxer", "boardshort" �
 
 Responda APENAS com JSON válido:
 
-{"e_sundek":"sim"|"nao"|"indefinido","marca_identificada":"<marca vista se não-Sundek, ou null>","e_short":"sim"|"nao"|"indefinido","formato_identificado":"short|sunga|slip|cueca|outro","evidencia":"<o que viu nas fotos>","confianca":0.0-1.0}"""
+{"e_sundek":"sim"|"nao"|"indefinido","marca_identificada":"<marca vista se não-Sundek, ou null>","e_short":"sim"|"nao"|"indefinido","formato_identificado":"short|sunga|slip|cueca|outro","evidencia":"<o que viu nas fotos>"}"""
 
 
 def usuario(titulo: str) -> str:

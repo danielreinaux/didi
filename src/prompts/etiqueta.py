@@ -23,7 +23,7 @@ DÚVIDA (tem_etiqueta = null):
 
 Responda APENAS com JSON válido (sem cercas de código, sem texto extra):
 
-{"tem_etiqueta":true|false|null,"evidencia":"<o que viu ou não viu, em uma frase>","confianca":0.0-1.0}"""
+{"tem_etiqueta":true|false|null,"evidencia":"<o que viu ou não viu, em uma frase>"}"""
 
 
 def usuario(titulo: str) -> str:
