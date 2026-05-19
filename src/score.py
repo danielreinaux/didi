@@ -126,6 +126,8 @@ def calcular_score(item: dict) -> dict:
         exclusoes.append("listra_na_frente")
     if tem_bolso_traseiro is False:
         exclusoes.append("sem_bolso_traseiro")
+    if tipo == "liso" and cl.get("tem_listra_lateral_sundek") is False:
+        exclusoes.append("sem_listra_sundek")
     if tam_key == "S" and tamanho.strip().upper().startswith("XS"):
         exclusoes.append("tamanho_XS")
     # Tamanho numérico fora de 31-34 sem elástico = exclusão (doc 1.2)
