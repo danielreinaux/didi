@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Preview iPhone – Votacao Sundek</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #1a1a2e;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    padding: 40px 20px;
+  }
+
+  .scene {
+    display: flex;
+    align-items: flex-start;
+    gap: 60px;
+  }
+
+  /* iPhone frame */
+  .iphone {
+    width: 390px;
+    height: 844px;
+    background: #000;
+    border-radius: 55px;
+    padding: 12px;
+    box-shadow: 0 0 0 2px #333, 0 0 0 6px #555, 0 30px 80px rgba(0,0,0,0.8);
+    position: relative;
+    flex-shrink: 0;
+  }
+  .iphone-screen {
+    width: 100%;
+    height: 100%;
+    background: #f9fafb;
+    border-radius: 44px;
+    overflow: hidden;
+    position: relative;
+  }
+  .iphone-notch {
+    position: absolute;
+    top: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 120px;
+    height: 34px;
+    background: #000;
+    border-radius: 20px;
+    z-index: 10;
+  }
+
+  /* App inside iPhone */
+  .app {
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-top: 50px;
+    scrollbar-width: none;
+  }
+  .app::-webkit-scrollbar { display: none; }
+
+  .header {
+    background: #fff;
+    border-bottom: 1px solid #e5e7eb;
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    padding: 10px 14px 8px;
+  }
+  .header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+  }
+  .header-top h1 { font-size: 17px; font-weight: 700; color: #111; }
+  .header-top span { font-size: 12px; color: #6b7280; }
+  .progress {
+    width: 100%;
+    height: 4px;
+    background: #e5e7eb;
+    border-radius: 99px;
+    margin-bottom: 8px;
+    overflow: hidden;
+  }
+  .progress-bar { height: 100%; background: #3b82f6; border-radius: 99px; width: 0%; transition: width 0.5s; }
+
+  .filters {
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding-bottom: 2px;
+  }
+  .filters::-webkit-scrollbar { display: none; }
+  .filter-btn {
+    flex-shrink: 0;
+    padding: 5px 10px;
+    border-radius: 10px;
+    border: none;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    background: #f3f4f6;
+    color: #6b7280;
+    transition: all 0.15s;
+  }
+  .filter-btn.active { background: #1f2937; color: #fff; }
+
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    padding: 10px;
+  }
+
+  .card {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.1);
+    overflow: hidden;
+    border: 1.5px solid #e5e7eb;
+    display: flex;
+    flex-direction: column;
+    transition: border-color 0.2s;
+  }
+  .card.voted { border-color: #4ade80; }
+
+  .card-photo {
+    width: 100%;
+    aspect-ratio: 1;
+    background: #f3f4f6;
+    position: relative;
+    overflow: hidden;
+  }
+  .card-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .badge {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    background: #4f46e5;
+    color: #fff;
+    font-size: 9px;
+    font-weight: 600;
+    padding: 2px 6px;
+    border-radius: 99px;
+  }
+  .dots {
+    position: absolute;
+    bottom: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 3px;
+  }
+  .dot {
+    width: 5px; height: 5px;
+    border-radius: 99px;
+    background: rgba(255,255,255,0.5);
+    cursor: pointer;
+  }
+  .dot.active { background: #fff; }
+
+  .card-body { padding: 8px; display: flex; flex-direction: column; gap: 4px; flex: 1; }
+  .card-title { font-size: 11px; color: #4b5563; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .card-meta { font-size: 10px; color: #9ca3af; display: flex; gap: 4px; flex-wrap: wrap; align-items: center; }
+  .card-price { font-weight: 700; color: #111; }
+  .card-ia { font-size: 10px; color: #9ca3af; }
+  .card-ia span { color: #6b7280; font-weight: 500; }
+
+  .vote-btns { display: flex; flex-direction: column; gap: 4px; margin-top: 6px; }
+  .vote-btn {
+    width: 100%;
+    padding: 7px 6px;
+    border: none;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+    text-align: center;
+  }
+  .vote-btn:active { transform: scale(0.97); }
+  .vote-btn.selected { transform: scale(1.03); box-shadow: 0 0 0 3px rgba(0,0,0,0.15); }
+
+  .btn-ruim      { background: #ef4444; color: #fff; }
+  .btn-ok        { background: #fb923c; color: #fff; }
+  .btn-boa       { background: #facc15; color: #111; }
+  .btn-muito_boa { background: #22c55e; color: #fff; }
+  .btn-maravilhoso { background: #3b82f6; color: #fff; }
+</style>
+</head>
+<body>
+
+<div class="scene">
+  <!-- iPhone mockup -->
+  <div class="iphone">
+    <div class="iphone-notch"></div>
+    <div class="iphone-screen">
+      <div class="app" id="app">
+
+        <div class="header">
+          <div class="header-top">
+            <h1>Votacao Sundek</h1>
+            <span id="progresso-txt">0/255 votados</span>
+          </div>
+          <div class="progress"><div class="progress-bar" id="progress-bar"></div></div>
+          <div class="filters">
+            <button class="filter-btn active" onclick="setFiltro('todos')">Todos (255)</button>
+            <button class="filter-btn" onclick="setFiltro('ruim')" id="f-ruim">ruim (0)</button>
+            <button class="filter-btn" onclick="setFiltro('ok')" id="f-ok">ok (0)</button>
+            <button class="filter-btn" onclick="setFiltro('boa')" id="f-boa">boa (0)</button>
+            <button class="filter-btn" onclick="setFiltro('muito_boa')" id="f-muito_boa">muito_boa (0)</button>
+            <button class="filter-btn" onclick="setFiltro('maravilhoso')" id="f-maravilhoso">maravilhoso (0)</button>
+          </div>
+        </div>
+
+        <div class="grid" id="grid"></div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const ITEMS = [{"id":"8892620545","url":"https://www.vinted.es/items/8892620545-pantaloncino-da-mare-sundek","titulo":"Pantaloncino da mare sundek","tamanho":"M","estado":"Muy bueno","preco":"6,00 €","preco_total":"4,90 €","fotos":["https://images1.vinted.net/t/06_0162f_5uXoUcHmkTrjYZ5hR3ECdvHo/f800/1778759744.webp?s=a107546c9a09da3ab6813b65e9fd3152ba0eb477","https://images1.vinted.net/t/06_02116_qwuY6oTCgtKzhjzvZQPMdhmR/f800/1778759744.webp?s=7554ea870181c71d6bc2edace560099ce0d7a186"],"cor_ia":"Azul marinho","tier_ia":"maravilhoso","bicolor":false,"aparencia":"ok"},{"id":"8898086874","url":"https://www.vinted.es/items/8898086874-costume-sundek","titulo":"Costume Sundek","tamanho":"M","estado":"Muy bueno","preco":"10,00 €","preco_total":"14,35 €","fotos":["https://images1.vinted.net/t/05_02647_vxWpMLY2wmsRqAS7UrSy7MBT/f800/1778658174.webp?s=fde8767eb14e4103342899711792b9af25466c44","https://images1.vinted.net/t/06_01ed6_jrvqaHknywjsbk93Aw3xcu5u/f800/1778658174.webp?s=171032aeddf3af940ffa6cab3ca36501746e5e62"],"cor_ia":"Azul marinho","tier_ia":"maravilhoso","bicolor":false,"aparencia":"ok"},{"id":"8890093468","url":"https://www.vinted.es/items/8890093468-vintage-sundek","titulo":"Vintage sundek","tamanho":"S","estado":"Bueno","preco":"7,00 €","preco_total":"9,10 €","fotos":["https://images1.vinted.net/t/05_00ebe_SS9d2P9qySavPhJ7YVTUrscC/f800/1778574062.webp?s=26d921ec9c9e74d834f8f0c66c5c07fc32a40bc5","https://images1.vinted.net/t/06_01076_Ed2TyftXzK5D4kgawdBdxjHM/f800/1778574062.webp?s=e0a624fce0ae03bba5922082d8e1efe889a45577"],"cor_ia":"Laranja","tier_ia":"ok","bicolor":false,"aparencia":"ok"},{"id":"8902165856","url":"https://www.vinted.es/items/8902165856-costume-da-bagno-sundek-taglia-14a","titulo":"Costume da bagno Sundek taglia 14A","tamanho":"XS","estado":"Nuevo sin etiquetas","preco":"25,00 €","preco_total":"26,95 €","fotos":["https://images1.vinted.net/t/05_02056_SDUM3yrU8gZR87s5YF5UXixS/f800/1778685998.webp?s=11d556ff19c5355c08d55d6c1620b2a7fcf1a089","https://images1.vinted.net/t/06_025b9_BM9T5ZB36ekHgfTAP6jG3PpU/f800/1778685998.webp?s=155180131ce8425340524a5d9087c028d853b82d"],"cor_ia":"Cinza","tier_ia":"muito_boa","bicolor":false,"aparencia":"ok"},{"id":"8895801783","url":"https://www.vinted.es/items/8895801783-costume-sundek-originale","titulo":"Costume Sundek originale","tamanho":"XXL","estado":"Muy bueno","preco":"15,00 €","preco_total":"16,45 €","fotos":["https://images1.vinted.net/t/06_00fd5_N45RmvJimXQYuUcrfk2vUUGS/f800/1778610843.webp?s=0350d4d643fd02d21da3e671cb1dcc0511fcba9b","https://images1.vinted.net/t/05_02471_4dRGe58xbUn3nhkm717FRLzh/f800/1778610843.webp?s=7cc831f7c42a1c31b0d5d343823903b8619fce97"],"cor_ia":"Cinza","tier_ia":"muito_boa","bicolor":false,"aparencia":"ok"},{"id":"8890830575","url":"https://www.vinted.es/items/8890830575-costume-originale-sundek-taglia-31-colore-blu","titulo":"Costume originale Sundek taglia 31 colore blu","tamanho":"M","estado":"Muy bueno","preco":"18,00 €","preco_total":"16,45 €","fotos":["https://images1.vinted.net/t/06_01fd7_Lj7EqwLwSP3uWLpXf9NZZWRh/f800/1778579535.webp?s=e6e0226c4f2d90720883abd4c01ff8ac85322b27","https://images1.vinted.net/t/05_01561_9x4AqQnPpTmZCZjZsJBeQ2JW/f800/1778579535.webp?s=730c2a80d5718006206e8e262befc388ca1dafd8"],"cor_ia":"Azul médio","tier_ia":"boa","bicolor":false,"aparencia":"ok"},{"id":"8907321830","url":"https://www.vinted.es/items/8907321830-sundek-zwemshort-maat-s","titulo":"Sundek zwemshort maat S","tamanho":"S","estado":"Bueno","preco":"10,00 €","preco_total":"8,58 €","fotos":["https://images1.vinted.net/t/05_00964_sZSS6GYxY5Kt3BNQgu9VmXft/f800/1778750999.webp?s=05781241ad35fa9c37057b57307412b40deeacec","https://images1.vinted.net/t/05_02304_hE5X741YKkh1Gazzuwg844rk/f800/1778750999.webp?s=6ba652981faefcc4420eba9078096dcf9e7c0fc4"],"cor_ia":"Cinza","tier_ia":"muito_boa","bicolor":false,"aparencia":"ok"},{"id":"8766726959","url":"https://www.vinted.es/items/8766726959-costume-da-mare-sundek-nuovo","titulo":"Costume da mare sundek nuovo","tamanho":"L","estado":"Nuevo sin etiquetas","preco":"29,99 €","preco_total":"47,85 €","fotos":["https://images1.vinted.net/t/06_01238_zycM51PCBNKp9Mh8k6WhV8L7/f800/1777320986.webp?s=f8eb6ec29faaa728190b6ac34f7b4f6522e7df8e","https://images1.vinted.net/t/06_00602_aAdcDnpG8qeazyB9wkiZJT4v/f800/1777320986.webp?s=8a631429b8d65b664f9d954589916151e178442f"],"cor_ia":"Verde médio","tier_ia":"ok","bicolor":false,"aparencia":"ok"}];
+
+const TIERS = ['ruim','ok','boa','muito_boa','maravilhoso'];
+const LABELS = {ruim:'Ruim',ok:'Ok',boa:'Boa',muito_boa:'Muito boa',maravilhoso:'Maravilhoso'};
+let votos = {};
+let filtroAtivo = 'todos';
+let fotoIdx = {};
+
+function contarTier(t) { return Object.values(votos).filter(v=>v===t).length; }
+
+function atualizarHeader() {
+  const total = Object.keys(votos).length;
+  document.getElementById('progresso-txt').textContent = `${total}/255 votados`;
+  document.getElementById('progress-bar').style.width = (total/255*100)+'%';
+  TIERS.forEach(t => {
+    const el = document.getElementById('f-'+t);
+    if(el) el.textContent = `${t} (${contarTier(t)})`;
+  });
+}
+
+function setFiltro(f) {
+  filtroAtivo = f;
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  const alvo = f==='todos' ? document.querySelector('.filter-btn') : document.getElementById('f-'+f);
+  if(alvo) alvo.classList.add('active');
+  renderGrid();
+}
+
+function votar(id, tier) {
+  votos[id] = tier;
+  atualizarHeader();
+  // update card
+  const card = document.querySelector(`.card[data-id="${id}"]`);
+  if(card) {
+    card.classList.add('voted');
+    card.querySelectorAll('.vote-btn').forEach(b=>{
+      b.classList.toggle('selected', b.dataset.tier===tier);
+    });
+  }
+}
+
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  const itens = filtroAtivo==='todos' ? ITEMS : ITEMS.filter(i=>votos[i.id]===filtroAtivo);
+  grid.innerHTML = itens.map(item => {
+    const voto = votos[item.id];
+    const foto = item.fotos[fotoIdx[item.id]||0] || item.fotos[0];
+    return `
+    <div class="card${voto?' voted':''}" data-id="${item.id}">
+      <div class="card-photo">
+        <img src="${foto}" alt="" loading="lazy" onerror="this.style.visibility='hidden'">
+        ${item.bicolor?'<div class="badge">bicolor</div>':''}
+        ${item.fotos.length>1?`<div class="dots">
+          ${item.fotos.map((_,i)=>`<div class="dot${(fotoIdx[item.id]||0)===i?' active':''}" onclick="mudaFoto('${item.id}',${i})"></div>`).join('')}
+        </div>`:''}
+      </div>
+      <div class="card-body">
+        <div class="card-title">${item.titulo}</div>
+        <div class="card-meta">
+          <span>${item.tamanho}</span>
+          <span>·</span>
+          <span class="card-price">${item.preco_total||item.preco}</span>
+        </div>
+        <div class="card-ia">IA: <span>${item.cor_ia}</span> <span style="color:#d1d5db">(${item.tier_ia})</span></div>
+        <div class="vote-btns">
+          ${TIERS.map(t=>`<button class="vote-btn btn-${t}${voto===t?' selected':''}" data-tier="${t}" onclick="votar('${item.id}','${t}')">${LABELS[t]}${voto===t?' ✓':''}</button>`).join('')}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function mudaFoto(id, idx) {
+  fotoIdx[id] = idx;
+  renderGrid();
+}
+
+renderGrid();
+atualizarHeader();
+</script>
+</body>
+</html>

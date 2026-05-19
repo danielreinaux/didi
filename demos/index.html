@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Sundek Radar</title>
+<style>
+  :root {
+    --bg: #fafafa;
+    --surface: #fff;
+    --ink: #0b1a2b;
+    --ink-soft: #5a6675;
+    --ink-mute: #8a95a3;
+    --accent: #ff5c3a;
+    --ocean: #0b2545;
+    --ok: #10b981;
+    --warn: #f59e0b;
+    --border: #e7e9ec;
+    --border-soft: #f0f2f5;
+    --radius: 10px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  button { font: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+  input { font: inherit; }
+  a { color: inherit; }
+
+  .wrap { max-width: 1100px; margin: 0 auto; padding: 0 28px; }
+
+  /* top strip (status) */
+  .status-strip {
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+    padding: 10px 0;
+    font-size: 12.5px;
+    color: var(--ink-soft);
+  }
+  .status-strip .wrap {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .brand {
+    font-weight: 700;
+    letter-spacing: .16em;
+    font-size: 11.5px;
+    color: var(--ink);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .brand::before {
+    content: ""; width: 10px; height: 10px;
+    background: var(--accent); border-radius: 2px;
+  }
+  .status { display: flex; align-items: center; gap: 8px; }
+  .dot {
+    width: 7px; height: 7px;
+    background: var(--ok);
+    border-radius: 50%;
+    box-shadow: 0 0 0 0 rgba(16,185,129,.55);
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(16,185,129,.55); }
+    70% { box-shadow: 0 0 0 8px rgba(16,185,129,0); }
+    100% { box-shadow: 0 0 0 0 rgba(16,185,129,0); }
+  }
+  .status b { color: var(--ink); font-weight: 600; }
+
+  /* search */
+  .search-area { padding: 28px 0 12px; }
+  .search-box {
+    display: flex;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 6px;
+    gap: 6px;
+  }
+  .search-box:focus-within {
+    border-color: var(--ocean);
+    box-shadow: 0 0 0 3px rgba(11,37,69,.08);
+  }
+  .search-box input {
+    flex: 1;
+    border: none;
+    outline: none;
+    padding: 10px 12px;
+    font-size: 15px;
+    background: transparent;
+  }
+  .search-box input::placeholder { color: var(--ink-mute); }
+  .search-box button {
+    background: var(--ocean);
+    color: #fff;
+    padding: 8px 18px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 13.5px;
+  }
+  .search-box button:hover { background: #143366; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+  .chip {
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--ink-soft);
+    padding: 5px 12px;
+    border-radius: 999px;
+    font-size: 12px;
+    transition: all .15s;
+  }
+  .chip:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: #fff5f2;
+  }
+
+  /* ai reply */
+  .ai {
+    margin: 20px 0;
+    padding: 14px 18px;
+    border-left: 3px solid var(--accent);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left-width: 3px;
+    border-radius: 8px;
+    font-size: 14px;
+    color: var(--ink);
+    animation: fade .25s ease;
+  }
+  @keyframes fade { from {opacity:0} to {opacity:1} }
+  .ai .label {
+    font-size: 10.5px;
+    letter-spacing: .1em;
+    color: var(--ink-mute);
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .ai strong { color: var(--accent); }
+
+  /* results */
+  .results-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin: 18px 0 14px;
+  }
+  .results-head .count { font-weight: 700; font-size: 14px; }
+  .results-head .sort { font-size: 12.5px; color: var(--ink-mute); }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 16px;
+    padding-bottom: 48px;
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: transform .15s, box-shadow .15s, border-color .15s;
+  }
+  .card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(11,26,43,.08);
+    border-color: #d5dae1;
+  }
+  .photo {
+    aspect-ratio: 4/3;
+    position: relative;
+    padding: 10px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+  }
+  .src-badge {
+    background: rgba(255,255,255,.92);
+    color: var(--ink);
+    font-size: 10.5px;
+    font-weight: 600;
+    padding: 4px 8px;
+    border-radius: 5px;
+  }
+  .tag {
+    position: absolute;
+    top: 10px; left: 10px;
+    padding: 3px 9px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    border-radius: 5px;
+  }
+  .tag.drop { background: var(--accent); color: #fff; }
+  .tag.novo { background: var(--ok); color: #fff; }
+
+  .body {
+    padding: 14px 16px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex: 1;
+  }
+  .title {
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 1.3;
+  }
+  .sizes {
+    font-size: 12px;
+    color: var(--ink-soft);
+  }
+  .sizes b { color: var(--ink); font-weight: 600; }
+
+  .swatches { display: flex; align-items: center; gap: 5px; flex-wrap: wrap; }
+  .swatches .sw-label {
+    font-size: 11.5px; color: var(--ink-mute); margin-right: 2px;
+  }
+  .sw {
+    width: 15px; height: 15px;
+    border-radius: 50%;
+    box-shadow: inset 0 0 0 1.5px #fff, 0 0 0 1px var(--border);
+    display: inline-block;
+    position: relative;
+  }
+  .sw[title]:hover::after {
+    content: attr(title);
+    position: absolute;
+    bottom: calc(100% + 6px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--ink);
+    color: #fff;
+    font-size: 10.5px;
+    padding: 3px 7px;
+    border-radius: 4px;
+    white-space: nowrap;
+    z-index: 10;
+  }
+  .sw-more {
+    font-size: 10.5px;
+    color: var(--ink-soft);
+    margin-left: 2px;
+  }
+
+  .features { display: flex; flex-wrap: wrap; gap: 4px; }
+  .feat {
+    font-size: 10.5px;
+    color: var(--ocean);
+    background: #eef2f9;
+    padding: 3px 7px;
+    border-radius: 4px;
+  }
+
+  .price-row {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin-top: 2px;
+  }
+  .price { font-weight: 800; font-size: 17px; }
+  .price-old {
+    text-decoration: line-through;
+    color: var(--ink-mute);
+    font-size: 12.5px;
+  }
+  .pct {
+    font-size: 11px;
+    color: var(--accent);
+    font-weight: 700;
+  }
+
+  .stock {
+    font-size: 11.5px;
+    display: inline-flex; align-items: center; gap: 5px;
+    color: var(--ok);
+  }
+  .stock::before {
+    content: ""; width: 6px; height: 6px; border-radius: 50%;
+    background: var(--ok);
+  }
+  .stock.low { color: var(--warn); }
+  .stock.low::before { background: var(--warn); }
+
+  .link-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 10px;
+    border-top: 1px solid var(--border-soft);
+    font-size: 11.5px;
+  }
+  .link-row .seen { color: var(--ink-mute); }
+  .link-row a {
+    text-decoration: none;
+    color: var(--ocean);
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    max-width: 60%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .link-row a:hover { text-decoration: underline; }
+  .link-row a .dom { color: var(--ink-mute); font-weight: 500; }
+
+  .empty {
+    grid-column: 1 / -1;
+    padding: 44px 20px;
+    text-align: center;
+    color: var(--ink-soft);
+    background: var(--surface);
+    border: 1px dashed var(--border);
+    border-radius: var(--radius);
+  }
+</style>
+</head>
+<body>
+
+<div class="status-strip">
+  <div class="wrap">
+    <div class="brand">SUNDEK RADAR</div>
+    <div class="status">
+      <span class="dot"></span>
+      <span>última coleta <b>há 2h 14min</b> · <b>247</b> compráveis ativos · próxima <b>18:00</b></span>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="search-area">
+    <div class="search-box">
+      <input id="q" type="text" placeholder="Ex: shorts pretos tamanho M abaixo de R$ 300" autofocus />
+      <button id="go">Buscar</button>
+    </div>
+    <div class="chips">
+      <button class="chip" data-q="shorts pretos tamanho M até 300">pretos M até 300</button>
+      <button class="chip" data-q="o que baixou de preço essa semana">baixou de preço</button>
+      <button class="chip" data-q="recém-chegados tamanho G">novos tamanho G</button>
+      <button class="chip" data-q="estampados abaixo de 400">estampados até 400</button>
+      <button class="chip" data-q="shorts marinho ou azul">marinho/azul</button>
+    </div>
+  </div>
+
+  <div id="ai"></div>
+
+  <div class="results-head">
+    <div class="count" id="count">16 compráveis</div>
+    <div class="sort">ordenado por: mais recentes</div>
+  </div>
+
+  <div class="grid" id="grid"></div>
+</div>
+
+<script>
+// ---------- data ----------
+const colorHex = {
+  preto:     "#141414",
+  marinho:   "#0b2545",
+  azul:      "#2f6cb8",
+  verde:     "#3d5a3d",
+  oliva:     "#6b7d4a",
+  branco:    "#f0f0f0",
+  vermelho:  "#8a1b1b",
+  amarelo:   "#e6c84a",
+  grafite:   "#4a4f5c",
+  coral:     "#ff7864",
+  floral:    "conic-gradient(from 45deg, #ff8fa3, #a8d8e0, #ffd166, #ff8fa3)",
+  listrado:  "repeating-linear-gradient(45deg,#0b2545 0 4px,#fff 4px 8px)"
+};
+const colorName = {
+  preto:"Preto", marinho:"Marinho", azul:"Azul", verde:"Verde Militar",
+  oliva:"Oliva", branco:"Branco", vermelho:"Vermelho", amarelo:"Amarelo",
+  grafite:"Grafite", coral:"Coral", floral:"Floral", listrado:"Listrado"
+};
+const photoBg = {
+  preto:     "linear-gradient(135deg,#0f0f0f 0%,#2b2b2b 100%)",
+  marinho:   "linear-gradient(135deg,#0b2545 0%,#1f3a6b 100%)",
+  azul:      "linear-gradient(135deg,#2f6cb8 0%,#5a95d8 100%)",
+  verde:     "linear-gradient(135deg,#2f4a2f 0%,#4f6b4a 100%)",
+  oliva:     "linear-gradient(135deg,#5d6b3b 0%,#8a9a60 100%)",
+  branco:    "linear-gradient(135deg,#f2f3f5 0%,#d9dce0 100%)",
+  vermelho:  "linear-gradient(135deg,#8a1b1b 0%,#c23a3a 100%)",
+  amarelo:   "linear-gradient(135deg,#e3b81c 0%,#f5d95a 100%)",
+  grafite:   "linear-gradient(135deg,#3a4050 0%,#5a6170 100%)",
+  coral:     "radial-gradient(circle at 30% 40%,#fff 0 8%,transparent 9%),radial-gradient(circle at 75% 70%,#ffd166 0 10%,transparent 11%),linear-gradient(135deg,#ff5c3a,#ff8f6f)",
+  "floral-azul": "radial-gradient(circle at 20% 30%,#ff8fa3 0 12%,transparent 13%),radial-gradient(circle at 70% 50%,#a8d8e0 0 14%,transparent 15%),radial-gradient(circle at 40% 80%,#ffd166 0 10%,transparent 11%),linear-gradient(135deg,#1f3a6b 0%,#0b2545 100%)",
+  listrado:  "repeating-linear-gradient(90deg,#0b2545 0 16px,#ffffff 16px 32px)"
+};
+const sourceDomain = {
+  "Site Oficial": "sundekbrasil.com.br",
+  "Dafiti": "dafiti.com.br",
+  "Netshoes": "netshoes.com.br"
+};
+
+const products = [
+  { id:1, title:"Classic Boardshort", mainColor:"preto", sizes:["P","M","G"], price:289, oldPrice:349, source:"Site Oficial", seenDays:4, tag:"drop", flags:["preto"], availableColors:["preto","marinho","verde","vermelho"], features:["Secagem rápida","UV 50+"], stockHint:"Em estoque" },
+  { id:2, title:"Rainbow Waistband", mainColor:"marinho", sizes:["M","G"], price:420, source:"Site Oficial", seenDays:12, flags:["marinho","azul"], availableColors:["marinho","preto","oliva","vermelho"], features:["Icônico","Secagem rápida"], stockHint:"Em estoque" },
+  { id:3, title:"Low Rise Elastic", mainColor:"verde", sizes:["M","GG"], price:380, source:"Dafiti", seenDays:1, tag:"novo", flags:["verde"], availableColors:["verde","preto","marinho"], features:["Cordão interno","Bolso lateral"], stockHint:"Últimas unidades" },
+  { id:4, title:"17\" Boardshort", mainColor:"preto", sizes:["P","M","G","GG"], price:275, oldPrice:325, source:"Dafiti", seenDays:6, tag:"drop", flags:["preto"], availableColors:["preto","marinho","grafite"], features:["Comprimento longo","UV 50+"], stockHint:"Em estoque" },
+  { id:5, title:"Logo Elastic Branco", mainColor:"branco", sizes:["M","G"], price:310, source:"Netshoes", seenDays:3, flags:["branco"], availableColors:["branco","preto","marinho","amarelo"], features:["Leve","Cordão interno"], stockHint:"Em estoque" },
+  { id:6, title:"Classic Fit Preto", mainColor:"preto", sizes:["M","G","GG"], price:249, source:"Netshoes", seenDays:0, tag:"novo", flags:["preto"], availableColors:["preto","marinho"], features:["Básico","Bolso traseiro"], stockHint:"Em estoque" },
+  { id:7, title:"Surf Short Estampado", mainColor:"floral-azul", photoKey:"floral-azul", swatchKey:"floral", sizes:["P","M"], price:395, source:"Site Oficial", seenDays:8, flags:["estampado","floral","azul"], availableColors:["floral","coral","listrado"], features:["Estampa exclusiva","Secagem rápida"], stockHint:"Disponível em P e M" },
+  { id:8, title:"Rainbow Band Black", mainColor:"preto", sizes:["P","M","G"], price:298, source:"Site Oficial", seenDays:2, flags:["preto"], availableColors:["preto","marinho","oliva","branco"], features:["Cordão interno","UV 50+"], stockHint:"Em estoque" },
+  { id:9, title:"Slim Cut Vermelho", mainColor:"vermelho", sizes:["M","G"], price:340, source:"Dafiti", seenDays:15, flags:["vermelho"], availableColors:["vermelho","preto","marinho"], features:["Corte slim","Leve"], stockHint:"Últimas unidades" },
+  { id:10, title:"Vintage 90s Listrado", mainColor:"listrado", photoKey:"listrado", swatchKey:"listrado", sizes:["G","GG"], price:460, source:"Site Oficial", seenDays:5, flags:["estampado","listrado"], availableColors:["listrado","marinho","branco"], features:["Edição vintage","Algodão misto"], stockHint:"Apenas G e GG" },
+  { id:11, title:"Elastic Classic", mainColor:"marinho", sizes:["P","M","G"], price:265, oldPrice:295, source:"Netshoes", seenDays:10, tag:"drop", flags:["marinho","azul"], availableColors:["marinho","preto","verde","vermelho"], features:["Secagem rápida","Cordão interno"], stockHint:"Em estoque" },
+  { id:12, title:"Tropical Print", mainColor:"coral", photoKey:"coral", swatchKey:"coral", sizes:["M","G"], price:389, source:"Dafiti", seenDays:7, flags:["estampado","coral"], availableColors:["coral","floral","azul"], features:["Estampa tropical","UV 50+"], stockHint:"Em estoque" },
+  { id:13, title:"Boardshort Grafite", mainColor:"grafite", sizes:["M","G","GG"], price:299, source:"Site Oficial", seenDays:3, flags:["grafite","cinza"], availableColors:["grafite","preto","marinho"], features:["Corte reto","Bolso lateral"], stockHint:"Em estoque" },
+  { id:14, title:"Classic Amarelo", mainColor:"amarelo", sizes:["P","M"], price:358, source:"Site Oficial", seenDays:9, flags:["amarelo"], availableColors:["amarelo","coral","branco","preto"], features:["Cor vibrante","Leve"], stockHint:"Disponível em P e M" },
+  { id:15, title:"Rainbow Oliva", mainColor:"oliva", sizes:["M","G"], price:420, source:"Dafiti", seenDays:14, flags:["oliva","verde"], availableColors:["oliva","preto","marinho","vermelho"], features:["Icônico","Secagem rápida"], stockHint:"Em estoque" },
+  { id:16, title:"Slim Preto Premium", mainColor:"preto", sizes:["M"], price:520, source:"Site Oficial", seenDays:11, flags:["preto"], availableColors:["preto","marinho"], features:["Linha premium","Tecido italiano"], stockHint:"Último tamanho M" }
+];
+
+// ---------- render ----------
+const grid = document.getElementById("grid");
+const countEl = document.getElementById("count");
+const aiEl = document.getElementById("ai");
+
+const fmtBRL = n => "R$ " + n.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+const slug = s => s.toLowerCase()
+  .replace(/[áàâã]/g,'a').replace(/[éèê]/g,'e').replace(/[íì]/g,'i')
+  .replace(/[óòôõ]/g,'o').replace(/[úù]/g,'u').replace(/ç/g,'c')
+  .replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
+
+function urlFor(p) {
+  return `https://${sourceDomain[p.source]}/p/${slug(p.title)}-${p.id}`;
+}
+
+function swatchHtml(colors) {
+  const visible = colors.slice(0, 4);
+  const rest = colors.length - visible.length;
+  const dots = visible.map(c => {
+    const bg = colorHex[c] || "#ccc";
+    const isGradient = bg.includes("gradient");
+    const style = isGradient ? `background:${bg}` : `background:${bg}`;
+    return `<span class="sw" style="${style}" title="${colorName[c] || c}"></span>`;
+  }).join("");
+  const more = rest > 0 ? `<span class="sw-more">+${rest}</span>` : "";
+  return `<span class="sw-label">cores:</span>${dots}${more}`;
+}
+
+function card(p) {
+  const pct = p.oldPrice ? Math.round((1 - p.price/p.oldPrice) * 100) : 0;
+  const tagHtml = p.tag === "drop" ? `<span class="tag drop">Preço caiu</span>`
+                 : p.tag === "novo" ? `<span class="tag novo">Novo</span>` : "";
+  const seenLbl = p.seenDays === 0 ? "visto hoje" : p.seenDays === 1 ? "há 1 dia" : `há ${p.seenDays} dias`;
+  const photoKey = p.photoKey || p.mainColor;
+  const bg = photoBg[photoKey] || photoBg[p.mainColor] || "#ccc";
+  const stockLow = /última|apenas|disponível em/i.test(p.stockHint);
+  const url = urlFor(p);
+  const dom = sourceDomain[p.source];
+
+  return `
+    <article class="card">
+      <div class="photo" style="background:${bg}">
+        ${tagHtml}
+        <span class="src-badge">${p.source}</span>
+      </div>
+      <div class="body">
+        <div class="title">Sundek ${p.title}</div>
+        <div class="sizes">Tam. <b>${p.sizes.join(" · ")}</b></div>
+        <div class="swatches">${swatchHtml(p.availableColors)}</div>
+        <div class="features">${p.features.map(f => `<span class="feat">${f}</span>`).join("")}</div>
+        <div class="price-row">
+          <span class="price">${fmtBRL(p.price)}</span>
+          ${p.oldPrice ? `<span class="price-old">${fmtBRL(p.oldPrice)}</span>` : ""}
+          ${pct ? `<span class="pct">-${pct}%</span>` : ""}
+        </div>
+        <span class="stock ${stockLow ? 'low' : ''}">${p.stockHint}</span>
+        <div class="link-row">
+          <span class="seen">${seenLbl}</span>
+          <a href="${url}" target="_blank" rel="noopener">
+            <span class="dom">${dom}</span>
+            <span>→</span>
+          </a>
+        </div>
+      </div>
+    </article>
+  `;
+}
+
+function renderList(list) {
+  grid.innerHTML = list.length
+    ? list.map(card).join("")
+    : `<div class="empty">Nada encontrado pra esse filtro. Tente reformular.</div>`;
+  countEl.textContent = `${list.length} comprávei${list.length === 1 ? "l" : "s"}`;
+}
+
+function renderAI(msg) {
+  aiEl.innerHTML = msg ? `
+    <div class="ai">
+      <div class="label">Resposta</div>
+      <div>${msg}</div>
+    </div>` : "";
+}
+
+// ---------- nl parser ----------
+function parseQuery(q) {
+  const s = q.toLowerCase();
+  const f = { colors: [] };
+  const map = {
+    "preto":"preto","preta":"preto","branco":"branco","branca":"branco",
+    "marinho":"marinho","azul":"azul","verde":"verde",
+    "vermelho":"vermelho","vermelha":"vermelho","amarelo":"amarelo","amarela":"amarelo",
+    "grafite":"grafite","cinza":"cinza","oliva":"oliva","coral":"coral"
+  };
+  for (const k in map) if (s.includes(k) && !f.colors.includes(map[k])) f.colors.push(map[k]);
+  if (/estamp|floral|listrad|tropical|print/.test(s)) f.estampado = true;
+  const sm = s.match(/\b(?:tam(?:anho)?\s*)?(gg|g|m|p)\b/);
+  if (sm) f.size = sm[1].toUpperCase();
+  const pm = s.match(/(?:at[eé]|abaixo de|menos de|m[aá]x(?:imo)?|<|<=)\s*r?\$?\s*(\d{2,4})/);
+  if (pm) f.priceMax = parseInt(pm[1], 10);
+  if (/baix(ou|ando|aram)|queda|desconto|drop|promo|caiu/.test(s)) f.onlyDrop = true;
+  if (/novo|novos|rec[eé]m|nov[ai]s|chegad|ultim|últim|semana/.test(s)) f.recent = true;
+  return f;
+}
+
+function applyFilters(list, f) {
+  return list.filter(p => {
+    if (f.colors?.length && !f.colors.some(c => p.flags.includes(c))) return false;
+    if (f.estampado && !p.flags.includes("estampado")) return false;
+    if (f.size && !p.sizes.includes(f.size)) return false;
+    if (f.priceMax && p.price > f.priceMax) return false;
+    if (f.onlyDrop && p.tag !== "drop") return false;
+    if (f.recent && p.seenDays > 7) return false;
+    return true;
+  });
+}
+
+function aiText(f, results) {
+  if (!results.length) return "Nada bateu com esses critérios na coleta atual. Posso avisar quando aparecer.";
+  const crit = [];
+  if (f.colors?.length) crit.push(f.colors.join("/"));
+  if (f.estampado) crit.push("estampados");
+  if (f.size) crit.push(`tamanho ${f.size}`);
+  if (f.priceMax) crit.push(`abaixo de R$ ${f.priceMax}`);
+  if (f.onlyDrop) crit.push("com queda de preço");
+  if (f.recent) crit.push("recém-detectados");
+  let msg = `Encontrei <strong>${results.length} comprávei${results.length===1?"l":"s"}</strong>`;
+  if (crit.length) msg += ` (${crit.join(", ")})`;
+  const drops = results.filter(p => p.oldPrice).sort((a,b) => (b.oldPrice-b.price)-(a.oldPrice-a.price));
+  if (drops.length) {
+    const t = drops[0];
+    const pct = Math.round((1 - t.price/t.oldPrice)*100);
+    msg += `. Destaque: <strong>${t.title}</strong> caiu ${pct}% (${fmtBRL(t.oldPrice)} → ${fmtBRL(t.price)}) no ${t.source}.`;
+  } else {
+    const n = [...results].sort((a,b)=>a.seenDays-b.seenDays)[0];
+    msg += `. Mais recente: <strong>${n.title}</strong> ${n.seenDays===0?"detectado hoje":`visto há ${n.seenDays} dia${n.seenDays===1?"":"s"}`}.`;
+  }
+  return msg;
+}
+
+// ---------- events ----------
+function run(q) {
+  document.getElementById("q").value = q;
+  const f = parseQuery(q);
+  const r = applyFilters(products, f);
+  renderAI(aiText(f, r));
+  renderList(r);
+}
+
+document.getElementById("go").addEventListener("click", () => {
+  const q = document.getElementById("q").value.trim();
+  if (q) run(q);
+});
+document.getElementById("q").addEventListener("keydown", e => {
+  if (e.key === "Enter" && e.target.value.trim()) run(e.target.value.trim());
+});
+document.querySelectorAll(".chip").forEach(b => {
+  b.addEventListener("click", () => run(b.dataset.q));
+});
+
+renderList(products);
+</script>
+</body>
+</html>
