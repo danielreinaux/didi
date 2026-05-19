@@ -42,7 +42,7 @@ VINTED = {
 }
 
 # Quantos itens a coleta deve trazer por execução (por marca).
-MAX_ITEMS_POR_RODADA = 600
+MAX_ITEMS_POR_RODADA = 900
 
 # Modelo de IA pra classificação visual.
 IA = {

@@ -159,7 +159,8 @@ def calcular_score(item: dict) -> dict:
 
     # Parte 2 — Eficiência de preço (0~30)
     teto = calcular_teto(tier_final, tamanho, tem_elastico, tem_etiqueta)
-    preco = _parse_preco(item.get("preco_total")) or _parse_preco(item.get("preco"))
+    # preco_total do Vinted é instável (captura envio ou outros valores) — usar só preco
+    preco = _parse_preco(item.get("preco"))
 
     pts_preco = 0
     ratio = None
