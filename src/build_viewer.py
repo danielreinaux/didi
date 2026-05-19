@@ -116,12 +116,12 @@ def main() -> None:
         if "score" not in it:
             it["score"] = calcular_score(it)
 
-    # Filtra manuais e não-seleção, ordena por score desc
-    itens = [i for i in itens if _aba(i) != "skip"]
+    # Filtra manuais e não-seleção, mostra só compráveis e ok, ordena por score desc
+    itens = [i for i in itens if _aba(i) in ("compravel", "ok")]
     itens = sorted(itens, key=lambda x: -(x.get("score") or {}).get("score", 0))
 
     cnt = lambda a: sum(1 for i in itens if _aba(i) == a)
-    n_c, n_o, n_n = cnt("compravel"), cnt("ok"), cnt("nao_compravel")
+    n_c, n_o = cnt("compravel"), cnt("ok")
 
     cards = "\n".join(card_html(it) for it in itens)
 
@@ -279,8 +279,7 @@ details.fotos summary {{ padding: 2px 0; cursor: pointer; }}
 
 <div class="tabs">
   <button class="tab active" data-tab="compravel">Comprável <span class="cnt">{n_c}</span></button>
-  <button class="tab" data-tab="ok">Ok <span class="cnt">{n_o}</span></button>
-  <button class="tab" data-tab="nao_compravel">Não comprável <span class="cnt">{n_n}</span></button>
+  <button class="tab" data-tab="ok">Barganha <span class="cnt">{n_o}</span></button>
 </div>
 
 <main><div class="grid">{cards}</div></main>

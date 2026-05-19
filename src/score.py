@@ -58,7 +58,7 @@ def _tamanho_key(tamanho: str | None) -> str:
     if not tamanho:
         return "L"
     t = (tamanho or "").strip().upper()
-    for key in ("XL", "XXL", "M", "L", "S"):
+    for key in ("XXL", "XL", "M", "L", "S"):  # XXL antes de XL
         if key in t:
             return key
     # Numeric (31, 32, 33, 34 → L equivalent)
@@ -130,10 +130,12 @@ def calcular_score(item: dict) -> dict:
         exclusoes.append("sem_listra_sundek")
     if tam_key == "S" and tamanho.strip().upper().startswith("XS"):
         exclusoes.append("tamanho_XS")
-    # Tamanho numérico fora de 31-34 sem elástico = exclusão (doc 1.2)
+    if tam_key == "XXL":
+        exclusoes.append("tamanho_XXL")
+    # Tamanho numérico fora de 31-34 = exclusão sempre (vendedor pode mentir no campo tamanho)
     num = _tamanho_numerico(tamanho)
-    if num is not None and not tem_elastico and not (31 <= num <= 34):
-        exclusoes.append(f"tamanho_numerico_{num}_sem_elastico")
+    if num is not None and not (31 <= num <= 34):
+        exclusoes.append(f"tamanho_numerico_{num}")
 
     if exclusoes:
         return {
@@ -186,6 +188,15 @@ def calcular_score(item: dict) -> dict:
     else:
         decisao = "descartado"
         motivo = "score baixo"
+
+    # Override preço para elásticos: barato com elástico sempre vale olhar
+    if tem_elastico and preco and tier_final != "ruim":
+        if preco <= 9 and tier_final in ("boa", "muito_boa", "maravilhoso"):
+            decisao = "compravel"
+            motivo = "elástico + preço ≤ €9 + cor boa"
+        elif preco <= 14 and decisao == "descartado":
+            decisao = "medio"
+            motivo = "elástico + preço ≤ €14"
 
     return {
         "score": score,
