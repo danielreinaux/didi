@@ -22,7 +22,7 @@ SUNDEK = {
 # ---------- Vilebrequin ----------
 VILEBREQUIN = {
     "marca": "Vilebrequin",
-    "brand_id_vinted": None,    # descobrir depois
+    "brand_id_vinted": 99810,
     "preco_min": 40,
     "preco_max": 100,
     "tamanhos_aceitos": ["S", "M", "L", "XL"],
@@ -39,6 +39,7 @@ VINTED = {
     "home_url": "https://www.vinted.pt",
     "es_base_url": "https://www.vinted.es",
     "catalog_id_hombre": 5,
+    "catalog_id_banho_hombre": 2050,
 }
 
 # Quantos itens a coleta deve trazer por execução (por marca).
