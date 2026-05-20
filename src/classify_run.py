@@ -22,6 +22,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 from .classify import classificar_item
+from .classify_bolso import verificar_bolso
 from .classify_brand import verificar_sundek
 from .classify_color import classificar_cor
 from .classify_elastico import verificar_elastico
@@ -141,6 +142,26 @@ def _processar(item: dict, idx: str, total: int) -> tuple[dict, int, int]:
                 linha += " | ✗ cor ruim → skip elas/etiq"
                 _log(linha)
                 return {**item, "marca_check": marca, "classificacao": c, "cor": cor, "elastico": None, "etiqueta": None}, in_tok, out_tok
+
+            # 4b. Bolso traseiro (prompt dedicado, sobrescreve campos da etapa 3)
+            try:
+                bolso = verificar_bolso(item)
+                u = bolso.pop("_usage", {})
+                in_tok += u.get("prompt_tokens", 0)
+                out_tok += u.get("completion_tokens", 0)
+                # Sobrescreve os campos do prompt multi-uso (que estava alucinando)
+                c["tem_bolso_traseiro"] = bolso.get("tem_bolso")
+                c["bolso_traseiro_tem_nome"] = bolso.get("tem_nome")
+                c["bolso_evidencia"] = bolso.get("evidencia")
+                tag_bolso = (
+                    "bolso+nome" if bolso.get("tem_nome") is True
+                    else "bolso_só_logo" if bolso.get("tem_bolso") is True and bolso.get("tem_nome") is False
+                    else "sem_bolso" if bolso.get("tem_bolso") is False
+                    else "bolso?"
+                )
+                linha += f" | {tag_bolso}"
+            except Exception as e:
+                pass  # mantém o que veio do prompt multi-uso
 
             # 5. Elástico
             try:
