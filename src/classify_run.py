@@ -79,6 +79,19 @@ def _processar(item: dict, idx: str, total: int) -> tuple[dict, int, int]:
         u = marca.pop("_usage", {})
         in_tok += u.get("prompt_tokens", 0)
         out_tok += u.get("completion_tokens", 0)
+
+        # Double-check: mini tem falsos negativos de marca. Se disse "não-Sundek"
+        # mas o título contém "sundek", re-verifica com gpt-4o.
+        titulo_lower = (item.get("titulo") or "").lower()
+        if marca.get("e_sundek") == "nao" and "sundek" in titulo_lower:
+            from .config import IA as _IA
+            marca_4o = verificar_sundek(item, model=_IA["model_detalhes"])
+            u = marca_4o.pop("_usage", {})
+            in_tok += u.get("prompt_tokens", 0)
+            out_tok += u.get("completion_tokens", 0)
+            if marca_4o.get("e_sundek") != "nao":
+                marca_4o["evidencia"] = "[double-check gpt-4o] " + (marca_4o.get("evidencia") or "")
+                marca = marca_4o
     except Exception as e:
         marca = {"e_sundek": "indefinido", "evidencia": f"erro: {e}", "confianca": 0}
 

@@ -20,18 +20,19 @@ def _get_client() -> OpenAI:
     return _client
 
 
-def verificar_sundek(item: dict) -> dict:
+def verificar_sundek(item: dict, model: str | None = None) -> dict:
     fotos = (item.get("fotos") or [])[:5]
     if not fotos:
         return {"e_sundek": "indefinido", "evidencia": "sem fotos", "confianca": 0}
 
+    detail = "high" if model == IA["model_detalhes"] else "auto"
     conteudo = [
         {"type": "text", "text": prompt.usuario(item.get("titulo") or "")},
-        *[{"type": "image_url", "image_url": {"url": u, "detail": "auto"}} for u in fotos],
+        *[{"type": "image_url", "image_url": {"url": u, "detail": detail}} for u in fotos],
     ]
 
     resp = _get_client().chat.completions.create(
-        model=IA["model"],
+        model=model or IA["model"],
         messages=[
             {"role": "system", "content": prompt.SISTEMA},
             {"role": "user", "content": conteudo},

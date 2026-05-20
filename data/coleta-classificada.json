@@ -22238,22 +22238,34 @@
     },
     "coletado_em": "2026-05-19T02:50:05.009443+00:00",
     "marca_check": {
-      "e_sundek": "nao",
-      "marca_identificada": "Follow the Sun",
+      "e_sundek": "sim",
+      "marca_identificada": null,
       "e_short": "sim",
       "formato_identificado": "short",
-      "evidencia": "A peça possui a etiqueta 'Follow the Sun' visível na cintura, indicando que não é da marca Sundek."
+      "evidencia": "[double-check gpt-4o] Logo Sundek visível no bolso traseiro. Peça com pernas separadas e comprimento de short."
     },
     "classificacao": {
-      "tipo": "nao_sundek",
-      "motivo": "Follow the Sun",
-      "confianca": 1
+      "tipo": "estampado",
+      "cor_principal": "branco",
+      "tem_listra_lateral_sundek": false,
+      "cores_listras": [],
+      "listra_na_frente": false,
+      "tem_bolso_traseiro": true,
+      "bolso_traseiro_tem_nome": false,
+      "tem_logo_grande": false,
+      "corpo_tem_padrao_repetido": true,
+      "bicolor": false,
+      "aparencia": "ok",
+      "tecido_brilhoso": false,
+      "tem_bolso_frontal": false,
+      "justificativa": "Corpo do short com padrão gráfico repetido floral.",
+      "e_piping": false
     },
     "score": {
       "score": 0,
       "teto": 0,
       "decisao": "descartado",
-      "motivo_exclusao": "nao_sundek, cor_ruim",
+      "motivo_exclusao": "estampado, cor_ruim, bolso_so_logo_colecao_antiga",
       "breakdown": {}
     }
   },
@@ -32662,7 +32674,19 @@
     "marca": "",
     "tamanho": "M",
     "estado": "Muy bueno",
-    "cor": "Azul",
+    "cor": {
+      "cor_principal": "Azul médio",
+      "tier": "boa",
+      "justificativa": "É um azul 'de praia' normal, não elétrico.",
+      "cores_listras": [
+        "verde",
+        "laranja",
+        "vermelho"
+      ],
+      "listra_tier": "neutra",
+      "tier_final": "boa",
+      "combo_motivo": "listras ['verde', 'laranja', 'vermelho'] confirmam tier 'boa'"
+    },
     "upload": "hace 2 días",
     "envio": "desde 2,88 €",
     "preco": "22,00 €",
@@ -32688,23 +32712,48 @@
     },
     "coletado_em": "2026-05-19T03:04:30.669573+00:00",
     "marca_check": {
-      "e_sundek": "nao",
-      "marca_identificada": "Undefeated",
+      "e_sundek": "sim",
       "e_short": "sim",
-      "formato_identificado": "short",
-      "evidencia": "Etiqueta interna visível com a marca 'Undefeated'."
+      "evidencia": "re-confirmado gpt-4o (mini alucinou Undefeated)"
     },
     "classificacao": {
-      "tipo": "nao_sundek",
-      "motivo": "Undefeated",
-      "confianca": 1
+      "tipo": "liso",
+      "cor_principal": "azul",
+      "tem_listra_lateral_sundek": true,
+      "cores_listras": [
+        "verde",
+        "laranja",
+        "vermelho"
+      ],
+      "listra_na_frente": false,
+      "tem_bolso_traseiro": true,
+      "bolso_traseiro_tem_nome": false,
+      "tem_logo_grande": false,
+      "corpo_tem_padrao_repetido": false,
+      "bicolor": false,
+      "aparencia": "ok",
+      "tecido_brilhoso": false,
+      "tem_bolso_frontal": false,
+      "justificativa": "Short com listras laterais no painel traseiro.",
+      "e_piping": false,
+      "listra_evidencia": "Três faixas paralelas de cores distintas (verde, laranja, vermelho) no painel traseiro/lateral.",
+      "bolso_evidencia": "O short tem um bolso traseiro visível com um patch que mostra apenas o logo Sundek (sol/montanha) sem a palavra 'SUNDEK' escrita."
     },
     "score": {
       "score": 0,
       "teto": 0,
       "decisao": "descartado",
-      "motivo_exclusao": "nao_sundek, cor_ruim",
+      "motivo_exclusao": "bolso_so_logo_colecao_antiga",
       "breakdown": {}
+    },
+    "elastico": {
+      "tem_elastico": false,
+      "tipo_fechamento": "cordao",
+      "evidencia": "Cós plano com cordão visível, sem sinais de elástico comprimido. Não há botão ou velcro no fly."
+    },
+    "etiqueta": {
+      "tem_etiqueta": false,
+      "evidencia": "Não há hang tag visível nas fotos, apenas etiquetas costuradas internamente."
     }
   },
   {
@@ -37328,22 +37377,34 @@
     },
     "coletado_em": "2026-05-19T03:11:13.916603+00:00",
     "marca_check": {
-      "e_sundek": "nao",
+      "e_sundek": "indefinido",
       "marca_identificada": null,
       "e_short": "sim",
       "formato_identificado": "short",
-      "evidencia": "Não há evidências visíveis da marca Sundek, mas a peça é um short com comprimento e pernas separadas."
+      "evidencia": "[double-check gpt-4o] Peça com comprimento até meio da coxa e pernas separadas, mas sem evidências visíveis da marca Sundek."
     },
     "classificacao": {
-      "tipo": "nao_sundek",
-      "motivo": "outra marca",
-      "confianca": 1
+      "tipo": "estampado",
+      "cor_principal": "azul",
+      "tem_listra_lateral_sundek": false,
+      "cores_listras": [],
+      "listra_na_frente": false,
+      "tem_bolso_traseiro": true,
+      "bolso_traseiro_tem_nome": null,
+      "tem_logo_grande": false,
+      "corpo_tem_padrao_repetido": true,
+      "bicolor": false,
+      "aparencia": "ok",
+      "tecido_brilhoso": false,
+      "tem_bolso_frontal": false,
+      "justificativa": "Corpo do short com padrão gráfico repetido.",
+      "e_piping": false
     },
     "score": {
       "score": 0,
       "teto": 0,
       "decisao": "descartado",
-      "motivo_exclusao": "nao_sundek, cor_ruim",
+      "motivo_exclusao": "estampado, cor_ruim",
       "breakdown": {}
     }
   },
@@ -52143,22 +52204,34 @@
     },
     "coletado_em": "2026-05-19T03:36:09.187735+00:00",
     "marca_check": {
-      "e_sundek": "nao",
+      "e_sundek": "indefinido",
       "marca_identificada": null,
       "e_short": "sim",
       "formato_identificado": "short",
-      "evidencia": "Não há evidências visíveis da marca Sundek, mas a peça é um short com comprimento e formato adequados."
+      "evidencia": "[double-check gpt-4o] Peça com comprimento até meio da coxa, pernas separadas e largas, elástico na cintura. Nenhuma evidência visível da marca Sundek nas imagens."
     },
     "classificacao": {
-      "tipo": "nao_sundek",
-      "motivo": "outra marca",
-      "confianca": 1
+      "tipo": "estampado",
+      "cor_principal": "laranja",
+      "tem_listra_lateral_sundek": false,
+      "cores_listras": [],
+      "listra_na_frente": false,
+      "tem_bolso_traseiro": false,
+      "bolso_traseiro_tem_nome": null,
+      "tem_logo_grande": false,
+      "corpo_tem_padrao_repetido": true,
+      "bicolor": false,
+      "aparencia": "ok",
+      "tecido_brilhoso": false,
+      "tem_bolso_frontal": true,
+      "justificativa": "Corpo com padrão gráfico repetido de palmeiras.",
+      "e_piping": false
     },
     "score": {
       "score": 0,
       "teto": 0,
       "decisao": "descartado",
-      "motivo_exclusao": "nao_sundek, cor_ruim",
+      "motivo_exclusao": "estampado, cor_ruim, bolso_frontal, sem_bolso_traseiro",
       "breakdown": {}
     }
   },
