@@ -31,8 +31,9 @@ def verificar_etiqueta(item: dict) -> dict:
         *[{"type": "image_url", "image_url": {"url": u, "detail": "low"}} for u in fotos],
     ]
 
+    # gpt-4o-mini — teste mostrou 97% concordância com gpt-4o (estratégia conservadora)
     resp = _get_client().chat.completions.create(
-        model=IA["model_detalhes"],
+        model=IA["model"],
         messages=[
             {"role": "system", "content": prompt.SISTEMA},
             {"role": "user", "content": conteudo_usuario},
