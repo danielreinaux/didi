@@ -44,28 +44,59 @@ modelo curto, modelo elástico, boxer mare) NÃO têm bolso traseiro. Olhe a fot
 PERGUNTA 2 — PATCH DO BOLSO TEM O NOME "SUNDEK"? (tem_nome = true|false|null)
 
 ⚠️ Só responda baseado no PATCH EXTERNO do BOLSO TRASEIRO. NÃO use a etiqueta interna como evidência.
-
 Só responda esta pergunta se tem_bolso = true. Caso contrário, tem_nome = null.
 
-O patch externo costurado SOBRE O BOLSO TRASEIRO pode ter:
-  - SÓ o LOGO (sol/montanha em laranja sobre fundo preto, SEM TEXTO) — coleção ANTIGA → tem_nome = false
-  - LOGO + a palavra "SUNDEK" bordada/impressa ao lado ou dentro do patch — coleção MODERNA → tem_nome = true
+REGRA: o patch precisa ter o SOL + a palavra "SUNDEK" escrita. Só o sol não basta.
 
-ATENÇÃO: você precisa LER a palavra "SUNDEK" diretamente no patch externo costurado no
-bolso traseiro. Se você vê só o ícone gráfico (sol/montanha) sem texto NO PATCH DO BOLSO,
-é tem_nome = false — mesmo que exista "SUNDEK" escrito na etiqueta interna ou em outro
-lugar do short.
+═══════════════════════════════════════════════════════════════════════
+ONDE PROCURAR A PALAVRA "SUNDEK" NO PATCH:
+═══════════════════════════════════════════════════════════════════════
 
-Se não vê o patch do bolso com nitidez suficiente para confirmar se há texto, tem_nome = null.
+O patch padrão do bolso traseiro Sundek tem formato de MEIO-CÍRCULO (semicírculo,
+"sol nascente"). Dentro dele há o desenho de um SOL com raios/ondas estilizados.
+
+Quando existe, a palavra "SUNDEK" aparece em LETRAS PEQUENAS formando um ARCO na
+BORDA INFERIOR do semicírculo, logo abaixo do desenho do sol.
+
+⚠️ SUA TAREFA: olhe ESPECIFICAMENTE a faixa inferior do patch (a borda de baixo do
+meio-círculo, abaixo do sol). Há LETRAS visíveis ali formando a palavra "SUNDEK"?
+
+Existem patches meio-sol COM o nome e patches meio-sol SEM o nome — você precisa
+julgar caso a caso o que está realmente visível.
+
+REGRA DE DESEMPATE — só existem dois resultados práticos: true ou null.
+Use false APENAS num caso muito específico (explicado abaixo).
+
+  - tem_nome = true → você CONSEGUE VER/distinguir letras na faixa inferior do patch.
+    Não precisa soletrar — basta perceber que há uma faixa de texto/letras ali,
+    mesmo que pequena.
+
+  - tem_nome = null → você NÃO consegue confirmar com clareza se há letras. Isso
+    inclui (e é o caso MAIS COMUM):
+      • patch MONOCROMÁTICO / tom-sobre-tom — o patch é de uma cor só e qualquer
+        texto seria da mesma cor (bordado em relevo, sem contraste). Você NÃO
+        consegue afirmar se há ou não letras → null.
+      • patch pequeno, borrado, com sombra, foto de longe, baixo contraste.
+      • qualquer situação em que você ficaria em dúvida.
+    Na ESMAGADORA MAIORIA dos casos difíceis, a resposta correta é null.
+
+  - tem_nome = false → APENAS quando o patch está GRANDE, NÍTIDO, com BOM CONTRASTE,
+    e você vê inequivocamente que a faixa inferior é lisa, sem nenhuma letra. Se há
+    QUALQUER chance de existir texto tom-sobre-tom que você não conseguiria ver,
+    NÃO use false — use null.
+
+IMPORTANTE: false EXCLUI o produto da venda. null NÃO exclui (segue para revisão
+humana). Errar para null é seguro; errar para false descarta um item bom.
+Patch monocromático SEMPRE → null, nunca false (você não tem como saber).
 
 EXEMPLOS:
-  - Short com vista traseira mostrando bolso direito com patch preto contendo só o sol Sundek
-    laranja, sem texto no patch: tem_bolso=true, tem_nome=false (coleção antiga)
-  - Short com bolso traseiro mostrando patch preto com sol Sundek + palavra "SUNDEK" escrita
-    ao lado: tem_bolso=true, tem_nome=true (coleção moderna)
-  - Short feminino curto com vista traseira lisa sem bolso visível: tem_bolso=false
-  - Fotos só mostram detalhe da etiqueta interna do cós com "SUNDEK", mas nenhuma vista
-    completa da parte de trás do short: tem_bolso=null, tem_nome=null
+  - Letras "SUNDEK" distinguíveis (faixa de contraste) abaixo do sol: tem_nome=true
+  - Patch amarelo/verde monocromático, sol visível, texto seria da mesma cor —
+    não dá pra confirmar: tem_nome=null  (NUNCA false)
+  - Patch pequeno rosa, texto não distinguível: tem_nome=null
+  - Patch grande, nítido, alto contraste, faixa inferior comprovadamente lisa:
+    tem_nome=false
+  - Vista traseira lisa sem bolso: tem_bolso=false, tem_nome=null
 
 Responda APENAS com JSON válido (sem cercas, sem texto extra):
 

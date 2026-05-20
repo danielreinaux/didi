@@ -5,6 +5,7 @@ import os
 from openai import OpenAI
 
 from .config import IA
+from .crop_bolso import recortar_bolso
 from .prompts import bolso_traseiro as prompt
 
 _client: OpenAI | None = None
@@ -26,10 +27,18 @@ def verificar_bolso(item: dict) -> dict:
     if not fotos:
         return {"tem_bolso": None, "tem_nome": None, "evidencia": "sem fotos"}
 
-    conteudo = [
-        {"type": "text", "text": prompt.usuario(item.get("titulo") or "")},
-        *[{"type": "image_url", "image_url": {"url": u, "detail": "low"}} for u in fotos],
-    ]
+    # Recorta e amplia o bolso traseiro — o patch é minúsculo na foto inteira,
+    # então mandamos um zoom dedicado pro modelo conseguir ler o texto.
+    crop_info = recortar_bolso(item)
+    crop_url = crop_info.get("crop")
+
+    conteudo = [{"type": "text", "text": prompt.usuario(item.get("titulo") or "")}]
+    if crop_url:
+        conteudo.append({"type": "text", "text": "ZOOM do bolso traseiro (use esta para ler o patch):"})
+        conteudo.append({"type": "image_url", "image_url": {"url": crop_url, "detail": "high"}})
+        conteudo.append({"type": "text", "text": "Fotos gerais do short (contexto):"})
+    # detail=high: ler a palavra "SUNDEK" no patch exige resolução (texto pequeno)
+    conteudo += [{"type": "image_url", "image_url": {"url": u, "detail": "high"}} for u in fotos]
 
     # gpt-4o porque a decisão é crítica para exclusão e o detalhe do patch é sutil
     resp = _get_client().chat.completions.create(
