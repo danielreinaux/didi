@@ -82,15 +82,17 @@ def _processar(item: dict, idx: str, total: int) -> tuple[dict, int, int]:
     except Exception as e:
         marca = {"e_sundek": "indefinido", "evidencia": f"erro: {e}", "confianca": 0}
 
-    if marca.get("e_sundek") == "nao":
-        m = marca.get("marca_identificada") or "outra marca"
-        _log(f"{prefix} → × NAO-SUNDEK [{m}]")
-        return {**item, "marca_check": marca, "classificacao": {"tipo": "nao_sundek", "motivo": m, "confianca": marca.get("confianca", 1)}}, in_tok, out_tok
-
+    # Checa formato ANTES da marca: o modelo confunde "não é short" com "não é Sundek".
+    # Uma camiseta/regata Sundek deve cair em nao_short, não em nao_sundek.
     if marca.get("e_short") == "nao":
         f = marca.get("formato_identificado") or "outro"
         _log(f"{prefix} → × NAO-SHORT-VISUAL [{f}]")
-        return {**item, "marca_check": marca, "classificacao": {"tipo": "nao_short", "motivo": f"vision: {f}", "confianca": marca.get("confianca", 1)}}, in_tok, out_tok
+        return {**item, "marca_check": marca, "classificacao": {"tipo": "nao_short", "motivo": f"vision: {f}"}}, in_tok, out_tok
+
+    if marca.get("e_sundek") == "nao":
+        m = marca.get("marca_identificada") or "outra marca"
+        _log(f"{prefix} → × NAO-SUNDEK [{m}]")
+        return {**item, "marca_check": marca, "classificacao": {"tipo": "nao_sundek", "motivo": m}}, in_tok, out_tok
 
     # 3. Liso/estampado
     try:
