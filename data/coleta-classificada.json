@@ -242,7 +242,7 @@
       "tecido_brilhoso": false,
       "tem_bolso_frontal": false,
       "justificativa": "Short liso com listra lateral Sundek.",
-      "bolso_evidencia": "A vista traseira do short mostra um bolso com um patch que tem o logo Sundek e a palavra 'SUNDEK' escrita."
+      "bolso_evidencia": "O short tem um bolso traseiro visível com um patch que contém o logo Sundek e a palavra 'SUNDEK' escrita."
     },
     "elastico": {
       "tem_elastico": true,
@@ -2459,7 +2459,7 @@
       "justificativa": "Short com listra traseira Sundek e bolso traseiro visível.",
       "confianca": null,
       "_model": "gpt-4o",
-      "bolso_evidencia": "Bolso traseiro visível com patch contendo o logo Sundek e a palavra 'SUNDEK' escrita."
+      "bolso_evidencia": "O short tem um bolso traseiro visível com um patch que possui o logo Sundek e a palavra 'SUNDEK' escrita."
     },
     "elastico": {
       "tem_elastico": true,
@@ -13758,7 +13758,7 @@
       "tecido_brilhoso": false,
       "tem_bolso_frontal": false,
       "justificativa": "Short com listra traseira Sundek e bolso traseiro visível.",
-      "bolso_evidencia": "O short tem um bolso traseiro visível com um patch que contém o logo Sundek e a palavra 'SUNDEK' escrita."
+      "bolso_evidencia": "Bolso traseiro visível com patch contendo o logo Sundek e a palavra 'SUNDEK' escrita."
     },
     "elastico": {
       "tem_elastico": false,
@@ -17177,7 +17177,7 @@
       ],
       "listra_na_frente": false,
       "tem_bolso_traseiro": true,
-      "bolso_traseiro_tem_nome": true,
+      "bolso_traseiro_tem_nome": false,
       "cordao_fino": true,
       "tem_logo_grande": false,
       "corpo_tem_padrao_repetido": false,
@@ -17185,7 +17185,8 @@
       "aparencia": "ok",
       "tecido_brilhoso": false,
       "tem_bolso_frontal": false,
-      "justificativa": "Short com listra traseira Sundek e bolso traseiro visível."
+      "justificativa": "Short com listra traseira Sundek e bolso traseiro visível.",
+      "bolso_evidencia": "A vista traseira do short mostra um bolso com um patch preto contendo apenas o logo Sundek em laranja, sem texto."
     },
     "elastico": {
       "tem_elastico": false,
@@ -17197,20 +17198,11 @@
       "evidencia": "Não há etiqueta de papel/papelão pendente visível nas imagens."
     },
     "score": {
-      "score": 49,
-      "teto": 27,
-      "preco_num": 9.0,
-      "decisao": "medio",
-      "motivo": "tentar barganha",
-      "breakdown": {
-        "tier": 30,
-        "tamanho": 4,
-        "elastico": -15,
-        "etiqueta": 0,
-        "listra_bonus": 0,
-        "preco": 30,
-        "ratio_preco_teto": 0.33
-      }
+      "score": 0,
+      "teto": 0,
+      "decisao": "descartado",
+      "motivo_exclusao": "bolso_so_logo_colecao_antiga",
+      "breakdown": {}
     }
   },
   {
@@ -21293,7 +21285,7 @@
       "tecido_brilhoso": false,
       "tem_bolso_frontal": false,
       "justificativa": "Short com listra traseira Sundek e bolso traseiro visível.",
-      "bolso_evidencia": "O short tem um bolso traseiro visível com um patch azul que contém a palavra 'SUNDEK' escrita."
+      "bolso_evidencia": "Bolso traseiro visível na parte direita com patch azul contendo a palavra 'SUNDEK' escrita."
     },
     "elastico": {
       "tem_elastico": true,
@@ -24912,7 +24904,7 @@
       "tecido_brilhoso": false,
       "tem_bolso_frontal": false,
       "justificativa": "Short com listra traseira Sundek e bolso traseiro visível.",
-      "bolso_evidencia": "A vista traseira do short mostra um bolso com um patch que tem o logo Sundek e a palavra 'SUNDEK' escrita."
+      "bolso_evidencia": "A vista traseira do short mostra um bolso com um patch verde contendo o logo Sundek e a palavra 'SUNDEK' escrita."
     },
     "elastico": {
       "tem_elastico": false,
@@ -27161,7 +27153,7 @@
       "tecido_brilhoso": false,
       "tem_bolso_frontal": false,
       "justificativa": "Short com listra traseira e bolso traseiro visível.",
-      "bolso_evidencia": "A vista traseira do short mostra um bolso com um patch azul costurado sobre ele, contendo o logo Sundek e a palavra 'SUNDEK' escrita."
+      "bolso_evidencia": "A vista traseira do short mostra um bolso com um patch azul contendo o logo Sundek e a palavra 'SUNDEK' escrita."
     },
     "elastico": {
       "tem_elastico": false,
@@ -28056,11 +28048,12 @@
       "cor_principal": "azul",
       "tem_listra_lateral_sundek": true,
       "cores_listras": [
-        "branco",
-        "rosa"
+        "rosa",
+        "roxo",
+        "branco"
       ],
       "listra_na_frente": false,
-      "tem_bolso_traseiro": null,
+      "tem_bolso_traseiro": false,
       "bolso_traseiro_tem_nome": null,
       "cordao_fino": true,
       "tem_logo_grande": false,
@@ -28069,7 +28062,8 @@
       "aparencia": "ok",
       "tecido_brilhoso": false,
       "tem_bolso_frontal": false,
-      "justificativa": "Short com listra lateral Sundek e cor sólida."
+      "justificativa": "Short com listra lateral Sundek e cor sólida.",
+      "bolso_evidencia": "A vista traseira do short é lisa, sem bolso visível."
     },
     "elastico": {
       "tem_elastico": true,
@@ -28081,20 +28075,11 @@
       "evidencia": "Não há etiqueta de papel ou papelão pendente visível nas fotos."
     },
     "score": {
-      "score": 95,
-      "teto": 45,
-      "preco_num": 6.0,
-      "decisao": "compravel",
-      "motivo": "elástico + preço ≤ €9 + cor boa",
-      "breakdown": {
-        "tier": 30,
-        "tamanho": 20,
-        "elastico": 15,
-        "etiqueta": 0,
-        "listra_bonus": 0,
-        "preco": 30,
-        "ratio_preco_teto": 0.13
-      }
+      "score": 0,
+      "teto": 0,
+      "decisao": "descartado",
+      "motivo_exclusao": "sem_bolso_traseiro",
+      "breakdown": {}
     }
   },
   {
@@ -30556,7 +30541,7 @@
       "tecido_brilhoso": false,
       "tem_bolso_frontal": false,
       "justificativa": "Short com listra traseira e bolso traseiro visível.",
-      "bolso_evidencia": "O short tem um bolso traseiro visível com um patch preto contendo o logo Sundek e a palavra 'SUNDEK' escrita."
+      "bolso_evidencia": "A vista traseira do short mostra um bolso com um patch azul contendo o logo Sundek e a palavra 'SUNDEK' escrita."
     },
     "elastico": {
       "tem_elastico": false,
@@ -55656,7 +55641,7 @@
       "tecido_brilhoso": false,
       "tem_bolso_frontal": false,
       "justificativa": "Short com listra traseira e bolso traseiro visível.",
-      "bolso_evidencia": "O short tem um bolso traseiro visível com um patch azul costurado sobre ele, contendo o logo Sundek e a palavra 'SUNDEK' escrita."
+      "bolso_evidencia": "Bolso traseiro visível com patch azul contendo o logo Sundek e a palavra 'SUNDEK' escrita."
     },
     "elastico": {
       "tem_elastico": false,
@@ -58250,7 +58235,7 @@
       "justificativa": "Short com listra lateral e bolso traseiro visível.",
       "confianca": null,
       "_model": "gpt-4o",
-      "bolso_evidencia": "Bolso traseiro visível na parte direita com patch verde contendo o logo Sundek e a palavra 'SUNDEK'."
+      "bolso_evidencia": "Bolso traseiro visível na parte direita com patch verde contendo o logo Sundek e a palavra 'SUNDEK' escrita."
     },
     "elastico": {
       "tem_elastico": true,
