@@ -64,39 +64,22 @@ meio-círculo, abaixo do sol). Há LETRAS visíveis ali formando a palavra "SUND
 Existem patches meio-sol COM o nome e patches meio-sol SEM o nome — você precisa
 julgar caso a caso o que está realmente visível.
 
-REGRA DE DESEMPATE — só existem dois resultados práticos: true ou null.
-Use false APENAS num caso muito específico (explicado abaixo).
+REGRA DE DESEMPATE:
 
-  - tem_nome = true → você CONSEGUE VER/distinguir letras na faixa inferior do patch.
-    Não precisa soletrar — basta perceber que há uma faixa de texto/letras ali,
-    mesmo que pequena.
+  - tem_nome = true → você CONSEGUE VER/distinguir letras na faixa inferior do patch
+    formando "SUNDEK". Não precisa soletrar — basta perceber que há uma faixa de
+    texto/letras ali, mesmo pequena.
 
-  - tem_nome = null → você NÃO consegue confirmar com clareza se há letras. Isso
-    inclui (e é o caso MAIS COMUM):
-      • patch MONOCROMÁTICO / tom-sobre-tom — o patch é de uma cor só e qualquer
-        texto seria da mesma cor (bordado em relevo, sem contraste). Você NÃO
-        consegue afirmar se há ou não letras → null.
-      • patch pequeno, borrado, com sombra, foto de longe, baixo contraste.
-      • qualquer situação em que você ficaria em dúvida.
-    Na ESMAGADORA MAIORIA dos casos difíceis, a resposta correta é null.
+  - tem_nome = false → você NÃO consegue ver letras na faixa inferior do patch.
+    O patch parece ter só o desenho do sol, sem texto distinguível.
 
-  - tem_nome = false → APENAS quando o patch está GRANDE, NÍTIDO, com BOM CONTRASTE,
-    e você vê inequivocamente que a faixa inferior é lisa, sem nenhuma letra. Se há
-    QUALQUER chance de existir texto tom-sobre-tom que você não conseguiria ver,
-    NÃO use false — use null.
-
-IMPORTANTE: false EXCLUI o produto da venda. null NÃO exclui (segue para revisão
-humana). Errar para null é seguro; errar para false descarta um item bom.
-Patch monocromático SEMPRE → null, nunca false (você não tem como saber).
+  - tem_nome = null → APENAS quando você não consegue ver o patch de jeito nenhum
+    (foto não mostra a parte traseira, patch totalmente fora de quadro).
 
 EXEMPLOS:
-  - Letras "SUNDEK" distinguíveis (faixa de contraste) abaixo do sol: tem_nome=true
-  - Patch amarelo/verde monocromático, sol visível, texto seria da mesma cor —
-    não dá pra confirmar: tem_nome=null  (NUNCA false)
-  - Patch pequeno rosa, texto não distinguível: tem_nome=null
-  - Patch grande, nítido, alto contraste, faixa inferior comprovadamente lisa:
-    tem_nome=false
-  - Vista traseira lisa sem bolso: tem_bolso=false, tem_nome=null
+  - Letras "SUNDEK" distinguíveis abaixo do sol: tem_nome=true
+  - Patch com sol mas sem letras visíveis na faixa inferior: tem_nome=false
+  - Nenhuma vista do bolso/patch nas fotos: tem_bolso=false ou null, tem_nome=null
 
 Responda APENAS com JSON válido (sem cercas, sem texto extra):
 
