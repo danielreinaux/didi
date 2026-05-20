@@ -118,9 +118,6 @@ def _processar(item: dict, idx: str, total: int) -> tuple[dict, int, int]:
         if c.get("aparencia") == "desbotado":
             c["tipo_original"] = tipo_original
             c["tipo"] = "desbotado"
-        elif tipo_original == "liso" and not c.get("tem_listra_lateral_sundek"):
-            c["tipo_original"] = tipo_original
-            c["tipo"] = "liso_sem_listra"
 
         tipo = c.get("tipo")
         tag = (
@@ -128,7 +125,6 @@ def _processar(item: dict, idx: str, total: int) -> tuple[dict, int, int]:
             else "✗ EST" if tipo == "estampado"
             else "✗ LOGO" if tipo == "logo_grande"
             else "✗ DESB" if tipo == "desbotado"
-            else "✗ S/LIS" if tipo == "liso_sem_listra"
             else "? IND"
         )
         linha = f"{prefix} → {tag}"
@@ -323,7 +319,6 @@ def main() -> None:
     print(f"    Boa:           {cnt_cor('boa')}")
     print(f"    Ok:            {cnt_cor('ok')}")
     print(f"    Ruim:          {cnt_cor('ruim')}")
-    print(f"  Liso sem listra: {cnt_tipo('liso_sem_listra')}")
     print(f"  Desbotados:      {cnt_tipo('desbotado')}")
     print(f"  Logo grande:     {cnt_tipo('logo_grande')}")
     print(f"  Estampados:      {cnt_tipo('estampado')}")
