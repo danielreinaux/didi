@@ -132,9 +132,6 @@ def calcular_score(item: dict) -> dict:
     # Bolso traseiro só com logo (sem nome SUNDEK) = coleção antiga, exclui
     if tem_bolso_traseiro is True and cl.get("bolso_traseiro_tem_nome") is False:
         exclusoes.append("bolso_so_logo_colecao_antiga")
-    # Cordão fino = coleção antiga, exclui
-    if cl.get("cordao_fino") is True:
-        exclusoes.append("cordao_fino_colecao_antiga")
     if tipo == "liso" and cl.get("tem_listra_lateral_sundek") is False:
         exclusoes.append("sem_listra_sundek")
     # Heurística: listra Sundek real é multi-color. Listra de cor única = quase sempre piping
