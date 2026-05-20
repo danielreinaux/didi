@@ -102,11 +102,13 @@
       "tier": "ruim",
       "justificativa": "Cor fucsia é considerada fluorescente e sem apelo de mercado.",
       "cores_listras": [
+        "laranja",
+        "laranja",
         "laranja"
       ],
       "listra_tier": "neutra",
       "tier_final": "ruim",
-      "combo_motivo": "listras ['laranja'] confirmam tier 'ruim'"
+      "combo_motivo": "listras ['laranja', 'laranja', 'laranja'] confirmam tier 'ruim'"
     },
     "upload": "hace 6 horas",
     "envio": "desde 2,99 €",
@@ -143,8 +145,10 @@
     "classificacao": {
       "tipo": "liso",
       "cor_principal": "rosa",
-      "tem_listra_lateral_sundek": true,
+      "tem_listra_lateral_sundek": false,
       "cores_listras": [
+        "laranja",
+        "laranja",
         "laranja"
       ],
       "listra_na_frente": false,
@@ -158,7 +162,9 @@
       "tecido_brilhoso": false,
       "tem_bolso_frontal": false,
       "justificativa": "Short com listra lateral e bolso traseiro.",
-      "bolso_evidencia": "O short tem um bolso traseiro visível com um patch preto contendo apenas o logo Sundek (sol/montanha) sem texto."
+      "bolso_evidencia": "O short tem um bolso traseiro visível com um patch preto contendo apenas o logo Sundek (sol/montanha) sem texto.",
+      "e_piping": true,
+      "listra_evidencia": "Três faixas paralelas da mesma cor laranja no painel traseiro/lateral."
     },
     "elastico": null,
     "etiqueta": null,
@@ -166,7 +172,7 @@
       "score": 0,
       "teto": 0,
       "decisao": "descartado",
-      "motivo_exclusao": "cor_ruim, bolso_so_logo_colecao_antiga, listra_unica_cor_piping",
+      "motivo_exclusao": "cor_ruim, bolso_so_logo_colecao_antiga, sem_listra_sundek, piping_nao_e_listra_sundek",
       "breakdown": {}
     }
   },
@@ -184,12 +190,12 @@
       "justificativa": "Cor laranja é aceitável, desde que não seja neon.",
       "cores_listras": [
         "azul",
-        "branco",
-        "amarelo"
+        "amarelo",
+        "branco"
       ],
       "listra_tier": "salva",
       "tier_final": "boa",
-      "combo_motivo": "listras ['azul', 'branco', 'amarelo'] neutras salvam 'Laranja': ok→boa"
+      "combo_motivo": "listras ['azul', 'amarelo', 'branco'] neutras salvam 'Laranja': ok→boa"
     },
     "upload": "hace un día",
     "envio": "desde 2,99 €",
@@ -228,8 +234,8 @@
       "tem_listra_lateral_sundek": true,
       "cores_listras": [
         "azul",
-        "branco",
-        "amarelo"
+        "amarelo",
+        "branco"
       ],
       "listra_na_frente": false,
       "tem_bolso_traseiro": true,
@@ -242,7 +248,9 @@
       "tecido_brilhoso": false,
       "tem_bolso_frontal": false,
       "justificativa": "Short liso com listra lateral Sundek.",
-      "bolso_evidencia": "O short tem um bolso traseiro visível com um patch que contém o logo Sundek e a palavra 'SUNDEK' escrita."
+      "bolso_evidencia": "O short tem um bolso traseiro visível com um patch que contém o logo Sundek e a palavra 'SUNDEK' escrita.",
+      "e_piping": false,
+      "listra_evidencia": "Três faixas paralelas de cores distintas (azul, amarelo, branco) no painel traseiro/lateral."
     },
     "elastico": {
       "tem_elastico": true,
@@ -2459,7 +2467,9 @@
       "justificativa": "Short com listra traseira Sundek e bolso traseiro visível.",
       "confianca": null,
       "_model": "gpt-4o",
-      "bolso_evidencia": "O short tem um bolso traseiro visível com um patch que possui o logo Sundek e a palavra 'SUNDEK' escrita."
+      "bolso_evidencia": "O short tem um bolso traseiro visível com um patch que possui o logo Sundek e a palavra 'SUNDEK' escrita.",
+      "e_piping": false,
+      "listra_evidencia": "Três faixas paralelas em cores distintas (vermelho, branco, azul) visíveis no painel traseiro/lateral."
     },
     "elastico": {
       "tem_elastico": true,
@@ -3211,11 +3221,12 @@
       "justificativa": "Cor branca é altamente procurada e tem máxima liquidez.",
       "cores_listras": [
         "preto",
-        "bege"
+        "dourado",
+        "cinza"
       ],
       "listra_tier": "neutra",
       "tier_final": "maravilhoso",
-      "combo_motivo": "listras ['preto', 'bege'] sem impacto no tier 'maravilhoso'"
+      "combo_motivo": "listras ['preto', 'dourado', 'cinza'] sem impacto no tier 'maravilhoso'"
     },
     "upload": "hace 11 horas",
     "envio": "desde 2,29 €",
@@ -3255,7 +3266,8 @@
       "tem_listra_lateral_sundek": true,
       "cores_listras": [
         "preto",
-        "bege"
+        "dourado",
+        "cinza"
       ],
       "listra_na_frente": false,
       "tem_bolso_traseiro": true,
@@ -3268,7 +3280,9 @@
       "tecido_brilhoso": false,
       "tem_bolso_frontal": false,
       "justificativa": "Short com listra traseira e bolso traseiro visível.",
-      "bolso_evidencia": "Bolso traseiro visível com patch preto contendo o logo Sundek e a palavra 'SUNDEK' escrita."
+      "bolso_evidencia": "Bolso traseiro visível com patch preto contendo o logo Sundek e a palavra 'SUNDEK' escrita.",
+      "e_piping": false,
+      "listra_evidencia": "Três faixas paralelas de cores diferentes (preto, dourado, cinza) no painel traseiro/lateral."
     },
     "elastico": {
       "tem_elastico": false,
@@ -3377,7 +3391,9 @@
       "tier": "ok",
       "justificativa": "Vermelho médio é classificado como 'ok', desde que não seja um tom berrante.",
       "cores_listras": [
-        "azul"
+        "azul claro",
+        "branco",
+        "cinza"
       ],
       "listra_tier": "penaliza",
       "tier_final": "ruim",
@@ -3417,7 +3433,9 @@
       "cor_principal": "vermelho",
       "tem_listra_lateral_sundek": true,
       "cores_listras": [
-        "azul"
+        "azul claro",
+        "branco",
+        "cinza"
       ],
       "listra_na_frente": false,
       "tem_bolso_traseiro": true,
@@ -3430,7 +3448,9 @@
       "tecido_brilhoso": false,
       "tem_bolso_frontal": true,
       "justificativa": "Short com listra lateral e bolso frontal.",
-      "bolso_evidencia": "Bolso traseiro visível com patch contendo apenas o logo Sundek sem a palavra 'SUNDEK'."
+      "bolso_evidencia": "Bolso traseiro visível com patch contendo apenas o logo Sundek sem a palavra 'SUNDEK'.",
+      "e_piping": false,
+      "listra_evidencia": "Três faixas paralelas de cores diferentes (azul claro, branco, cinza) no painel traseiro/lateral."
     },
     "elastico": null,
     "etiqueta": null,
@@ -3438,7 +3458,7 @@
       "score": 0,
       "teto": 0,
       "decisao": "descartado",
-      "motivo_exclusao": "cor_ruim, bolso_frontal, bolso_so_logo_colecao_antiga, listra_unica_cor_piping, tamanho_XS",
+      "motivo_exclusao": "cor_ruim, bolso_frontal, bolso_so_logo_colecao_antiga, tamanho_XS",
       "breakdown": {}
     }
   },
@@ -5609,11 +5629,13 @@
       "tier": "boa",
       "justificativa": "Azul médio é classificado como 'boa'.",
       "cores_listras": [
-        "laranja"
+        "vermelho",
+        "amarelo",
+        "verde"
       ],
       "listra_tier": "neutra",
       "tier_final": "boa",
-      "combo_motivo": "listras ['laranja'] confirmam tier 'boa'"
+      "combo_motivo": "listras ['vermelho', 'amarelo', 'verde'] confirmam tier 'boa'"
     },
     "upload": "hace 9 horas",
     "envio": "desde 2,99 €",
@@ -5650,7 +5672,9 @@
       "cor_principal": "azul",
       "tem_listra_lateral_sundek": true,
       "cores_listras": [
-        "laranja"
+        "vermelho",
+        "amarelo",
+        "verde"
       ],
       "listra_na_frente": false,
       "tem_bolso_traseiro": true,
@@ -5663,7 +5687,9 @@
       "tecido_brilhoso": false,
       "tem_bolso_frontal": false,
       "justificativa": "Short com listras laterais e bolso traseiro.",
-      "bolso_evidencia": "A vista traseira do short mostra um bolso com um patch laranja contendo apenas o logo Sundek sem a palavra 'SUNDEK' escrita."
+      "bolso_evidencia": "A vista traseira do short mostra um bolso com um patch laranja contendo apenas o logo Sundek sem a palavra 'SUNDEK' escrita.",
+      "e_piping": false,
+      "listra_evidencia": "Três faixas paralelas de cores distintas (vermelho, amarelo, verde) no painel lateral."
     },
     "elastico": {
       "tem_elastico": true,
@@ -5678,7 +5704,7 @@
       "score": 0,
       "teto": 0,
       "decisao": "descartado",
-      "motivo_exclusao": "bolso_so_logo_colecao_antiga, listra_unica_cor_piping",
+      "motivo_exclusao": "bolso_so_logo_colecao_antiga",
       "breakdown": {}
     }
   },
@@ -6111,11 +6137,12 @@
       "tier": "boa",
       "justificativa": "Cor aceita no mercado, com boa liquidez.",
       "cores_listras": [
+        "branco",
         "branco"
       ],
       "listra_tier": "salva",
       "tier_final": "boa",
-      "combo_motivo": "listras ['branco'] neutras salvam 'Verde escuro': boa→boa"
+      "combo_motivo": "listras ['branco', 'branco'] neutras salvam 'Verde escuro': boa→boa"
     },
     "upload": "hace un día",
     "envio": "desde 2,29 €",
@@ -6150,8 +6177,9 @@
     "classificacao": {
       "tipo": "liso",
       "cor_principal": "azul",
-      "tem_listra_lateral_sundek": true,
+      "tem_listra_lateral_sundek": false,
       "cores_listras": [
+        "branco",
         "branco"
       ],
       "listra_na_frente": false,
@@ -6165,7 +6193,9 @@
       "tecido_brilhoso": false,
       "tem_bolso_frontal": false,
       "justificativa": "Short com listra lateral branca e bolso traseiro.",
-      "bolso_evidencia": "A vista traseira do short mostra um bolso com um patch preto contendo apenas o logo Sundek (sol/montanha) sem texto."
+      "bolso_evidencia": "A vista traseira do short mostra um bolso com um patch preto contendo apenas o logo Sundek (sol/montanha) sem texto.",
+      "e_piping": true,
+      "listra_evidencia": "Duas linhas brancas finas paralelas no painel lateral."
     },
     "elastico": {
       "tem_elastico": false,
@@ -6180,7 +6210,7 @@
       "score": 0,
       "teto": 0,
       "decisao": "descartado",
-      "motivo_exclusao": "bolso_so_logo_colecao_antiga, listra_unica_cor_piping",
+      "motivo_exclusao": "bolso_so_logo_colecao_antiga, sem_listra_sundek, piping_nao_e_listra_sundek",
       "breakdown": {}
     }
   },
@@ -10300,11 +10330,13 @@
       "tier": "boa",
       "justificativa": "É um azul 'de praia' normal, não elétrico.",
       "cores_listras": [
+        "verde claro",
+        "amarelo",
         "verde"
       ],
       "listra_tier": "neutra",
       "tier_final": "boa",
-      "combo_motivo": "listras ['verde'] confirmam tier 'boa'"
+      "combo_motivo": "listras ['verde claro', 'amarelo', 'verde'] confirmam tier 'boa'"
     },
     "upload": "hace un día",
     "envio": "desde 2,99 €",
@@ -10343,6 +10375,8 @@
       "cor_principal": "azul",
       "tem_listra_lateral_sundek": true,
       "cores_listras": [
+        "verde claro",
+        "amarelo",
         "verde"
       ],
       "listra_na_frente": false,
@@ -10356,7 +10390,9 @@
       "tecido_brilhoso": false,
       "tem_bolso_frontal": false,
       "justificativa": "Short com listra vertical na parte traseira.",
-      "bolso_evidencia": "O short tem um bolso traseiro visível com um patch verde contendo apenas o logo Sundek sem a palavra 'SUNDEK'."
+      "bolso_evidencia": "O short tem um bolso traseiro visível com um patch verde contendo apenas o logo Sundek sem a palavra 'SUNDEK'.",
+      "e_piping": false,
+      "listra_evidencia": "Três faixas paralelas de cores distintas (verde claro, amarelo, verde) no painel traseiro/lateral."
     },
     "elastico": {
       "tem_elastico": false,
@@ -10371,7 +10407,7 @@
       "score": 0,
       "teto": 0,
       "decisao": "descartado",
-      "motivo_exclusao": "bolso_so_logo_colecao_antiga, listra_unica_cor_piping",
+      "motivo_exclusao": "bolso_so_logo_colecao_antiga",
       "breakdown": {}
     }
   },
@@ -11687,12 +11723,12 @@
       "justificativa": "Cor muito procurada e com alta liquidez.",
       "cores_listras": [
         "verde",
-        "vermelho",
-        "branco"
+        "branco",
+        "vermelho"
       ],
       "listra_tier": "neutra",
       "tier_final": "maravilhoso",
-      "combo_motivo": "listras ['verde', 'vermelho', 'branco'] confirmam tier 'maravilhoso'"
+      "combo_motivo": "listras ['verde', 'branco', 'vermelho'] confirmam tier 'maravilhoso'"
     },
     "upload": "hace 2 días",
     "envio": "desde 2,88 €",
@@ -11730,8 +11766,8 @@
       "tem_listra_lateral_sundek": true,
       "cores_listras": [
         "verde",
-        "vermelho",
-        "branco"
+        "branco",
+        "vermelho"
       ],
       "listra_na_frente": false,
       "tem_bolso_traseiro": true,
@@ -11744,7 +11780,9 @@
       "tecido_brilhoso": false,
       "tem_bolso_frontal": false,
       "justificativa": "Short com listra traseira Sundek e bolso traseiro visível.",
-      "bolso_evidencia": "A vista traseira do short mostra um bolso com um patch que tem o logo Sundek e a palavra 'SUNDEK' escrita."
+      "bolso_evidencia": "A vista traseira do short mostra um bolso com um patch que tem o logo Sundek e a palavra 'SUNDEK' escrita.",
+      "e_piping": false,
+      "listra_evidencia": "Três faixas paralelas de cores distintas (verde, branco, vermelho) no painel traseiro/lateral."
     },
     "elastico": {
       "tem_elastico": false,
@@ -13111,11 +13149,12 @@
       "tier": "maravilhoso",
       "justificativa": "Cor branca é de alta demanda e vendável.",
       "cores_listras": [
+        "azul",
         "azul"
       ],
       "listra_tier": "neutra",
       "tier_final": "maravilhoso",
-      "combo_motivo": "listras ['azul'] confirmam tier 'maravilhoso'"
+      "combo_motivo": "listras ['azul', 'azul'] confirmam tier 'maravilhoso'"
     },
     "upload": "hace un día",
     "envio": "desde 2,99 €",
@@ -13152,8 +13191,9 @@
     "classificacao": {
       "tipo": "liso",
       "cor_principal": "branco",
-      "tem_listra_lateral_sundek": true,
+      "tem_listra_lateral_sundek": false,
       "cores_listras": [
+        "azul",
         "azul"
       ],
       "listra_na_frente": false,
@@ -13167,7 +13207,9 @@
       "tecido_brilhoso": false,
       "tem_bolso_frontal": true,
       "justificativa": "Short com listras verticais azuis e bolso frontal.",
-      "bolso_evidencia": "A vista traseira do short mostra um bolso com um patch azul contendo o logo Sundek e a palavra 'SUNDEK' escrita."
+      "bolso_evidencia": "A vista traseira do short mostra um bolso com um patch azul contendo o logo Sundek e a palavra 'SUNDEK' escrita.",
+      "e_piping": true,
+      "listra_evidencia": "Duas faixas paralelas azuis no painel lateral, ambas da mesma cor."
     },
     "elastico": {
       "tem_elastico": true,
@@ -13182,7 +13224,7 @@
       "score": 0,
       "teto": 0,
       "decisao": "descartado",
-      "motivo_exclusao": "bolso_frontal, listra_unica_cor_piping",
+      "motivo_exclusao": "bolso_frontal, sem_listra_sundek, piping_nao_e_listra_sundek",
       "breakdown": {}
     }
   },
@@ -13758,7 +13800,9 @@
       "tecido_brilhoso": false,
       "tem_bolso_frontal": false,
       "justificativa": "Short com listra traseira Sundek e bolso traseiro visível.",
-      "bolso_evidencia": "Bolso traseiro visível com patch contendo o logo Sundek e a palavra 'SUNDEK' escrita."
+      "bolso_evidencia": "Bolso traseiro visível com patch contendo o logo Sundek e a palavra 'SUNDEK' escrita.",
+      "e_piping": false,
+      "listra_evidencia": "Três faixas paralelas de cores diferentes (preto, rosa, cinza) no painel traseiro/lateral."
     },
     "elastico": {
       "tem_elastico": false,
@@ -14479,11 +14523,12 @@
       "tier": "maravilhoso",
       "justificativa": "Cor dominante é azul marinho, que tem alta procura.",
       "cores_listras": [
+        "branco",
         "branco"
       ],
       "listra_tier": "neutra",
       "tier_final": "maravilhoso",
-      "combo_motivo": "listras ['branco'] sem impacto no tier 'maravilhoso'"
+      "combo_motivo": "listras ['branco', 'branco'] sem impacto no tier 'maravilhoso'"
     },
     "upload": "hace un día",
     "envio": "desde 2,29 €",
@@ -14518,8 +14563,9 @@
     "classificacao": {
       "tipo": "liso",
       "cor_principal": "verde",
-      "tem_listra_lateral_sundek": true,
+      "tem_listra_lateral_sundek": false,
       "cores_listras": [
+        "branco",
         "branco"
       ],
       "listra_na_frente": false,
@@ -14532,7 +14578,9 @@
       "aparencia": "ok",
       "tecido_brilhoso": true,
       "tem_bolso_frontal": false,
-      "justificativa": "Short com listra traseira e bolso traseiro visível."
+      "justificativa": "Short com listra traseira e bolso traseiro visível.",
+      "e_piping": true,
+      "listra_evidencia": "Duas linhas brancas finas paralelas no painel traseiro/lateral."
     },
     "elastico": {
       "tem_elastico": false,
@@ -14547,7 +14595,7 @@
       "score": 0,
       "teto": 0,
       "decisao": "descartado",
-      "motivo_exclusao": "tecido_brilhoso, listra_unica_cor_piping",
+      "motivo_exclusao": "tecido_brilhoso, sem_listra_sundek, piping_nao_e_listra_sundek",
       "breakdown": {}
     }
   },
@@ -14656,7 +14704,9 @@
       "tier": "ruim",
       "justificativa": "Cor roxa com brilho acetinado, sem apelo comercial.",
       "cores_listras": [
-        "bege"
+        "roxo",
+        "roxo",
+        "roxo"
       ],
       "listra_tier": "penaliza",
       "tier_final": "ruim",
@@ -14697,9 +14747,11 @@
     "classificacao": {
       "tipo": "liso",
       "cor_principal": "roxo",
-      "tem_listra_lateral_sundek": true,
+      "tem_listra_lateral_sundek": false,
       "cores_listras": [
-        "bege"
+        "roxo",
+        "roxo",
+        "roxo"
       ],
       "listra_na_frente": false,
       "tem_bolso_traseiro": true,
@@ -14712,7 +14764,9 @@
       "tecido_brilhoso": true,
       "tem_bolso_frontal": true,
       "justificativa": "Short com bolso frontal e listras laterais.",
-      "bolso_evidencia": "O short tem um bolso traseiro visível com um patch que mostra apenas o logo Sundek (sol/montanha) sem a palavra 'SUNDEK' escrita."
+      "bolso_evidencia": "O short tem um bolso traseiro visível com um patch que mostra apenas o logo Sundek (sol/montanha) sem a palavra 'SUNDEK' escrita.",
+      "e_piping": true,
+      "listra_evidencia": "Múltiplas linhas paralelas da mesma cor roxa no painel lateral."
     },
     "elastico": null,
     "etiqueta": null,
@@ -14720,7 +14774,7 @@
       "score": 0,
       "teto": 0,
       "decisao": "descartado",
-      "motivo_exclusao": "cor_ruim, tecido_brilhoso, bolso_frontal, bolso_so_logo_colecao_antiga, listra_unica_cor_piping",
+      "motivo_exclusao": "cor_ruim, tecido_brilhoso, bolso_frontal, bolso_so_logo_colecao_antiga, sem_listra_sundek, piping_nao_e_listra_sundek",
       "breakdown": {}
     }
   },
@@ -14888,11 +14942,12 @@
       "tier": "maravilhoso",
       "justificativa": "Cor branca é altamente procurada e tem máxima liquidez.",
       "cores_listras": [
-        "preto"
+        "branco",
+        "branco"
       ],
       "listra_tier": "neutra",
       "tier_final": "maravilhoso",
-      "combo_motivo": "listras ['preto'] sem impacto no tier 'maravilhoso'"
+      "combo_motivo": "listras ['branco', 'branco'] sem impacto no tier 'maravilhoso'"
     },
     "upload": "hace un día",
     "envio": "desde 1,95 €",
@@ -14928,9 +14983,10 @@
     "classificacao": {
       "tipo": "liso",
       "cor_principal": "branco",
-      "tem_listra_lateral_sundek": true,
+      "tem_listra_lateral_sundek": false,
       "cores_listras": [
-        "preto"
+        "branco",
+        "branco"
       ],
       "listra_na_frente": false,
       "tem_bolso_traseiro": true,
@@ -14942,7 +14998,9 @@
       "aparencia": "ok",
       "tecido_brilhoso": false,
       "tem_bolso_frontal": false,
-      "justificativa": "Short com listras laterais e bolso traseiro visível."
+      "justificativa": "Short com listras laterais e bolso traseiro visível.",
+      "e_piping": true,
+      "listra_evidencia": "Duas linhas brancas finas paralelas no painel traseiro."
     },
     "elastico": {
       "tem_elastico": false,
@@ -14957,7 +15015,7 @@
       "score": 0,
       "teto": 0,
       "decisao": "descartado",
-      "motivo_exclusao": "bicolor, listra_unica_cor_piping, tamanho_numerico_29",
+      "motivo_exclusao": "bicolor, sem_listra_sundek, piping_nao_e_listra_sundek, tamanho_numerico_29",
       "breakdown": {}
     }
   },
@@ -15730,14 +15788,14 @@
       "tier": "maravilhoso",
       "justificativa": "Cor dominante é preto, que tem alta procura.",
       "cores_listras": [
-        "azul",
         "roxo",
+        "azul",
         "verde",
         "bege"
       ],
       "listra_tier": "neutra",
       "tier_final": "maravilhoso",
-      "combo_motivo": "listras ['azul', 'roxo', 'verde', 'bege'] confirmam tier 'maravilhoso'"
+      "combo_motivo": "listras ['roxo', 'azul', 'verde', 'bege'] confirmam tier 'maravilhoso'"
     },
     "upload": "hace 14 horas",
     "envio": "desde 2,29 €",
@@ -15775,8 +15833,8 @@
       "cor_principal": "preto",
       "tem_listra_lateral_sundek": true,
       "cores_listras": [
-        "azul",
         "roxo",
+        "azul",
         "verde",
         "bege"
       ],
@@ -15791,7 +15849,9 @@
       "tecido_brilhoso": false,
       "tem_bolso_frontal": false,
       "justificativa": "Short com listra traseira Sundek e bolso traseiro visível.",
-      "bolso_evidencia": "Bolso traseiro visível com patch preto contendo o logo Sundek e a palavra 'SUNDEK' escrita."
+      "bolso_evidencia": "Bolso traseiro visível com patch preto contendo o logo Sundek e a palavra 'SUNDEK' escrita.",
+      "e_piping": false,
+      "listra_evidencia": "Quatro faixas paralelas de cores distintas (roxo, azul, verde, bege) no painel traseiro/lateral."
     },
     "elastico": {
       "tem_elastico": false,
@@ -19541,7 +19601,8 @@
       "tier": "ruim",
       "justificativa": "Amarelo é uma cor sem apelo comercial para o mercado brasileiro.",
       "cores_listras": [
-        "vermelho"
+        "vermelho",
+        "laranja"
       ],
       "listra_tier": "penaliza",
       "tier_final": "ruim",
@@ -19582,7 +19643,8 @@
       "cor_principal": "amarelo",
       "tem_listra_lateral_sundek": true,
       "cores_listras": [
-        "vermelho"
+        "vermelho",
+        "laranja"
       ],
       "listra_na_frente": false,
       "tem_bolso_traseiro": true,
@@ -19595,7 +19657,9 @@
       "tecido_brilhoso": false,
       "tem_bolso_frontal": false,
       "justificativa": "Short com listra traseira Sundek e bolso traseiro visível.",
-      "bolso_evidencia": "O short tem um bolso traseiro visível com um patch que mostra apenas o logo Sundek sem a palavra 'SUNDEK'."
+      "bolso_evidencia": "O short tem um bolso traseiro visível com um patch que mostra apenas o logo Sundek sem a palavra 'SUNDEK'.",
+      "e_piping": false,
+      "listra_evidencia": "Duas faixas paralelas em cores distintas (vermelho e laranja) no painel traseiro/lateral do short."
     },
     "elastico": null,
     "etiqueta": null,
@@ -19603,7 +19667,7 @@
       "score": 0,
       "teto": 0,
       "decisao": "descartado",
-      "motivo_exclusao": "cor_ruim, bolso_so_logo_colecao_antiga, listra_unica_cor_piping",
+      "motivo_exclusao": "cor_ruim, bolso_so_logo_colecao_antiga",
       "breakdown": {}
     }
   },
@@ -20703,11 +20767,13 @@
       "tier": "ok",
       "justificativa": "Bege é uma cor aceitável, não é fluorescente.",
       "cores_listras": [
-        "azul"
+        "azul claro",
+        "azul",
+        "azul escuro"
       ],
       "listra_tier": "neutra",
       "tier_final": "ok",
-      "combo_motivo": "listras ['azul'] confirmam tier 'ok'"
+      "combo_motivo": "listras ['azul claro', 'azul', 'azul escuro'] confirmam tier 'ok'"
     },
     "upload": "hace un día",
     "envio": "desde 2,99 €",
@@ -20746,7 +20812,9 @@
       "cor_principal": "bege",
       "tem_listra_lateral_sundek": true,
       "cores_listras": [
-        "azul"
+        "azul claro",
+        "azul",
+        "azul escuro"
       ],
       "listra_na_frente": false,
       "tem_bolso_traseiro": true,
@@ -20758,7 +20826,9 @@
       "aparencia": "ok",
       "tecido_brilhoso": false,
       "tem_bolso_frontal": false,
-      "justificativa": "Short com listra traseira Sundek e bolso traseiro visível."
+      "justificativa": "Short com listra traseira Sundek e bolso traseiro visível.",
+      "e_piping": false,
+      "listra_evidencia": "Três faixas paralelas em azul claro, azul e azul escuro no painel traseiro/lateral."
     },
     "elastico": {
       "tem_elastico": false,
@@ -20770,11 +20840,20 @@
       "evidencia": "Não há etiqueta de papel ou papelão pendente visível nas fotos."
     },
     "score": {
-      "score": 0,
-      "teto": 0,
+      "score": 13,
+      "teto": 15,
+      "preco_num": 20.0,
       "decisao": "descartado",
-      "motivo_exclusao": "listra_unica_cor_piping",
-      "breakdown": {}
+      "motivo": "preço €20.00 acima do teto €15.00 × 1.25",
+      "breakdown": {
+        "tier": 8,
+        "tamanho": 20,
+        "elastico": -15,
+        "etiqueta": 0,
+        "listra_bonus": 0,
+        "preco": 0,
+        "ratio_preco_teto": 1.33
+      }
     }
   },
   {
@@ -21229,12 +21308,13 @@
       "tier": "muito_boa",
       "justificativa": "Cinza é uma cor com alta liquidez no mercado.",
       "cores_listras": [
-        "azul",
-        "branco"
+        "azul escuro",
+        "branco",
+        "azul claro"
       ],
       "listra_tier": "neutra",
       "tier_final": "muito_boa",
-      "combo_motivo": "listras ['azul', 'branco'] confirmam tier 'muito_boa'"
+      "combo_motivo": "listras ['azul escuro', 'branco', 'azul claro'] confirmam tier 'muito_boa'"
     },
     "upload": "hace 10 horas",
     "envio": "desde 2,99 €",
@@ -21271,8 +21351,9 @@
       "cor_principal": "cinza",
       "tem_listra_lateral_sundek": true,
       "cores_listras": [
-        "azul",
-        "branco"
+        "azul escuro",
+        "branco",
+        "azul claro"
       ],
       "listra_na_frente": false,
       "tem_bolso_traseiro": true,
@@ -21285,7 +21366,9 @@
       "tecido_brilhoso": false,
       "tem_bolso_frontal": false,
       "justificativa": "Short com listra traseira Sundek e bolso traseiro visível.",
-      "bolso_evidencia": "Bolso traseiro visível na parte direita com patch azul contendo a palavra 'SUNDEK' escrita."
+      "bolso_evidencia": "Bolso traseiro visível na parte direita com patch azul contendo a palavra 'SUNDEK' escrita.",
+      "e_piping": false,
+      "listra_evidencia": "Três faixas paralelas de cores distintas (azul escuro, branco, azul claro) no painel traseiro/lateral."
     },
     "elastico": {
       "tem_elastico": true,
@@ -23454,12 +23537,10 @@
       "cor_principal": "Azul médio",
       "tier": "boa",
       "justificativa": "É um azul 'de praia' normal, não elétrico.",
-      "cores_listras": [
-        "branco"
-      ],
-      "listra_tier": "neutra",
+      "cores_listras": [],
+      "listra_tier": "sem_listra",
       "tier_final": "boa",
-      "combo_motivo": "listras ['branco'] sem impacto no tier 'boa'"
+      "combo_motivo": "sem listras laterais"
     },
     "upload": "hace 2 días",
     "envio": "desde 2,99 €",
@@ -23496,10 +23577,8 @@
     "classificacao": {
       "tipo": "liso",
       "cor_principal": "azul",
-      "tem_listra_lateral_sundek": true,
-      "cores_listras": [
-        "branco"
-      ],
+      "tem_listra_lateral_sundek": false,
+      "cores_listras": [],
       "listra_na_frente": false,
       "tem_bolso_traseiro": true,
       "bolso_traseiro_tem_nome": true,
@@ -23510,7 +23589,9 @@
       "aparencia": "ok",
       "tecido_brilhoso": false,
       "tem_bolso_frontal": false,
-      "justificativa": "Short com painel bicolor e listras laterais."
+      "justificativa": "Short com painel bicolor e listras laterais.",
+      "e_piping": false,
+      "listra_evidencia": "Não há faixas visíveis no painel traseiro/lateral do short."
     },
     "elastico": {
       "tem_elastico": true,
@@ -23525,7 +23606,7 @@
       "score": 0,
       "teto": 0,
       "decisao": "descartado",
-      "motivo_exclusao": "bicolor, listra_unica_cor_piping",
+      "motivo_exclusao": "bicolor, sem_listra_sundek",
       "breakdown": {}
     }
   },
@@ -24189,11 +24270,12 @@
       "tier": "ruim",
       "justificativa": "Tecido com aspecto brilhante e metálico.",
       "cores_listras": [
-        "preto"
+        "preto",
+        "branco"
       ],
       "listra_tier": "neutra",
       "tier_final": "ruim",
-      "combo_motivo": "listras ['preto'] sem impacto no tier 'ruim'"
+      "combo_motivo": "listras ['preto', 'branco'] sem impacto no tier 'ruim'"
     },
     "upload": "hace un día",
     "envio": "desde 2,29 €",
@@ -24231,7 +24313,8 @@
       "cor_principal": "bege",
       "tem_listra_lateral_sundek": true,
       "cores_listras": [
-        "preto"
+        "preto",
+        "branco"
       ],
       "listra_na_frente": false,
       "tem_bolso_traseiro": true,
@@ -24243,7 +24326,9 @@
       "aparencia": "ok",
       "tecido_brilhoso": true,
       "tem_bolso_frontal": false,
-      "justificativa": "Short com listra traseira e bolso traseiro visível."
+      "justificativa": "Short com listra traseira e bolso traseiro visível.",
+      "e_piping": false,
+      "listra_evidencia": "Duas faixas paralelas de cores diferentes (preto e branco) no painel traseiro/lateral."
     },
     "elastico": null,
     "etiqueta": null,
@@ -24251,7 +24336,7 @@
       "score": 0,
       "teto": 0,
       "decisao": "descartado",
-      "motivo_exclusao": "cor_ruim, tecido_brilhoso, listra_unica_cor_piping",
+      "motivo_exclusao": "cor_ruim, tecido_brilhoso",
       "breakdown": {}
     }
   },
@@ -24847,11 +24932,12 @@
       "justificativa": "É um azul 'de praia' normal, não elétrico.",
       "cores_listras": [
         "verde",
-        "amarelo"
+        "amarelo",
+        "azul claro"
       ],
       "listra_tier": "neutra",
       "tier_final": "boa",
-      "combo_motivo": "listras ['verde', 'amarelo'] confirmam tier 'boa'"
+      "combo_motivo": "listras ['verde', 'amarelo', 'azul claro'] confirmam tier 'boa'"
     },
     "upload": "hace un día",
     "envio": "desde 2,29 €",
@@ -24891,7 +24977,8 @@
       "tem_listra_lateral_sundek": true,
       "cores_listras": [
         "verde",
-        "amarelo"
+        "amarelo",
+        "azul claro"
       ],
       "listra_na_frente": false,
       "tem_bolso_traseiro": true,
@@ -24904,7 +24991,9 @@
       "tecido_brilhoso": false,
       "tem_bolso_frontal": false,
       "justificativa": "Short com listra traseira Sundek e bolso traseiro visível.",
-      "bolso_evidencia": "A vista traseira do short mostra um bolso com um patch verde contendo o logo Sundek e a palavra 'SUNDEK' escrita."
+      "bolso_evidencia": "A vista traseira do short mostra um bolso com um patch verde contendo o logo Sundek e a palavra 'SUNDEK' escrita.",
+      "e_piping": false,
+      "listra_evidencia": "Três faixas paralelas de cores distintas (verde, amarelo, azul claro) no painel traseiro/lateral."
     },
     "elastico": {
       "tem_elastico": false,
@@ -25850,11 +25939,12 @@
       "tier": "maravilhoso",
       "justificativa": "A cor principal é azul escuro, que está na categoria de alta demanda.",
       "cores_listras": [
+        "branco",
         "branco"
       ],
       "listra_tier": "neutra",
       "tier_final": "maravilhoso",
-      "combo_motivo": "listras ['branco'] sem impacto no tier 'maravilhoso'"
+      "combo_motivo": "listras ['branco', 'branco'] sem impacto no tier 'maravilhoso'"
     },
     "upload": "hace 3 días",
     "envio": "desde 2,29 €",
@@ -25889,8 +25979,9 @@
     "classificacao": {
       "tipo": "liso",
       "cor_principal": "marrom",
-      "tem_listra_lateral_sundek": true,
+      "tem_listra_lateral_sundek": false,
       "cores_listras": [
+        "branco",
         "branco"
       ],
       "listra_na_frente": false,
@@ -25904,7 +25995,9 @@
       "tecido_brilhoso": false,
       "tem_bolso_frontal": true,
       "justificativa": "Short com listras verticais e bolso frontal.",
-      "bolso_evidencia": "A parte traseira do short é lisa, sem bolso visível."
+      "bolso_evidencia": "A parte traseira do short é lisa, sem bolso visível.",
+      "e_piping": true,
+      "listra_evidencia": "Duas linhas brancas paralelas no painel lateral, sem variação de cor."
     },
     "elastico": {
       "tem_elastico": false,
@@ -25919,7 +26012,7 @@
       "score": 0,
       "teto": 0,
       "decisao": "descartado",
-      "motivo_exclusao": "bolso_frontal, sem_bolso_traseiro, listra_unica_cor_piping",
+      "motivo_exclusao": "bolso_frontal, sem_bolso_traseiro, sem_listra_sundek, piping_nao_e_listra_sundek",
       "breakdown": {}
     }
   },
@@ -26616,7 +26709,7 @@
     "classificacao": {
       "tipo": "liso",
       "cor_principal": "azul",
-      "tem_listra_lateral_sundek": true,
+      "tem_listra_lateral_sundek": false,
       "cores_listras": [
         "branco"
       ],
@@ -26630,7 +26723,9 @@
       "aparencia": "ok",
       "tecido_brilhoso": false,
       "tem_bolso_frontal": false,
-      "justificativa": "Short com listra lateral e bolso traseiro visível."
+      "justificativa": "Short com listra lateral e bolso traseiro visível.",
+      "e_piping": true,
+      "listra_evidencia": "Há uma única faixa branca seguindo o contorno do short."
     },
     "elastico": {
       "tem_elastico": false,
@@ -26645,7 +26740,7 @@
       "score": 0,
       "teto": 0,
       "decisao": "descartado",
-      "motivo_exclusao": "fechamento_velcro, listra_unica_cor_piping, tamanho_numerico_29",
+      "motivo_exclusao": "fechamento_velcro, sem_listra_sundek, piping_nao_e_listra_sundek, tamanho_numerico_29",
       "breakdown": {}
     }
   },
@@ -27095,12 +27190,13 @@
       "tier": "muito_boa",
       "justificativa": "Cinza é uma cor com alta liquidez no mercado.",
       "cores_listras": [
-        "azul",
-        "branco"
+        "azul claro",
+        "branco",
+        "azul"
       ],
       "listra_tier": "neutra",
       "tier_final": "muito_boa",
-      "combo_motivo": "listras ['azul', 'branco'] confirmam tier 'muito_boa'"
+      "combo_motivo": "listras ['azul claro', 'branco', 'azul'] confirmam tier 'muito_boa'"
     },
     "upload": "hace un día",
     "envio": "desde 2,99 €",
@@ -27139,8 +27235,9 @@
       "cor_principal": "cinza",
       "tem_listra_lateral_sundek": true,
       "cores_listras": [
-        "azul",
-        "branco"
+        "azul claro",
+        "branco",
+        "azul"
       ],
       "listra_na_frente": false,
       "tem_bolso_traseiro": true,
@@ -27153,7 +27250,9 @@
       "tecido_brilhoso": false,
       "tem_bolso_frontal": false,
       "justificativa": "Short com listra traseira e bolso traseiro visível.",
-      "bolso_evidencia": "A vista traseira do short mostra um bolso com um patch azul contendo o logo Sundek e a palavra 'SUNDEK' escrita."
+      "bolso_evidencia": "A vista traseira do short mostra um bolso com um patch azul contendo o logo Sundek e a palavra 'SUNDEK' escrita.",
+      "e_piping": false,
+      "listra_evidencia": "Três faixas paralelas de cores distintas (azul claro, branco, azul) no painel traseiro/lateral."
     },
     "elastico": {
       "tem_elastico": false,
@@ -27763,11 +27862,12 @@
       "tier": "boa",
       "justificativa": "É um azul 'de praia' normal, não elétrico.",
       "cores_listras": [
-        "branco"
+        "branco",
+        "preto"
       ],
       "listra_tier": "neutra",
       "tier_final": "boa",
-      "combo_motivo": "listras ['branco'] sem impacto no tier 'boa'"
+      "combo_motivo": "listras ['branco', 'preto'] sem impacto no tier 'boa'"
     },
     "upload": "hace 2 días",
     "envio": "desde 2,99 €",
@@ -27806,7 +27906,8 @@
       "cor_principal": "azul",
       "tem_listra_lateral_sundek": true,
       "cores_listras": [
-        "branco"
+        "branco",
+        "preto"
       ],
       "listra_na_frente": false,
       "tem_bolso_traseiro": true,
@@ -27818,7 +27919,9 @@
       "aparencia": "ok",
       "tecido_brilhoso": false,
       "tem_bolso_frontal": false,
-      "justificativa": "Short azul com listra branca na lateral e bolso traseiro com nome Sundek."
+      "justificativa": "Short azul com listra branca na lateral e bolso traseiro com nome Sundek.",
+      "e_piping": false,
+      "listra_evidencia": "Duas faixas paralelas de cores diferentes (branco e preto) no painel traseiro/lateral."
     },
     "elastico": {
       "tem_elastico": true,
@@ -27830,11 +27933,20 @@
       "evidencia": "Não há etiqueta pendente visível nas fotos."
     },
     "score": {
-      "score": 0,
-      "teto": 0,
-      "decisao": "descartado",
-      "motivo_exclusao": "listra_unica_cor_piping",
-      "breakdown": {}
+      "score": 58,
+      "teto": 22,
+      "preco_num": 15.0,
+      "decisao": "medio",
+      "motivo": "tentar barganha",
+      "breakdown": {
+        "tier": 15,
+        "tamanho": 8,
+        "elastico": 15,
+        "etiqueta": 0,
+        "listra_bonus": 0,
+        "preco": 20,
+        "ratio_preco_teto": 0.68
+      }
     }
   },
   {
@@ -27920,11 +28032,13 @@
       "tier": "ruim",
       "justificativa": "Coral é uma cor muito chamativa e não é aceitável para o mercado.",
       "cores_listras": [
-        "azul"
+        "azul claro",
+        "branco",
+        "azul escuro"
       ],
       "listra_tier": "salva",
       "tier_final": "ok",
-      "combo_motivo": "listras ['azul'] neutras salvam 'Coral': ruim→ok"
+      "combo_motivo": "listras ['azul claro', 'branco', 'azul escuro'] neutras salvam 'Coral': ruim→ok"
     },
     "upload": "hace 2 días",
     "envio": "desde 2,99 €",
@@ -27961,7 +28075,9 @@
       "cor_principal": "vermelho",
       "tem_listra_lateral_sundek": true,
       "cores_listras": [
-        "azul"
+        "azul claro",
+        "branco",
+        "azul escuro"
       ],
       "listra_na_frente": false,
       "tem_bolso_traseiro": true,
@@ -27973,7 +28089,9 @@
       "aparencia": "ok",
       "tecido_brilhoso": false,
       "tem_bolso_frontal": false,
-      "justificativa": "Short com listra traseira e bolso traseiro visível."
+      "justificativa": "Short com listra traseira e bolso traseiro visível.",
+      "e_piping": false,
+      "listra_evidencia": "Três faixas paralelas em azul claro, branco e azul escuro no painel traseiro/lateral."
     },
     "elastico": {
       "tem_elastico": false,
@@ -27988,7 +28106,7 @@
       "score": 0,
       "teto": 0,
       "decisao": "descartado",
-      "motivo_exclusao": "listra_unica_cor_piping, tamanho_XS",
+      "motivo_exclusao": "tamanho_XS",
       "breakdown": {}
     }
   },
@@ -29479,7 +29597,7 @@
     "classificacao": {
       "tipo": "liso",
       "cor_principal": "laranja",
-      "tem_listra_lateral_sundek": true,
+      "tem_listra_lateral_sundek": false,
       "cores_listras": [
         "azul"
       ],
@@ -29493,7 +29611,9 @@
       "aparencia": "ok",
       "tecido_brilhoso": false,
       "tem_bolso_frontal": false,
-      "justificativa": "Short liso com listra lateral azul."
+      "justificativa": "Short liso com listra lateral azul.",
+      "e_piping": true,
+      "listra_evidencia": "Uma linha azul fina visível na lateral, seguindo o contorno do short."
     },
     "elastico": {
       "tem_elastico": false,
@@ -29508,7 +29628,7 @@
       "score": 0,
       "teto": 0,
       "decisao": "descartado",
-      "motivo_exclusao": "listra_unica_cor_piping",
+      "motivo_exclusao": "sem_listra_sundek, piping_nao_e_listra_sundek",
       "breakdown": {}
     }
   },
@@ -30202,11 +30322,12 @@
       "tier": "muito_boa",
       "justificativa": "Cinza é uma cor com alta liquidez no mercado.",
       "cores_listras": [
+        "preto",
         "preto"
       ],
       "listra_tier": "neutra",
       "tier_final": "muito_boa",
-      "combo_motivo": "listras ['preto'] sem impacto no tier 'muito_boa'"
+      "combo_motivo": "listras ['preto', 'preto'] sem impacto no tier 'muito_boa'"
     },
     "upload": "hace 3 días",
     "envio": "desde 2,29 €",
@@ -30243,8 +30364,9 @@
     "classificacao": {
       "tipo": "liso",
       "cor_principal": "bege",
-      "tem_listra_lateral_sundek": true,
+      "tem_listra_lateral_sundek": false,
       "cores_listras": [
+        "preto",
         "preto"
       ],
       "listra_na_frente": false,
@@ -30257,7 +30379,9 @@
       "aparencia": "ok",
       "tecido_brilhoso": false,
       "tem_bolso_frontal": true,
-      "justificativa": "Short com listras verticais e bolso frontal."
+      "justificativa": "Short com listras verticais e bolso frontal.",
+      "e_piping": true,
+      "listra_evidencia": "Duas faixas paralelas pretas da mesma cor no painel lateral."
     },
     "elastico": {
       "tem_elastico": false,
@@ -30272,7 +30396,7 @@
       "score": 0,
       "teto": 0,
       "decisao": "descartado",
-      "motivo_exclusao": "bolso_frontal, listra_unica_cor_piping",
+      "motivo_exclusao": "bolso_frontal, sem_listra_sundek, piping_nao_e_listra_sundek",
       "breakdown": {}
     }
   },
@@ -30381,12 +30505,12 @@
       "justificativa": "Cor principal é preto, que tem alta demanda.",
       "cores_listras": [
         "azul",
-        "roxo",
-        "branco"
+        "branco",
+        "roxo"
       ],
       "listra_tier": "neutra",
       "tier_final": "maravilhoso",
-      "combo_motivo": "listras ['azul', 'roxo', 'branco'] confirmam tier 'maravilhoso'"
+      "combo_motivo": "listras ['azul', 'branco', 'roxo'] confirmam tier 'maravilhoso'"
     },
     "upload": "hace 2 días",
     "envio": "desde 2,29 €",
@@ -30426,8 +30550,8 @@
       "tem_listra_lateral_sundek": true,
       "cores_listras": [
         "azul",
-        "roxo",
-        "branco"
+        "branco",
+        "roxo"
       ],
       "listra_na_frente": false,
       "tem_bolso_traseiro": true,
@@ -30440,7 +30564,9 @@
       "tecido_brilhoso": false,
       "tem_bolso_frontal": false,
       "justificativa": "Short com listras verticais no painel traseiro.",
-      "bolso_evidencia": "O short tem um bolso traseiro visível com um patch que contém o logo Sundek e a palavra 'SUNDEK' escrita."
+      "bolso_evidencia": "O short tem um bolso traseiro visível com um patch que contém o logo Sundek e a palavra 'SUNDEK' escrita.",
+      "e_piping": false,
+      "listra_evidencia": "Três faixas paralelas de cores distintas (azul, branco, roxo) visíveis no painel traseiro/lateral."
     },
     "elastico": {
       "tem_elastico": false,
@@ -30481,13 +30607,14 @@
       "tier": "maravilhoso",
       "justificativa": "Cor preta é de alta demanda e vendem sozinhos.",
       "cores_listras": [
+        "preto",
         "azul",
-        "roxo",
-        "branco"
+        "branco",
+        "roxo"
       ],
       "listra_tier": "neutra",
       "tier_final": "maravilhoso",
-      "combo_motivo": "listras ['azul', 'roxo', 'branco'] confirmam tier 'maravilhoso'"
+      "combo_motivo": "listras ['preto', 'azul', 'branco', 'roxo'] confirmam tier 'maravilhoso'"
     },
     "upload": "hace un día",
     "envio": "desde 2,99 €",
@@ -30526,9 +30653,10 @@
       "cor_principal": "preto",
       "tem_listra_lateral_sundek": true,
       "cores_listras": [
+        "preto",
         "azul",
-        "roxo",
-        "branco"
+        "branco",
+        "roxo"
       ],
       "listra_na_frente": false,
       "tem_bolso_traseiro": true,
@@ -30541,7 +30669,9 @@
       "tecido_brilhoso": false,
       "tem_bolso_frontal": false,
       "justificativa": "Short com listra traseira e bolso traseiro visível.",
-      "bolso_evidencia": "A vista traseira do short mostra um bolso com um patch azul contendo o logo Sundek e a palavra 'SUNDEK' escrita."
+      "bolso_evidencia": "A vista traseira do short mostra um bolso com um patch azul contendo o logo Sundek e a palavra 'SUNDEK' escrita.",
+      "e_piping": false,
+      "listra_evidencia": "Faixas paralelas de cores preto, azul, branco e roxo no painel traseiro/lateral."
     },
     "elastico": {
       "tem_elastico": false,
@@ -30758,11 +30888,13 @@
       "tier": "maravilhoso",
       "justificativa": "Cor principal é preto, que tem alta demanda.",
       "cores_listras": [
-        "cinza"
+        "branco",
+        "branco",
+        "branco"
       ],
       "listra_tier": "neutra",
       "tier_final": "maravilhoso",
-      "combo_motivo": "listras ['cinza'] sem impacto no tier 'maravilhoso'"
+      "combo_motivo": "listras ['branco', 'branco', 'branco'] sem impacto no tier 'maravilhoso'"
     },
     "upload": "hace un día",
     "envio": "desde 2,29 €",
@@ -30799,9 +30931,11 @@
     "classificacao": {
       "tipo": "liso",
       "cor_principal": "preto",
-      "tem_listra_lateral_sundek": true,
+      "tem_listra_lateral_sundek": false,
       "cores_listras": [
-        "cinza"
+        "branco",
+        "branco",
+        "branco"
       ],
       "listra_na_frente": false,
       "tem_bolso_traseiro": true,
@@ -30814,7 +30948,9 @@
       "tecido_brilhoso": false,
       "tem_bolso_frontal": false,
       "justificativa": "Short com painel bicolor e listra lateral.",
-      "bolso_evidencia": "O short tem um bolso traseiro visível com um patch preto contendo apenas o logo Sundek (sol/montanha) sem a palavra 'SUNDEK' escrita."
+      "bolso_evidencia": "O short tem um bolso traseiro visível com um patch preto contendo apenas o logo Sundek (sol/montanha) sem a palavra 'SUNDEK' escrita.",
+      "e_piping": true,
+      "listra_evidencia": "Três linhas brancas finas paralelas no painel lateral, todas da mesma cor."
     },
     "elastico": {
       "tem_elastico": false,
@@ -30829,7 +30965,7 @@
       "score": 0,
       "teto": 0,
       "decisao": "descartado",
-      "motivo_exclusao": "bicolor, bolso_so_logo_colecao_antiga, listra_unica_cor_piping",
+      "motivo_exclusao": "bicolor, bolso_so_logo_colecao_antiga, sem_listra_sundek, piping_nao_e_listra_sundek",
       "breakdown": {}
     }
   },
@@ -31795,12 +31931,12 @@
       "justificativa": "Cor dominante é azul marinho, que tem alta procura.",
       "cores_listras": [
         "rosa",
-        "verde",
-        "bege"
+        "azul",
+        "branco"
       ],
       "listra_tier": "neutra",
       "tier_final": "maravilhoso",
-      "combo_motivo": "listras ['rosa', 'verde', 'bege'] confirmam tier 'maravilhoso'"
+      "combo_motivo": "listras ['rosa', 'azul', 'branco'] confirmam tier 'maravilhoso'"
     },
     "upload": "hace 2 días",
     "envio": "desde 1,95 €",
@@ -31840,8 +31976,8 @@
       "tem_listra_lateral_sundek": true,
       "cores_listras": [
         "rosa",
-        "verde",
-        "bege"
+        "azul",
+        "branco"
       ],
       "listra_na_frente": false,
       "tem_bolso_traseiro": true,
@@ -31854,7 +31990,9 @@
       "tecido_brilhoso": false,
       "tem_bolso_frontal": false,
       "justificativa": "Short com listras laterais e bolso traseiro visível.",
-      "bolso_evidencia": "A vista traseira do short mostra um bolso com um patch contendo o logo Sundek e a palavra 'SUNDEK' escrita."
+      "bolso_evidencia": "A vista traseira do short mostra um bolso com um patch contendo o logo Sundek e a palavra 'SUNDEK' escrita.",
+      "e_piping": false,
+      "listra_evidencia": "Faixas paralelas rosa, azul e branco no painel traseiro/lateral do short."
     },
     "elastico": {
       "tem_elastico": false,
@@ -33365,11 +33503,13 @@
       "tier": "ok",
       "justificativa": "A cor é azul claro, que é classificada como 'ok'.",
       "cores_listras": [
-        "branco"
+        "azul",
+        "branco",
+        "azul"
       ],
       "listra_tier": "neutra",
       "tier_final": "ok",
-      "combo_motivo": "listras ['branco'] sem impacto no tier 'ok'"
+      "combo_motivo": "listras ['azul', 'branco', 'azul'] confirmam tier 'ok'"
     },
     "upload": "hace 8 horas",
     "envio": "desde 2,99 €",
@@ -33406,7 +33546,9 @@
       "cor_principal": "azul",
       "tem_listra_lateral_sundek": true,
       "cores_listras": [
-        "branco"
+        "azul",
+        "branco",
+        "azul"
       ],
       "listra_na_frente": false,
       "tem_bolso_traseiro": true,
@@ -33418,7 +33560,9 @@
       "aparencia": "ok",
       "tecido_brilhoso": false,
       "tem_bolso_frontal": false,
-      "justificativa": "Short com listra traseira e bolso traseiro visível."
+      "justificativa": "Short com listra traseira e bolso traseiro visível.",
+      "e_piping": false,
+      "listra_evidencia": "Três faixas paralelas no painel traseiro/lateral: azul, branco, azul."
     },
     "elastico": {
       "tem_elastico": false,
@@ -33430,11 +33574,20 @@
       "evidencia": "Não há etiqueta de papel/papelão pendente visível nas fotos."
     },
     "score": {
-      "score": 0,
-      "teto": 0,
+      "score": 13,
+      "teto": 15,
+      "preco_num": 20.0,
       "decisao": "descartado",
-      "motivo_exclusao": "listra_unica_cor_piping",
-      "breakdown": {}
+      "motivo": "preço €20.00 acima do teto €15.00 × 1.25",
+      "breakdown": {
+        "tier": 8,
+        "tamanho": 20,
+        "elastico": -15,
+        "etiqueta": 0,
+        "listra_bonus": 0,
+        "preco": 0,
+        "ratio_preco_teto": 1.33
+      }
     }
   },
   {
@@ -36621,7 +36774,7 @@
     "classificacao": {
       "tipo": "liso",
       "cor_principal": "azul",
-      "tem_listra_lateral_sundek": true,
+      "tem_listra_lateral_sundek": false,
       "cores_listras": [
         "laranja"
       ],
@@ -36637,7 +36790,9 @@
       "tem_bolso_frontal": false,
       "justificativa": "Short com listra lateral e bolso traseiro visível.",
       "confianca": null,
-      "_model": "gpt-4o"
+      "_model": "gpt-4o",
+      "e_piping": true,
+      "listra_evidencia": "Linha fina laranja seguindo o contorno do short."
     },
     "elastico": {
       "tem_elastico": true,
@@ -36652,7 +36807,7 @@
       "score": 0,
       "teto": 0,
       "decisao": "descartado",
-      "motivo_exclusao": "listra_unica_cor_piping",
+      "motivo_exclusao": "sem_listra_sundek, piping_nao_e_listra_sundek",
       "breakdown": {}
     }
   },
@@ -37818,7 +37973,7 @@
     "classificacao": {
       "tipo": "liso",
       "cor_principal": "azul",
-      "tem_listra_lateral_sundek": true,
+      "tem_listra_lateral_sundek": false,
       "cores_listras": [
         "branco"
       ],
@@ -37833,7 +37988,9 @@
       "tecido_brilhoso": false,
       "tem_bolso_frontal": false,
       "justificativa": "Short com listra lateral e bolso traseiro.",
-      "bolso_evidencia": "A vista traseira do short mostra um bolso com um patch contendo apenas o logo Sundek sem a palavra 'SUNDEK'."
+      "bolso_evidencia": "A vista traseira do short mostra um bolso com um patch contendo apenas o logo Sundek sem a palavra 'SUNDEK'.",
+      "e_piping": true,
+      "listra_evidencia": "Há uma única faixa branca seguindo o contorno do short."
     },
     "elastico": {
       "tem_elastico": false,
@@ -37848,7 +38005,7 @@
       "score": 0,
       "teto": 0,
       "decisao": "descartado",
-      "motivo_exclusao": "bolso_so_logo_colecao_antiga, listra_unica_cor_piping",
+      "motivo_exclusao": "bolso_so_logo_colecao_antiga, sem_listra_sundek, piping_nao_e_listra_sundek",
       "breakdown": {}
     }
   },
@@ -38931,11 +39088,12 @@
       "tier": "maravilhoso",
       "justificativa": "Cor muito procurada e com alta liquidez.",
       "cores_listras": [
-        "branco"
+        "branco",
+        "azul claro"
       ],
       "listra_tier": "neutra",
       "tier_final": "maravilhoso",
-      "combo_motivo": "listras ['branco'] sem impacto no tier 'maravilhoso'"
+      "combo_motivo": "listras ['branco', 'azul claro'] sem impacto no tier 'maravilhoso'"
     },
     "upload": "hace un día",
     "envio": "desde 1,69 €",
@@ -38974,7 +39132,8 @@
       "cor_principal": "azul",
       "tem_listra_lateral_sundek": true,
       "cores_listras": [
-        "branco"
+        "branco",
+        "azul claro"
       ],
       "listra_na_frente": false,
       "tem_bolso_traseiro": true,
@@ -38987,7 +39146,9 @@
       "tecido_brilhoso": true,
       "tem_bolso_frontal": false,
       "justificativa": "Short com listra traseira e bolso traseiro.",
-      "bolso_evidencia": "A vista traseira do short mostra um bolso no lado direito com um patch que tem apenas o logo Sundek (sol/montanha) sem a palavra 'SUNDEK' escrita."
+      "bolso_evidencia": "A vista traseira do short mostra um bolso no lado direito com um patch que tem apenas o logo Sundek (sol/montanha) sem a palavra 'SUNDEK' escrita.",
+      "e_piping": false,
+      "listra_evidencia": "Duas faixas paralelas de cores diferentes (branco e azul claro) no painel traseiro/lateral."
     },
     "elastico": {
       "tem_elastico": false,
@@ -39002,7 +39163,7 @@
       "score": 0,
       "teto": 0,
       "decisao": "descartado",
-      "motivo_exclusao": "tecido_brilhoso, bolso_so_logo_colecao_antiga, listra_unica_cor_piping",
+      "motivo_exclusao": "tecido_brilhoso, bolso_so_logo_colecao_antiga",
       "breakdown": {}
     }
   },
@@ -39424,11 +39585,12 @@
       "tier": "ok",
       "justificativa": "Cor não fluorescente e aceitável no mercado.",
       "cores_listras": [
-        "branco"
+        "branco",
+        "verde"
       ],
       "listra_tier": "salva",
       "tier_final": "boa",
-      "combo_motivo": "listras ['branco'] neutras salvam 'Verde médio': ok→boa"
+      "combo_motivo": "listras ['branco', 'verde'] neutras salvam 'Verde médio': ok→boa"
     },
     "upload": "hace 3 horas",
     "envio": "desde 2,99 €",
@@ -39466,7 +39628,8 @@
       "cor_principal": "verde",
       "tem_listra_lateral_sundek": true,
       "cores_listras": [
-        "branco"
+        "branco",
+        "verde"
       ],
       "listra_na_frente": false,
       "tem_bolso_traseiro": true,
@@ -39478,7 +39641,9 @@
       "aparencia": "ok",
       "tecido_brilhoso": false,
       "tem_bolso_frontal": false,
-      "justificativa": "Short com listra traseira e bolso traseiro visível."
+      "justificativa": "Short com listra traseira e bolso traseiro visível.",
+      "e_piping": false,
+      "listra_evidencia": "Duas faixas paralelas de cores diferentes (branco e verde) no painel traseiro/lateral."
     },
     "elastico": {
       "tem_elastico": false,
@@ -39490,11 +39655,20 @@
       "evidencia": "Não há hang tag visível nas fotos, apenas etiquetas costuradas."
     },
     "score": {
-      "score": 0,
-      "teto": 0,
+      "score": 9,
+      "teto": 12,
+      "preco_num": 15.0,
       "decisao": "descartado",
-      "motivo_exclusao": "listra_unica_cor_piping",
-      "breakdown": {}
+      "motivo": "score baixo",
+      "breakdown": {
+        "tier": 15,
+        "tamanho": 4,
+        "elastico": -15,
+        "etiqueta": 0,
+        "listra_bonus": 5,
+        "preco": 0,
+        "ratio_preco_teto": 1.25
+      }
     }
   },
   {
@@ -40300,11 +40474,13 @@
       "tier": "ruim",
       "justificativa": "Cor fluorescente, sem apelo de mercado.",
       "cores_listras": [
+        "branco",
+        "azul claro",
         "branco"
       ],
       "listra_tier": "salva",
       "tier_final": "ok",
-      "combo_motivo": "listras ['branco'] neutras salvam 'Verde médio': ruim→ok"
+      "combo_motivo": "listras ['branco', 'azul claro', 'branco'] neutras salvam 'Verde médio': ruim→ok"
     },
     "upload": "hace un día",
     "envio": "desde 2,89 €",
@@ -40342,6 +40518,8 @@
       "cor_principal": "verde",
       "tem_listra_lateral_sundek": true,
       "cores_listras": [
+        "branco",
+        "azul claro",
         "branco"
       ],
       "listra_na_frente": false,
@@ -40354,7 +40532,9 @@
       "aparencia": "ok",
       "tecido_brilhoso": false,
       "tem_bolso_frontal": false,
-      "justificativa": "Short verde com listra branca na lateral traseira."
+      "justificativa": "Short verde com listra branca na lateral traseira.",
+      "e_piping": false,
+      "listra_evidencia": "Três faixas paralelas no painel traseiro: branco, azul claro, branco."
     },
     "elastico": {
       "tem_elastico": false,
@@ -40366,11 +40546,20 @@
       "evidencia": "Não há etiqueta de papel/papelão solta visível nas fotos."
     },
     "score": {
-      "score": 0,
-      "teto": 0,
+      "score": 6,
+      "teto": 7,
+      "preco_num": 12.5,
       "decisao": "descartado",
-      "motivo_exclusao": "listra_unica_cor_piping",
-      "breakdown": {}
+      "motivo": "preço €12.50 acima do teto €7.00 × 1.25",
+      "breakdown": {
+        "tier": 8,
+        "tamanho": 8,
+        "elastico": -15,
+        "etiqueta": 0,
+        "listra_bonus": 5,
+        "preco": 0,
+        "ratio_preco_teto": 1.79
+      }
     }
   },
   {
@@ -41810,11 +41999,13 @@
       "tier": "muito_boa",
       "justificativa": "Cinza é uma cor com alta liquidez no mercado.",
       "cores_listras": [
-        "azul"
+        "preto",
+        "amarelo",
+        "branco"
       ],
       "listra_tier": "neutra",
       "tier_final": "muito_boa",
-      "combo_motivo": "listras ['azul'] confirmam tier 'muito_boa'"
+      "combo_motivo": "listras ['preto', 'amarelo', 'branco'] sem impacto no tier 'muito_boa'"
     },
     "upload": "hace un día",
     "envio": "desde 2,29 €",
@@ -41853,7 +42044,9 @@
       "cor_principal": "cinza",
       "tem_listra_lateral_sundek": true,
       "cores_listras": [
-        "azul"
+        "preto",
+        "amarelo",
+        "branco"
       ],
       "listra_na_frente": false,
       "tem_bolso_traseiro": true,
@@ -41865,7 +42058,9 @@
       "aparencia": "ok",
       "tecido_brilhoso": false,
       "tem_bolso_frontal": false,
-      "justificativa": "Short com listras verticais e bolso traseiro visível."
+      "justificativa": "Short com listras verticais e bolso traseiro visível.",
+      "e_piping": false,
+      "listra_evidencia": "Faixas paralelas preto, amarelo e branco no painel traseiro/lateral."
     },
     "elastico": {
       "tem_elastico": false,
@@ -41877,11 +42072,20 @@
       "evidencia": "Não há etiqueta pendente visível nas fotos, apenas etiquetas costuradas internamente."
     },
     "score": {
-      "score": 0,
-      "teto": 0,
-      "decisao": "descartado",
-      "motivo_exclusao": "listra_unica_cor_piping",
-      "breakdown": {}
+      "score": 53,
+      "teto": 24,
+      "preco_num": 10.0,
+      "decisao": "medio",
+      "motivo": "tentar barganha",
+      "breakdown": {
+        "tier": 22,
+        "tamanho": 16,
+        "elastico": -15,
+        "etiqueta": 0,
+        "listra_bonus": 0,
+        "preco": 30,
+        "ratio_preco_teto": 0.42
+      }
     }
   },
   {
@@ -42011,11 +42215,12 @@
       "tier": "boa",
       "justificativa": "Cor aceita bem no mercado, com boa liquidez.",
       "cores_listras": [
-        "azul"
+        "branco",
+        "azul claro"
       ],
       "listra_tier": "salva",
       "tier_final": "boa",
-      "combo_motivo": "listras ['azul'] neutras salvam 'Verde escuro': boa→boa"
+      "combo_motivo": "listras ['branco', 'azul claro'] neutras salvam 'Verde escuro': boa→boa"
     },
     "upload": "hace 2 días",
     "envio": "desde 2,29 €",
@@ -42053,7 +42258,8 @@
       "cor_principal": "verde",
       "tem_listra_lateral_sundek": true,
       "cores_listras": [
-        "azul"
+        "branco",
+        "azul claro"
       ],
       "listra_na_frente": false,
       "tem_bolso_traseiro": true,
@@ -42066,7 +42272,9 @@
       "tecido_brilhoso": false,
       "tem_bolso_frontal": false,
       "justificativa": "Short com listra lateral e bolso traseiro.",
-      "bolso_evidencia": "A vista traseira do short mostra um bolso com um patch preto contendo apenas o logo Sundek (sol/montanha) sem texto."
+      "bolso_evidencia": "A vista traseira do short mostra um bolso com um patch preto contendo apenas o logo Sundek (sol/montanha) sem texto.",
+      "e_piping": false,
+      "listra_evidencia": "Duas faixas paralelas de cores diferentes (branco e azul claro) no painel traseiro/lateral."
     },
     "elastico": {
       "tem_elastico": false,
@@ -42081,7 +42289,7 @@
       "score": 0,
       "teto": 0,
       "decisao": "descartado",
-      "motivo_exclusao": "bolso_so_logo_colecao_antiga, listra_unica_cor_piping, tamanho_numerico_36",
+      "motivo_exclusao": "bolso_so_logo_colecao_antiga, tamanho_numerico_36",
       "breakdown": {}
     }
   },
@@ -44910,11 +45118,12 @@
       "tier": "ok",
       "justificativa": "A cor é azul claro, que é aceitável, mas não tem alta liquidez.",
       "cores_listras": [
-        "branco"
+        "branco",
+        "bege"
       ],
       "listra_tier": "neutra",
       "tier_final": "ok",
-      "combo_motivo": "listras ['branco'] sem impacto no tier 'ok'"
+      "combo_motivo": "listras ['branco', 'bege'] sem impacto no tier 'ok'"
     },
     "upload": "hace 2 días",
     "envio": "desde 2,29 €",
@@ -44951,7 +45160,8 @@
       "cor_principal": "azul",
       "tem_listra_lateral_sundek": true,
       "cores_listras": [
-        "branco"
+        "branco",
+        "bege"
       ],
       "listra_na_frente": false,
       "tem_bolso_traseiro": true,
@@ -44964,7 +45174,9 @@
       "tecido_brilhoso": false,
       "tem_bolso_frontal": false,
       "justificativa": "Short azul com listra branca na lateral traseira.",
-      "bolso_evidencia": "A vista traseira mostra um bolso com um patch, mas o patch parece ter apenas o logo sem a palavra 'SUNDEK'."
+      "bolso_evidencia": "A vista traseira mostra um bolso com um patch, mas o patch parece ter apenas o logo sem a palavra 'SUNDEK'.",
+      "e_piping": false,
+      "listra_evidencia": "Duas faixas paralelas de cores diferentes (branco e bege) no painel traseiro/lateral."
     },
     "elastico": {
       "tem_elastico": false,
@@ -44977,10 +45189,19 @@
     },
     "score": {
       "score": 0,
-      "teto": 0,
+      "teto": 5,
+      "preco_num": 9.0,
       "decisao": "descartado",
-      "motivo_exclusao": "listra_unica_cor_piping",
-      "breakdown": {}
+      "motivo": "preço €9.00 acima do teto €5.00 × 1.25",
+      "breakdown": {
+        "tier": 8,
+        "tamanho": 4,
+        "elastico": -15,
+        "etiqueta": 0,
+        "listra_bonus": 0,
+        "preco": 0,
+        "ratio_preco_teto": 1.8
+      }
     }
   },
   {
@@ -46722,11 +46943,12 @@
       "justificativa": "Cor branca é de alta procura e vendem sozinhos.",
       "cores_listras": [
         "azul",
-        "verde"
+        "verde",
+        "amarelo"
       ],
       "listra_tier": "neutra",
       "tier_final": "maravilhoso",
-      "combo_motivo": "listras ['azul', 'verde'] confirmam tier 'maravilhoso'"
+      "combo_motivo": "listras ['azul', 'verde', 'amarelo'] confirmam tier 'maravilhoso'"
     },
     "upload": "hace un día",
     "envio": "desde 2,88 €",
@@ -46766,7 +46988,8 @@
       "tem_listra_lateral_sundek": true,
       "cores_listras": [
         "azul",
-        "verde"
+        "verde",
+        "amarelo"
       ],
       "listra_na_frente": false,
       "tem_bolso_traseiro": true,
@@ -46779,7 +47002,9 @@
       "tecido_brilhoso": false,
       "tem_bolso_frontal": false,
       "justificativa": "Short com listras laterais e bolso traseiro visível.",
-      "bolso_evidencia": "A vista traseira do short mostra um bolso com um patch que tem o logo Sundek e a palavra 'SUNDEK' escrita."
+      "bolso_evidencia": "A vista traseira do short mostra um bolso com um patch que tem o logo Sundek e a palavra 'SUNDEK' escrita.",
+      "e_piping": false,
+      "listra_evidencia": "Três faixas paralelas de cores distintas (azul, verde, amarelo) visíveis no painel traseiro/lateral do short."
     },
     "elastico": {
       "tem_elastico": false,
@@ -49545,7 +49770,7 @@
     "classificacao": {
       "tipo": "liso",
       "cor_principal": "verde",
-      "tem_listra_lateral_sundek": true,
+      "tem_listra_lateral_sundek": false,
       "cores_listras": [
         "azul"
       ],
@@ -49559,7 +49784,9 @@
       "aparencia": "ok",
       "tecido_brilhoso": false,
       "tem_bolso_frontal": false,
-      "justificativa": "Short com listra lateral e bolso traseiro visível."
+      "justificativa": "Short com listra lateral e bolso traseiro visível.",
+      "e_piping": true,
+      "listra_evidencia": "Linha azul fina contornando a borda lateral do short."
     },
     "elastico": {
       "tem_elastico": true,
@@ -49574,7 +49801,7 @@
       "score": 0,
       "teto": 0,
       "decisao": "descartado",
-      "motivo_exclusao": "listra_unica_cor_piping",
+      "motivo_exclusao": "sem_listra_sundek, piping_nao_e_listra_sundek",
       "breakdown": {}
     }
   },
@@ -55584,11 +55811,12 @@
       "justificativa": "Cinza é uma cor com alta liquidez no mercado.",
       "cores_listras": [
         "azul",
-        "branco"
+        "branco",
+        "bege"
       ],
       "listra_tier": "neutra",
       "tier_final": "muito_boa",
-      "combo_motivo": "listras ['azul', 'branco'] confirmam tier 'muito_boa'"
+      "combo_motivo": "listras ['azul', 'branco', 'bege'] confirmam tier 'muito_boa'"
     },
     "upload": "hace 6 horas",
     "envio": "desde 0,00 €",
@@ -55628,7 +55856,8 @@
       "tem_listra_lateral_sundek": true,
       "cores_listras": [
         "azul",
-        "branco"
+        "branco",
+        "bege"
       ],
       "listra_na_frente": false,
       "tem_bolso_traseiro": true,
@@ -55641,7 +55870,9 @@
       "tecido_brilhoso": false,
       "tem_bolso_frontal": false,
       "justificativa": "Short com listra traseira e bolso traseiro visível.",
-      "bolso_evidencia": "Bolso traseiro visível com patch azul contendo o logo Sundek e a palavra 'SUNDEK' escrita."
+      "bolso_evidencia": "Bolso traseiro visível com patch azul contendo o logo Sundek e a palavra 'SUNDEK' escrita.",
+      "e_piping": false,
+      "listra_evidencia": "Três faixas paralelas de cores distintas (azul, branco, bege) no painel traseiro/lateral."
     },
     "elastico": {
       "tem_elastico": false,
@@ -56153,11 +56384,13 @@
       "tier": "boa",
       "justificativa": "Cor aceitável com boa liquidez no mercado.",
       "cores_listras": [
-        "laranja"
+        "laranja",
+        "branco",
+        "preto"
       ],
       "listra_tier": "neutra",
       "tier_final": "boa",
-      "combo_motivo": "listras ['laranja'] confirmam tier 'boa'"
+      "combo_motivo": "listras ['laranja', 'branco', 'preto'] confirmam tier 'boa'"
     },
     "upload": "hace 2 días",
     "envio": "desde 2,99 €",
@@ -56196,7 +56429,9 @@
       "cor_principal": "cinza",
       "tem_listra_lateral_sundek": true,
       "cores_listras": [
-        "laranja"
+        "laranja",
+        "branco",
+        "preto"
       ],
       "listra_na_frente": false,
       "tem_bolso_traseiro": true,
@@ -56208,7 +56443,9 @@
       "aparencia": "ok",
       "tecido_brilhoso": false,
       "tem_bolso_frontal": false,
-      "justificativa": "Short com listra lateral e bolso traseiro visível."
+      "justificativa": "Short com listra lateral e bolso traseiro visível.",
+      "e_piping": false,
+      "listra_evidencia": "Três faixas paralelas de cores diferentes (laranja, branco, preto) no painel traseiro/lateral."
     },
     "elastico": {
       "tem_elastico": true,
@@ -56220,11 +56457,20 @@
       "evidencia": "Não há etiqueta pendente visível nas fotos, apenas etiquetas costuradas."
     },
     "score": {
-      "score": 0,
-      "teto": 0,
-      "decisao": "descartado",
-      "motivo_exclusao": "listra_unica_cor_piping",
-      "breakdown": {}
+      "score": 58,
+      "teto": 22,
+      "preco_num": 15.0,
+      "decisao": "medio",
+      "motivo": "tentar barganha",
+      "breakdown": {
+        "tier": 15,
+        "tamanho": 8,
+        "elastico": 15,
+        "etiqueta": 0,
+        "listra_bonus": 0,
+        "preco": 20,
+        "ratio_preco_teto": 0.68
+      }
     }
   },
   {
@@ -57547,11 +57793,13 @@
       "tier": "maravilhoso",
       "justificativa": "Cor branca é de alta procura e vendem sozinhos.",
       "cores_listras": [
-        "azul"
+        "azul claro",
+        "azul",
+        "verde"
       ],
       "listra_tier": "neutra",
       "tier_final": "maravilhoso",
-      "combo_motivo": "listras ['azul'] confirmam tier 'maravilhoso'"
+      "combo_motivo": "listras ['azul claro', 'azul', 'verde'] confirmam tier 'maravilhoso'"
     },
     "upload": "hace un día",
     "envio": "desde 2,29 €",
@@ -57590,7 +57838,9 @@
       "cor_principal": "branco",
       "tem_listra_lateral_sundek": true,
       "cores_listras": [
-        "azul"
+        "azul claro",
+        "azul",
+        "verde"
       ],
       "listra_na_frente": false,
       "tem_bolso_traseiro": true,
@@ -57602,7 +57852,9 @@
       "aparencia": "ok",
       "tecido_brilhoso": false,
       "tem_bolso_frontal": false,
-      "justificativa": "Short com listra traseira e bolso traseiro visível."
+      "justificativa": "Short com listra traseira e bolso traseiro visível.",
+      "e_piping": false,
+      "listra_evidencia": "Três faixas paralelas de cores diferentes (azul claro, azul, verde) no painel traseiro/lateral."
     },
     "elastico": {
       "tem_elastico": false,
@@ -57614,11 +57866,20 @@
       "evidencia": "Nenhuma hang tag visível nas imagens fornecidas."
     },
     "score": {
-      "score": 0,
-      "teto": 0,
-      "decisao": "descartado",
-      "motivo_exclusao": "listra_unica_cor_piping",
-      "breakdown": {}
+      "score": 61,
+      "teto": 32,
+      "preco_num": 5.0,
+      "decisao": "medio",
+      "motivo": "tentar barganha",
+      "breakdown": {
+        "tier": 30,
+        "tamanho": 16,
+        "elastico": -15,
+        "etiqueta": 0,
+        "listra_bonus": 0,
+        "preco": 30,
+        "ratio_preco_teto": 0.16
+      }
     }
   },
   {
@@ -58176,11 +58437,12 @@
       "justificativa": "Cor dominante é azul marinho, que tem alta procura.",
       "cores_listras": [
         "verde",
-        "branco"
+        "branco",
+        "azul"
       ],
       "listra_tier": "neutra",
       "tier_final": "maravilhoso",
-      "combo_motivo": "listras ['verde', 'branco'] confirmam tier 'maravilhoso'"
+      "combo_motivo": "listras ['verde', 'branco', 'azul'] confirmam tier 'maravilhoso'"
     },
     "upload": "hace un día",
     "envio": "desde 2,29 €",
@@ -58220,7 +58482,8 @@
       "tem_listra_lateral_sundek": true,
       "cores_listras": [
         "verde",
-        "branco"
+        "branco",
+        "azul"
       ],
       "listra_na_frente": false,
       "tem_bolso_traseiro": true,
@@ -58235,7 +58498,9 @@
       "justificativa": "Short com listra lateral e bolso traseiro visível.",
       "confianca": null,
       "_model": "gpt-4o",
-      "bolso_evidencia": "Bolso traseiro visível na parte direita com patch verde contendo o logo Sundek e a palavra 'SUNDEK' escrita."
+      "bolso_evidencia": "Bolso traseiro visível na parte direita com patch verde contendo o logo Sundek e a palavra 'SUNDEK' escrita.",
+      "e_piping": false,
+      "listra_evidencia": "Três faixas paralelas de cores distintas (verde, branco, azul) no painel traseiro/lateral."
     },
     "elastico": {
       "tem_elastico": false,
@@ -60272,11 +60537,13 @@
       "tier": "muito_boa",
       "justificativa": "Cinza é uma cor com alta liquidez no mercado.",
       "cores_listras": [
-        "roxo"
+        "branco",
+        "roxo",
+        "branco"
       ],
       "listra_tier": "neutra",
       "tier_final": "muito_boa",
-      "combo_motivo": "listras ['roxo'] sem impacto no tier 'muito_boa'"
+      "combo_motivo": "listras ['branco', 'roxo', 'branco'] sem impacto no tier 'muito_boa'"
     },
     "upload": "hace 2 días",
     "envio": "desde 2,29 €",
@@ -60313,7 +60580,9 @@
       "cor_principal": "cinza",
       "tem_listra_lateral_sundek": true,
       "cores_listras": [
-        "roxo"
+        "branco",
+        "roxo",
+        "branco"
       ],
       "listra_na_frente": false,
       "tem_bolso_traseiro": true,
@@ -60326,7 +60595,9 @@
       "tecido_brilhoso": false,
       "tem_bolso_frontal": false,
       "justificativa": "Short com listra traseira e bolso traseiro.",
-      "bolso_evidencia": "A vista traseira do short mostra um bolso com um patch que tem o logo Sundek e a palavra 'SUNDEK' escrita."
+      "bolso_evidencia": "A vista traseira do short mostra um bolso com um patch que tem o logo Sundek e a palavra 'SUNDEK' escrita.",
+      "e_piping": false,
+      "listra_evidencia": "Três faixas paralelas em cores distintas (branco, roxo, branco) no painel traseiro/lateral."
     },
     "elastico": {
       "tem_elastico": true,
@@ -60338,11 +60609,20 @@
       "evidencia": "Não há etiqueta de papel/papelão pendente visível nas imagens."
     },
     "score": {
-      "score": 0,
-      "teto": 0,
-      "decisao": "descartado",
-      "motivo_exclusao": "listra_unica_cor_piping",
-      "breakdown": {}
+      "score": 87,
+      "teto": 37,
+      "preco_num": 9.0,
+      "decisao": "compravel",
+      "motivo": "elástico + preço ≤ €9 + cor boa",
+      "breakdown": {
+        "tier": 22,
+        "tamanho": 20,
+        "elastico": 15,
+        "etiqueta": 0,
+        "listra_bonus": 0,
+        "preco": 30,
+        "ratio_preco_teto": 0.24
+      }
     }
   },
   {

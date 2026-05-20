@@ -134,13 +134,9 @@ def calcular_score(item: dict) -> dict:
         exclusoes.append("bolso_so_logo_colecao_antiga")
     if tipo == "liso" and cl.get("tem_listra_lateral_sundek") is False:
         exclusoes.append("sem_listra_sundek")
-    # Heurística: listra Sundek real é multi-color. Listra de cor única = quase sempre piping
-    if tipo == "liso" and cl.get("tem_listra_lateral_sundek") is True:
-        cores = cl.get("cores_listras") or []
-        # Normaliza cores únicas (case-insensitive, sem duplicatas)
-        cores_unicas = set(c.strip().lower() for c in cores if c)
-        if len(cores_unicas) < 2:
-            exclusoes.append("listra_unica_cor_piping")
+    # Piping: prompt dedicado detecta acabamento de costura disfarçado de listra
+    if tipo == "liso" and cl.get("e_piping") is True:
+        exclusoes.append("piping_nao_e_listra_sundek")
     if tam_key == "S" and tamanho.strip().upper().startswith("XS"):
         exclusoes.append("tamanho_XS")
     if tam_key == "XXL":

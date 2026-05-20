@@ -27,6 +27,7 @@ from .classify_brand import verificar_sundek
 from .classify_color import classificar_cor
 from .classify_elastico import verificar_elastico
 from .classify_etiqueta import verificar_etiqueta
+from .classify_listra import verificar_listra
 from .listra_tier import avaliar_combo
 from .prefilter import parece_short
 
@@ -120,6 +121,25 @@ def _processar(item: dict, idx: str, total: int) -> tuple[dict, int, int]:
         cor = elastico = etiqueta = None
 
         if tipo == "liso":
+            # 3b. Listra Sundek (prompt dedicado — distingue listra real de piping)
+            try:
+                listra = verificar_listra(item)
+                u = listra.pop("_usage", {})
+                in_tok += u.get("prompt_tokens", 0)
+                out_tok += u.get("completion_tokens", 0)
+                c["cores_listras"] = listra.get("cores") or []
+                c["e_piping"] = listra.get("e_piping", False)
+                c["tem_listra_lateral_sundek"] = listra.get("e_listra_sundek", False)
+                c["listra_evidencia"] = listra.get("evidencia")
+                tag_listra = (
+                    "listra✓" if listra.get("e_listra_sundek")
+                    else "piping" if listra.get("e_piping")
+                    else "s/listra"
+                )
+                linha += f" | {tag_listra}"
+            except Exception as e:
+                pass  # mantém o que veio do prompt multi-uso
+
             # 4. Cor
             try:
                 cor = classificar_cor(item)

@@ -73,7 +73,7 @@ GRUPOS = {
         ("bolso_frontal", "Bolso frontal/cargo (estilo boardshort)"),
         ("sem_bolso_traseiro", "Sem bolso traseiro"),
         ("sem_listra_sundek", "Sem listra Sundek autêntica"),
-        ("listra_unica_cor_piping", "Listra única (piping de costura, não é Sundek real)"),
+        ("piping_nao_e_listra_sundek", "Piping de costura (não é listra Sundek real)"),
     ],
     "Fechamento ruim": [
         ("fechamento_botao", "Botão no fly"),
