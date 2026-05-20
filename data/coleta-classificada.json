@@ -244,7 +244,7 @@
     "elastico": {
       "tem_elastico": true,
       "tipo_fechamento": "elastico",
-      "evidencia": "Cós franzido com tecido enrugado, indicando presença de elástico."
+      "evidencia": "Cós franzido com elástico visível, sem botão ou velcro no fly."
     },
     "etiqueta": {
       "tem_etiqueta": false,
@@ -2437,7 +2437,7 @@
     "elastico": {
       "tem_elastico": true,
       "tipo_fechamento": "elastico",
-      "evidencia": "Tecido franzido no cós indicando elástico."
+      "evidencia": "Cós franzido visível, sem botão ou velcro no fly nas imagens apresentadas."
     },
     "etiqueta": {
       "tem_etiqueta": false,
@@ -3242,7 +3242,7 @@
     "elastico": {
       "tem_elastico": false,
       "tipo_fechamento": "cordao",
-      "evidencia": "Cós plano com cordão passando por ilhões, sem franzido no tecido."
+      "evidencia": "Cós plano com cordão visível, sem franzido. Fly sem botão ou velcro visível."
     },
     "etiqueta": {
       "tem_etiqueta": false,
@@ -6708,7 +6708,7 @@
     "elastico": {
       "tem_elastico": false,
       "tipo_fechamento": "cordao",
-      "evidencia": "Cós plano com cordão, sem franzido no tecido."
+      "evidencia": "Cós plano com cordão visível, sem franzido. Não há botão ou velcro no fly."
     },
     "etiqueta": {
       "tem_etiqueta": false,
@@ -8713,7 +8713,7 @@
     "elastico": {
       "tem_elastico": false,
       "tipo_fechamento": "cordao",
-      "evidencia": "Cós plano com cordão passando por ilhões, sem franzido no tecido."
+      "evidencia": "Cós plano com cordão visível, sem franzido. Fly sem botão ou velcro visível."
     },
     "etiqueta": {
       "tem_etiqueta": false,
@@ -11665,7 +11665,7 @@
     "elastico": {
       "tem_elastico": false,
       "tipo_fechamento": "cordao",
-      "evidencia": "Cós plano com cordão passando por ilhões, sem franzido no tecido."
+      "evidencia": "Cós plano com cordão visível, sem franzido. Não há botão ou velcro no fly."
     },
     "etiqueta": {
       "tem_etiqueta": false,
@@ -15679,7 +15679,7 @@
     "elastico": {
       "tem_elastico": false,
       "tipo_fechamento": "cordao",
-      "evidencia": "Cós plano e liso com cordão visível, sem franzido no tecido."
+      "evidencia": "Cós plano sem franzido e sem botão/velcro visível no fly, apenas cordão."
     },
     "etiqueta": {
       "tem_etiqueta": false,
@@ -18279,28 +18279,19 @@
     },
     "elastico": {
       "tem_elastico": true,
-      "tipo_fechamento": "elastico",
-      "evidencia": "Cós franzido com tecido enrugado visível."
+      "tipo_fechamento": "botao",
+      "evidencia": "Cós franzido com elástico visível e botão circular no fly."
     },
     "etiqueta": {
       "tem_etiqueta": false,
       "evidencia": "Não há hang tag visível nas imagens, apenas etiquetas costuradas."
     },
     "score": {
-      "score": 73,
-      "teto": 23,
-      "preco_num": 10.0,
-      "decisao": "compravel",
-      "motivo": "",
-      "breakdown": {
-        "tier": 8,
-        "tamanho": 20,
-        "elastico": 15,
-        "etiqueta": 0,
-        "listra_bonus": 0,
-        "preco": 30,
-        "ratio_preco_teto": 0.43
-      }
+      "score": 0,
+      "teto": 0,
+      "decisao": "descartado",
+      "motivo_exclusao": "fechamento_botao",
+      "breakdown": {}
     }
   },
   {
@@ -18991,28 +18982,19 @@
     },
     "elastico": {
       "tem_elastico": false,
-      "tipo_fechamento": "cordao",
-      "evidencia": "Cós plano com cordão passando por ilhões, sem franzido no tecido."
+      "tipo_fechamento": "botao",
+      "evidencia": "Cós plano sem franzido, botão visível no fly na frente."
     },
     "etiqueta": {
       "tem_etiqueta": false,
       "evidencia": "Não há hang tag visível nas imagens, apenas etiquetas costuradas."
     },
     "score": {
-      "score": 65,
-      "teto": 37,
-      "preco_num": 15.0,
-      "decisao": "medio",
-      "motivo": "tentar barganha",
-      "breakdown": {
-        "tier": 30,
-        "tamanho": 20,
-        "elastico": -15,
-        "etiqueta": 0,
-        "listra_bonus": 0,
-        "preco": 30,
-        "ratio_preco_teto": 0.41
-      }
+      "score": 0,
+      "teto": 0,
+      "decisao": "descartado",
+      "motivo_exclusao": "fechamento_botao",
+      "breakdown": {}
     }
   },
   {
@@ -21165,7 +21147,7 @@
     "elastico": {
       "tem_elastico": true,
       "tipo_fechamento": "elastico",
-      "evidencia": "Cós franzido com elástico visível e cordão decorativo."
+      "evidencia": "Cós franzido com elástico visível nas fotos, sem botão ou velcro no fly."
     },
     "etiqueta": {
       "tem_etiqueta": false,
@@ -24605,28 +24587,19 @@
     },
     "elastico": {
       "tem_elastico": false,
-      "tipo_fechamento": "cordao",
-      "evidencia": "Cós plano com cordão passando por ilhões, sem franzido no tecido."
+      "tipo_fechamento": "botao",
+      "evidencia": "Cós plano sem franzido, botão visível no fly central."
     },
     "etiqueta": {
       "tem_etiqueta": false,
       "evidencia": "Não há etiqueta de papel/papelão pendente visível nas imagens."
     },
     "score": {
-      "score": 57,
-      "teto": 29,
-      "preco_num": 12.0,
-      "decisao": "medio",
-      "motivo": "tentar barganha",
-      "breakdown": {
-        "tier": 22,
-        "tamanho": 20,
-        "elastico": -15,
-        "etiqueta": 0,
-        "listra_bonus": 0,
-        "preco": 30,
-        "ratio_preco_teto": 0.41
-      }
+      "score": 0,
+      "teto": 0,
+      "decisao": "descartado",
+      "motivo_exclusao": "fechamento_botao",
+      "breakdown": {}
     }
   },
   {
@@ -24771,7 +24744,7 @@
     "elastico": {
       "tem_elastico": false,
       "tipo_fechamento": "cordao",
-      "evidencia": "Cós plano com cordão passando por ilhões, sem franzido no tecido."
+      "evidencia": "Cós plano sem franzido, com cordão visível. Fly sem botão ou velcro."
     },
     "etiqueta": {
       "tem_etiqueta": false,
@@ -27009,7 +26982,7 @@
     "elastico": {
       "tem_elastico": false,
       "tipo_fechamento": "cordao",
-      "evidencia": "Cós plano com cordão passando por ilhões, sem franzido no tecido."
+      "evidencia": "Cós plano sem franzido, cordão visível, sem botão ou velcro no fly."
     },
     "etiqueta": {
       "tem_etiqueta": false,
@@ -30281,7 +30254,7 @@
     "elastico": {
       "tem_elastico": false,
       "tipo_fechamento": "cordao",
-      "evidencia": "Cós plano com cordão passando por ilhões, sem franzido no tecido."
+      "evidencia": "Cós plano sem franzido e com cordão visível; sem botão ou velcro no fly."
     },
     "etiqueta": {
       "tem_etiqueta": false,
@@ -30381,7 +30354,7 @@
     "elastico": {
       "tem_elastico": false,
       "tipo_fechamento": "cordao",
-      "evidencia": "Cós plano com cordão passando por ilhões, sem franzido no tecido."
+      "evidencia": "Cós plano e liso sem franzido, com cordão visível; sem botão ou velcro no fly."
     },
     "etiqueta": {
       "tem_etiqueta": false,
@@ -31509,7 +31482,7 @@
     "elastico": {
       "tem_elastico": true,
       "tipo_fechamento": "elastico",
-      "evidencia": "Cós franzido com elástico visível e cordão decorativo."
+      "evidencia": "Cós franzido com elástico visível, sem botão ou velcro no fly."
     },
     "etiqueta": {
       "tem_etiqueta": false,
@@ -31693,7 +31666,7 @@
     "elastico": {
       "tem_elastico": false,
       "tipo_fechamento": "cordao",
-      "evidencia": "Cós plano e liso com cordão passando por ilhões, sem franzido no tecido."
+      "evidencia": "Cós plano com cordão visível, sem franzido. Fly sem botão ou velcro visível."
     },
     "etiqueta": {
       "tem_etiqueta": false,
@@ -33164,7 +33137,7 @@
     "elastico": {
       "tem_elastico": true,
       "tipo_fechamento": "elastico",
-      "evidencia": "Cós franzido com tecido enrugado e cordão visível."
+      "evidencia": "Cós franzido com elástico visível, sem botão ou velcro no fly."
     },
     "etiqueta": {
       "tem_etiqueta": false,
@@ -36777,7 +36750,7 @@
     "elastico": {
       "tem_elastico": false,
       "tipo_fechamento": "cordao",
-      "evidencia": "Cós plano com cordão passando por ilhões, sem franzido no tecido."
+      "evidencia": "Cós plano sem franzido, com cordão visível. Fly não mostra botão ou velcro."
     },
     "etiqueta": {
       "tem_etiqueta": false,
@@ -38323,7 +38296,7 @@
     "elastico": {
       "tem_elastico": false,
       "tipo_fechamento": "cordao",
-      "evidencia": "Cós plano com cordão passando por ilhões, sem franzido no tecido."
+      "evidencia": "Cós plano sem franzido, cordão visível no fly, sem botão ou velcro."
     },
     "etiqueta": {
       "tem_etiqueta": false,
@@ -42909,7 +42882,7 @@
     "elastico": {
       "tem_elastico": true,
       "tipo_fechamento": "elastico",
-      "evidencia": "Cós franzido com tecido enrugado visível e cordão decorativo."
+      "evidencia": "Cós franzido com elástico visível, sem botão ou velcro no fly."
     },
     "etiqueta": {
       "tem_etiqueta": false,
@@ -43581,28 +43554,28 @@
       "justificativa": "Short com listra traseira e bolso traseiro visível."
     },
     "elastico": {
-      "tem_elastico": false,
-      "tipo_fechamento": "cordao",
-      "evidencia": "Cós plano e liso com cordão visível, sem franzido no tecido."
+      "tem_elastico": true,
+      "tipo_fechamento": "elastico",
+      "evidencia": "Cós franzido com elástico visível, sem botão ou velcro no fly."
     },
     "etiqueta": {
       "tem_etiqueta": false,
       "evidencia": "Não há hang tag visível nas imagens, apenas etiquetas costuradas."
     },
     "score": {
-      "score": 51,
-      "teto": 32,
+      "score": 91,
+      "teto": 40,
       "preco_num": 20.0,
-      "decisao": "medio",
-      "motivo": "tentar barganha",
+      "decisao": "compravel",
+      "motivo": "",
       "breakdown": {
         "tier": 30,
         "tamanho": 16,
-        "elastico": -15,
+        "elastico": 15,
         "etiqueta": 0,
         "listra_bonus": 0,
-        "preco": 20,
-        "ratio_preco_teto": 0.62
+        "preco": 30,
+        "ratio_preco_teto": 0.5
       }
     }
   },
@@ -45201,7 +45174,7 @@
     "elastico": {
       "tem_elastico": false,
       "tipo_fechamento": "cordao",
-      "evidencia": "Cós plano e liso com cordão passando por ilhões, sem franzido no tecido."
+      "evidencia": "Cós plano sem franzido, cordão visível, sem botão ou velcro no fly."
     },
     "etiqueta": {
       "tem_etiqueta": false,
@@ -46564,7 +46537,7 @@
     "elastico": {
       "tem_elastico": false,
       "tipo_fechamento": "cordao",
-      "evidencia": "Cós plano e liso com cordão passando por ilhões, sem franzido no tecido."
+      "evidencia": "Cós plano com cordão visível, sem franzido. Fly sem botão ou velcro visível."
     },
     "etiqueta": {
       "tem_etiqueta": false,
@@ -49235,7 +49208,7 @@
     "elastico": {
       "tem_elastico": false,
       "tipo_fechamento": "cordao",
-      "evidencia": "Cós plano com cordão passando por ilhões, sem franzido no tecido."
+      "evidencia": "Cós plano com cordão visível, sem franzido. Fly sem botão ou velcro visível."
     },
     "etiqueta": {
       "tem_etiqueta": false,
@@ -50342,28 +50315,28 @@
       "justificativa": "Short branco com listra traseira Sundek."
     },
     "elastico": {
-      "tem_elastico": false,
-      "tipo_fechamento": "cordao",
-      "evidencia": "Cós plano com cordão passando por ilhões, sem franzido no tecido."
+      "tem_elastico": true,
+      "tipo_fechamento": "elastico",
+      "evidencia": "Cós franzido com elástico visível, sem botão ou velcro no fly."
     },
     "etiqueta": {
       "tem_etiqueta": false,
       "evidencia": "Não há etiqueta pendente visível nas fotos, apenas etiquetas costuradas."
     },
     "score": {
-      "score": 49,
-      "teto": 27,
+      "score": 79,
+      "teto": 35,
       "preco_num": 8.99,
-      "decisao": "medio",
-      "motivo": "tentar barganha",
+      "decisao": "compravel",
+      "motivo": "elástico + preço ≤ €9 + cor boa",
       "breakdown": {
         "tier": 30,
         "tamanho": 4,
-        "elastico": -15,
+        "elastico": 15,
         "etiqueta": 0,
         "listra_bonus": 0,
         "preco": 30,
-        "ratio_preco_teto": 0.33
+        "ratio_preco_teto": 0.26
       }
     }
   },
@@ -51640,7 +51613,7 @@
     "elastico": {
       "tem_elastico": true,
       "tipo_fechamento": "elastico",
-      "evidencia": "Cós franzido com tecido enrugado visível na parte superior do short."
+      "evidencia": "Cós franzido com elástico visível; sem botão ou velcro no fly."
     },
     "etiqueta": {
       "tem_etiqueta": false,
@@ -52226,7 +52199,7 @@
     "elastico": {
       "tem_elastico": true,
       "tipo_fechamento": "elastico",
-      "evidencia": "Cós franzido com elástico visível e cordão decorativo."
+      "evidencia": "Cós franzido com elástico visível, sem botão ou velcro no fly."
     },
     "etiqueta": {
       "tem_etiqueta": false,
@@ -55387,7 +55360,7 @@
     "elastico": {
       "tem_elastico": false,
       "tipo_fechamento": "cordao",
-      "evidencia": "Cós plano com cordão passando por ilhões, sem franzido no tecido."
+      "evidencia": "Cós plano com cordão visível, sem franzido. Fly não mostra botão ou velcro."
     },
     "etiqueta": {
       "tem_etiqueta": false,
@@ -57422,7 +57395,7 @@
     "elastico": {
       "tem_elastico": false,
       "tipo_fechamento": "cordao",
-      "evidencia": "Cós plano com cordão passando por ilhões, sem franzido no tecido."
+      "evidencia": "Cós plano com cordão visível, sem franzido. Não há botão ou velcro no fly."
     },
     "etiqueta": {
       "tem_etiqueta": false,
@@ -57972,7 +57945,7 @@
     "elastico": {
       "tem_elastico": true,
       "tipo_fechamento": "elastico",
-      "evidencia": "Cós franzido com tecido enrugado e cordão visível."
+      "evidencia": "Cós franzido com elástico visível nas fotos, sem botão ou velcro no fly."
     },
     "etiqueta": {
       "tem_etiqueta": false,
@@ -60760,7 +60733,7 @@
     "elastico": {
       "tem_elastico": false,
       "tipo_fechamento": "cordao",
-      "evidencia": "Cós plano e liso com cordão visível, sem franzido no tecido."
+      "evidencia": "Cós plano com cordão visível, sem franzido. Fly sem botão ou velcro visível."
     },
     "etiqueta": {
       "tem_etiqueta": false,
