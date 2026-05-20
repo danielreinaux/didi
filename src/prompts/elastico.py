@@ -13,16 +13,32 @@ que EXCLUI o item, mesmo que o cós tenha elástico simultaneamente (modelos hí
 
 ANÁLISE A — ELÁSTICO NO CÓS:
 
-tem_elastico = true quando:
-  - Tecido FRANZIDO ou enrugado no topo do short — o cós "puxa" o tecido formando dobras
-  - Banda elástica aparente saindo da borda do cós
-  - Cós visivelmente comprimido com pregas no tecido ao redor
+tem_elastico = true quando há SINAL INEQUÍVOCO de elástico:
+  - Cós VISIVELMENTE COMPRIMIDO/encolhido — você vê dobras ESTRUTURAIS regulares
+    que comprimem o tecido em zigue-zague ao longo de TODO o cós (não pregas aleatórias)
+  - Banda elástica APARENTE saindo pela borda interna do cós (você vê a faixa elástica)
+  - Cós encurva/franze de forma uniforme quando o short está estendido sobre superfície plana
 
 tem_elastico = false quando:
-  - Cós PLANO e liso, sem nenhum franzido — tecido reto e esticado na borda superior
+  - Cós PLANO e liso quando estendido — tecido reto na borda superior
   - Estilo boardshort clássico com cós estruturado e plano
+  - Cordão passando por ilhós metálicos com cós que NÃO se contrai sozinho (cordão é o
+    ÚNICO mecanismo de ajuste)
 
-ATENÇÃO: cordão ≠ elástico. Sundeks clássicos frequentemente têm cordão MAS cós plano sem elástico.
+⚠️ ARMADILHA — NYLON NATURALMENTE ENRUGADO:
+Tecido nylon (material típico dos Sundeks) frequentemente apresenta:
+  - Rugas e dobras aleatórias do uso ou armazenamento
+  - Textura granulada/amassada na foto
+  - Pregas pontuais não-uniformes
+
+NADA DISSO É ELÁSTICO. Elástico produz compressão UNIFORME e RÍTMICA ao longo do cós inteiro.
+Se você vê rugas aleatórias mas o cós parece reto/plano quando estendido → tem_elastico = false.
+
+TESTE MENTAL ANTES DE MARCAR TRUE:
+  - "O cós está visivelmente COMPRIMIDO ao longo de toda sua extensão como uma calça moletom?"
+    SE NÃO → false ou null
+
+ATENÇÃO: cordão ≠ elástico. Sundeks clássicos boardshort têm cordão MAS cós plano sem elástico.
 
 ANÁLISE B — BOTÃO/VELCRO NO FLY:
 
