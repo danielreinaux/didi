@@ -6,6 +6,7 @@ from openai import OpenAI
 
 from .config import IA
 from .prompts import elastico as prompt
+from .ratelimit import pace_gpt4o
 
 _client: OpenAI | None = None
 
@@ -16,7 +17,7 @@ def _get_client() -> OpenAI:
         return _client
     if not os.environ.get("OPENAI_API_KEY"):
         raise RuntimeError("OPENAI_API_KEY não definida. Coloque em .env")
-    _client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
+    _client = OpenAI(api_key=os.environ["OPENAI_API_KEY"], max_retries=8)
     return _client
 
 
@@ -31,6 +32,7 @@ def verificar_elastico(item: dict) -> dict:
         *[{"type": "image_url", "image_url": {"url": u, "detail": "low"}} for u in fotos],
     ]
 
+    pace_gpt4o()
     resp = _get_client().chat.completions.create(
         model=IA["model_detalhes"],
         messages=[

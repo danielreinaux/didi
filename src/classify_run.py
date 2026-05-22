@@ -93,7 +93,11 @@ def _processar(item: dict, idx: str, total: int) -> tuple[dict, int, int]:
                 marca_4o["evidencia"] = "[double-check gpt-4o] " + (marca_4o.get("evidencia") or "")
                 marca = marca_4o
     except Exception as e:
-        marca = {"e_sundek": "indefinido", "evidencia": f"erro: {e}", "confianca": 0}
+        # Falha na checagem de marca (ex: 429) → marca o item como erro para
+        # ser reprocessado. NÃO segue em frente — sem saber se é short/Sundek,
+        # o resto do pipeline não faz sentido.
+        _log(f"{prefix} → ERRO marca: {str(e)[:80]}")
+        return {**item, "classificacao": {"tipo": "erro", "erro": f"marca: {e}"}}, in_tok, out_tok
 
     # Checa formato ANTES da marca: o modelo confunde "não é short" com "não é Sundek".
     # Uma camiseta/regata Sundek deve cair em nao_short, não em nao_sundek.
@@ -162,6 +166,7 @@ def _processar(item: dict, idx: str, total: int) -> tuple[dict, int, int]:
                 c["cores_listras"] = listra.get("cores") or []
                 c["e_piping"] = listra.get("e_piping", False)
                 c["tem_listra_lateral_sundek"] = listra.get("e_listra_sundek", False)
+                c["bicolor"] = listra.get("bicolor", False)
                 c["listra_evidencia"] = listra.get("evidencia")
                 tag_listra = (
                     "listra✓" if listra.get("e_listra_sundek")
@@ -212,6 +217,7 @@ def _processar(item: dict, idx: str, total: int) -> tuple[dict, int, int]:
                 out_tok += u.get("completion_tokens", 0)
                 c["tem_bolso_traseiro"] = bolso.get("tem_bolso")
                 c["bolso_traseiro_tem_nome"] = bolso.get("tem_nome")
+                c["tem_bolso_frontal"] = bolso.get("bolso_frontal", False)
                 c["bolso_evidencia"] = bolso.get("evidencia")
                 tag_bolso = (
                     "bolso+nome" if bolso.get("tem_nome") is True

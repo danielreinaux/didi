@@ -81,9 +81,27 @@ EXEMPLOS:
   - Patch com sol mas sem letras visíveis na faixa inferior: tem_nome=false
   - Nenhuma vista do bolso/patch nas fotos: tem_bolso=false ou null, tem_nome=null
 
+═══════════════════════════════════════════════════════════════════════
+PERGUNTA 3 — TEM BOLSO FRONTAL/CARGO? (bolso_frontal = true|false)
+═══════════════════════════════════════════════════════════════════════
+
+bolso_frontal = true quando o short tem um bolso GRANDE na FRENTE ou na
+LATERAL da perna, estilo CARGO ou boardshort de surf — tipicamente um bolso
+volumoso, geralmente com aba e botão/velcro, costurado na parte frontal ou
+lateral externa da coxa.
+
+bolso_frontal = false quando:
+  - O short só tem o bolso traseiro pequeno (padrão Sundek) → false
+  - Bolso lateral discreto embutido na costura → false
+  - Bolsinho interno de moeda no cós → false
+  - Não há bolso frontal/lateral visível → false
+
+REGRA: o bolso traseiro pequeno NÃO conta. bolso_frontal só é true se há um
+bolso grande tipo cargo na FRENTE ou LATERAL da perna. Na dúvida, false.
+
 Responda APENAS com JSON válido (sem cercas, sem texto extra):
 
-{"tem_bolso":true|false|null,"tem_nome":true|false|null,"evidencia":"<descreva o que viu da PARTE TRASEIRA EXTERNA do short, não da etiqueta interna>"}"""
+{"tem_bolso":true|false|null,"tem_nome":true|false|null,"bolso_frontal":true|false,"evidencia":"<descreva o que viu — traseira e se há bolso cargo frontal>"}"""
 
 
 def usuario(titulo: str) -> str:

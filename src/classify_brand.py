@@ -6,6 +6,7 @@ from openai import OpenAI
 
 from .config import IA
 from .prompts import verifica_sundek as prompt
+from .ratelimit import pace_gpt4o, pace_mini
 
 _client: OpenAI | None = None
 
@@ -16,7 +17,7 @@ def _get_client() -> OpenAI:
         return _client
     if not os.environ.get("OPENAI_API_KEY"):
         raise RuntimeError("OPENAI_API_KEY não definida")
-    _client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
+    _client = OpenAI(api_key=os.environ["OPENAI_API_KEY"], max_retries=8)
     return _client
 
 
@@ -31,6 +32,10 @@ def verificar_sundek(item: dict, model: str | None = None) -> dict:
         *[{"type": "image_url", "image_url": {"url": u, "detail": detail}} for u in fotos],
     ]
 
+    if (model or IA["model"]) == IA["model_detalhes"]:
+        pace_gpt4o()  # só o double-check usa gpt-4o
+    else:
+        pace_mini()
     resp = _get_client().chat.completions.create(
         model=model or IA["model"],
         messages=[

@@ -5,6 +5,7 @@ import os
 from openai import OpenAI
 
 from .config import IA
+from .ratelimit import pace_mini
 from .prompts import etiqueta as prompt
 
 _client: OpenAI | None = None
@@ -16,7 +17,7 @@ def _get_client() -> OpenAI:
         return _client
     if not os.environ.get("OPENAI_API_KEY"):
         raise RuntimeError("OPENAI_API_KEY não definida. Coloque em .env")
-    _client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
+    _client = OpenAI(api_key=os.environ["OPENAI_API_KEY"], max_retries=8)
     return _client
 
 
@@ -32,6 +33,7 @@ def verificar_etiqueta(item: dict) -> dict:
     ]
 
     # gpt-4o-mini — teste mostrou 97% concordância com gpt-4o (estratégia conservadora)
+    pace_mini()
     resp = _get_client().chat.completions.create(
         model=IA["model"],
         messages=[

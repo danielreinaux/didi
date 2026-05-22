@@ -98,9 +98,27 @@ Exemplo E — Short bordeaux com listra azul claro + branco:
   → e_piping = false (2 cores distintas)
   → e_listra_sundek = true
 
+═══════════════════════════════════════════════════════════════════════
+TAMBÉM AVALIE: O CORPO É BICOLOR? (bicolor = true|false)
+═══════════════════════════════════════════════════════════════════════
+
+bicolor = true SOMENTE quando o CORPO do short é dividido em DOIS PAINÉIS
+GRANDES de cores sólidas diferentes — duas zonas largas de cor cobrindo
+áreas extensas do tecido.
+  Ex: corpo cinza claro com painéis laterais largos pretos; metade de uma
+  cor e metade de outra.
+
+bicolor = false quando o short é de UMA cor sólida só no corpo — mesmo que
+tenha listras, faixas, piping ou patch. Listra NÃO faz o short ser bicolor:
+listra é faixa estreita, bicolor é PAINEL LARGO ocupando boa parte do corpo.
+
+REGRA: se você consegue dizer "o corpo do short é da cor X" (uma cor só),
+então bicolor = false, não importa quantas listras tenha.
+Só marque true se houver DUAS zonas largas de cor sólida no corpo.
+
 Responda APENAS com JSON válido (sem cercas, sem texto extra):
 
-{"cores":["cor1","cor2","cor3",...],"e_piping":true|false,"e_listra_sundek":true|false,"evidencia":"<descreva o que viu no painel traseiro/lateral>"}"""
+{"cores":["cor1","cor2","cor3",...],"e_piping":true|false,"e_listra_sundek":true|false,"bicolor":true|false,"evidencia":"<descreva o que viu no painel traseiro/lateral>"}"""
 
 
 def usuario(titulo: str) -> str:

@@ -35,21 +35,6 @@ ESTAMPADO: corpo do short com padrão gráfico repetido cobrindo o tecido:
 INDEFINIDO: as fotos não permitem decidir (borrada, ângulo bloqueia, peça dobrada).
 
 ═══════════════════════════════════════════════════════════════════════
-BICOLOR (bicolor = true|false):
-═══════════════════════════════════════════════════════════════════════
-
-bicolor = true quando o corpo do short tem DOIS painéis de cores sólidas distintas:
-  - Corpo cinza claro com painéis/bordas laterais escuros (cinza escuro, preto, azul)
-  - Zona central de uma cor e laterais de outra cor
-  - PAINÉIS LARGOS de cor diferente cobrindo a lateral (não uma linha estreita)
-
-Se você vê duas zonas de cor claramente diferentes no corpo → bicolor = true.
-É classificado como LISO mesmo assim (liso bicolor), mas marque bicolor = true.
-
-NÃO confunda com listra: painel bicolor é uma ZONA LARGA de cor; listra é uma
-faixa estreita. Na dúvida entre os dois, se a área de cor diferente é larga = bicolor.
-
-═══════════════════════════════════════════════════════════════════════
 APARÊNCIA DO TECIDO (aparencia):
 ═══════════════════════════════════════════════════════════════════════
 
@@ -75,16 +60,6 @@ NÃO é brilhoso: poliéster fosco normal, microfibra sem brilho, nylon fosco
 REGRA: em dúvida, prefira false. Só marque true se o brilho for EVIDENTE.
 
 ═══════════════════════════════════════════════════════════════════════
-BOLSO FRONTAL (tem_bolso_frontal = true|false):
-═══════════════════════════════════════════════════════════════════════
-
-tem_bolso_frontal = true quando o short tem um bolso GRANDE na frente ou lateral
-do corpo (estilo cargo ou boardshort), tipicamente com aba e botão/velcro.
-
-NÃO é bolso frontal: bolso traseiro pequeno, bolso lateral discreto na costura,
-bolsinho de moeda na cintura.
-
-═══════════════════════════════════════════════════════════════════════
 LISTRA NA FRENTE (listra_na_frente = true|false):
 ═══════════════════════════════════════════════════════════════════════
 
@@ -99,12 +74,12 @@ FORMATO DE RESPOSTA:
 
 Responda APENAS com JSON válido (sem cercas de código, sem texto extra):
 
-{"tipo":"liso"|"logo_grande"|"estampado"|"indefinido","corpo_tem_padrao_repetido":true|false,"tem_logo_grande":true|false,"bicolor":true|false,"aparencia":"ok"|"desbotado"|"indefinido","tecido_brilhoso":true|false,"tem_bolso_frontal":true|false,"listra_na_frente":true|false,"justificativa":"<frase curta>"}
+{"tipo":"liso"|"logo_grande"|"estampado"|"indefinido","corpo_tem_padrao_repetido":true|false,"tem_logo_grande":true|false,"aparencia":"ok"|"desbotado"|"indefinido","tecido_brilhoso":true|false,"listra_na_frente":true|false,"justificativa":"<frase curta>"}
 
 Prioridade do tipo: estampado > logo_grande > liso.
   - Se corpo_tem_padrao_repetido = true → tipo = "estampado"
   - Senão, se tem_logo_grande = true → tipo = "logo_grande"
-  - Senão → tipo = "liso" (bicolor ou não)."""
+  - Senão → tipo = "liso"."""
 
 
 def usuario(titulo: str) -> str:

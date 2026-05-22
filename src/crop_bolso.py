@@ -17,6 +17,7 @@ from openai import OpenAI
 from PIL import Image
 
 from .config import IA
+from .ratelimit import pace_mini
 
 _client: OpenAI | None = None
 
@@ -24,7 +25,7 @@ _client: OpenAI | None = None
 def _get_client() -> OpenAI:
     global _client
     if _client is None:
-        _client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
+        _client = OpenAI(api_key=os.environ["OPENAI_API_KEY"], max_retries=8)
     return _client
 
 
@@ -53,6 +54,7 @@ def _localizar(fotos: list[str]) -> dict:
         conteudo.append({"type": "text", "text": f"Foto {idx}:"})
         conteudo.append({"type": "image_url", "image_url": {"url": u, "detail": "low"}})
 
+    pace_mini()
     resp = _get_client().chat.completions.create(
         model=IA["model"],
         messages=[
