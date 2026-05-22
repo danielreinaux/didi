@@ -36,9 +36,37 @@ def extract_item(page, url: str) -> dict:
       const enviRaw    = t('[data-testid="item-shipping-banner-price"]');
       const marcaRaw   = t('[data-testid="item-attributes-brand-menu-button"]');
 
-      const fotos = Array.from(document.querySelectorAll('img'))
-        .map(img => img.src)
-        .filter(u => u.includes('vinted.net') && /\\/f\\d+\\//.test(u));
+      // Pega só as fotos da galeria do anúncio (não do vendedor, não thumbnails de outros).
+      // Estratégia: tenta primeiro pelo container [data-testid*="item-photo"] (oficial Vinted).
+      // Fallback: pega imgs do vinted.net mas filtra pelo timestamp dominante
+      // (fotos do anúncio compartilham o mesmo upload_id, a do vendedor tem outro).
+      let fotos = [];
+      const gallery = document.querySelector('[data-testid="item-photos-area"], [data-testid="image-carousel"]');
+      if (gallery) {
+        fotos = Array.from(gallery.querySelectorAll('img'))
+          .map(img => img.src)
+          .filter(u => u.includes('vinted.net') && /\\/f\\d+\\//.test(u));
+      }
+      if (!fotos.length) {
+        // Fallback: pega todas, identifica o timestamp dominante e mantém só essas
+        const todas = Array.from(document.querySelectorAll('img'))
+          .map(img => img.src)
+          .filter(u => u.includes('vinted.net') && /\\/f\\d+\\//.test(u));
+        const tsRe = /\\/(\\d{10,})\\.webp/;
+        const counts = {};
+        todas.forEach(u => {
+          const m = u.match(tsRe);
+          if (m) counts[m[1]] = (counts[m[1]] || 0) + 1;
+        });
+        // timestamp com maior contagem = fotos do anúncio
+        const dominante = Object.entries(counts).sort((a,b) => b[1]-a[1])[0]?.[0];
+        fotos = todas.filter(u => {
+          const m = u.match(tsRe);
+          return m && m[1] === dominante;
+        });
+      }
+      // dedupe mantendo ordem
+      fotos = [...new Set(fotos)];
 
       const preco = t('[data-testid="item-price"]');
       const precoTotal = t('[data-testid="total-combined-price"]');
