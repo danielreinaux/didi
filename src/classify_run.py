@@ -132,7 +132,28 @@ def _processar(item: dict, idx: str, total: int) -> tuple[dict, int, int]:
         cor = elastico = etiqueta = None
 
         if tipo == "liso":
-            # 3b. Listra Sundek (prompt dedicado — distingue listra real de piping)
+            # 4. Cor PRIMEIRO — se ruim, corta antes de gastar listra/bolso/elástico
+            try:
+                cor = classificar_cor(item)
+                u = cor.pop("_usage", {})
+                in_tok += u.get("prompt_tokens", 0)
+                out_tok += u.get("completion_tokens", 0)
+            except Exception as e:
+                cor = {"tier": "erro", "erro": str(e)}
+
+            # Short-circuit: cor ruim → pula listra, bolso, elástico, etiqueta
+            # (cores ruins são neon/fluo — listras neutras não salvam, ver listra_tier)
+            if cor and cor.get("tier") == "ruim":
+                combo = avaliar_combo(cor.get("cor_principal", ""), [], cor.get("tier", ""))
+                cor["cores_listras"] = []
+                cor["listra_tier"] = combo["listra_tier"]
+                cor["tier_final"] = combo["tier_final"]
+                cor["combo_motivo"] = combo["motivo"]
+                linha += f" | cor={cor.get('cor_principal')} [ruim] ✗ skip listra/bolso/elas/etiq"
+                _log(linha)
+                return {**item, "marca_check": marca, "classificacao": c, "cor": cor, "elastico": None, "etiqueta": None}, in_tok, out_tok
+
+            # 4b. Listra Sundek (prompt dedicado — distingue listra real de piping)
             try:
                 listra = verificar_listra(item)
                 u = listra.pop("_usage", {})
@@ -151,30 +172,16 @@ def _processar(item: dict, idx: str, total: int) -> tuple[dict, int, int]:
             except Exception as e:
                 pass  # mantém o que veio do prompt multi-uso
 
-            # 4. Cor
-            try:
-                cor = classificar_cor(item)
-                u = cor.pop("_usage", {})
-                in_tok += u.get("prompt_tokens", 0)
-                out_tok += u.get("completion_tokens", 0)
-                # Ajusta tier com base na combinação cor+listras
-                cores_listras = c.get("cores_listras") or []
-                combo = avaliar_combo(cor.get("cor_principal", ""), cores_listras, cor.get("tier", ""))
-                cor["cores_listras"] = cores_listras
-                cor["listra_tier"] = combo["listra_tier"]
-                cor["tier_final"] = combo["tier_final"]
-                cor["combo_motivo"] = combo["motivo"]
-                linha += f" | cor={cor.get('cor_principal')} [{cor.get('tier')}→{combo['tier_final']}] listras={cores_listras}"
-            except Exception as e:
-                cor = {"tier": "erro", "erro": str(e)}
+            # Ajusta tier com base na combinação cor+listras
+            cores_listras = c.get("cores_listras") or []
+            combo = avaliar_combo(cor.get("cor_principal", ""), cores_listras, cor.get("tier", ""))
+            cor["cores_listras"] = cores_listras
+            cor["listra_tier"] = combo["listra_tier"]
+            cor["tier_final"] = combo["tier_final"]
+            cor["combo_motivo"] = combo["motivo"]
+            linha += f" | cor={cor.get('cor_principal')} [{cor.get('tier')}→{combo['tier_final']}]"
 
-            # Short-circuit: se cor é ruim sem chance de salvar, pula elástico+etiqueta
-            if cor and cor.get("tier_final") == "ruim":
-                linha += " | ✗ cor ruim → skip elas/etiq"
-                _log(linha)
-                return {**item, "marca_check": marca, "classificacao": c, "cor": cor, "elastico": None, "etiqueta": None}, in_tok, out_tok
-
-            # 4b. Bolso traseiro (prompt dedicado, sobrescreve campos da etapa 3)
+            # 4c. Bolso traseiro (prompt dedicado, sobrescreve campos da etapa 3)
             try:
                 bolso = verificar_bolso(item)
                 u = bolso.pop("_usage", {})
