@@ -181,13 +181,35 @@ def _processar(item: dict, idx: str, total: int) -> tuple[dict, int, int]:
             cor["combo_motivo"] = combo["motivo"]
             linha += f" | cor={cor.get('cor_principal')} [{cor.get('tier')}→{combo['tier_final']}]"
 
-            # 4c. Bolso traseiro (prompt dedicado, sobrescreve campos da etapa 3)
+            # Short-circuit: sem listra Sundek real (ou piping) → será descartado.
+            # Pula elástico, bolso e etiqueta (economiza ~$0.08/item).
+            if not c.get("tem_listra_lateral_sundek") or c.get("e_piping"):
+                linha += " | ✗ sem listra → skip elas/bolso/etiq"
+                _log(linha)
+                return {**item, "marca_check": marca, "classificacao": c, "cor": cor, "elastico": None, "etiqueta": None}, in_tok, out_tok
+
+            # 4c. Elástico (pode excluir por botão/velcro — roda antes do bolso, mais caro)
+            try:
+                elastico = verificar_elastico(item)
+                u = elastico.pop("_usage", {})
+                in_tok += u.get("prompt_tokens", 0)
+                out_tok += u.get("completion_tokens", 0)
+                linha += f" | {'elás✓' if elastico.get('tem_elastico') else '!SEM-ELÁS'}"
+            except Exception as e:
+                elastico = {"tem_elastico": None, "erro": str(e)}
+
+            # Short-circuit: botão/velcro → descartado. Pula bolso e etiqueta.
+            if (elastico or {}).get("tipo_fechamento") in ("botao", "velcro"):
+                linha += f" | ✗ {elastico.get('tipo_fechamento')} → skip bolso/etiq"
+                _log(linha)
+                return {**item, "marca_check": marca, "classificacao": c, "cor": cor, "elastico": elastico, "etiqueta": None}, in_tok, out_tok
+
+            # 4d. Bolso traseiro (etapa MAIS CARA — só roda no que sobreviveu a tudo)
             try:
                 bolso = verificar_bolso(item)
                 u = bolso.pop("_usage", {})
                 in_tok += u.get("prompt_tokens", 0)
                 out_tok += u.get("completion_tokens", 0)
-                # Sobrescreve os campos do prompt multi-uso (que estava alucinando)
                 c["tem_bolso_traseiro"] = bolso.get("tem_bolso")
                 c["bolso_traseiro_tem_nome"] = bolso.get("tem_nome")
                 c["bolso_evidencia"] = bolso.get("evidencia")
@@ -199,19 +221,9 @@ def _processar(item: dict, idx: str, total: int) -> tuple[dict, int, int]:
                 )
                 linha += f" | {tag_bolso}"
             except Exception as e:
-                pass  # mantém o que veio do prompt multi-uso
+                pass
 
-            # 5. Elástico
-            try:
-                elastico = verificar_elastico(item)
-                u = elastico.pop("_usage", {})
-                in_tok += u.get("prompt_tokens", 0)
-                out_tok += u.get("completion_tokens", 0)
-                linha += f" | {'elás✓' if elastico.get('tem_elastico') else '!SEM-ELÁS'}"
-            except Exception as e:
-                elastico = {"tem_elastico": None, "erro": str(e)}
-
-            # 6. Etiqueta
+            # 6. Etiqueta (barata, só dá bônus — por último)
             try:
                 etiqueta = verificar_etiqueta(item)
                 u = etiqueta.pop("_usage", {})

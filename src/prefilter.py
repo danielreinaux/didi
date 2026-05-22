@@ -72,6 +72,19 @@ def _tamanho_ok(tamanho: str | None) -> bool:
     return True  # dúvida → passa
 
 
+def _tamanho_numerico_ruim(tamanho: str | None, titulo: str | None) -> int | None:
+    """Detecta tamanho numérico fora de 31-34 no campo OU no título. Retorna o número."""
+    for txt in (tamanho, titulo):
+        if not txt:
+            continue
+        m = re.search(r"\b(2[5-9]|3[0-9])\b", txt)
+        if m:
+            n = int(m.group())
+            if not (31 <= n <= 34):
+                return n
+    return None
+
+
 def parece_short(item: dict) -> Resultado:
     titulo = (item.get("titulo") or "").strip()
     if not titulo:
@@ -82,4 +95,8 @@ def parece_short(item: dict) -> Resultado:
     if not _tamanho_ok(item.get("tamanho")):
         tam = item.get("tamanho") or "?"
         return Resultado(False, f"tamanho fora do range ({tam})")
+    # Tamanho numérico fora de 31-34 — corta aqui, sem gastar IA
+    num = _tamanho_numerico_ruim(item.get("tamanho"), titulo)
+    if num is not None:
+        return Resultado(False, f"tamanho_numerico_{num}")
     return Resultado(True, None)
