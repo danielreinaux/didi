@@ -10,6 +10,9 @@ from .config import SUNDEK
 class Resultado(NamedTuple):
     ok: bool
     motivo: str | None
+    # categoria: "nao_short" (peça não é short) ou "tamanho_invalido" (é short mas tamanho errado)
+    # None quando ok=True.
+    categoria: str | None = None
 
 
 # (regex, motivo)
@@ -88,15 +91,16 @@ def _tamanho_numerico_ruim(tamanho: str | None, titulo: str | None) -> int | Non
 def parece_short(item: dict) -> Resultado:
     titulo = (item.get("titulo") or "").strip()
     if not titulo:
-        return Resultado(False, "sem título")
+        return Resultado(False, "sem título", "nao_short")
     for regex, motivo in EXCLUSAO:
         if regex.search(titulo):
-            return Resultado(False, motivo)
+            return Resultado(False, motivo, "nao_short")
+    # Tamanhos inválidos: a peça PODE ser short, mas o tamanho não serve. Categoria separada.
     if not _tamanho_ok(item.get("tamanho")):
         tam = item.get("tamanho") or "?"
-        return Resultado(False, f"tamanho fora do range ({tam})")
-    # Tamanho numérico fora de 31-34 — corta aqui, sem gastar IA
+        return Resultado(False, f"tamanho fora do range ({tam})", "tamanho_invalido")
+    # Tamanho numérico fora de 31-34 — corta aqui, sem gastar IA. Tipo: tamanho_invalido.
     num = _tamanho_numerico_ruim(item.get("tamanho"), titulo)
     if num is not None:
-        return Resultado(False, f"tamanho_numerico_{num}")
+        return Resultado(False, f"tamanho_numerico_{num}", "tamanho_invalido")
     return Resultado(True, None)

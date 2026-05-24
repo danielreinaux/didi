@@ -71,8 +71,10 @@ def _processar(item: dict, idx: str, total: int) -> tuple[dict, int, int]:
     # 1. Prefilter
     pre = parece_short(item)
     if not pre.ok:
-        _log(f"{prefix} → × NAO-SHORT [{pre.motivo}]")
-        return {**item, "classificacao": {"tipo": "nao_short", "motivo": pre.motivo, "confianca": 1}}, 0, 0
+        tipo_pre = pre.categoria or "nao_short"
+        tag = "TAMANHO" if tipo_pre == "tamanho_invalido" else "NAO-SHORT"
+        _log(f"{prefix} → × {tag} [{pre.motivo}]")
+        return {**item, "classificacao": {"tipo": tipo_pre, "motivo": pre.motivo, "confianca": 1}}, 0, 0
 
     # 2. Marca + formato
     try:
@@ -354,6 +356,7 @@ def main() -> None:
 
     print("\n=== Resumo ===")
     print(f"  Não-shorts:      {cnt_tipo('nao_short')}")
+    print(f"  Tamanho inválido:{cnt_tipo('tamanho_invalido')}")
     print(f"  Não-Sundek:      {cnt_tipo('nao_sundek')}")
     print(f"  Lisos:           {cnt_tipo('liso')}")
     print(f"    Maravilhoso:   {cnt_cor('maravilhoso')}")

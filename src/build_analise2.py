@@ -23,6 +23,7 @@ LEGENDAS = {
     "tipo:logo_grande": "SUNDEK escrito gigante na perna. Coleção moderna, não tem mercado.",
     "tipo:desbotado": "Tecido com aparência de muito uso/lavagem.",
     "tipo:nao_short": "Não é short (sunga, camiseta, calça, etc). Detectado por título ou foto.",
+    "tipo:tamanho_invalido": "É short, mas tamanho fora do range comercial (W29, W30, W36, XS, XXL, etc).",
     "tipo:nao_sundek": "Não é da marca Sundek (Nike, Adidas, etc).",
     "tipo:indefinido": "Foto borrada ou ângulo ruim, modelo não conseguiu decidir.",
     # Motivos de exclusão
@@ -59,6 +60,7 @@ TIPO_LABELS = {
     "logo_grande": "Logo SUNDEK gigante",
     "desbotado": "Desbotado",
     "nao_short": "Não é short",
+    "tamanho_invalido": "Short com tamanho fora do range",
     "nao_sundek": "Não é da marca Sundek",
     "indefinido": "Indefinido (foto ruim)",
 }
