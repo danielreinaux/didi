@@ -38,8 +38,9 @@ def verificar_bolso(item: dict) -> dict:
         conteudo.append({"type": "text", "text": "ZOOM do bolso traseiro (use esta para ler o patch):"})
         conteudo.append({"type": "image_url", "image_url": {"url": crop_url, "detail": "high"}})
         conteudo.append({"type": "text", "text": "Fotos gerais do short (contexto):"})
-    # detail=high: ler a palavra "SUNDEK" no patch exige resolução (texto pequeno)
-    conteudo += [{"type": "image_url", "image_url": {"url": u, "detail": "high"}} for u in fotos]
+    # Fotos gerais em LOW (só contexto). O ZOOM acima é high — quem importa pra ler o patch.
+    # Teste em 15 itens: 93% concordância e -47% no custo do bolso.
+    conteudo += [{"type": "image_url", "image_url": {"url": u, "detail": "low"}} for u in fotos]
 
     # gpt-4o porque a decisão é crítica para exclusão e o detalhe do patch é sutil
     pace_gpt4o()
