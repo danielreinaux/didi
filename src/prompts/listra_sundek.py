@@ -43,7 +43,15 @@ O QUE NÃO É LISTRA SUNDEK (PIPING/ACABAMENTO):
    ATENÇÃO: se TODAS as faixas são da MESMA COR (só variando a espessura), é piping decorativo,
    NÃO listra Sundek autêntica.
 
-❌ FAIXA HORIZONTAL na barra ou no cós
+❌ FAIXA HORIZONTAL NO CÓS (cintura) — ATENÇÃO ESPECIAL:
+   Muitos shorts Sundek têm o CÓS (banda da cintura) com 2-3 faixas paralelas
+   horizontais de cores vivas (ex: verde + branco + azul; vermelho + branco + azul).
+   ⚠️ ISSO NÃO É LISTRA SUNDEK. O cós é a parte SUPERIOR HORIZONTAL do short
+   onde a cintura fica, NÃO o painel traseiro/lateral.
+   A listra Sundek autêntica corre VERTICALMENTE do cós até a barra, no painel
+   TRASEIRO/LATERAL. Se as faixas só aparecem na cintura (parte de cima), é
+   decoração do cós, não listra.
+
 ❌ Faixa decorativa horizontal no meio do corpo
 ❌ Bordas/contornos coloridos das aberturas das pernas
 
@@ -51,8 +59,9 @@ O QUE NÃO É LISTRA SUNDEK (PIPING/ACABAMENTO):
 PROCESSO DE ANÁLISE (siga este protocolo passo a passo):
 ═══════════════════════════════════════════════════════════════════════
 
-PASSO 1: Há ALGUMA faixa visível no painel traseiro/lateral do short?
-  - SE NÃO há faixa visível → e_listra_sundek = false, cores = []
+PASSO 1: Há faixas correndo VERTICALMENTE do cós até a barra no painel traseiro/lateral?
+  - Não confunda com faixas HORIZONTAIS no cós (cintura) — essas NÃO contam.
+  - SE não há faixas verticais nesse painel → e_listra_sundek = false, cores = []
 
 PASSO 2: Conte INDIVIDUALMENTE cada faixa adjacente paralela que você vê.
   - Examine zoom nas fotos. Liste cada faixa separadamente com sua cor exata.
@@ -98,6 +107,11 @@ Exemplo E — Short bordeaux com listra azul claro + branco:
   → e_piping = false (2 cores distintas)
   → e_listra_sundek = true
 
+Exemplo F — Short azul liso com CÓS multicolor (verde+branco+azul horizontais):
+  As listras estão APENAS na cintura, horizontais. O painel traseiro/lateral é LISO.
+  → cores = []
+  → e_listra_sundek = false  (listras no cós NÃO contam!)
+
 ═══════════════════════════════════════════════════════════════════════
 TAMBÉM AVALIE: O CORPO É BICOLOR? (bicolor = true|false)
 ═══════════════════════════════════════════════════════════════════════
@@ -115,6 +129,23 @@ listra é faixa estreita, bicolor é PAINEL LARGO ocupando boa parte do corpo.
 REGRA: se você consegue dizer "o corpo do short é da cor X" (uma cor só),
 então bicolor = false, não importa quantas listras tenha.
 Só marque true se houver DUAS zonas largas de cor sólida no corpo.
+
+⚠️ ERRO COMUM A EVITAR — não confundir listra grossa com bicolor:
+Muitos Sundeks têm listras paralelas formando uma FAIXA LARGA na lateral/traseira
+(ex: 3 cores de listras adjacentes ocupam 2-3cm). ISSO NÃO É BICOLOR. É só o
+conjunto de listras (que você já contou em `cores`). O corpo do short continua
+sendo de UMA cor só.
+
+CONTRA-EXEMPLOS de bicolor = false (apesar das listras parecerem largas):
+  - Short vermelho/bordeaux com 3 listras (branco+azul claro+azul) na lateral
+    → bicolor = FALSE (corpo é vermelho, listra é faixa de cores adjacentes)
+  - Short cinza/azzurro com 3 listras (roxo+branco+roxo) na lateral
+    → bicolor = FALSE (corpo é cinza, o resto é listra)
+  - Short preto com listras na lateral → bicolor = FALSE
+
+bicolor SÓ é true se houver REGIÃO sólida grande de UMA SEGUNDA cor que NÃO É
+PARTE DAS LISTRAS — tipo a perna inteira de cor diferente, ou metade superior
+vs inferior, ou painéis laterais MUITO LARGOS (não as listras).
 
 Responda APENAS com JSON válido (sem cercas, sem texto extra):
 
