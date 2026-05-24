@@ -28,6 +28,7 @@ from .classify_color import classificar_cor
 from .classify_elastico import verificar_elastico
 from .classify_etiqueta import verificar_etiqueta
 from .classify_listra import verificar_listra
+from .cost_tracker import track as _track, relatorio as _relatorio, dump_json as _dump_cost
 from .listra_tier import avaliar_combo
 from .prefilter import parece_short
 
@@ -75,20 +76,22 @@ def _processar(item: dict, idx: str, total: int) -> tuple[dict, int, int]:
 
     # 2. Marca + formato
     try:
+        from .config import IA as _IA
         marca = verificar_sundek(item)
         u = marca.pop("_usage", {})
         in_tok += u.get("prompt_tokens", 0)
         out_tok += u.get("completion_tokens", 0)
+        _track("brand", _IA["model"], u.get("prompt_tokens", 0), u.get("completion_tokens", 0))
 
         # Double-check: mini tem falsos negativos de marca. Se disse "não-Sundek"
         # mas o título contém "sundek", re-verifica com gpt-4o.
         titulo_lower = (item.get("titulo") or "").lower()
         if marca.get("e_sundek") == "nao" and "sundek" in titulo_lower:
-            from .config import IA as _IA
             marca_4o = verificar_sundek(item, model=_IA["model_detalhes"])
             u = marca_4o.pop("_usage", {})
             in_tok += u.get("prompt_tokens", 0)
             out_tok += u.get("completion_tokens", 0)
+            _track("brand_4o_recheck", _IA["model_detalhes"], u.get("prompt_tokens", 0), u.get("completion_tokens", 0))
             if marca_4o.get("e_sundek") != "nao":
                 marca_4o["evidencia"] = "[double-check gpt-4o] " + (marca_4o.get("evidencia") or "")
                 marca = marca_4o
@@ -117,6 +120,7 @@ def _processar(item: dict, idx: str, total: int) -> tuple[dict, int, int]:
         u = c.pop("_usage", {})
         in_tok += u.get("prompt_tokens", 0)
         out_tok += u.get("completion_tokens", 0)
+        _track("classify_tipo", _IA["model"], u.get("prompt_tokens", 0), u.get("completion_tokens", 0))
 
         tipo_original = c.get("tipo")
         if c.get("aparencia") == "desbotado":
@@ -142,6 +146,7 @@ def _processar(item: dict, idx: str, total: int) -> tuple[dict, int, int]:
                 u = cor.pop("_usage", {})
                 in_tok += u.get("prompt_tokens", 0)
                 out_tok += u.get("completion_tokens", 0)
+                _track("color", _IA["model"], u.get("prompt_tokens", 0), u.get("completion_tokens", 0))
             except Exception as e:
                 cor = {"tier": "erro", "erro": str(e)}
 
@@ -163,6 +168,7 @@ def _processar(item: dict, idx: str, total: int) -> tuple[dict, int, int]:
                 u = listra.pop("_usage", {})
                 in_tok += u.get("prompt_tokens", 0)
                 out_tok += u.get("completion_tokens", 0)
+                _track("listra", _IA["model_detalhes"], u.get("prompt_tokens", 0), u.get("completion_tokens", 0))
                 c["cores_listras"] = listra.get("cores") or []
                 c["e_piping"] = listra.get("e_piping", False)
                 c["tem_listra_lateral_sundek"] = listra.get("e_listra_sundek", False)
@@ -199,6 +205,7 @@ def _processar(item: dict, idx: str, total: int) -> tuple[dict, int, int]:
                 u = elastico.pop("_usage", {})
                 in_tok += u.get("prompt_tokens", 0)
                 out_tok += u.get("completion_tokens", 0)
+                _track("elastico", _IA["model_detalhes"], u.get("prompt_tokens", 0), u.get("completion_tokens", 0))
                 linha += f" | {'elás✓' if elastico.get('tem_elastico') else '!SEM-ELÁS'}"
             except Exception as e:
                 elastico = {"tem_elastico": None, "erro": str(e)}
@@ -215,6 +222,7 @@ def _processar(item: dict, idx: str, total: int) -> tuple[dict, int, int]:
                 u = bolso.pop("_usage", {})
                 in_tok += u.get("prompt_tokens", 0)
                 out_tok += u.get("completion_tokens", 0)
+                _track("bolso", _IA["model_detalhes"], u.get("prompt_tokens", 0), u.get("completion_tokens", 0))
                 c["tem_bolso_traseiro"] = bolso.get("tem_bolso")
                 c["bolso_traseiro_tem_nome"] = bolso.get("tem_nome")
                 c["tem_bolso_frontal"] = bolso.get("bolso_frontal", False)
@@ -235,6 +243,8 @@ def _processar(item: dict, idx: str, total: int) -> tuple[dict, int, int]:
                 u = etiqueta.pop("_usage", {})
                 in_tok += u.get("prompt_tokens", 0)
                 out_tok += u.get("completion_tokens", 0)
+                # etiqueta foi migrada pro mini (config conservadora)
+                _track("etiqueta", _IA["model"], u.get("prompt_tokens", 0), u.get("completion_tokens", 0))
                 if etiqueta.get("tem_etiqueta") is True:
                     linha += " | etiq✓"
                 elif etiqueta.get("tem_etiqueta") is False:
@@ -331,9 +341,16 @@ def main() -> None:
     cnt_tipo = lambda t: sum(1 for x in out if (x.get("classificacao") or {}).get("tipo") == t)
     cnt_cor = lambda t: sum(1 for x in out if isinstance(x.get("cor"), dict) and x["cor"].get("tier") == t)
 
-    in_usd = (input_tokens / 1_000_000) * 0.15
-    out_usd = (output_tokens / 1_000_000) * 0.60
-    total_usd = in_usd + out_usd
+    # Custo real usando o cost_tracker (separa mini vs gpt-4o)
+    # ⚠️ não use input_tokens × $0.15 — gpt-4o custa 17x mais que mini
+    from .cost_tracker import _dados as _ct
+    PRECOS = {"gpt-4o-mini": {"in": 0.15, "out": 0.60},
+              "gpt-4o":      {"in": 2.50, "out": 10.00}}
+    total_usd = 0.0
+    for etapa_d in _ct.values():
+        for modelo, d in etapa_d.items():
+            p = PRECOS.get(modelo, {"in": 0, "out": 0})
+            total_usd += (d["in"] / 1_000_000) * p["in"] + (d["out"] / 1_000_000) * p["out"]
 
     print("\n=== Resumo ===")
     print(f"  Não-shorts:      {cnt_tipo('nao_short')}")
@@ -354,6 +371,14 @@ def main() -> None:
     print(f"  Custo:           ${total_usd:.5f} (~R$ {total_usd * 5:.3f})")
     print(f"  Duração:         {time.time() - t0:.1f}s")
     print(f"\n  Salvo em data/coleta-classificada.json")
+
+    # Relatório detalhado de custo por etapa
+    print(_relatorio(total_itens=len(pendentes) or total))
+    # Salva o dump em arquivo pra consulta posterior
+    try:
+        (DATA / "custo_por_etapa.json").write_text(json.dumps(_dump_cost(), indent=2))
+    except Exception:
+        pass
 
     # Recalcula scores antes do gpt-4o (ele só roda em compráveis/ambíguos)
     from .score import calcular_score
