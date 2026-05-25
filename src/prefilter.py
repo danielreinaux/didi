@@ -53,8 +53,14 @@ EXCLUSAO: list[tuple[re.Pattern, str]] = [
     (re.compile(r"\bborsa\b|\bbag\b|\bbolsa\b|\bzaino\b", re.I), "bolsa"),
     (re.compile(r"\bscarpe?\b|\bshoes\b|\bsapatos?\b|\bsneakers?\b", re.I), "calçado"),
 
-    # infantil (escapou do size filter)
+    # infantil (várias línguas)
     (re.compile(r"\bbambin[oa]s?\b|\bbimb[oa]\b", re.I), "infantil (bambino)"),
+    (re.compile(r"\bragazz[oa]\b", re.I), "infantil (ragazzo)"),
+    (re.compile(r"\bni[ñn][oa]\b", re.I), "infantil (niño)"),
+    (re.compile(r"\benfant\b|\bgar[çc]on\b", re.I), "infantil (enfant)"),
+    (re.compile(r"\bkids?\b|\bchild\b|\bboy\b", re.I), "infantil (kids)"),
+    # tamanhos por idade: "taille 10 ans", "tg 14 anni", "10 años", "8 yo"
+    (re.compile(r"\b(taille|tg|talla|size)?\s*\d{1,2}\s*(ans|anni|a[ñn]os?|years?|yo)\b", re.I), "infantil (tamanho por idade)"),
 ]
 
 
