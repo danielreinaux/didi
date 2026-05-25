@@ -99,6 +99,24 @@ bolso_frontal = false quando:
 REGRA: o bolso traseiro pequeno NÃO conta. bolso_frontal só é true se há um
 bolso grande tipo cargo na FRENTE ou LATERAL da perna. Na dúvida, false.
 
+⚠️ ERRO COMUM A EVITAR — não confundir bolso traseiro visível com bolso_frontal:
+Quando o vendedor fotografa o short DE COSTAS, o bolso traseiro fica bem visível
+(é um quadrado costurado com a patch do sol). Isso é o BOLSO TRASEIRO PADRÃO
+do Sundek — NÃO é bolso frontal.
+
+CONTRA-EXEMPLOS de bolso_frontal = false:
+  - Foto mostra a parte de TRÁS do short com um quadrado/bolso costurado com
+    a patch do sol → é o bolso TRASEIRO → bolso_frontal = FALSE
+  - Foto mostra o short dobrado e dá pra ver um bolso com a patch Sundek →
+    quase sempre é o bolso TRASEIRO → bolso_frontal = FALSE
+  - Bolso com patch do sol Sundek = SEMPRE bolso traseiro, NUNCA frontal
+
+bolso_frontal SÓ é true se:
+  - Há um bolso CARGO grande com aba visível na lateral externa da PERNA
+    (não no traseiro, não no painel de trás, mas na coxa lateral)
+  - Estilo boardshort de surf com aba grande na frente da perna
+  - Geralmente sem patch Sundek (porque o patch fica no traseiro)
+
 Responda APENAS com JSON válido (sem cercas, sem texto extra):
 
 {"tem_bolso":true|false|null,"tem_nome":true|false|null,"bolso_frontal":true|false,"evidencia":"<descreva o que viu — traseira e se há bolso cargo frontal>"}"""

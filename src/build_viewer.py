@@ -84,10 +84,13 @@ def card_html(it: dict) -> str:
     preco = escape(it.get("preco") or "")
     tamanho = escape(it.get("tamanho") or "?")
 
+    novo_badge = '<span class="novo-pill">NOVO</span>' if it.get("novo") else ""
+
     return f"""<article class="card" data-id="{item_id}" data-aba="{aba}">
   <a href="{url}" target="_blank" class="thumb-wrap">
     <img class="thumb" src="{foto}" loading="lazy">
     <span class="tipo-pill {tipo}">{tipo}</span>
+    {novo_badge}
   </a>
   <div class="body">
     <div class="title"><a href="{url}" target="_blank">{titulo}</a></div>
@@ -204,6 +207,12 @@ main {{ padding: 14px 10px 80px; max-width: 900px; margin: 0 auto; }}
 .tipo-pill.logo_grande {{ background: #b45309; }}
 .tipo-pill.desbotado, .tipo-pill.indefinido, .tipo-pill.nao_short,
 .tipo-pill.nao_sundek, .tipo-pill.sem {{ background: #71717a; }}
+.novo-pill {{
+  position: absolute; top: 7px; left: 7px;
+  padding: 2px 7px; border-radius: 6px;
+  font-size: 10px; font-weight: 800; text-transform: uppercase;
+  color: #fff; background: #2563eb; letter-spacing: .04em;
+}}
 
 .body {{ padding: 10px 11px 11px; display: flex; flex-direction: column; gap: 6px; flex: 1; }}
 

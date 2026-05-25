@@ -26,7 +26,10 @@ def verificar_sundek(item: dict, model: str | None = None) -> dict:
     if not fotos:
         return {"e_sundek": "indefinido", "evidencia": "sem fotos", "confianca": 0}
 
-    detail = "high" if model == IA["model_detalhes"] else "auto"
+    # detail=low é suficiente pro brand (só precisa ver logo/etiqueta).
+    # 'auto' no mini virava 'high' (~25K tokens/foto) — gastava 60% do custo total!
+    # detail=high só pro double-check com gpt-4o (raros casos suspeitos).
+    detail = "high" if model == IA["model_detalhes"] else "low"
     conteudo = [
         {"type": "text", "text": prompt.usuario(item.get("titulo") or "")},
         *[{"type": "image_url", "image_url": {"url": u, "detail": detail}} for u in fotos],

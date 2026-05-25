@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="pt-BR"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Didi · Diagnóstico dos classificadores</title>
+<style>
+* { box-sizing:border-box; margin:0; padding:0; }
+body { font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  background:#f2f2f0; color:#18181b; padding:20px 14px 60px; }
+.container { max-width:1100px; margin:0 auto; }
+h1 { font-size:22px; margin-bottom:4px; }
+.sub-h { color:#666; font-size:13px; margin-bottom:20px; }
+.card { display:flex; gap:14px; background:#fff; border:1px solid #e0e0e0;
+  border-radius:10px; padding:12px; margin-bottom:12px; }
+.thumbs { display:flex; flex-wrap:wrap; gap:4px; width:300px; flex-shrink:0; align-content:flex-start; }
+.thumbs img { width:70px; height:70px; object-fit:cover; border-radius:5px; background:#eee; }
+.thumbs img.main { width:144px; height:144px; }
+.body { flex:1; min-width:0; }
+.head { display:flex; align-items:center; gap:8px; }
+.novo { background:#2563eb; color:#fff; font-size:10px; font-weight:800;
+  padding:2px 7px; border-radius:5px; }
+.t { font-weight:700; color:#18181b; text-decoration:none; font-size:15px; }
+.t:hover { text-decoration:underline; }
+.sub { color:#555; font-size:12px; margin:3px 0 6px; }
+.decisao { display:inline-block; font-size:12px; font-weight:700;
+  padding:3px 9px; border-radius:6px; margin-bottom:8px; }
+.d-g { background:#dcfce7; color:#15803d; }
+.d-r { background:#fee2e2; color:#b91c1c; }
+.d-n { background:#fef9c3; color:#854d0e; }
+.metricas { display:flex; flex-wrap:wrap; gap:5px; }
+.m { font-size:11px; padding:3px 7px; border-radius:5px; background:#f0f0ee; }
+.m b { font-weight:700; }
+.m-g { background:#dcfce7; color:#15803d; }
+.m-r { background:#fee2e2; color:#b91c1c; }
+.m-n { background:#eef; color:#3730a3; }
+.evids { margin-top:8px; display:flex; flex-direction:column; gap:3px; }
+.ev { font-size:11px; color:#666; line-height:1.4; }
+.ev b { color:#333; }
+</style></head><body>
+<div class="container">
+<h1>Diagnóstico dos classificadores</h1>
+<div class="sub-h">65 itens · 49 novos (badge azul). Cada card mostra a saída de TODOS os classificadores + as evidências.</div>
+<article class="card">
+  <div class="thumbs"><img src="https://images1.vinted.net/t/05_01622_LttruoanXDQfM5pgYBEWDKoe/f800/1779382920.webp?s=e267e2da97cc0eb06cf605592e2f575dc68a7f35" class="main" loading="lazy"><img src="https://images1.vinted.net/t/04_01066_thbAAM5Sszq1Ecov2oxYuJm7/f800/1779382920.webp?s=3d14c50e710923b324f909175eebb98079cdcea1" loading="lazy"><img src="https://images1.vinted.net/t/05_01f8d_s6y8eqRwyhyRpYndaaC9ibUc/f800/1779382920.webp?s=be3673677cd932feb542dd2cf8c838d6f84e2af4" loading="lazy"><img src="https://images1.vinted.net/t/01_00b7f_W1wGsiKu1WH7woBHEXoUNg7E/f800/1779382920.webp?s=28ee5fd6ca794ddec9e8ebbce713027b36b61196" loading="lazy"><img src="https://images1.vinted.net/t/04_0141d_UvZM73ad5ZJQb4nffYgq5ZcM/f800/1736195051.webp?s=398b6676635b2bbcb58e242074c60feb9be446e8" loading="lazy"></div>
+  <div class="body">
+    <div class="head">
+      <span class="novo">NOVO</span>
+      <a href="https://www.vinted.es/items/8974563380-costume-da-bagno" target="_blank" class="t">Costume da bagno</a>
+    </div>
+    <div class="sub">5,00 € · tam M</div>
+    <div class="decisao d-r">DESCARTADO · 0pts · bicolor, bolso_frontal, sem_bolso_traseiro</div>
+    <div class="metricas"><span class="m m-g"><b>Sundek?</b> sim</span><span class="m m-g"><b>é short?</b> sim</span><span class="m m-g"><b>tipo</b> liso</span><span class="m m-r"><b>bicolor</b> sim</span><span class="m m-r"><b>bolso frontal</b> sim</span><span class="m m-n"><b>cor</b> ?</span><span class="m m-g"><b>tier</b> erro</span><span class="m m-g"><b>listra Sundek</b> sim</span><span class="m m-n"><b>cores listra</b> amarelo, rosa, branco, azul</span><span class="m m-r"><b>bolso traseiro</b> não</span><span class="m m-r"><b>elástico</b> não</span><span class="m m-g"><b>fechamento</b> cordao</span></div>
+    <div class="evids"><div class='ev'><b>marca:</b> Etiqueta &#x27;SUNDEK&#x27; visível na peça, faixa multicolorida no cós, comprimento até meio da coxa e perna larga e separada.</div><div class='ev'><b>listra:</b> Faixas paralelas de cores distintas (amarelo, rosa, branco, azul) visíveis no painel traseiro.</div><div class='ev'><b>bolso:</b> A vista traseira do short é completamente lisa, sem bolso visível.</div><div class='ev'><b>elástico:</b> Cós plano com cordão visível, sem sinais de elástico comprimido e sem botão ou velcro no fly.</div></div>
+  </div>
+</article>
+<article class="card">
+  <div class="thumbs"><img src="https://images1.vinted.net/t/05_0242f_Qdyy71EkiFx4GFQ7t2JbkBkx/f800/1779386232.webp?s=a939156b35bcec7ef0e050ae4297305851d619a1" class="main" loading="lazy"><img src="https://images1.vinted.net/t/05_01b86_MJ95SVRYLfDJ2miSAXiNnTT3/f800/1779386232.webp?s=d1099beb692ce5b9a620d7b0f155118cdd255bf7" loading="lazy"><img src="https://images1.vinted.net/t/05_01456_zLTx93SXHNbGq8fwyRG3ZFPh/f800/1779386232.webp?s=2a64c92bea307b4b4512e54810b108754a346b6b" loading="lazy"><img src="https://images1.vinted.net/t/06_00ad8_Jhou9vdTXfZqLWUKJ1vKzKcn/f800/1779386232.webp?s=38d198c45b933e571c92c7c1a4554559fe7e399f" loading="lazy"><img src="https://images1.vinted.net/t/05_00bda_X7ijC4zLRk2gcAP1pt3QyUf1/f800/1779386232.webp?s=0c99478451e0b3c7f4cf24e0993501c4d0238fd5" loading="lazy"><img src="https://images1.vinted.net/t/05_01db3_YLdHQNBrhn738989HBKTjGb7/f800/1775743973.webp?s=da466b4e3a8c80b209377437a8e9921bde2da1bc" loading="lazy"></div>
+  <div class="body">
+    <div class="head">
+      <span class="novo">NOVO</span>
+      <a href="https://www.vinted.es/items/8975053401-costume-sundek-taglia-m-nuovo" target="_blank" class="t">Costume sundek taglia m nuovo</a>
+    </div>
+    <div class="sub">15,00 € · tam M</div>
+    <div class="decisao d-r">DESCARTADO · 0pts · estampado, cor_ruim, bolso_frontal</div>
+    <div class="metricas"><span class="m m-g"><b>Sundek?</b> sim</span><span class="m m-g"><b>é short?</b> sim</span><span class="m m-r"><b>tipo</b> estampado</span><span class="m m-r"><b>bolso frontal</b> sim</span></div>
+    <div class="evids"><div class='ev'><b>marca:</b> Etiqueta &#x27;SUNDEK&#x27; visível na parte interna e no bolso traseiro, além do logo característico.</div></div>
+  </div>
+</article>
+<article class="card">
+  <div class="thumbs"><img src="https://images1.vinted.net/t/06_00dd1_miWCDZSUZwXvPYtHvTaBNj31/f800/1779392315.webp?s=796ad64ecad2ec82681a95fb768a124e4b5bdb8c" class="main" loading="lazy"><img src="https://images1.vinted.net/t/04_00be9_9qCB7i8H3yYNdK7MKMwH3s6N/f800/1779392315.webp?s=8ca370e7574816d128bf044ca12d70e95c5a3781" loading="lazy"><img src="https://images1.vinted.net/t/05_01eee_A7Toszc75uNsP7tdjhfUMBbw/f800/1779392315.webp?s=6f5ff4196965b92d5275f0d7b52d017d18f3466d" loading="lazy"><img src="https://images1.vinted.net/t/06_00439_P3wdfbAsURA6Cmqr7VxuSUkg/f800/1779392315.webp?s=366e60ad47684ba21707bbb291eed01c70af7ef4" loading="lazy"><img src="https://images1.vinted.net/t/06_01473_nH5zANnNjaDmUgDGgbV4fsZe/f800/1779392315.webp?s=ff9c0cce3efbf8f9e9f08641cc9d840ff2a12185" loading="lazy"><img src="https://images1.vinted.net/t/05_01856_MFsVvd5pu5SEFQ1938fCcmKK/f800/1769362417.webp?s=30cb94e6adc76d87657e14a78ca77743c5e6b24c" loading="lazy"></div>
+  <div class="body">
+    <div class="head">
+      <span class="novo">NOVO</span>
+      <a href="https://www.vinted.es/items/8975919877-costume-uomo-sundek" target="_blank" class="t">Costume uomo Sundek</a>
+    </div>
+    <div class="sub">13,00 € · tam S</div>
+    <div class="decisao d-r">DESCARTADO · 0pts · estampado, cor_ruim</div>
+    <div class="metricas"><span class="m m-g"><b>Sundek?</b> sim</span><span class="m m-g"><b>é short?</b> sim</span><span class="m m-r"><b>tipo</b> estampado</span></div>
+    <div class="evids"><div class='ev'><b>marca:</b> Texto &#x27;SUNDEK&#x27; visível nas pontas do cordão e a peça tem comprimento e formato de short com pernas separadas.</div></div>
+  </div>
+</article>
+<article class="card">
+  <div class="thumbs"><img src="https://images1.vinted.net/t/05_002c2_iypsQGiCuut35a2XJcMqdv7Q/f800/1779379474.webp?s=438f7fcb25be80345ca8b9877ea7787d0190b312" class="main" loading="lazy"><img src="https://images1.vinted.net/t/06_00614_6C3Q4v8CFt7tbYhFYFSi1nDc/f800/1779379474.webp?s=b9aae62f62a0f27ea4139f76214a18385ab84395" loading="lazy"><img src="https://images1.vinted.net/t/01_0077f_MNUjPS5KPJbcfHrT1y8pzg1e/f800/1779379474.webp?s=39f1382b84d70ec374b5dfb99749a407feda696f" loading="lazy"><img src="https://images1.vinted.net/t/05_02122_gH4TY3KgG2h8JSXEMW61dCCn/f800/1779379474.webp?s=8599f686aeb64bbea6236ff56f516ab57065c39f" loading="lazy"><img src="https://images1.vinted.net/t/03_00bbb_TGL2bZ6ur8oArxU35dTuwwbm/f800/1717661314.webp?s=d222c896eb54bef8cc4653158b332c8e80429a9a" loading="lazy"></div>
+  <div class="body">
+    <div class="head">
+      <span class="novo">NOVO</span>
+      <a href="https://www.vinted.es/items/8974049339-costume-sundek" target="_blank" class="t">Costume Sundek</a>
+    </div>
+    <div class="sub">21,00 € · tam M</div>
+    <div class="decisao d-r">DESCARTADO · 0pts · bicolor, bolso_frontal</div>
+    <div class="metricas"><span class="m m-g"><b>Sundek?</b> sim</span><span class="m m-g"><b>é short?</b> sim</span><span class="m m-g"><b>tipo</b> liso</span><span class="m m-r"><b>bicolor</b> sim</span><span class="m m-r"><b>bolso frontal</b> sim</span><span class="m m-n"><b>cor</b> ?</span><span class="m m-g"><b>tier</b> erro</span><span class="m m-g"><b>listra Sundek</b> sim</span><span class="m m-n"><b>cores listra</b> azul escuro, branco, azul claro</span><span class="m m-r"><b>elástico</b> não</span><span class="m m-g"><b>fechamento</b> cordao</span><span class="m m-n"><b>etiqueta (hang tag)</b> não</span></div>
+    <div class="evids"><div class='ev'><b>marca:</b> Etiqueta interna com &#x27;SUNDEK&#x27; visível e logo no bolso traseiro.</div><div class='ev'><b>listra:</b> Três faixas paralelas de cores distintas (azul escuro, branco, azul claro) no painel traseiro/lateral.</div><div class='ev'><b>elástico:</b> Cós plano com cordão visível, sem sinais de elástico ou botão/velcro no fly.</div><div class='ev'><b>etiqueta:</b> Não há hang tag visível; todas as etiquetas estão costuradas internamente.</div></div>
+  </div>
+</article>
+<article class="card">
+  <div class="thumbs"><img src="https://images1.vinted.net/t/06_01c82_bkEmcWQEjJjY47v4aN6826Zx/f800/1779394315.webp?s=972a2ce7d9fc67366955fb4f3dcca8e4be7768a0" class="main" loading="lazy"><img src="https://images1.vinted.net/t/05_00b57_mHYpzthqXz1A7WrwC3cmdfVZ/f800/1779394315.webp?s=0ca249b65eeb1990671019c55fa6d4ac08723eac" loading="lazy"><img src="https://images1.vinted.net/t/03_00b81_FpCh3jzkCbcXaxRxAogBxJgK/f800/1779394315.webp?s=e8a8c82da375e2a9f01dd817e2b01c8ffe874ddb" loading="lazy"><img src="https://images1.vinted.net/t/02_023c1_haMv6GHDM9L7dgsMMgAGxiA9/f800/1605240744.webp?s=31dcf4d0436c7470c354b9f0531b01e4b62ee8b1" loading="lazy"></div>
+  <div class="body">
+    <div class="head">
+      <span class="novo">NOVO</span>
+      <a href="https://www.vinted.es/items/8976164576-short-de-bain" target="_blank" class="t">Short de bain</a>
+    </div>
+    <div class="sub">30,00 € · tam XXL</div>
+    <div class="decisao d-r">DESCARTADO · 0pts · cor_ruim, tamanho_XXL</div>
+    <div class="metricas"><span class="m m-g"><b>Sundek?</b> sim</span><span class="m m-g"><b>é short?</b> sim</span><span class="m m-g"><b>tipo</b> liso</span><span class="m m-n"><b>cor</b> Laranja</span><span class="m m-r"><b>tier</b> ruim</span></div>
+    <div class="evids"><div class='ev'><b>marca:</b> Etiqueta interna visível com &#x27;SUNDEK&#x27; e faixa multicolorida característica no cós.</div></div>
+  </div>
+</article>
+<article class="card">
+  <div class="thumbs"><img src="https://images1.vinted.net/t/05_006e9_o9mFADyQ48DbsFtpMJJh8v7J/f800/1779389076.webp?s=5493961296e3f3c1da752f9c1c8a8e473d53392e" class="main" loading="lazy"><img src="https://images1.vinted.net/t/03_02453_cTdq4jj9dFpFw3nxXn5o2hxa/f800/1779389076.webp?s=d5da27fdd9dfc18a482ffbd0bdc0efe8378cb694" loading="lazy"><img src="https://images1.vinted.net/t/05_006ca_1PHsB6MeVrQpWqkThxtxKLGb/f800/1779389076.webp?s=689a74d84ffe1021be5903bed1612dd7d7b06953" loading="lazy"><img src="https://images1.vinted.net/t/06_018de_gHF8qMSwe7tZERgFzbprbFtG/f800/1779389076.webp?s=7ec69bf25bd839d4edca67e23b7a6dea09c9f693" loading="lazy"><img src="https://images1.vinted.net/t/06_01167_1Eczzqf6pWKZ2GWaXgGMyfNU/f800/1779389076.webp?s=954ca926c0a96f2c0b4ea976ce6e9e2966d833a5" loading="lazy"><img src="https://images1.vinted.net/t/03_00c20_tMs1wb6boAVpJw8zt92UG9Qw/f800/1670162111.webp?s=3b85359758c89b997c3e98525546c06eec30298d" loading="lazy"></div>
+  <div class="body">
+    <div class="head">
+      <span class="novo">NOVO</span>
+      <a href="https://www.vinted.es/items/8975467737-camicia-estiva-sundek-maniche-corte-come-nuova" target="_blank" class="t">Camicia estiva sundek maniche corte come nuova</a>
+    </div>
+    <div class="sub">15,00 € · tam S</div>
+    <div class="decisao d-r">DESCARTADO · 0pts · nao_short, cor_ruim</div>
+    <div class="metricas"><span class="m m-r"><b>Sundek?</b> ?</span><span class="m m-r"><b>é short?</b> ?</span><span class="m m-r"><b>tipo</b> nao_short</span></div>
+    
+  </div>
+</article>
+<article class="card">
+  <div class="thumbs"><img src="https://images1.vinted.net/t/06_0192d_EZkdxH4N8skVkf83Nv3UDmmf/f800/1779394714.webp?s=bd0dbc630396cac1d71ca7fd547cabc06896c7ef" class="main" loading="lazy"><img src="https://images1.vinted.net/t/05_016da_pGoiyfFMime14r3iQTXQGKfR/f800/1779394714.webp?s=6d9e11bc8e4fdab4e17e20ead9daea8dc8139d26" loading="lazy"><img src="https://images1.vinted.net/t/05_025fc_RXhzhqGR4bLCutLG4VJM68jf/f800/1779394714.webp?s=ef5efad251fe3ea28fa1df5c12c6833a8f584c2c" loading="lazy"><img src="https://images1.vinted.net/t/01_00067_fy4G2gNM2FLRhymvuXyHeHmw/f800/1779394714.webp?s=6c9e1bea91ec89a3b8aeae0a065e9e8af77648ae" loading="lazy"><img src="https://images1.vinted.net/t/05_01849_5PsweMf7kXXkWiZR7XPMAGA2/f800/1779394714.webp?s=61647fef5710422f63b8f2d8ad02c735a901a102" loading="lazy"><img src="https://images1.vinted.net/t/01_01f98_1hGnzxR7iTkMT3wF9x3WXzfu/f800/1757413463.webp?s=faef3e6bd3c9b30c88d7ebd74a6acfa7acdac225" loading="lazy"></div>
+  <div class="body">
+    <div class="head">
+      <span class="novo">NOVO</span>
+      <a href="https://www.vinted.es/items/8976208143-costume-uomo-sundek-taglia-m" target="_blank" class="t">Costume uomo Sundek taglia M</a>
+    </div>
+    <div class="sub">28,00 € · tam M</div>
+    <div class="decisao d-r">DESCARTADO · 0pts · estampado, cor_ruim, bicolor, bolso_frontal</div>
+    <div class="metricas"><span class="m m-g"><b>Sundek?</b> sim</span><span class="m m-g"><b>é short?</b> sim</span><span class="m m-r"><b>tipo</b> estampado</span><span class="m m-r"><b>bicolor</b> sim</span><span class="m m-r"><b>bolso frontal</b> sim</span></div>
+    <div class="evids"><div class='ev'><b>marca:</b> Texto &#x27;SUNDEK&#x27; visível na etiqueta e na parte traseira da peça, comprimento até meio da coxa e perna larga com formato separado.</div></div>
+  </div>
+</article>
+<article class="card">
+  <div class="thumbs"><img src="https://images1.vinted.net/t/06_006fd_qYteyLiZHYEZQsvdY2QP4PF8/f800/1779380578.webp?s=8d7f20a3446428e5d9ca1a86e11c244eb93f384a" class="main" loading="lazy"><img src="https://images1.vinted.net/t/06_00789_1VQpr5HEB2fGfP2mGWWuTQRo/f800/1779380578.webp?s=75b6219efc08b5c861e11a84d2b2b69e28e99e0b" loading="lazy"><img src="https://images1.vinted.net/t/06_0083d_cqbq1tkZgWVvoSN9B93iHXSJ/f800/1779380325.webp?s=c82cbbbb3d394b534c9873870ba105791d67f594" loading="lazy"><img src="https://images1.vinted.net/t/06_018c6_ft2EKwRNbjG2aj3qpykixXSY/f800/1779380325.webp?s=0126405442a559142806486200cf3d94246b96ba" loading="lazy"><img src="https://images1.vinted.net/t/03_00bbb_TGL2bZ6ur8oArxU35dTuwwbm/f800/1717661314.webp?s=d222c896eb54bef8cc4653158b332c8e80429a9a" loading="lazy"></div>
+  <div class="body">
+    <div class="head">
+      <span class="novo">NOVO</span>
+      <a href="https://www.vinted.es/items/8974174902-costume-sundek" target="_blank" class="t">Costume Sundek</a>
+    </div>
+    <div class="sub">20,00 € · tam XXL</div>
+    <div class="decisao d-r">DESCARTADO · 0pts · estampado, cor_ruim, bolso_frontal, tamanho_XXL</div>
+    <div class="metricas"><span class="m m-g"><b>Sundek?</b> sim</span><span class="m m-g"><b>é short?</b> sim</span><span class="m m-r"><b>tipo</b> estampado</span><span class="m m-r"><b>bolso frontal</b> sim</span></div>
+    <div class="evids"><div class='ev'><b>marca:</b> Etiqueta &#x27;SUNDEK&#x27; visível na parte interna e bordado no bolso traseiro, comprimento e formato de short com pernas separadas.</div></div>
+  </div>
+</article>
+<article class="card">
+  <div class="thumbs"><img src="https://images1.vinted.net/t/05_01743_Fv49z5K9UEY57eRXnwHhZZMD/f800/1779381103.webp?s=5d629c943cafbfefa1252eeacbdb8112d212e344" class="main" loading="lazy"><img src="https://images1.vinted.net/t/01_015d6_wqXH4BaH5fwQw77zY51Z8YCr/f800/1779381103.webp?s=fa5ca3b1c1b07dd18dc36387568cfb19ba369302" loading="lazy"><img src="https://images1.vinted.net/t/06_002e2_hsqnhgD8dNJUyjpaKdygBXbb/f800/1779381103.webp?s=52e92e11b524be0fbf313eb0ae5414ed1d5b4748" loading="lazy"><img src="https://images1.vinted.net/t/04_012a7_MqjADnTCTRhXbbW8DcL3cyST/f800/1779381103.webp?s=c3639c39bcaceaf9250fd0326f812f252dc3a392" loading="lazy"><img src="https://images1.vinted.net/t/02_00ea4_hjFjYBVbvkRPzUc3xotY1UZn/f800/1758028966.webp?s=dc420cb7aaa99a3dd9d1afb22515dd13f8d5d595" loading="lazy"></div>
+  <div class="body">
+    <div class="head">
+      <span class="novo">NOVO</span>
+      <a href="https://www.vinted.es/items/8974290290-t-shirt-sundek-vintage-surf-brigade-rossa" target="_blank" class="t">T-shirt Sundek Vintage &quot;Surf Brigade&quot; - Rossa</a>
+    </div>
+    <div class="sub">13,00 € · tam S</div>
+    <div class="decisao d-r">DESCARTADO · 0pts · nao_short, cor_ruim</div>
+    <div class="metricas"><span class="m m-r"><b>Sundek?</b> ?</span><span class="m m-r"><b>é short?</b> ?</span><span class="m m-r"><b>tipo</b> nao_short</span></div>
+    
+  </div>
+</article>
+<article class="card">
+  <div class="thumbs"><img src="https://images1.vinted.net/t/05_017a3_qgLtVJH5bkyoJbQmdW62J5LZ/f800/1779387502.webp?s=ae688b199554bd420f490669d3407c82447e5dbc" class="main" loading="lazy"><img src="https://images1.vinted.net/t/04_01107_Hojj4925SS2SenBAi7jyg4xs/f800/1779387502.webp?s=33e7e4319afddb14a1a80f28dbf6d97f9237b090" loading="lazy"><img src="https://images1.vinted.net/t/06_005a5_V6WmqNhoEbgKSrwySde79Vdd/f800/1779387502.webp?s=8bcdca802861e93776819f281acce8b590c42c38" loading="lazy"><img src="https://images1.vinted.net/t/06_0211f_DKWy95Zffae6AUo4hLNJpGRM/f800/1779387502.webp?s=cba7482b5d2de453e86f309aaa1fc5afb9047117" loading="lazy"><img src="https://images1.vinted.net/t/01_0175e_fPMwuC79vnUABgojbtVWSadi/f800/1776795671.webp?s=c9d0bec52bfb9e2c1d6a7c75b6a171357cc2906e" loading="lazy"></div>
+  <div class="body">
+    <div class="head">
+      <span class="novo">NOVO</span>
+      <a href="https://www.vinted.es/items/8975238505-costume-sundek" target="_blank" class="t">Costume sundek</a>
+    </div>
+    <div class="sub">22,00 € · tam M</div>
+    <div class="decisao d-r">DESCARTADO · 0pts · bicolor, bolso_frontal</div>
+    <div class="metricas"><span class="m m-g"><b>Sundek?</b> sim</span><span class="m m-g"><b>é short?</b> sim</span><span class="m m-g"><b>tipo</b> liso</span><span class="m m-r"><b>bicolor</b> sim</span><span class="m m-r"><b>bolso frontal</b> sim</span><span class="m m-n"><b>cor</b> Branco</span><span class="m m-g"><b>tier</b> maravilhoso</span><span class="m m-g"><b>listra Sundek</b> sim</span><span class="m m-n"><b>cores listra</b> roxo, amarelo, verde</span><span class="m m-g"><b>bolso traseiro</b> sim</span><span class="m m-g"><b>nome SUNDEK no bolso</b> sim</span><span class="m m-r"><b>elástico</b> não</span><span class="m m-g"><b>fechamento</b> cordao</span><span class="m m-n"><b>etiqueta (hang tag)</b> não</span></div>
+    <div class="evids"><div class='ev'><b>marca:</b> Etiqueta Sundek visível, logo na parte de trás e faixa multicolorida no cós.</div><div class='ev'><b>listra:</b> Três faixas paralelas de cores distintas (roxo, amarelo, verde) no painel traseiro.</div><div class='ev'><b>bolso:</b> O short tem um bolso traseiro visível com um patch externo costurado sobre ele. O patch tem o desenho do sol e a palavra &#x27;SUNDEK&#x27; escrita abaixo.</div><div class='ev'><b>elástico:</b> Cós plano com cordão visível, sem sinais de elástico comprimido. Fly não mostra botão ou velcro.</div><div class='ev'><b>etiqueta:</b> Não há hang tag visível; apenas etiquetas costuradas internamente.</div></div>
+  </div>
+</article>
+<article class="card">
+  <div class="thumbs"><img src="https://images1.vinted.net/t/06_01eae_ZvwMKKaZcf8Qz1Ti9K7brUkN/f800/1779387526.webp?s=c7da8c4ad268376332a7453ee05798ab12bc4f20" class="main" loading="lazy"><img src="https://images1.vinted.net/t/06_0260a_ud8UDmEv7fj8o6E5hKBiiH5h/f800/1779387526.webp?s=4b6d350668869a83d8064c23ff2dab99970a5d8c" loading="lazy"><img src="https://images1.vinted.net/t/04_01edb_8Qarp4Xw9t2q3b6r7JyiQari/f800/1779387526.webp?s=6209fc2366e6b02a2efac36942e446a8b2eb3ee8" loading="lazy"><img src="https://images1.vinted.net/t/06_01ed5_rQkQ7ZFn3R6UyBRkBHWWAyZY/f800/1779387526.webp?s=d8e4547ce06abf1910d855f3a2c1d83cd07650e0" loading="lazy"><img src="https://images1.vinted.net/t/01_00d3f_QWHeBYzqRiYS2Gr5WhMAppL8/f800/1779387526.webp?s=c1db37618da7f61829c61347e2f92ca0d5048eb2" loading="lazy"><img src="https://images1.vinted.net/t/03_004bc_UhFiERxNfgYSC5bzLrFYuHps/f800/1674330101.webp?s=1e67e64a258da7bd8d00cb2530855199afe6f8d0" loading="lazy"></div>
+  <div class="body">
+    <div class="head">
+      <span class="novo">NOVO</span>
+      <a href="https://www.vinted.es/items/8975241936-costumi-uomo" target="_blank" class="t">Costumi uomo</a>
+    </div>
+    <div class="sub">45,00 € · tam XXL</div>
+    <div class="decisao d-r">DESCARTADO · 0pts · desbotado, cor_ruim, bolso_frontal, tamanho_XXL</div>
+    <div class="metricas"><span class="m m-g"><b>Sundek?</b> sim</span><span class="m m-g"><b>é short?</b> sim</span><span class="m m-r"><b>tipo</b> desbotado</span><span class="m m-r"><b>bolso frontal</b> sim</span></div>
+    <div class="evids"><div class='ev'><b>marca:</b> Etiqueta &#x27;SUNDEK&#x27; visível na parte interna e na parte traseira, comprimento até meio da coxa e perna larga com cordão na cintura.</div></div>
+  </div>
+</article>
+<article class="card">
+  <div class="thumbs"><img src="https://images1.vinted.net/t/06_0052d_hwvkJ3n94qDamMNT4FZiGdoz/f800/1779392217.webp?s=a0f1f2a5f1fa196dac8c0f33116ec09f1404c26b" class="main" loading="lazy"><img src="https://images1.vinted.net/t/05_0104c_8DrRiq4oLgXpJHEHcqET9uJE/f800/1779392217.webp?s=7ae32f01eaae360718961e16d20d5eec5653e59c" loading="lazy"><img src="https://images1.vinted.net/t/05_023bf_qFFkucJ89R9tVwhwJptqpPCf/f800/1779392217.webp?s=b682db5bbdb2e4a7efb2987374db9c13fb73ce5f" loading="lazy"><img src="https://images1.vinted.net/t/06_002bf_JaVrwMesRxmhGmLqj1oybK2y/f800/1779392217.webp?s=260840a31023e968600959a443dcfe210b956228" loading="lazy"><img src="https://images1.vinted.net/t/05_00160_eG2VyGSiwzR13QugZZ962Vwv/f800/1779392217.webp?s=6363aec2f89b8c0887f5b73143b5c9775397fb70" loading="lazy"><img src="https://images1.vinted.net/t/05_01856_MFsVvd5pu5SEFQ1938fCcmKK/f800/1769362417.webp?s=30cb94e6adc76d87657e14a78ca77743c5e6b24c" loading="lazy"></div>
+  <div class="body">
+    <div class="head">
+      <span class="novo">NOVO</span>
+      <a href="https://www.vinted.es/items/8975907246-costume-uomo-sundek" target="_blank" class="t">Costume uomo Sundek</a>
+    </div>
+    <div class="sub">14,00 € · tam S</div>
+    <div class="decisao d-r">DESCARTADO · 0pts · bicolor, bolso_frontal</div>
+    <div class="metricas"><span class="m m-g"><b>Sundek?</b> sim</span><span class="m m-g"><b>é short?</b> sim</span><span class="m m-g"><b>tipo</b> liso</span><span class="m m-r"><b>bicolor</b> sim</span><span class="m m-r"><b>bolso frontal</b> sim</span><span class="m m-n"><b>cor</b> ?</span><span class="m m-g"><b>tier</b> erro</span><span class="m m-g"><b>listra Sundek</b> sim</span><span class="m m-n"><b>cores listra</b> branco, azul claro, azul</span><span class="m m-r"><b>elástico</b> não</span><span class="m m-g"><b>fechamento</b> cordao</span><span class="m m-n"><b>etiqueta (hang tag)</b> não</span></div>
+    <div class="evids"><div class='ev'><b>marca:</b> Etiqueta interna visível com &#x27;SUNDEK&#x27; e faixa multicolorida característica no cós.</div><div class='ev'><b>listra:</b> Três faixas paralelas de cores distintas (branco, azul claro, azul) no painel traseiro/lateral.</div><div class='ev'><b>elástico:</b> Cós plano sem sinais de elástico, cordão visível passando por ilhós, sem botão ou velcro no fly.</div><div class='ev'><b>etiqueta:</b> Não há hang tag visível pendente nas fotos.</div></div>
+  </div>
+</article>
+<article class="card">
+  <div class="thumbs"><img src="https://images1.vinted.net/t/05_0005b_8cUwvK73ZrVSZgqxn38o7JBp/f800/1779387975.webp?s=1ac9b1875203710d3ca3323ebba8cb709cd42345" class="main" loading="lazy"><img src="https://images1.vinted.net/t/05_00af1_tnVNYrj9ScbSyuCbotGNQinD/f800/1779387975.webp?s=8b9ebc693fd8ab27c70e713a0afa98c0cd629055" loading="lazy"><img src="https://images1.vinted.net/t/05_01f55_webATYqJzCMn5qVeqyqEyPQd/f800/1779387975.webp?s=3cfa6a9ceabe571707f5286c786d687a5ccad47a" loading="lazy"><img src="https://images1.vinted.net/t/05_024bd_3LuHNpE69H7HbHRsMLCsvamB/f800/1779387975.webp?s=ed00ac0fb69c1a7cfcd8a4a7e9538f6ff4e63653" loading="lazy"><img src="https://images1.vinted.net/t/06_026ae_LPNqaP1UT4XVw2sqtiaRGfTy/f800/1779387975.webp?s=de0f1eaaca920a86237ee77995035a857fef5ff0" loading="lazy"><img src="https://images1.vinted.net/t/04_00302_4qSkKNESFptpamtEgYSD2z4h/f800/1752758689.webp?s=b4ea9ebd6cae7505f4060719e8aaf7f1fdf413b3" loading="lazy"></div>
+  <div class="body">
+    <div class="head">
+      <span class="novo">NOVO</span>
+      <a href="https://www.vinted.es/items/8975307708-costume-sundek-azzurro-taglia-m" target="_blank" class="t">Costume sundek azzurro taglia M</a>
+    </div>
+    <div class="sub">20,00 € · tam M</div>
+    <div class="decisao d-r">DESCARTADO · 0pts · bicolor, bolso_frontal</div>
+    <div class="metricas"><span class="m m-g"><b>Sundek?</b> sim</span><span class="m m-g"><b>é short?</b> sim</span><span class="m m-g"><b>tipo</b> liso</span><span class="m m-r"><b>bicolor</b> sim</span><span class="m m-r"><b>bolso frontal</b> sim</span><span class="m m-n"><b>cor</b> ?</span><span class="m m-g"><b>tier</b> erro</span><span class="m m-g"><b>listra Sundek</b> sim</span><span class="m m-n"><b>cores listra</b> roxo, branco, roxo</span><span class="m m-g"><b>elástico</b> sim</span><span class="m m-g"><b>fechamento</b> elastico</span><span class="m m-n"><b>etiqueta (hang tag)</b> não</span></div>
+    <div class="evids"><div class='ev'><b>marca:</b> Texto &#x27;SUNDEK&#x27; visível na etiqueta e faixa multicolorida característica no cós.</div><div class='ev'><b>listra:</b> Três faixas paralelas de cores diferentes (roxo, branco, roxo) no painel traseiro/lateral.</div><div class='ev'><b>elástico:</b> Cós visivelmente comprimido com elástico ao longo de toda a extensão; não há botão ou velcro visível no fly.</div><div class='ev'><b>etiqueta:</b> Não há hang tag visível pendente nas fotos.</div></div>
+  </div>
+</article>
+<article class="card">
+  <div class="thumbs"><img src="https://images1.vinted.net/t/01_01184_KJRQyHtWYLjaAwCrq2Lt22Lk/f800/1779378915.webp?s=c6d8009c4c9529b666a7804418f7f48bc6195069" class="main" loading="lazy"><img src="https://images1.vinted.net/t/06_01f2e_J7b5fneqVXS2hS7J1rwftrU8/f800/1779378915.webp?s=2d06f80bb6254742a826796b1d9c4f2eeb923811" loading="lazy"><img src="https://images1.vinted.net/t/04_007ce_3kqPkwcTuKHyRA82auJyWzpS/f800/1779378915.webp?s=7227568e0e80f0a0412b0b9b99730623a5112b9f" loading="lazy"><img src="https://images1.vinted.net/t/06_01db8_vx88AxjuRazv8h78vDLMHyfv/f800/1779378915.webp?s=324a1000bf42bb40743ae14f5fd1395b227811e1" loading="lazy"><img src="https://images1.vinted.net/t/03_00815_egUK6cmBZNQYPGQMyeckw15m/f800/1748549799.webp?s=68157ed089f17e2f4040cf1b37f4bc54fa34a5f9" loading="lazy"></div>
+  <div class="body">
+    <div class="head">
+      <span class="novo">NOVO</span>
+      <a href="https://www.vinted.es/items/8973967093-costume-da-bagno-sundek-uomo-size-30-size-m-rosso-nero-bianco" target="_blank" class="t">Costume da bagno Sundek uomo size 30 size M rosso nero bianc</a>
+    </div>
+    <div class="sub">15,00 € · tam M</div>
+    <div class="decisao d-r">DESCARTADO · 0pts · nao_short, cor_ruim, tamanho_numerico_30</div>
+    <div class="metricas"><span class="m m-r"><b>Sundek?</b> ?</span><span class="m m-r"><b>é short?</b> ?</span><span class="m m-r"><b>tipo</b> nao_short</span></div>
+    
+  </div>
+</article>
+<article class="card">
+  <div class="thumbs"><img src="https://images1.vinted.net/t/06_00bf3_MnZVN18JJiLmEvFSiYETEkSp/f800/1779398545.webp?s=8e710ba5da255cbc147e0b217ce88a9de4550e9c" class="main" loading="lazy"><img src="https://images1.vinted.net/t/06_02521_MpZXAyinpDxR1H177ZQ3V1SW/f800/1779398545.webp?s=33d6bc7202e45cbdca80e43146ab9a9d381fca57" loading="lazy"><img src="https://images1.vinted.net/t/04_0255a_YQn8A1XKGEKFJrMhKbyPaqop/f800/1779398545.webp?s=130ee50aa5d0374a2e8edaea61edd3d9ba881166" loading="lazy"><img src="https://images1.vinted.net/t/06_00c34_hwGg2trQANq43VWC48DcGHyd/f800/1779398545.webp?s=4d01df7ac61bca8caf7ff35e1252bab22d3eb263" loading="lazy"><img src="https://images1.vinted.net/t/06_01d49_DhtGf7psbqi8yB87hwU9weCm/f800/1779398545.webp?s=77f292f2021cf7100937c64ac90187dcc0515761" loading="lazy"></div>
+  <div class="body">
+    <div class="head">
+      <span class="novo">NOVO</span>
+      <a href="https://www.vinted.es/items/8976538020-swimwear" target="_blank" class="t">Swimwear</a>
+    </div>
+    <div class="sub">11,00 € · tam S</div>
+    <div class="decisao d-r">DESCARTADO · 0pts · estampado, cor_ruim</div>
+    <div class="metricas"><span class="m m-g"><b>Sundek?</b> sim</span><span class="m m-g"><b>é short?</b> sim</span><span class="m m-r"><b>tipo</b> estampado</span></div>
+    <div class="evids"><div class='ev'><b>marca:</b> Logo &#x27;SUNDEK&#x27; visível na parte de trás da peça e comprimento adequado para short.</div></div>
+  </div>
+</article>
+<article class="card">
+  <div class="thumbs"><img src="https://images1.vinted.net/t/05_015da_2JJ55cS55JGzUvDoQVVHo48P/f800/1779382483.webp?s=6b4f4b0564b383c402f19ec89c0e90835311fb62" class="main" loading="lazy"><img src="https://images1.vinted.net/t/01_025f3_ohCT6gmwMTztckH2KURZzaM6/f800/1779382483.webp?s=3d9c64ad699aeb7f8de36a178f679f4cb575e769" loading="lazy"><img src="https://images1.vinted.net/t/01_01ee8_eXEpksf1eRNmoWLBY6Jungsv/f800/1779382483.webp?s=ce6ab4e5e38ecce20f10fc17559353bde6f70255" loading="lazy"><img src="https://images1.vinted.net/t/05_01dd8_FrF9o4Rv7bJbb7HhKUskkMso/f800/1779382483.webp?s=1c63a3c6f00353ad9a3c27830e0c68bd62c14319" loading="lazy"><img src="https://images1.vinted.net/t/04_01d71_fAjyC33T1jejqDsJ51sRdgCe/f800/1779382483.webp?s=834562538dbc94a78751b1b49c6d25d6258b6ea5" loading="lazy"><img src="https://images1.vinted.net/t/04_01abb_oawXGen27Tk4BGpNDcfLT2rc/f800/1762688999.webp?s=aaf27a0fca2a8ba38e19441a854e8abd336a9cce" loading="lazy"></div>
+  <div class="body">
+    <div class="head">
+      <span class="novo">NOVO</span>
+      <a href="https://www.vinted.es/items/8974497564-shorts-bianchi-sundek-modello-leggero-con-coulisse" target="_blank" class="t">Shorts bianchi Sundek – modello leggero con coulisse</a>
+    </div>
+    <div class="sub">8,99 € · tam S</div>
+    <div class="decisao d-r">DESCARTADO · 0pts · bicolor</div>
+    <div class="metricas"><span class="m m-g"><b>Sundek?</b> sim</span><span class="m m-g"><b>é short?</b> sim</span><span class="m m-g"><b>tipo</b> liso</span><span class="m m-r"><b>bicolor</b> sim</span><span class="m m-n"><b>cor</b> Branco</span><span class="m m-g"><b>tier</b> maravilhoso</span><span class="m m-g"><b>listra Sundek</b> sim</span><span class="m m-n"><b>cores listra</b> amarelo, laranja, vermelho</span><span class="m m-g"><b>bolso traseiro</b> sim</span><span class="m m-g"><b>nome SUNDEK no bolso</b> sim</span><span class="m m-r"><b>elástico</b> não</span><span class="m m-g"><b>fechamento</b> cordao</span><span class="m m-n"><b>etiqueta (hang tag)</b> não</span></div>
+    <div class="evids"><div class='ev'><b>marca:</b> Etiqueta &#x27;SUNDEK&#x27; visível, logo na parte traseira e faixa multicolorida característica no cós.</div><div class='ev'><b>listra:</b> Três faixas paralelas de cores distintas (amarelo, laranja, vermelho) no painel traseiro.</div><div class='ev'><b>bolso:</b> A vista traseira do short mostra um bolso com um patch externo. O patch tem o desenho do sol e a palavra &#x27;SUNDEK&#x27; escrita abaixo.</div><div class='ev'><b>elástico:</b> Cós plano com cordão visível, sem sinais de elástico comprimido. Não há botão ou velcro visível no fly.</div><div class='ev'><b>etiqueta:</b> Não há hang tag visível; todas as etiquetas estão costuradas internamente.</div></div>
+  </div>
+</article>
+<article class="card">
+  <div class="thumbs"><img src="https://images1.vinted.net/t/06_012ff_xdk8B5k7xjh1rqsRQ4faTY2o/f800/1779380499.webp?s=5dc80b99be7ffa6fb5b3d2cb87137de8e4463525" class="main" loading="lazy"><img src="https://images1.vinted.net/t/05_0229f_zX7aZvqX9xHmMXUhfb8vnAbq/f800/1779380499.webp?s=ff0a1eca9bbe2fc49b1ee37546137e927ca51390" loading="lazy"><img src="https://images1.vinted.net/t/01_01737_cwEGQFfxiJ6rjqHA9BpgfHr1/f800/1779380499.webp?s=22c687d9caf65cbc12688358492d748fe260a775" loading="lazy"><img src="https://images1.vinted.net/t/05_008ae_kCSekgFbUHtjDqd3kHa9tJvV/f800/1779380499.webp?s=7b704fe79d39538de092e24052d2c6e010093790" loading="lazy"><img src="https://images1.vinted.net/t/03_00bbb_TGL2bZ6ur8oArxU35dTuwwbm/f800/1717661314.webp?s=d222c896eb54bef8cc4653158b332c8e80429a9a" loading="lazy"></div>
+  <div class="body">
+    <div class="head">
+      <span class="novo">NOVO</span>
+      <a href="https://www.vinted.es/items/8974200408-costume-sundek" target="_blank" class="t">Costume Sundek</a>
+    </div>
+    <div class="sub">27,00 € · tam XXL</div>
+    <div class="decisao d-r">DESCARTADO · 0pts · bicolor, bolso_frontal, tamanho_XXL</div>
+    <div class="metricas"><span class="m m-g"><b>Sundek?</b> sim</span><span class="m m-g"><b>é short?</b> sim</span><span class="m m-g"><b>tipo</b> liso</span><span class="m m-r"><b>bicolor</b> sim</span><span class="m m-r"><b>bolso frontal</b> sim</span><span class="m m-n"><b>cor</b> Cinza</span><span class="m m-g"><b>tier</b> muito_boa</span><span class="m m-g"><b>listra Sundek</b> sim</span><span class="m m-n"><b>cores listra</b> azul, branco, amarelo</span><span class="m m-g"><b>bolso traseiro</b> sim</span><span class="m m-g"><b>nome SUNDEK no bolso</b> sim</span><span class="m m-g"><b>elástico</b> sim</span><span class="m m-g"><b>fechamento</b> elastico</span><span class="m m-n"><b>etiqueta (hang tag)</b> não</span></div>
+    <div class="evids"><div class='ev'><b>marca:</b> Etiqueta &#x27;SUNDEK&#x27; visível, logo no bolso traseiro, faixa multicolorida no cós, comprimento e formato de short.</div><div class='ev'><b>listra:</b> Três faixas paralelas de cores distintas (azul, branco, amarelo) no painel traseiro/lateral.</div><div class='ev'><b>bolso:</b> O short tem um bolso traseiro visível com um patch costurado sobre ele. O patch tem o desenho do sol e a palavra &#x27;SUNDEK&#x27; escrita abaixo.</div><div class='ev'><b>elástico:</b> Cós visivelmente comprimido com elástico ao longo de toda a extensão; não há botão ou velcro visível no fly.</div><div class='ev'><b>etiqueta:</b> Não há hang tag visível pendente; todas as etiquetas estão costuradas internamente.</div></div>
+  </div>
+</article>
+<article class="card">
+  <div class="thumbs"><img src="https://images1.vinted.net/t/01_021a2_HqmwniGKxKFdS7sLkUa5jAzV/f800/1779378251.webp?s=e753a4a20a0f5b42f94ebe2429e0f293d767e96e" class="main" loading="lazy"><img src="https://images1.vinted.net/t/05_00120_JUwi5bUSWoggYxrMrCJAJTDM/f800/1779378251.webp?s=b0e0735eb0bf0b8cea50ac006f9877a46ad78c78" loading="lazy"><img src="https://images1.vinted.net/t/01_001c6_sAYTXbJwnsxc5i5d7DmrdonP/f800/1779378251.webp?s=d18149844174a35c5e81389b368c21f2c165e461" loading="lazy"><img src="https://images1.vinted.net/t/06_02403_pp9UgY25Wvbrk75uFeP5AgH9/f800/1779378251.webp?s=5d6dfddc83ea34e54aebdbf646d4ed8f7a4dcbc9" loading="lazy"><img src="https://images1.vinted.net/t/06_0002e_13trPRgUZpkS7T4kEVBkALAN/f800/1779378514.webp?s=f101e70caf359609fe1eff891bd39787b8948117" loading="lazy"></div>
+  <div class="body">
+    <div class="head">
+      <span class="novo">NOVO</span>
+      <a href="https://www.vinted.es/items/8973868978-short-de-bain-sundek" target="_blank" class="t">Short de bain Sundek</a>
+    </div>
+    <div class="sub">29,99 € · tam M</div>
+    <div class="decisao d-r">DESCARTADO · 0pts · bicolor, bolso_frontal</div>
+    <div class="metricas"><span class="m m-g"><b>Sundek?</b> sim</span><span class="m m-g"><b>é short?</b> sim</span><span class="m m-g"><b>tipo</b> liso</span><span class="m m-r"><b>bicolor</b> sim</span><span class="m m-r"><b>bolso frontal</b> sim</span><span class="m m-n"><b>cor</b> Kaki escuro</span><span class="m m-g"><b>tier</b> boa</span><span class="m m-g"><b>listra Sundek</b> sim</span><span class="m m-n"><b>cores listra</b> azul, branco, azul claro</span><span class="m m-g"><b>bolso traseiro</b> sim</span><span class="m m-g"><b>nome SUNDEK no bolso</b> sim</span><span class="m m-r"><b>elástico</b> não</span><span class="m m-g"><b>fechamento</b> cordao</span><span class="m m-n"><b>etiqueta (hang tag)</b> não</span></div>
+    <div class="evids"><div class='ev'><b>marca:</b> Texto &#x27;SUNDEK&#x27; visível no bolso traseiro e faixa multicolorida característica no cós.</div><div class='ev'><b>listra:</b> Três faixas paralelas em azul, branco e azul claro no painel traseiro/lateral.</div><div class='ev'><b>bolso:</b> O short tem um bolso traseiro visível com um patch costurado sobre ele. O patch tem o desenho do sol e a palavra &#x27;SUNDEK&#x27; escrita abaixo.</div><div class='ev'><b>elástico:</b> Cós plano sem compressão visível e cordão presente; fly sem botão ou velcro visível.</div><div class='ev'><b>etiqueta:</b> Não há hang tag visível pendente nas fotos.</div></div>
+  </div>
+</article>
+<article class="card">
+  <div class="thumbs"><img src="https://images1.vinted.net/t/06_00b1e_2u3qyBED7ALXFaYTjP6Yp42e/f800/1779394153.webp?s=1dff04b7bf3000c6f362be620653aea79ee26b13" class="main" loading="lazy"><img src="https://images1.vinted.net/t/03_00c5f_AKVMGdDa96c3Yki2MCjyCuvN/f800/1779394153.webp?s=7cd0642fe6d9f702e29efa63148fa4f4ac5d7002" loading="lazy"><img src="https://images1.vinted.net/t/05_0135e_eeGJxniL8sbkDmiY6LpLkwRX/f800/1779394153.webp?s=4657028bef362ffe478c0de4b7262775a2df83a5" loading="lazy"><img src="https://images1.vinted.net/t/02_023c1_haMv6GHDM9L7dgsMMgAGxiA9/f800/1605240744.webp?s=31dcf4d0436c7470c354b9f0531b01e4b62ee8b1" loading="lazy"></div>
+  <div class="body">
+    <div class="head">
+      <span class="novo">NOVO</span>
+      <a href="https://www.vinted.es/items/8976146423-short-bleu-marine" target="_blank" class="t">Short bleu marine</a>
+    </div>
+    <div class="sub">30,00 € · tam XL</div>
+    <div class="decisao d-r">DESCARTADO · 0pts · bicolor, bolso_frontal</div>
+    <div class="metricas"><span class="m m-g"><b>Sundek?</b> sim</span><span class="m m-g"><b>é short?</b> sim</span><span class="m m-g"><b>tipo</b> liso</span><span class="m m-r"><b>bicolor</b> sim</span><span class="m m-r"><b>bolso frontal</b> sim</span><span class="m m-n"><b>cor</b> Azul marinho</span><span class="m m-g"><b>tier</b> maravilhoso</span><span class="m m-g"><b>listra Sundek</b> sim</span><span class="m m-n"><b>cores listra</b> vermelho, branco, azul claro</span><span class="m m-g"><b>bolso traseiro</b> sim</span><span class="m m-g"><b>nome SUNDEK no bolso</b> sim</span><span class="m m-r"><b>elástico</b> não</span><span class="m m-g"><b>fechamento</b> cordao</span><span class="m m-n"><b>etiqueta (hang tag)</b> não</span></div>
+    <div class="evids"><div class='ev'><b>marca:</b> Etiqueta interna com &#x27;SUNDEK&#x27; e faixa multicolorida no cós.</div><div class='ev'><b>listra:</b> Três faixas paralelas de cores distintas (vermelho, branco, azul claro) no painel traseiro/lateral.</div><div class='ev'><b>bolso:</b> A vista traseira do short mostra um bolso com um patch costurado sobre ele. O patch tem o desenho do sol e a palavra &#x27;SUNDEK&#x27; escrita.</div><div class='ev'><b>elástico:</b> Cós plano com cordão visível, sem sinais de elástico comprimido. Não há botão ou velcro visível no fly.</div><div class='ev'><b>etiqueta:</b> Não há hang tag visível pendente nas fotos do short.</div></div>
+  </div>
+</article>
+<article class="card">
+  <div class="thumbs"><img src="https://images1.vinted.net/t/05_000f5_hDY87iuhXdEbKYLvfRgfVr6V/f800/1779275207.webp?s=3fcd9e67f08de15edb66027ff07ad032a72c06de" class="main" loading="lazy"><img src="https://images1.vinted.net/t/06_00233_JNghHrUv4LBztBZ5zFLCsVUY/f800/1779275207.webp?s=2be294b3ec199e4762e02f3a35bc03f96803bdf4" loading="lazy"><img src="https://images1.vinted.net/t/03_01602_2PAGdMCaGU2MVrZFN5C8r7U9/f800/1779275207.webp?s=a64e5959ca7f099d4bed5e331d587b0b252ce6fd" loading="lazy"><img src="https://images1.vinted.net/t/05_0092b_M6PxQg1NAHNfDE2jntsK6h5F/f800/1779275207.webp?s=4e1b539db95b11768cc1dd6c5106c4db7f303b95" loading="lazy"><img src="https://images1.vinted.net/t/05_0195c_QUFhurPDmqUwsgQr6R6EtBSU/f800/1779275207.webp?s=1a6e12c52e28610f11186d33d5e8c19c8d5469ba" loading="lazy"><img src="https://images1.vinted.net/t/04_0161f_7oK1TS6gJyMQzUNoo5CpGz3x/f800/1760359583.webp?s=47f00c455d968434936f980d6d676602241b91db" loading="lazy"></div>
+  <div class="body">
+    <div class="head">
+      <span class="novo">NOVO</span>
+      <a href="https://www.vinted.es/items/8963581877-t-shirt-uomo-lacoste-cotone-celeste-basic-logo-crocodile-tee-regular-taglia-l" target="_blank" class="t">T Shirt Uomo Lacoste Cotone Celeste Basic Logo Crocodile Tee</a>
+    </div>
+    <div class="sub">39,90 € · tam L</div>
+    <div class="decisao d-r">DESCARTADO · 0pts · nao_short, cor_ruim</div>
+    <div class="metricas"><span class="m m-r"><b>Sundek?</b> ?</span><span class="m m-r"><b>é short?</b> ?</span><span class="m m-r"><b>tipo</b> nao_short</span></div>
+    
+  </div>
+</article>
+<article class="card">
+  <div class="thumbs"><img src="https://images1.vinted.net/t/04_0016e_TmYf3b6FnaFzVehDEeaFUjN1/f800/1779391889.webp?s=fd15f4be308491b312f6ec3c7790c748d4291453" class="main" loading="lazy"><img src="https://images1.vinted.net/t/06_00e90_xLxADpK4NdMBtWFQpTLU9rRX/f800/1779391889.webp?s=00c04a03e7a6f231753c77ec41320b4ea52bdc31" loading="lazy"><img src="https://images1.vinted.net/t/02_015cb_jDVTyc1G1hDcsJHST749fS7r/f800/1619546799.webp?s=04c3b2e4d78809544c9a7ff76ae8d81f10745270" loading="lazy"></div>
+  <div class="body">
+    <div class="head">
+      <span class="novo">NOVO</span>
+      <a href="https://www.vinted.es/items/8975863355-costume-sandek-taglia-m" target="_blank" class="t">Costume sandek taglia m</a>
+    </div>
+    <div class="sub">10,00 € · tam M</div>
+    <div class="decisao d-r">DESCARTADO · 0pts · sem_listra_sundek, piping_nao_e_listra_sundek</div>
+    <div class="metricas"><span class="m m-g"><b>Sundek?</b> sim</span><span class="m m-g"><b>é short?</b> sim</span><span class="m m-g"><b>tipo</b> liso</span><span class="m m-n"><b>cor</b> Azul claro</span><span class="m m-r"><b>tier</b> ok</span><span class="m m-r"><b>listra Sundek</b> não</span><span class="m m-r"><b>piping</b> sim</span></div>
+    <div class="evids"><div class='ev'><b>marca:</b> Logo Sundek visível no bolso traseiro e cordão na cintura.</div><div class='ev'><b>listra:</b> Três faixas paralelas, mas todas são da mesma cor (branco e preto), sem variação de cor distinta.</div></div>
+  </div>
+</article>
+<article class="card">
+  <div class="thumbs"><img src="https://images1.vinted.net/t/05_0121f_1aDyxsCXwCEfxCp7LQBPqm5Z/f800/1779389969.webp?s=95f40f55d7872edb8a06f0cc75ffdf154af92844" class="main" loading="lazy"><img src="https://images1.vinted.net/t/04_009d5_pVZR8NRRA51PeFREfkCRcSoY/f800/1779389969.webp?s=03b1d5824f197bc59fc64f8f971ed82434eb07fe" loading="lazy"><img src="https://images1.vinted.net/t/05_01d00_xoXMRRPLQW311MgqrfUa8WuU/f800/1779389969.webp?s=f1cfb0ad70e4fea76f4bec78210e8483668c2a8d" loading="lazy"><img src="https://images1.vinted.net/t/05_023af_pViZDq7vCPiyMxb1DivwycXL/f800/1779389969.webp?s=0ec1a1d5dd850482f7c000e94834f7d5cedad52f" loading="lazy"><img src="https://images1.vinted.net/t/05_00ae2_Uej5J63FqJ6f8fog8U4iMfwE/f800/1779389969.webp?s=b2bf1565bb15d2e7869260a6d7a969a82d7a8699" loading="lazy"><img src="https://images1.vinted.net/t/06_006dd_yxAUDs9c76thpL8pdsfuHd4k/f800/1769896567.webp?s=af94d3a124afa954d0a80730e9bc1bd3dee4241a" loading="lazy"></div>
+  <div class="body">
+    <div class="head">
+      <span class="novo">NOVO</span>
+      <a href="https://www.vinted.es/items/8975597751-costume-sundek-uomoleggi-descrizione" target="_blank" class="t">Costume Sundek uomo(leggi descrizione)</a>
+    </div>
+    <div class="sub">4,00 € · tam S</div>
+    <div class="decisao d-r">DESCARTADO · 0pts · bicolor, bolso_frontal, bolso_so_logo_colecao_antiga</div>
+    <div class="metricas"><span class="m m-g"><b>Sundek?</b> sim</span><span class="m m-g"><b>é short?</b> sim</span><span class="m m-g"><b>tipo</b> liso</span><span class="m m-r"><b>bicolor</b> sim</span><span class="m m-r"><b>bolso frontal</b> sim</span><span class="m m-n"><b>cor</b> Branco</span><span class="m m-g"><b>tier</b> maravilhoso</span><span class="m m-g"><b>listra Sundek</b> sim</span><span class="m m-n"><b>cores listra</b> azul, amarelo, azul</span><span class="m m-g"><b>bolso traseiro</b> sim</span><span class="m m-r"><b>nome SUNDEK no bolso</b> não</span><span class="m m-r"><b>elástico</b> não</span><span class="m m-g"><b>fechamento</b> cordao</span></div>
+    <div class="evids"><div class='ev'><b>marca:</b> Etiqueta &#x27;SUNDEK&#x27; visível na cintura e faixa multicolorida característica no cós.</div><div class='ev'><b>listra:</b> Três faixas paralelas de cores diferentes (azul, amarelo, azul) no painel traseiro.</div><div class='ev'><b>bolso:</b> O short tem um bolso traseiro visível com um patch em formato de meio-círculo contendo apenas o desenho do sol, sem a palavra &#x27;SUNDEK&#x27; escrita.</div><div class='ev'><b>elástico:</b> Cós plano sem compressão visível e cordão passando por ilhós metálicos. Fly sem botão ou velcro visível.</div></div>
+  </div>
+</article>
+<article class="card">
+  <div class="thumbs"><img src="https://images1.vinted.net/t/06_020ac_22pRw6Nd34eB3wgZo3t1CgM7/f800/1779393734.webp?s=ca57ae265e9f3b24c30b8e5747725487a710da52" class="main" loading="lazy"><img src="https://images1.vinted.net/t/01_01ed3_XYjv6ZiEbp3kbtgev5dthgyZ/f800/1779393734.webp?s=b6a612c59c02efcf29f849f5f8d4ffe62862f25c" loading="lazy"><img src="https://images1.vinted.net/t/05_00dbe_23UAndRmBEUSjJ5YrVdRfuxY/f800/1779393734.webp?s=61ea0c0490be497e3e88e2547e89f7c6d0303c05" loading="lazy"><img src="https://images1.vinted.net/t/05_017a5_No8cRekh7SZTENjHaCZEuohp/f800/1779393734.webp?s=2ffa802d74aab2e974262efd76abb045ab892834" loading="lazy"><img src="https://images1.vinted.net/t/01_01bf3_ejQQqN5XBrHLAAxifVqFTnzF/f800/1779393734.webp?s=5b6caad99af8d69fe6a9492e5da043efafc8f19f" loading="lazy"><img src="https://images1.vinted.net/t/01_013ab_8P41Yv9Rc6ahfUw4CxCm8Nr3/f800/1758573023.webp?s=743558b88fce5cd44dd8465610e2c32bef7f990d" loading="lazy"></div>
+  <div class="body">
+    <div class="head">
+      <span class="novo">NOVO</span>
+      <a href="https://www.vinted.es/items/8976098173-costume-da-bagno-uomo-taglia-48-sundek" target="_blank" class="t">Costume da bagno uomo taglia 48 sundek</a>
+    </div>
+    <div class="sub">25,00 € · tam L</div>
+    <div class="decisao d-r">DESCARTADO · 0pts · estampado, cor_ruim</div>
+    <div class="metricas"><span class="m m-g"><b>Sundek?</b> sim</span><span class="m m-g"><b>é short?</b> sim</span><span class="m m-r"><b>tipo</b> estampado</span></div>
+    <div class="evids"><div class='ev'><b>marca:</b> Etiqueta Sundek visível na parte interna e formato de short com pernas separadas.</div></div>
+  </div>
+</article>
+<article class="card">
+  <div class="thumbs"><img src="https://images1.vinted.net/t/06_01ac5_dRc4n4erJSmurfwuumampGUq/f800/1779400165.webp?s=00d0c7b586971126af87df721869f2053203bdc5" class="main" loading="lazy"><img src="https://images1.vinted.net/t/06_01aae_2wq6ju87FaNr9e4aFeLxdxh8/f800/1779400165.webp?s=3f6659dabd621934ec90f2609e6c704e80123724" loading="lazy"><img src="https://images1.vinted.net/t/06_00113_WPhztY9BzVAgb4gchwukGpeC/f800/1779400165.webp?s=9647245624e10153ab599990e30f206018d2ae6c" loading="lazy"><img src="https://images1.vinted.net/t/05_0211d_2PUbuCqFvcUC8vDMC7Qo8oQ1/f800/1779400166.webp?s=08f3e25680f0d8a5f4ebfd2bc71b2389256b257a" loading="lazy"><img src="https://images1.vinted.net/t/05_00aa7_ctB55qJe7izAX5J5bXi4zvjr/f800/1779400166.webp?s=8b283543f96b646659c3defaf70a162d26afce5a" loading="lazy"></div>
+  <div class="body">
+    <div class="head">
+      <span class="novo">NOVO</span>
+      <a href="https://www.vinted.es/items/8976629627-costume-sundek" target="_blank" class="t">Costume Sundek</a>
+    </div>
+    <div class="sub">18,00 € · tam M</div>
+    <div class="decisao d-r">DESCARTADO · 0pts · estampado, cor_ruim</div>
+    <div class="metricas"><span class="m m-g"><b>Sundek?</b> sim</span><span class="m m-g"><b>é short?</b> sim</span><span class="m m-r"><b>tipo</b> estampado</span></div>
+    <div class="evids"><div class='ev'><b>marca:</b> Peça possui logo Sundek visível e etiqueta Sundek.</div></div>
+  </div>
+</article>
+<article class="card">
+  <div class="thumbs"><img src="https://images1.vinted.net/t/06_0094e_EHbNe3XPaLjccw8vRUM1sExT/f800/1779396232.webp?s=8b6ed85b7d576761a9fa98358a11ff5e85e050ce" class="main" loading="lazy"><img src="https://images1.vinted.net/t/05_0088d_QCxvAAiCy1sMdt9rruk7Gc2j/f800/1779396232.webp?s=dc5ecd6d27efbfba1617f607c859d3741faac147" loading="lazy"><img src="https://images1.vinted.net/t/06_00081_HuXJf5UDQVsJVn22hw4c16ob/f800/1779396232.webp?s=c9711987644a51412964867ffb3b614fecf92b06" loading="lazy"><img src="https://images1.vinted.net/t/06_019d3_Rk7w1KWUmkCnbhZnCTjGRrnX/f800/1779396232.webp?s=ba1e853c733204ce4404fee7584085c29a2f1c96" loading="lazy"><img src="https://images1.vinted.net/t/06_01011_MJLYmse9GMzpdKTRE53gyUrF/f800/1779396232.webp?s=a2710ebf622b165fd2a1dad789709c885f367bc8" loading="lazy"><img src="https://images1.vinted.net/t/03_00345_GduR5ZEPd2K515DSkHzMT8JY/f800/1696423365.webp?s=2ab363b6e09a1ecfe8c162f4a0ce610942c8cad8" loading="lazy"></div>
+  <div class="body">
+    <div class="head">
+      <span class="novo">NOVO</span>
+      <a href="https://www.vinted.es/items/8976359472-costume-sundek" target="_blank" class="t">Costume Sundek</a>
+    </div>
+    <div class="sub">25,00 € · tam M</div>
+    <div class="decisao d-r">DESCARTADO · 5pts · score baixo</div>
+    <div class="metricas"><span class="m m-g"><b>Sundek?</b> sim</span><span class="m m-g"><b>é short?</b> sim</span><span class="m m-g"><b>tipo</b> liso</span><span class="m m-n"><b>cor</b> ?</span><span class="m m-g"><b>tier</b> erro</span><span class="m m-g"><b>listra Sundek</b> sim</span><span class="m m-n"><b>cores listra</b> verde, vermelho, cinza</span><span class="m m-g"><b>bolso traseiro</b> sim</span><span class="m m-g"><b>nome SUNDEK no bolso</b> sim</span><span class="m m-r"><b>elástico</b> não</span><span class="m m-g"><b>fechamento</b> cordao</span></div>
+    <div class="evids"><div class='ev'><b>marca:</b> Etiqueta interna com &#x27;SUNDEK&#x27; visível e faixa multicolorida característica no cós.</div><div class='ev'><b>listra:</b> Três faixas paralelas de cores diferentes (verde, vermelho, cinza) no painel traseiro.</div><div class='ev'><b>bolso:</b> Bolso traseiro visível com patch contendo a palavra &#x27;SUNDEK&#x27;. Sem bolso frontal/cargo visível.</div><div class='ev'><b>elástico:</b> Cós plano com cordão visível, sem sinais de elástico ou botão/velcro no fly.</div></div>
+  </div>
+</article>
+<article class="card">
+  <div class="thumbs"><img src="https://images1.vinted.net/t/06_00f86_Z1YVfWCzkSWKCN59RSSesndE/f800/1779385913.webp?s=5c6227adfab0f70c8aed63b179f0a1aef3c6e1d4" class="main" loading="lazy"><img src="https://images1.vinted.net/t/01_007bd_Bbhyc4nNW68YrZfEXBFnzvmn/f800/1779385913.webp?s=f69097fa5ff787cce58ffe8eff4bb98b4b9d66a4" loading="lazy"><img src="https://images1.vinted.net/t/01_01f3b_5MxQUZGxjtVi3JLbUg4kKJpY/f800/1779385913.webp?s=e1f325521ab51556bf88ede9eac257e67ee87c47" loading="lazy"><img src="https://images1.vinted.net/t/06_00daa_13CdhPttven58y9Y2JDaoRDa/f800/1779385913.webp?s=81edaa75269232a56c0059b17c181cfd00ddabf6" loading="lazy"><img src="https://images1.vinted.net/t/03_019a9_kzHqrM4HPGCW5q4vK1MixiVA/f800/1720851276.webp?s=52452c8b799d6092d5608255a03e2a8d1d3df2e5" loading="lazy"></div>
+  <div class="body">
+    <div class="head">
+      <span class="novo">NOVO</span>
+      <a href="https://www.vinted.es/items/8975005977-polo-sundek-blu-cotone-xxl" target="_blank" class="t">Polo Sundek Blu | Cotone | XXL</a>
+    </div>
+    <div class="sub">8,00 € · tam XXL</div>
+    <div class="decisao d-r">DESCARTADO · 0pts · nao_short, cor_ruim, tamanho_XXL</div>
+    <div class="metricas"><span class="m m-r"><b>Sundek?</b> ?</span><span class="m m-r"><b>é short?</b> ?</span><span class="m m-r"><b>tipo</b> nao_short</span></div>
+    
+  </div>
+</article>
+<article class="card">
+  <div class="thumbs"><img src="https://images1.vinted.net/t/04_00afa_6fqJRzjfqsPjDpyp7NCmJ1e9/f800/1779412459.webp?s=2ee626b3201d32905ea1f2d8d35604ba4237c3be" class="main" loading="lazy"><img src="https://images1.vinted.net/t/05_002e1_jzqdLarG5ZJKRbEc9knyXisC/f800/1779412459.webp?s=b1db8ca1c848392e294e35f080500c54adac8808" loading="lazy"><img src="https://images1.vinted.net/t/05_018b7_6ysb5oXGmdQTMrpmxwj345Sg/f800/1779412459.webp?s=acb9b127d366b1f8a7850a7fe001084d0bfec15e" loading="lazy"><img src="https://images1.vinted.net/t/01_0229d_9dLf8bYCnEJNFBJKhLRuNBxg/f800/1779412459.webp?s=f77dcafe0b9864e87283ee9b128189c040193b21" loading="lazy"><img src="https://images1.vinted.net/t/06_01089_wqeB8K3hGoL3gBxGRvP6R4Mc/f800/1779412459.webp?s=ef9a4456574bf7470efbb6514b9015e2bbb5be77" loading="lazy"><img src="https://images1.vinted.net/t/02_008e1_MYGdLJPag44sFPtfXNPHmQrB/f800/1611169028.webp?s=b4814a024f1d350863454b230209b4901241b972" loading="lazy"></div>
+  <div class="body">
+    <div class="head">
+      <span class="novo">NOVO</span>
+      <a href="https://www.vinted.es/items/8976877970-maglietta-sundek" target="_blank" class="t">Maglietta Sundek</a>
+    </div>
+    <div class="sub">14,00 € · tam XXL</div>
+    <div class="decisao d-r">DESCARTADO · 0pts · nao_short, cor_ruim, tamanho_XXL</div>
+    <div class="metricas"><span class="m m-r"><b>Sundek?</b> ?</span><span class="m m-r"><b>é short?</b> ?</span><span class="m m-r"><b>tipo</b> nao_short</span></div>
+    
+  </div>
+</article>
+<article class="card">
+  <div class="thumbs"><img src="https://images1.vinted.net/t/05_019b5_mbBJYpZ77p9Ek3cddRFycdWx/f800/1779381069.webp?s=ce895f62a54d0c367d96dc81337235578e9dcb67" class="main" loading="lazy"><img src="https://images1.vinted.net/t/05_01909_ruBGVpXBmeqRELbRvs9iRKXg/f800/1779381069.webp?s=820b777badf75967c2b69843fc50460f43f4a38c" loading="lazy"><img src="https://images1.vinted.net/t/05_003a6_32Vbn7FTjqjoLtHQgP3yLBuq/f800/1779381069.webp?s=e81c8ec1797505af8f194cd10d89116cac71e3fb" loading="lazy"><img src="https://images1.vinted.net/t/05_00629_d84akkXcoBc4v8ATGeThVsLx/f800/1779381069.webp?s=f9f7d4c1baedcabc020220887d7bc77345b6ae88" loading="lazy"><img src="https://images1.vinted.net/t/01_00573_Uw4UYq16rugURXyCyxdPZQku/f800/1779381069.webp?s=c6540a01499644b090d2b497d2323fd1c7c870e8" loading="lazy"><img src="https://images1.vinted.net/t/06_01a5d_kYc6JxkDLyoDyGubffhtuARh/f800/1776110996.webp?s=fd1adfa01093d71f3bdafdd31fe1dacf82c538dd" loading="lazy"></div>
+  <div class="body">
+    <div class="head">
+      <span class="novo">NOVO</span>
+      <a href="https://www.vinted.es/items/8974285167-pantaloncino-cargo-sundek-uomo-taglia-29" target="_blank" class="t">Pantaloncino cargo Sundek uomo taglia 29</a>
+    </div>
+    <div class="sub">5,90 € · tam W29 | ES 38</div>
+    <div class="decisao d-r">DESCARTADO · 0pts · nao_short, cor_ruim, tamanho_numerico_38</div>
+    <div class="metricas"><span class="m m-r"><b>Sundek?</b> ?</span><span class="m m-r"><b>é short?</b> ?</span><span class="m m-r"><b>tipo</b> nao_short</span></div>
+    
+  </div>
+</article>
+<article class="card">
+  <div class="thumbs"><img src="https://images1.vinted.net/t/05_01ec3_W2dKJpcDAogKnDuPT7LZaCVi/f800/1779392283.webp?s=b81cb4e29b9c4de29373be4f628f2cad542afc37" class="main" loading="lazy"><img src="https://images1.vinted.net/t/05_000d0_vCjvhxNxhHkiHXRjhD535yRR/f800/1779392283.webp?s=bf4ac2712a15c2daec9f3718c8a673a3817782ec" loading="lazy"><img src="https://images1.vinted.net/t/06_00fad_ZJUQWtmfCtTjAPQnhnX3rAWo/f800/1779392283.webp?s=ef099156c0b6b3e685ec4589507c50285ac38186" loading="lazy"><img src="https://images1.vinted.net/t/06_01b9f_7M2tnhPNnUWpNhTSEEKu6635/f800/1779392283.webp?s=29a6a49f10f4349a32c52e499c9d322ba69ac772" loading="lazy"><img src="https://images1.vinted.net/t/01_011ce_FWk6wx61MGrLrtjMhfc72KzN/f800/1779392283.webp?s=c3c0006c70f8bd57734c66f6340ff6354f1e4e3e" loading="lazy"><img src="https://images1.vinted.net/t/02_00a99_bHfvM7hcj5SUCCtESoT2CAf5/f800/1612716268.webp?s=7e55337f2a690d3bfd8cbfba245be12d140728f1" loading="lazy"></div>
+  <div class="body">
+    <div class="head">
+      <span class="novo">NOVO</span>
+      <a href="https://www.vinted.es/items/8975915765-costume-sundek-viola" target="_blank" class="t">Costume sundek viola</a>
+    </div>
+    <div class="sub">5,00 € · tam S</div>
+    <div class="decisao d-r">DESCARTADO · 0pts · bicolor, bolso_frontal</div>
+    <div class="metricas"><span class="m m-g"><b>Sundek?</b> sim</span><span class="m m-g"><b>é short?</b> sim</span><span class="m m-g"><b>tipo</b> liso</span><span class="m m-r"><b>bicolor</b> sim</span><span class="m m-r"><b>bolso frontal</b> sim</span><span class="m m-n"><b>cor</b> ?</span><span class="m m-g"><b>tier</b> erro</span><span class="m m-g"><b>listra Sundek</b> sim</span><span class="m m-n"><b>cores listra</b> azul escuro, azul claro, branco</span><span class="m m-g"><b>bolso traseiro</b> sim</span><span class="m m-g"><b>nome SUNDEK no bolso</b> sim</span><span class="m m-r"><b>elástico</b> não</span><span class="m m-g"><b>fechamento</b> cordao</span></div>
+    <div class="evids"><div class='ev'><b>marca:</b> Etiqueta &#x27;SUNDEK&#x27; visível no bolso traseiro, faixa multicolorida característica no cós, e cordão na cintura.</div><div class='ev'><b>listra:</b> Três faixas paralelas de cores distintas (azul escuro, azul claro, branco) no painel traseiro.</div><div class='ev'><b>bolso:</b> O short tem um bolso traseiro visível com um patch costurado sobre ele. O patch tem o desenho do sol e a palavra &#x27;SUNDEK&#x27; escrita abaixo.</div><div class='ev'><b>elástico:</b> Cós plano com cordão visível, sem sinais de elástico comprimido e sem botão ou velcro no fly.</div></div>
+  </div>
+</article>
+<article class="card">
+  <div class="thumbs"><img src="https://images1.vinted.net/t/05_01bc9_QTptUjAJ9QWztvCc4gYWo89B/f800/1779390227.webp?s=389fe7ebf72ae09530cfbb6efb03b16a362651d7" class="main" loading="lazy"><img src="https://images1.vinted.net/t/06_01c87_beWt8GTYQFs7Xo5817BK288C/f800/1779390227.webp?s=d7ed082afe8f48ac8e1f3abcaff61f8ac6607d2d" loading="lazy"><img src="https://images1.vinted.net/t/06_024b3_CsTKGkjd3WUZY2BeiHTL7zVX/f800/1779390227.webp?s=f592fcdc450819e174aa63b05f436c52003015d9" loading="lazy"><img src="https://images1.vinted.net/t/05_0052f_wWykEEiCg3gFmbwhwuhZdbUY/f800/1779390227.webp?s=31a4fb05a1553d3559e7d3f01b7e07afa1a38704" loading="lazy"><img src="https://images1.vinted.net/t/01_003e4_bumsqvxBTyqNrFBRsQwe2e86/f800/1699198202.webp?s=5ed476c7f3526065312f5a1b70da1269c9188d4d" loading="lazy"></div>
+  <div class="body">
+    <div class="head">
+      <span class="novo">NOVO</span>
+      <a href="https://www.vinted.es/items/8975634530-banador-sundek-29" target="_blank" class="t">Bañador Sundek 29</a>
+    </div>
+    <div class="sub">19,00 € · tam S</div>
+    <div class="decisao d-r">DESCARTADO · 0pts · nao_short, cor_ruim, tamanho_numerico_29</div>
+    <div class="metricas"><span class="m m-r"><b>Sundek?</b> ?</span><span class="m m-r"><b>é short?</b> ?</span><span class="m m-r"><b>tipo</b> nao_short</span></div>
+    
+  </div>
+</article>
+<article class="card">
+  <div class="thumbs"><img src="https://images1.vinted.net/t/05_00760_8fUV2YS1at9uiQxQVVF2ccQE/f800/1779392195.webp?s=56c75673c8d828ae17882d63463c4087f9b5a3f5" class="main" loading="lazy"><img src="https://images1.vinted.net/t/06_00d08_CpYGEPupQEdojD6eaTRxs2i6/f800/1779392195.webp?s=f43cea99be3f0ecddfd3f7cc7223881818fcf5e3" loading="lazy"><img src="https://images1.vinted.net/t/06_0112b_gDx2nWH384DZ6iK2hvifbZV1/f800/1779392195.webp?s=067b0a7d918039243893ed4ed28a0d5c21c1c0a8" loading="lazy"><img src="https://images1.vinted.net/t/05_02082_mcveiwU4CZSHaamrsXw7fApq/f800/1779392195.webp?s=06664433ac488d4757b2de389f28b82f380911e9" loading="lazy"><img src="https://images1.vinted.net/t/05_0165d_wkdidMvC7Ca9CmvkrKNyBXsT/f800/1779392195.webp?s=b1f6cb8bb9c1ec644d6367bf78fb872bfff43a93" loading="lazy"><img src="https://images1.vinted.net/t/05_01856_MFsVvd5pu5SEFQ1938fCcmKK/f800/1769362417.webp?s=30cb94e6adc76d87657e14a78ca77743c5e6b24c" loading="lazy"></div>
+  <div class="body">
+    <div class="head">
+      <span class="novo">NOVO</span>
+      <a href="https://www.vinted.es/items/8975904240-pantaloncino-uomo-puma" target="_blank" class="t">Pantaloncino uomo Puma</a>
+    </div>
+    <div class="sub">9,00 € · tam S</div>
+    <div class="decisao d-r">DESCARTADO · 0pts · nao_sundek, cor_ruim</div>
+    <div class="metricas"><span class="m m-r"><b>Sundek?</b> nao</span><span class="m m-g"><b>é short?</b> sim</span><span class="m m-r"><b>tipo</b> nao_sundek</span></div>
+    <div class="evids"><div class='ev'><b>marca:</b> Peça com logo da Puma visível e etiqueta interna da Puma.</div></div>
+  </div>
+</article>
+<article class="card">
+  <div class="thumbs"><img src="https://images1.vinted.net/t/04_00080_CQEfbddVERxsmFrv2Zdty57Z/f800/1779392200.webp?s=41a9265e3147efb3240c56cf857ac2c76ff7fc80" class="main" loading="lazy"><img src="https://images1.vinted.net/t/05_014ce_YUr2cUr3VWtNG7WpbDUC19UX/f800/1779392200.webp?s=2ad4a5356207f166ddf9c93b9efeac25f0d0599b" loading="lazy"><img src="https://images1.vinted.net/t/03_01bed_E7cSHdamFxXMMAHpksauE2FD/f800/1779392200.webp?s=f131af849b78394bfe3ebf31cb77b86a2d74d7f3" loading="lazy"><img src="https://images1.vinted.net/t/06_01bc3_wMGPvrsxgE2wmhxkWsCaYciJ/f800/1779392200.webp?s=8eacf71c1db92b08cb165558f804cdbce7db9497" loading="lazy"><img src="https://images1.vinted.net/t/01_01f18_VwR99JJxeML7QWo5Jcow6Uih/f800/1779392200.webp?s=4cce48821ee47f2851ff1304e8b91225ce7bd3f2" loading="lazy"><img src="https://images1.vinted.net/t/05_01856_MFsVvd5pu5SEFQ1938fCcmKK/f800/1769362417.webp?s=30cb94e6adc76d87657e14a78ca77743c5e6b24c" loading="lazy"></div>
+  <div class="body">
+    <div class="head">
+      <span class="novo">NOVO</span>
+      <a href="https://www.vinted.es/items/8975904906-t-shirt-uomo-adidas" target="_blank" class="t">T shirt uomo Adidas</a>
+    </div>
+    <div class="sub">10,50 € · tam XXL</div>
+    <div class="decisao d-r">DESCARTADO · 0pts · nao_short, cor_ruim, tamanho_XXL</div>
+    <div class="metricas"><span class="m m-r"><b>Sundek?</b> ?</span><span class="m m-r"><b>é short?</b> ?</span><span class="m m-r"><b>tipo</b> nao_short</span></div>
+    
+  </div>
+</article>
+<article class="card">
+  <div class="thumbs"><img src="https://images1.vinted.net/t/06_0234a_Z5DuM2j7jjsLuyxwjgXLLp3z/f800/1779392337.webp?s=d2cc7f6334be4a6d28f5265f4549a27e9b5eee1d" class="main" loading="lazy"><img src="https://images1.vinted.net/t/04_00752_BBt3Gt4BRPt7w4DTnBsdmktX/f800/1779392337.webp?s=c07c6dfc10c415de13bcb437a1f6ae7e2dde9eac" loading="lazy"><img src="https://images1.vinted.net/t/05_001af_MwdSCi3sgR7TQmXmtyVdPSgw/f800/1779392337.webp?s=eb8afad3598692a3c591178235111618e1ed7858" loading="lazy"><img src="https://images1.vinted.net/t/05_00551_xCUDvaG7LqLEJzPKWLYuVLXE/f800/1779392337.webp?s=ff141032d0aff682143caf9553bf5806e016e84c" loading="lazy"><img src="https://images1.vinted.net/t/06_01836_owbhPSkVknEVjuVbJDrrXt9Y/f800/1779392337.webp?s=a4e962c8b3ea7abdc450c9a3bb72d001cb9049c2" loading="lazy"><img src="https://images1.vinted.net/t/05_01856_MFsVvd5pu5SEFQ1938fCcmKK/f800/1769362417.webp?s=30cb94e6adc76d87657e14a78ca77743c5e6b24c" loading="lazy"></div>
+  <div class="body">
+    <div class="head">
+      <span class="novo">NOVO</span>
+      <a href="https://www.vinted.es/items/8975922737-costume-uomo-sundek" target="_blank" class="t">Costume uomo Sundek</a>
+    </div>
+    <div class="sub">10,00 € · tam S</div>
+    <div class="decisao d-r">DESCARTADO · 0pts · estampado, cor_ruim, bolso_frontal</div>
+    <div class="metricas"><span class="m m-g"><b>Sundek?</b> sim</span><span class="m m-g"><b>é short?</b> sim</span><span class="m m-r"><b>tipo</b> estampado</span><span class="m m-r"><b>bolso frontal</b> sim</span></div>
+    <div class="evids"><div class='ev'><b>marca:</b> Texto &#x27;SUNDEK&#x27; visível na etiqueta e faixa multicolorida característica no cós.</div></div>
+  </div>
+</article>
+<article class="card">
+  <div class="thumbs"><img src="https://images1.vinted.net/t/05_02472_JqGYJGAaRTWd3uKU9kwo69YE/f800/1779391529.webp?s=dc941dee56aaf5e8faf6b4d221a232f077e7864e" class="main" loading="lazy"><img src="https://images1.vinted.net/t/04_01028_bKA6RPyazzdWyHFYsMC6KNsA/f800/1779391529.webp?s=a7cb6a5e9f5617a1aec834a8b4d55baed0968930" loading="lazy"><img src="https://images1.vinted.net/t/01_00be5_pWLMiZsn5kUY3YefdckfpP13/f800/1779391529.webp?s=699e427e65d03bf635e74a0e50751fdf7abdc3ca" loading="lazy"><img src="https://images1.vinted.net/t/06_010ff_oEYhgE4jgqpyWKWDLCLKQ6rV/f800/1779391529.webp?s=990dbdf81fa712a6d99de167012f6d2f8f972243" loading="lazy"><img src="https://images1.vinted.net/t/01_0019e_UvmyzgCeuG2NgFy4tPxn8Bz8/f800/1779391529.webp?s=14ce7de33c965e39c8fafa0ae064b7721633eced" loading="lazy"><img src="https://images1.vinted.net/t/03_022e8_9tmUGD7RiT4s1j8q7GdciniF/f800/1704816243.webp?s=8ab291682546655b05d4c0224d4528e44763c7f4" loading="lazy"></div>
+  <div class="body">
+    <div class="head">
+      <span class="novo">NOVO</span>
+      <a href="https://www.vinted.es/items/8975814857-t-shirt-sundek-verde-petrolio-con-logo-taglia-xl-ottimo-stato" target="_blank" class="t">T-shirt Sundek verde petrolio con logo – Taglia XL – Ottimo </a>
+    </div>
+    <div class="sub">12,00 € · tam XL</div>
+    <div class="decisao d-r">DESCARTADO · 0pts · nao_short, cor_ruim</div>
+    <div class="metricas"><span class="m m-r"><b>Sundek?</b> ?</span><span class="m m-r"><b>é short?</b> ?</span><span class="m m-r"><b>tipo</b> nao_short</span></div>
+    
+  </div>
+</article>
+<article class="card">
+  <div class="thumbs"><img src="https://images1.vinted.net/t/01_006cd_kefrbakySZwNN8Lm9X25RrrP/f800/1779377604.webp?s=e3f89e7233cd0e26cd3f1a7b80823f81173e132d" class="main" loading="lazy"><img src="https://images1.vinted.net/t/06_01979_LG9dny96BLQ6hmtUiFxTpnQ9/f800/1779377604.webp?s=5c4b4f24924ca05381741a51bea5f627b2ab2d91" loading="lazy"><img src="https://images1.vinted.net/t/02_0028a_E7ya86o4hiVmiseGEzA16TAY/f800/1624373284.webp?s=4fa86ff495e76be3ce8a2accf0802faa801afd2b" loading="lazy"></div>
+  <div class="body">
+    <div class="head">
+      <span class="novo">NOVO</span>
+      <a href="https://www.vinted.es/items/8973774600-sundek-costume" target="_blank" class="t">Sundek costume</a>
+    </div>
+    <div class="sub">15,00 € · tam M</div>
+    <div class="decisao d-r">DESCARTADO · 0pts · estampado, cor_ruim</div>
+    <div class="metricas"><span class="m m-g"><b>Sundek?</b> sim</span><span class="m m-g"><b>é short?</b> sim</span><span class="m m-r"><b>tipo</b> estampado</span></div>
+    <div class="evids"><div class='ev'><b>marca:</b> Etiqueta &#x27;SUNDEK&#x27; visível na parte interna e bordado no bolso traseiro. Peça com comprimento até meio da coxa e pernas separadas.</div></div>
+  </div>
+</article>
+<article class="card">
+  <div class="thumbs"><img src="https://images1.vinted.net/t/04_01b40_iQALX6rptybLfpQXbCkq8MJX/f800/1779391934.webp?s=1a66c663e4a0e4083bd85276db5fa8f70636cf2d" class="main" loading="lazy"><img src="https://images1.vinted.net/t/06_00980_kBLxYgb5nH2eW2fpPsXU21ma/f800/1779393058.webp?s=5c60415022ba480c1929a3cfc1327e2e2530a7c1" loading="lazy"><img src="https://images1.vinted.net/t/01_01924_zud6eEr7LmP6LwJ6foEnbN9e/f800/1779393058.webp?s=4b78366f733e422ce807fe1dff0495344adf0716" loading="lazy"><img src="https://images1.vinted.net/t/06_00f6c_jRSFdeTZrsrRZo45Ukd2Eaeu/f800/1779393058.webp?s=51ac2dac3c36b46ee437e5d275453d2e887bca43" loading="lazy"><img src="https://images1.vinted.net/t/05_00d7c_GwCfDrmTN5iqW9ZAdPCvLsAY/f800/1779393058.webp?s=d6c8851fa8702acee666974eb881ea4f7194f91b" loading="lazy"><img src="https://images1.vinted.net/t/05_008c5_QZXAQdNm4KQEcfDPtGMWjgGU/f800/1779390626.webp?s=c5f3262ea0b7971e0d6ffc18b0d032e15861af5b" loading="lazy"></div>
+  <div class="body">
+    <div class="head">
+      <span class="novo">NOVO</span>
+      <a href="https://www.vinted.es/items/8975869395-giubbotto-sundek-primaveraestate-blu-e-giallo-fluo" target="_blank" class="t">Giubbotto Sundek primavera/estate blu e giallo fluo</a>
+    </div>
+    <div class="sub">30,00 € · tam L</div>
+    <div class="decisao d-r">DESCARTADO · 0pts · nao_short, cor_ruim</div>
+    <div class="metricas"><span class="m m-g"><b>Sundek?</b> sim</span><span class="m m-r"><b>é short?</b> nao</span><span class="m m-r"><b>tipo</b> nao_short</span></div>
+    <div class="evids"><div class='ev'><b>marca:</b> Peça apresenta o logo &#x27;SUNDEK&#x27; visível na parte frontal e é uma jaqueta, não um short.</div></div>
+  </div>
+</article>
+<article class="card">
+  <div class="thumbs"><img src="https://images1.vinted.net/t/04_0139b_c2hmaf4pnhaAPQ2SfZz7FrWy/f800/1779390883.webp?s=3accf91398d495cc5d8caf6df5eea5f536774a9b" class="main" loading="lazy"><img src="https://images1.vinted.net/t/06_026ef_dZZZJwmTW3uN68pF2QmeGoc5/f800/1779390883.webp?s=c40783805f9bbcfdaad336d7826845c923d53ff2" loading="lazy"><img src="https://images1.vinted.net/t/01_0218c_4VYbBJrQGP7BJzbU5d7t5sNt/f800/1779390883.webp?s=19920841b8d114115e183533d94abf680ec74e7b" loading="lazy"><img src="https://images1.vinted.net/t/06_01940_FWfnpqKFmziTKcapeMxAw6zH/f800/1779045005.webp?s=e4945224459ef80410ae9e02df50e209b14825a2" loading="lazy"></div>
+  <div class="body">
+    <div class="head">
+      <span class="novo">NOVO</span>
+      <a href="https://www.vinted.es/items/8975726248-costume-sundek-color-verde-militare" target="_blank" class="t">Costume Sundek color verde militare</a>
+    </div>
+    <div class="sub">7,00 € · tam M</div>
+    <div class="decisao d-r">DESCARTADO · 0pts · estampado, cor_ruim</div>
+    <div class="metricas"><span class="m m-g"><b>Sundek?</b> sim</span><span class="m m-g"><b>é short?</b> sim</span><span class="m m-r"><b>tipo</b> estampado</span></div>
+    <div class="evids"><div class='ev'><b>marca:</b> Etiqueta interna com &#x27;SUNDEK&#x27; visível e formato de short com pernas separadas.</div></div>
+  </div>
+</article>
+<article class="card">
+  <div class="thumbs"><img src="https://images1.vinted.net/t/06_01e61_oETD7sUNfyNdh8nqDTfbcdgh/f800/1779381170.webp?s=cba1e107e1ca3b92dd855aa47c3f6b78cce0ba3d" class="main" loading="lazy"><img src="https://images1.vinted.net/t/05_01d36_rS5CMgMByVCbtemR8bwixLVR/f800/1779381170.webp?s=ed3991648d474e3dcf00eab25dc2914c7af72193" loading="lazy"><img src="https://images1.vinted.net/t/06_0065a_5fwPX9KGA5wDXyirvRcDMqWt/f800/1779381170.webp?s=e0c077f93fda6d96df4d73959ba86eee3c5bf2ee" loading="lazy"><img src="https://images1.vinted.net/t/06_00b55_eq5noXNAfqUQEzBGVUf6tzn7/f800/1779381170.webp?s=22ec00a787ccad799c920405065b99bef0451d3f" loading="lazy"><img src="https://images1.vinted.net/t/06_02321_HyNx6eHw5wY8FTqpkYb2PzCv/f800/1779381170.webp?s=168bf15a5fc1814d30c754797d221aa0430293f9" loading="lazy"><img src="https://images1.vinted.net/t/01_00531_3makjtp9HWDNt1gAcZNAkZ56/f800/1700200359.webp?s=e3e7dce66956cc2edf77104d66016128c08d524e" loading="lazy"></div>
+  <div class="body">
+    <div class="head">
+      <span class="novo">NOVO</span>
+      <a href="https://www.vinted.es/items/8974300189-pantaloncino-mare" target="_blank" class="t">Pantaloncino mare</a>
+    </div>
+    <div class="sub">5,00 € · tam XL</div>
+    <div class="decisao d-r">DESCARTADO · 0pts · logo_grande, cor_ruim, bicolor, bolso_frontal</div>
+    <div class="metricas"><span class="m m-g"><b>Sundek?</b> sim</span><span class="m m-g"><b>é short?</b> sim</span><span class="m m-r"><b>tipo</b> logo_grande</span><span class="m m-r"><b>bicolor</b> sim</span><span class="m m-r"><b>bolso frontal</b> sim</span></div>
+    <div class="evids"><div class='ev'><b>marca:</b> Texto &#x27;SUNDEK&#x27; visível na lateral e na etiqueta interna.</div></div>
+  </div>
+</article>
+<article class="card">
+  <div class="thumbs"><img src="https://images1.vinted.net/t/05_00946_t8Rq8yRoE1PoRh5ZSgQtK3uL/f800/1779390430.webp?s=69ae6cac2814d54fabb95e2f0073b0dc7ba7981c" class="main" loading="lazy"><img src="https://images1.vinted.net/t/01_002c0_PxMU4CNerJaqrZidmRCfj9kY/f800/1779390430.webp?s=914717824e4a45f566deb561d76181ffe8abefd3" loading="lazy"><img src="https://images1.vinted.net/t/05_009b6_u5y4zJQTMYTgURX6v3xsxpR6/f800/1779390430.webp?s=ab27fcd2835579609a6b58600da47c7a839b863d" loading="lazy"><img src="https://images1.vinted.net/t/05_01f93_58bV7QMEYsLojhSQ7YyhB3hE/f800/1771498609.webp?s=cda419055455cf28b67994f5974038bf47e0afda" loading="lazy"></div>
+  <div class="body">
+    <div class="head">
+      <span class="novo">NOVO</span>
+      <a href="https://www.vinted.es/items/8975663216-costume" target="_blank" class="t">costume</a>
+    </div>
+    <div class="sub">12,00 € · tam M</div>
+    <div class="decisao d-r">DESCARTADO · 0pts · bolso_so_logo_colecao_antiga</div>
+    <div class="metricas"><span class="m m-g"><b>Sundek?</b> sim</span><span class="m m-g"><b>é short?</b> sim</span><span class="m m-g"><b>tipo</b> liso</span><span class="m m-n"><b>cor</b> Cinza</span><span class="m m-g"><b>tier</b> muito_boa</span><span class="m m-g"><b>listra Sundek</b> sim</span><span class="m m-n"><b>cores listra</b> azul escuro, azul claro, branco</span><span class="m m-g"><b>bolso traseiro</b> sim</span><span class="m m-r"><b>nome SUNDEK no bolso</b> não</span><span class="m m-r"><b>elástico</b> não</span><span class="m m-g"><b>fechamento</b> cordao</span><span class="m m-n"><b>etiqueta (hang tag)</b> não</span></div>
+    <div class="evids"><div class='ev'><b>marca:</b> Etiqueta interna com &#x27;SUNDEK&#x27; visível e formato de short com pernas separadas.</div><div class='ev'><b>listra:</b> Três faixas paralelas de cores distintas (azul escuro, azul claro, branco) no painel traseiro/lateral.</div><div class='ev'><b>bolso:</b> Bolso traseiro visível com patch, mas sem a palavra &#x27;SUNDEK&#x27;. Sem bolso frontal/cargo.</div><div class='ev'><b>elástico:</b> Cós plano com cordão passando por ilhós, sem sinais de elástico ou botão/velcro no fly.</div><div class='ev'><b>etiqueta:</b> Não há hang tag visível nas fotos, apenas etiquetas costuradas internamente.</div></div>
+  </div>
+</article>
+<article class="card">
+  <div class="thumbs"><img src="https://images1.vinted.net/t/01_0183e_5hNxmSw5eDfEtrg8TuK8MqsT/f800/1779392201.webp?s=bf7317763c5c40ea99c1355972db8086aea79b50" class="main" loading="lazy"><img src="https://images1.vinted.net/t/06_009cf_CcevSfLh42HDbQXJgJ49zhH2/f800/1779392201.webp?s=97ae801f31db03defae64557e313afc7fdb81f9f" loading="lazy"><img src="https://images1.vinted.net/t/06_00f4a_873DK4PTsKQBxar2BtyLZDNx/f800/1779392201.webp?s=6cab9116a21ffff5fe26daef9acf1c0705fc40e2" loading="lazy"><img src="https://images1.vinted.net/t/01_0198e_pkBJ4KLh1ebe2qiVo5L7z6L8/f800/1779392201.webp?s=b42bcdd15341dc1c7fe6bb34cbb33beb0635e265" loading="lazy"><img src="https://images1.vinted.net/t/06_009c5_aQevGoM6SFu7FvVqYtv8qDXz/f800/1779392201.webp?s=794919bf6b07f23654beee75522052e493af24aa" loading="lazy"><img src="https://images1.vinted.net/t/05_01856_MFsVvd5pu5SEFQ1938fCcmKK/f800/1769362417.webp?s=30cb94e6adc76d87657e14a78ca77743c5e6b24c" loading="lazy"></div>
+  <div class="body">
+    <div class="head">
+      <span class="novo">NOVO</span>
+      <a href="https://www.vinted.es/items/8975905048-costume-uomo-sundek" target="_blank" class="t">Costume uomo Sundek</a>
+    </div>
+    <div class="sub">16,00 € · tam S</div>
+    <div class="decisao d-r">DESCARTADO · 0pts · estampado, cor_ruim</div>
+    <div class="metricas"><span class="m m-g"><b>Sundek?</b> sim</span><span class="m m-g"><b>é short?</b> sim</span><span class="m m-r"><b>tipo</b> estampado</span></div>
+    <div class="evids"><div class='ev'><b>marca:</b> Texto &#x27;SUNDEK&#x27; visível em várias partes da peça, incluindo etiqueta interna e bordado. A peça tem comprimento até meio da coxa e perna larga e separada.</div></div>
+  </div>
+</article>
+<article class="card">
+  <div class="thumbs"><img src="https://images1.vinted.net/t/06_00760_WhLEwFN1zUX6Pvz8tc1Kx2gZ/f800/1779396946.webp?s=0490be917cbde3b2ec3a07ce28487b017f77a605" class="main" loading="lazy"><img src="https://images1.vinted.net/t/06_01cdc_xD5DHU8gcAbMmdmqbSo95bnB/f800/1779396946.webp?s=b83e0da076b9b79e900204ca0775870df88a0061" loading="lazy"><img src="https://images1.vinted.net/t/06_00fe7_jGL6GvqBpiUXYxgQ6mVXQEbh/f800/1779396946.webp?s=8f2f2a9cca36ee47a170b438fcfaa9fd8f49520d" loading="lazy"><img src="https://images1.vinted.net/t/06_003a1_L1zUuPdifRqNKtNPGHSAPHrq/f800/1779396946.webp?s=97796170b8aea1f28d8906ec69da1d5f04dcd6e6" loading="lazy"><img src="https://images1.vinted.net/t/05_020f1_kK4zXuxsfhTXfmXoCSvKCHKa/f800/1779396946.webp?s=035f221248a3a679891b939d796b3138bd168556" loading="lazy"><img src="https://images1.vinted.net/t/03_016b3_FHeMg9W4FWACCNGBFNRqAdRZ/f800/1761166270.webp?s=102635d3a109735db9204ba92070d10d495462f3" loading="lazy"></div>
+  <div class="body">
+    <div class="head">
+      <span class="novo">NOVO</span>
+      <a href="https://www.vinted.es/items/8976421693-t-shirt-sundek" target="_blank" class="t">T shirt  Sundek</a>
+    </div>
+    <div class="sub">30,00 € · tam XXL</div>
+    <div class="decisao d-r">DESCARTADO · 0pts · nao_short, cor_ruim, tamanho_XXL</div>
+    <div class="metricas"><span class="m m-r"><b>Sundek?</b> ?</span><span class="m m-r"><b>é short?</b> ?</span><span class="m m-r"><b>tipo</b> nao_short</span></div>
+    
+  </div>
+</article>
+<article class="card">
+  <div class="thumbs"><img src="https://images1.vinted.net/t/05_0188f_RFyLvphs4GwrSBTaGvRqgAKe/f800/1777506183.webp?s=4ecfe038e23ec16eb97dd0024e4778b7fe5c7d39" class="main" loading="lazy"><img src="https://images1.vinted.net/t/01_017c4_2jcrtPn17roUXQzfLy9gQoYw/f800/1777506183.webp?s=9bf691d0c83e1577a25262f0f9f92a76f75991ca" loading="lazy"><img src="https://images1.vinted.net/t/05_00316_spXNTQSCryrqeXTAaZJfa6sN/f800/1777506183.webp?s=54808a8edbc9d4ac990998283de028249074181a" loading="lazy"><img src="https://images1.vinted.net/t/01_00530_Av5mo6JbNkgKd2dhpB4ArTK9/f800/1777506183.webp?s=cf6e0d3ffdc87b72f542058abdb6a2706e8d1c61" loading="lazy"><img src="https://images1.vinted.net/t/04_0199b_97b7j47abMNrrWZkVfbo7VVt/f800/1777506183.webp?s=54973e79638d5b205ce4074b319094cad7842242" loading="lazy"><img src="https://images1.vinted.net/t/06_017ce_5tTC2spBxnn4m6H3wbW851Pi/f800/1774978433.webp?s=68ceeb620e9ebad8d37395883fc6f516aceeb1d1" loading="lazy"></div>
+  <div class="body">
+    <div class="head">
+      <span class="novo">NOVO</span>
+      <a href="https://www.vinted.es/items/8783242981-pantaloncino-uomo-bermuda-polo-assn-53584-colore-beige-laccetto-in-vita-taglia-36-nuovo" target="_blank" class="t">Pantaloncino uomo bermuda Polo Assn. 53584. Colore beige, la</a>
+    </div>
+    <div class="sub">30,00 € · tam W36 | ES 46</div>
+    <div class="decisao d-r">DESCARTADO · 0pts · nao_short, cor_ruim, tamanho_numerico_36</div>
+    <div class="metricas"><span class="m m-r"><b>Sundek?</b> ?</span><span class="m m-r"><b>é short?</b> ?</span><span class="m m-r"><b>tipo</b> nao_short</span></div>
+    
+  </div>
+</article>
+<article class="card">
+  <div class="thumbs"><img src="https://images1.vinted.net/t/06_00836_qS21uApgzHt7eGa9BaZpCJmq/f800/1778112004.webp?s=85faff2fc7384dd7a68ae36e0b2ada40a9c4fe19" class="main" loading="lazy"><img src="https://images1.vinted.net/t/01_010c2_H2edGH8329vcGRX8hrRr1SXF/f800/1778112004.webp?s=1aea4e0d70b561e0a903ab686dc3baa249ae59b1" loading="lazy"><img src="https://images1.vinted.net/t/06_0090a_MkYoQDSk9ugX2EpLGbD4hkQZ/f800/1778112004.webp?s=00d18d1912bbdd831760c78389d7a34ddd48bb9a" loading="lazy"><img src="https://images1.vinted.net/t/06_001dc_bfAK7g6YUYfAbheHobUHsCFM/f800/1778112004.webp?s=bad6fa8dc0ab54b852a0bffea86bcc1c342593ab" loading="lazy"><img src="https://images1.vinted.net/t/06_02254_trGxXGK5wewn1q3mKVxQzDnD/f800/1778112004.webp?s=cc22f61c3ec2c83634b6a74499b616e235115269" loading="lazy"><img src="https://images1.vinted.net/t/06_017ce_5tTC2spBxnn4m6H3wbW851Pi/f800/1774978433.webp?s=68ceeb620e9ebad8d37395883fc6f516aceeb1d1" loading="lazy"></div>
+  <div class="body">
+    <div class="head">
+      <span class="novo">NOVO</span>
+      <a href="https://www.vinted.es/items/8845370642-costume-mare-bimba-sundek-bikini-bambina-blu-e-bianco-a-fantasia-con-volant-8-anni-nuovo" target="_blank" class="t">Costume mare bimba Sundek, bikini bambina blu e bianco a fan</a>
+    </div>
+    <div class="sub">25,00 € · tam 8 años / 128 cm</div>
+    <div class="decisao d-r">DESCARTADO · 0pts · nao_short, cor_ruim</div>
+    <div class="metricas"><span class="m m-r"><b>Sundek?</b> ?</span><span class="m m-r"><b>é short?</b> ?</span><span class="m m-r"><b>tipo</b> nao_short</span></div>
+    
+  </div>
+</article>
+<article class="card">
+  <div class="thumbs"><img src="https://images1.vinted.net/t/05_0068d_69xHA1LtEA3AsBLYaoA96xvq/f800/1779189229.webp?s=fd194253ef93b5919b87ff964b64c596465b8e70" class="main" loading="lazy"><img src="https://images1.vinted.net/t/06_025f2_A1xbVz6cY49pfDNifWAfZ51L/f800/1779189229.webp?s=0852b2877016f2af14809bf51c6f2f493fbde095" loading="lazy"><img src="https://images1.vinted.net/t/05_010c8_436E64MQA5jv2jT4R9LBSxie/f800/1779189229.webp?s=b54a6521570fbb1186de4e2d4ffd3174827074b0" loading="lazy"><img src="https://images1.vinted.net/t/06_026a0_Cb1op89Zt3VkHEhLxjjY6pt3/f800/1779189229.webp?s=f6c57e72a0b0f25c3bc282fb6333aa7cdc305fcc" loading="lazy"><img src="https://images1.vinted.net/t/05_02677_gKEq7SL9kYY7gRcVBt9Vs6ob/f800/1779189229.webp?s=fd0413e00dc1a294a53a13629e24e567c5fa1bae" loading="lazy"><img src="https://images1.vinted.net/t/04_0161f_7oK1TS6gJyMQzUNoo5CpGz3x/f800/1760359583.webp?s=47f00c455d968434936f980d6d676602241b91db" loading="lazy"></div>
+  <div class="body">
+    <div class="head">
+      <span class="novo">NOVO</span>
+      <a href="https://www.vinted.es/items/8955410849-camicia-uomo-harmont-blaine-quadri-multicolor-shirt-cotone-regular-taglia-xl" target="_blank" class="t">Camicia Uomo Harmont &amp; Blaine Quadri Multicolor Shirt Co</a>
+    </div>
+    <div class="sub">39,90 € · tam XL</div>
+    <div class="decisao d-r">DESCARTADO · 0pts · nao_short, cor_ruim</div>
+    <div class="metricas"><span class="m m-r"><b>Sundek?</b> ?</span><span class="m m-r"><b>é short?</b> ?</span><span class="m m-r"><b>tipo</b> nao_short</span></div>
+    
+  </div>
+</article>
+<article class="card">
+  <div class="thumbs"><img src="https://images1.vinted.net/t/04_02135_FQRTzgW3SWfLSeFFydsfbb9m/f800/1779392197.webp?s=60d32b6a2d82e5e13eea0aaf9356497c0b86655f" class="main" loading="lazy"><img src="https://images1.vinted.net/t/05_01e36_a9zXANqbC9eyN3Zh6493vcXY/f800/1779392197.webp?s=18bb1280a7980f688facf98ad1fe52cda213710e" loading="lazy"><img src="https://images1.vinted.net/t/06_00b79_7mJNiNSoujs8aWZkRSe7g9aN/f800/1779392197.webp?s=f6c58604b8a0264f05315999a68e735974befbaf" loading="lazy"><img src="https://images1.vinted.net/t/05_00262_ZWwpqzfjJ2HvebwJM8kgs5Ng/f800/1779392197.webp?s=922d604ae2c518a77e4bdf1335a47853ae130d60" loading="lazy"><img src="https://images1.vinted.net/t/05_01b9f_FFiHNEViFCD4WWgLHr5MGg82/f800/1779392197.webp?s=2240e878b8fe8d3c3a082147bda1e82687266f67" loading="lazy"><img src="https://images1.vinted.net/t/05_01856_MFsVvd5pu5SEFQ1938fCcmKK/f800/1769362417.webp?s=30cb94e6adc76d87657e14a78ca77743c5e6b24c" loading="lazy"></div>
+  <div class="body">
+    <div class="head">
+      <span class="novo">NOVO</span>
+      <a href="https://www.vinted.es/items/8975904562-canotta-jordan-basketball-nera-taglia-xl-ottime-condizioni" target="_blank" class="t">Canotta Jordan Basketball – Nera – Taglia XL – Ottime Condiz</a>
+    </div>
+    <div class="sub">16,00 € · tam XL</div>
+    <div class="decisao d-r">DESCARTADO · 0pts · nao_short, cor_ruim</div>
+    <div class="metricas"><span class="m m-r"><b>Sundek?</b> nao</span><span class="m m-r"><b>é short?</b> nao</span><span class="m m-r"><b>tipo</b> nao_short</span></div>
+    <div class="evids"><div class='ev'><b>marca:</b> A peça é uma canotta (camiseta sem mangas) da marca Jordan, não possui evidências de ser da marca Sundek.</div></div>
+  </div>
+</article>
+<article class="card">
+  <div class="thumbs"><img src="https://images1.vinted.net/t/06_019a0_WJs2yE9cM37WF1ckyjTp4x2x/f800/1779394018.webp?s=358ee3dd888d740a1b4417fe9970dcc13d7f4136" class="main" loading="lazy"><img src="https://images1.vinted.net/t/03_0268b_FuAr8644j7NtEGnSHWtaji8i/f800/1779394018.webp?s=a7ecdf059254e746f913ccb35909b9b6c46e2c89" loading="lazy"><img src="https://images1.vinted.net/t/01_01870_C1J5Cwuiqs69ncJtyooY9uES/f800/1779394018.webp?s=3f1ab3c6699c0ccb2cb27c78e511e4613c939d35" loading="lazy"><img src="https://images1.vinted.net/t/06_02515_6ayszajtvAJynstdydz7Pv4u/f800/1779394018.webp?s=6707873108043238a198994646a8d00b28a840d0" loading="lazy"><img src="https://images1.vinted.net/t/06_022a2_kKEv7RAXpXUzZZ8ocvDXJ9FF/f800/1779394018.webp?s=a17e4bb13eb2d04020a9de01b8b01dfe64901870" loading="lazy"><img src="https://images1.vinted.net/t/02_00242_XbqrHXRq9hE4B5a4jgr5HTwL/f800/1610297585.webp?s=c7738b74931949d8e3ebeafce80ed61abfe277e9" loading="lazy"></div>
+  <div class="body">
+    <div class="head">
+      <span class="novo">NOVO</span>
+      <a href="https://www.vinted.es/items/8976131125-costume-da-bagno-sundek-tg-33" target="_blank" class="t">Costume da bagno Sundek tg 33</a>
+    </div>
+    <div class="sub">18,00 € · tam L</div>
+    <div class="decisao d-r">DESCARTADO · 0pts · estampado, cor_ruim, bolso_frontal</div>
+    <div class="metricas"><span class="m m-g"><b>Sundek?</b> sim</span><span class="m m-g"><b>é short?</b> sim</span><span class="m m-r"><b>tipo</b> estampado</span><span class="m m-r"><b>bolso frontal</b> sim</span></div>
+    <div class="evids"><div class='ev'><b>marca:</b> Texto &#x27;SUNDEK&#x27; visível na etiqueta interna e na parte da cintura, além de ter a faixa multicolorida característica no cós.</div></div>
+  </div>
+</article>
+<article class="card">
+  <div class="thumbs"><img src="https://images1.vinted.net/t/05_00ec8_GuwNRLDXfG946GL789vQZawW/f800/1779401258.webp?s=d82b6434730afab0a95347fad58b1a96ad748fdf" class="main" loading="lazy"><img src="https://images1.vinted.net/t/05_00864_zSXB4CohkwGWLJGGYAiBCa4Y/f800/1779401258.webp?s=6d2456d074e952458fa45fcdc243fdecb55ad11f" loading="lazy"><img src="https://images1.vinted.net/t/04_0037e_zeBgj3ErrsTTN6mN4poZtLEV/f800/1734535871.webp?s=77c64a24cad1a1fda852304bfa75e635aa160260" loading="lazy"></div>
+  <div class="body">
+    <div class="head">
+      <span class="novo">NOVO</span>
+      <a href="https://www.vinted.es/items/8976678185-costume-da-bagno" target="_blank" class="t">Costume da bagno</a>
+    </div>
+    <div class="sub">9,00 € · tam M</div>
+    <div class="decisao d-r">DESCARTADO · 0pts · nao_sundek, cor_ruim</div>
+    <div class="metricas"><span class="m m-r"><b>Sundek?</b> nao</span><span class="m m-g"><b>é short?</b> sim</span><span class="m m-r"><b>tipo</b> nao_sundek</span></div>
+    <div class="evids"><div class='ev'><b>marca:</b> Não há evidência de marca Sundek visível. A peça tem comprimento e formato de short.</div></div>
+  </div>
+</article>
+<article class="card">
+  <div class="thumbs"><img src="https://images1.vinted.net/t/06_01d10_2mVBfMYjjFnEJHN2V3hiVAKo/f800/1779390083.webp?s=70ff21ecc4c731b028bd874eac4ff4bd8b324bc7" class="main" loading="lazy"><img src="https://images1.vinted.net/t/06_00737_wAoBHmXB3bSAPkm2aVM1457d/f800/1779390083.webp?s=d3a05a4f9f8df00f6c2fdfa2c0bdf3ed84db0269" loading="lazy"><img src="https://images1.vinted.net/t/05_00ebb_rEuwWENddLPLWMLghTgLrmNv/f800/1779390083.webp?s=0d89a12d174a526f039a733b03a2bbfcd212161f" loading="lazy"><img src="https://images1.vinted.net/t/03_0152e_WpicfrKe8k1E2ujmq9qZwWho/f800/1774085554.webp?s=e278b65a8a98109fd229a29ab9658665641b6628" loading="lazy"></div>
+  <div class="body">
+    <div class="head">
+      <span class="novo">NOVO</span>
+      <a href="https://www.vinted.es/items/8975614008-maillot-sundek" target="_blank" class="t">Maillot Sundek</a>
+    </div>
+    <div class="sub">20,00 € · tam M</div>
+    <div class="decisao d-r">DESCARTADO · 0pts · estampado, cor_ruim, bolso_frontal</div>
+    <div class="metricas"><span class="m m-g"><b>Sundek?</b> sim</span><span class="m m-g"><b>é short?</b> sim</span><span class="m m-r"><b>tipo</b> estampado</span><span class="m m-r"><b>bolso frontal</b> sim</span></div>
+    <div class="evids"><div class='ev'><b>marca:</b> Peça possui logo Sundek visível e faixa multicolorida característica no cós.</div></div>
+  </div>
+</article>
+<article class="card">
+  <div class="thumbs"><img src="https://images1.vinted.net/t/06_00b70_nZgXfmGUr5rry9eYqCxsqiWh/f800/1779380815.webp?s=dae37dcca7b76247a6cb968551561c68b3cf0bb3" class="main" loading="lazy"><img src="https://images1.vinted.net/t/04_00d08_vuUwVzqrn2VRGW14DomxhJc7/f800/1779380815.webp?s=961458e767bc62cfd085166729c2c9dca1a40507" loading="lazy"><img src="https://images1.vinted.net/t/01_019da_EoH5Ho9Lsxk3JMTR2jTqKu1V/f800/1779380815.webp?s=baabd69e216da518336fceb083cef695d53fea04" loading="lazy"><img src="https://images1.vinted.net/t/06_00940_wXD27cu9BQGiWnA8wP9X9jkS/f800/1779380815.webp?s=05a500fd493d189b6bec47b12e58559d47cda9fd" loading="lazy"><img src="https://images1.vinted.net/t/03_00bbb_TGL2bZ6ur8oArxU35dTuwwbm/f800/1717661314.webp?s=d222c896eb54bef8cc4653158b332c8e80429a9a" loading="lazy"></div>
+  <div class="body">
+    <div class="head">
+      <span class="novo">NOVO</span>
+      <a href="https://www.vinted.es/items/8974247266-costume-sundek" target="_blank" class="t">Costume Sundek</a>
+    </div>
+    <div class="sub">20,00 € · tam M</div>
+    <div class="decisao d-r">DESCARTADO · 0pts · bicolor, bolso_frontal</div>
+    <div class="metricas"><span class="m m-g"><b>Sundek?</b> sim</span><span class="m m-g"><b>é short?</b> sim</span><span class="m m-g"><b>tipo</b> liso</span><span class="m m-r"><b>bicolor</b> sim</span><span class="m m-r"><b>bolso frontal</b> sim</span><span class="m m-n"><b>cor</b> Azul marinho</span><span class="m m-g"><b>tier</b> maravilhoso</span><span class="m m-g"><b>listra Sundek</b> sim</span><span class="m m-n"><b>cores listra</b> verde, branco, cinza</span><span class="m m-g"><b>bolso traseiro</b> sim</span><span class="m m-g"><b>nome SUNDEK no bolso</b> sim</span><span class="m m-g"><b>elástico</b> sim</span><span class="m m-g"><b>fechamento</b> elastico</span><span class="m m-n"><b>etiqueta (hang tag)</b> não</span></div>
+    <div class="evids"><div class='ev'><b>marca:</b> Etiqueta interna com &#x27;SUNDEK&#x27; visível, logo no bolso traseiro e comprimento adequado para short.</div><div class='ev'><b>listra:</b> Três faixas paralelas de cores diferentes (verde, branco, cinza) no painel traseiro/lateral.</div><div class='ev'><b>bolso:</b> O short tem um bolso traseiro visível com um patch costurado sobre ele. O patch tem o desenho do sol e a palavra &#x27;SUNDEK&#x27; escrita abaixo.</div><div class='ev'><b>elástico:</b> Cós visivelmente comprimido com dobras estruturais regulares indicando elástico. Não há botão ou velcro visível no fly.</div><div class='ev'><b>etiqueta:</b> Não há hang tag visível; todas as etiquetas estão costuradas internamente.</div></div>
+  </div>
+</article>
+<article class="card">
+  <div class="thumbs"><img src="https://images1.vinted.net/t/05_002da_6QZHUNrimqfQWa3AXirTgYrs/f800/1773327231.webp?s=f6260fe3221105193f97f807896c700fa9293178" class="main" loading="lazy"><img src="https://images1.vinted.net/t/06_007b0_zC6Jf6ZmoNDgTNJ7YwRHPsBn/f800/1773327231.webp?s=dbd46ebccbfee758f8e58ae658dbaf2638626516" loading="lazy"><img src="https://images1.vinted.net/t/06_00ff4_3W2ZY5UdkFGXEPiDBcPq3Pez/f800/1773327231.webp?s=e9b1219b8b8be6289b8f95ea45cdaa557bd1778b" loading="lazy"><img src="https://images1.vinted.net/t/05_0022d_MMbPk4VcCYf539p5hcjmNDXy/f800/1773327231.webp?s=9f9abb7dabd700f5f273a279711aff1f7d676104" loading="lazy"><img src="https://images1.vinted.net/t/05_005f7_JQJjwoHTS6WT1T6nt26bbjF9/f800/1773327231.webp?s=0a49148855859c9b3012c0b4bda660d1039456d3" loading="lazy"><img src="https://images1.vinted.net/t/04_0161f_7oK1TS6gJyMQzUNoo5CpGz3x/f800/1760359583.webp?s=47f00c455d968434936f980d6d676602241b91db" loading="lazy"></div>
+  <div class="body">
+    <div class="head">
+      
+      <a href="https://www.vinted.es/items/8376467281-boardshorts-swim-shorts-uomo-hawaiian-beach-sundek-costume-mare-tropical-blu-xl" target="_blank" class="t">Boardshorts Swim Shorts Uomo Hawaiian Beach Sundek Costume M</a>
+    </div>
+    <div class="sub">34,90 € · tam XL</div>
+    <div class="decisao d-r">DESCARTADO · 0pts · estampado, cor_ruim</div>
+    <div class="metricas"><span class="m m-r"><b>Sundek?</b> indefinido</span><span class="m m-g"><b>é short?</b> sim</span><span class="m m-r"><b>tipo</b> estampado</span></div>
+    <div class="evids"><div class='ev'><b>marca:</b> [double-check gpt-4o] Shorts com comprimento até o meio da coxa e pernas separadas. Nenhuma evidência visível da marca Sundek nas imagens.</div></div>
+  </div>
+</article>
+<article class="card">
+  <div class="thumbs"><img src="https://images1.vinted.net/t/06_00cf3_n7vYZFb5hrJMc4SU5qnKujw7/f800/1770461391.webp?s=833b214bbda6b8a38f41d80cce837db2b2fb12e3" class="main" loading="lazy"><img src="https://images1.vinted.net/t/05_01f3b_mfWgdifb8HqfNn4KQEzvPX6D/f800/1770461391.webp?s=8ab8a65939ba53036585c12c9ddf932fb30fde48" loading="lazy"><img src="https://images1.vinted.net/t/06_011ad_A1h49JbMEVdb6BhVxgpqT4Gg/f800/1770461391.webp?s=38a9dca47ce1b94e3a294cdf5a6fa07cb37ff87b" loading="lazy"><img src="https://images1.vinted.net/t/05_01c55_4o8njzFaAFrCJ1HV9sjZzSJb/f800/1770461391.webp?s=b5b75a51d64f90665b4a3c5a216b090ff95bc6bb" loading="lazy"><img src="https://images1.vinted.net/t/06_0245b_12nW5qAdsTMW1nzvLdhk7MVC/f800/1770461391.webp?s=e057948669de01088a7424df4528cd50e944b523" loading="lazy"><img src="https://images1.vinted.net/t/02_00b8a_jRhmHXd9toUpUDrd8cEQKDSv/f800/1762883800.webp?s=a3a4f34c01f2b7fdf2401b87219f13e24100a336" loading="lazy"></div>
+  <div class="body">
+    <div class="head">
+      
+      <a href="https://www.vinted.es/items/8118373495-costume-sundek" target="_blank" class="t">Costume Sundek</a>
+    </div>
+    <div class="sub">32,00 € · tam XXL</div>
+    <div class="decisao d-r">DESCARTADO · 0pts · estampado, cor_ruim, bolso_frontal, tamanho_XXL</div>
+    <div class="metricas"><span class="m m-g"><b>Sundek?</b> sim</span><span class="m m-g"><b>é short?</b> sim</span><span class="m m-r"><b>tipo</b> estampado</span><span class="m m-r"><b>bolso frontal</b> sim</span></div>
+    <div class="evids"><div class='ev'><b>marca:</b> Etiqueta interna com &#x27;SUNDEK&#x27; visível, logo na parte traseira, comprimento e formato de short com pernas separadas.</div></div>
+  </div>
+</article>
+<article class="card">
+  <div class="thumbs"><img src="https://images1.vinted.net/t/05_01806_AsNCHNAZYnznKwHHzehyAb9c/f800/1773327855.webp?s=3481cf28870deb73908bdb14552dab6803681709" class="main" loading="lazy"><img src="https://images1.vinted.net/t/03_019b8_7xDYbUFu4BcBFdmacBmyonnC/f800/1773327855.webp?s=5404264d3f44a9370e420eada10df2b080c4f752" loading="lazy"><img src="https://images1.vinted.net/t/01_019a1_d8KHN8j2bvpqYfLVry2fcRq2/f800/1773327855.webp?s=9aface889b49c6eac322d12a92952edabec7815d" loading="lazy"><img src="https://images1.vinted.net/t/04_01f87_tDRznDEfy4tNUkUMaZehTnDE/f800/1773327855.webp?s=9cfe663df7f8013cc9a0584899fe7f01f09e39c4" loading="lazy"><img src="https://images1.vinted.net/t/05_025c3_EsQFP5D1jNbc9s5A9sQQi6bc/f800/1773327855.webp?s=3dd46c158c026b6bddd6d3a4de2d6003e767cad6" loading="lazy"><img src="https://images1.vinted.net/t/04_0161f_7oK1TS6gJyMQzUNoo5CpGz3x/f800/1760359583.webp?s=47f00c455d968434936f980d6d676602241b91db" loading="lazy"></div>
+  <div class="body">
+    <div class="head">
+      
+      <a href="https://www.vinted.es/items/8376560447-costume-mare-boardshort-uomo-floral-surf-swim-shorts-sundek-hawaii-beach-33-47-m" target="_blank" class="t">Costume Mare Boardshort Uomo Floral Surf Swim Shorts Sundek </a>
+    </div>
+    <div class="sub">34,90 € · tam M</div>
+    <div class="decisao d-r">DESCARTADO · 0pts · estampado, cor_ruim</div>
+    <div class="metricas"><span class="m m-g"><b>Sundek?</b> sim</span><span class="m m-g"><b>é short?</b> sim</span><span class="m m-r"><b>tipo</b> estampado</span></div>
+    <div class="evids"><div class='ev'><b>marca:</b> Etiqueta &#x27;SUNDEK&#x27; visível na cintura e formato de short com pernas separadas.</div></div>
+  </div>
+</article>
+<article class="card">
+  <div class="thumbs"><img src="https://images1.vinted.net/t/04_00fce_H8ZnEFDah4udAvTdAgezJHkE/f800/1779012118.webp?s=9cd6d26b6bc8e2d3c26ce8f3acc6ba9c700c56f0" class="main" loading="lazy"><img src="https://images1.vinted.net/t/01_01f46_vDH5WZ74uDvK3VLjEtEjRHyf/f800/1779012118.webp?s=3b08d5d857c06cc98ab692c2128e2091bf06fa9a" loading="lazy"><img src="https://images1.vinted.net/t/05_0242a_ypcYzRx46wnpx4A3iK2qLofX/f800/1779012118.webp?s=e32385fe1db5c4055cbd77ab3c4fdd9c2ea928d5" loading="lazy"><img src="https://images1.vinted.net/t/06_007ea_3hH6pfVdHgKyiTGBAXZHF177/f800/1779012118.webp?s=f2d47be0445420d78227f099f42067a2afd86155" loading="lazy"><img src="https://images1.vinted.net/t/06_017ce_5tTC2spBxnn4m6H3wbW851Pi/f800/1774978433.webp?s=68ceeb620e9ebad8d37395883fc6f516aceeb1d1" loading="lazy"></div>
+  <div class="body">
+    <div class="head">
+      
+      <a href="https://www.vinted.es/items/8935375652-costume-mare-bambino-a-mutanda-sundek-b263s-slip-giallo-con-sole-sundek-sul-retro-turchese-16-anni" target="_blank" class="t">Costume mare bambino a mutanda Sundek B263S, slip giallo con</a>
+    </div>
+    <div class="sub">20,00 € · tam 16 años /176 cm</div>
+    <div class="decisao d-r">DESCARTADO · 0pts · nao_short, cor_ruim</div>
+    <div class="metricas"><span class="m m-r"><b>Sundek?</b> ?</span><span class="m m-r"><b>é short?</b> ?</span><span class="m m-r"><b>tipo</b> nao_short</span></div>
+    
+  </div>
+</article>
+<article class="card">
+  <div class="thumbs"><img src="https://images1.vinted.net/t/06_018ad_AMYy3yEsX6XFTbQUEQ1GX37m/f800/1773327292.webp?s=627c6201d6ebebadef00038f9c675a7bb59a5ac8" class="main" loading="lazy"><img src="https://images1.vinted.net/t/06_01400_Fzca2LeDjUd68UwSfFTYtc6X/f800/1773327292.webp?s=8fb6fd872f94e9b3f0e6faee7dae9988427ea79e" loading="lazy"><img src="https://images1.vinted.net/t/05_0064e_yMoksHWcJxdAp53SDdTgCE4S/f800/1773327292.webp?s=37eeaadf76f91343d9d2b278b0f470533e838bec" loading="lazy"><img src="https://images1.vinted.net/t/01_00508_nbnzkujipX917Gd57d3Aeibo/f800/1773327292.webp?s=da4a77d8231c6c1ca5509dc75a34036ca208b37a" loading="lazy"><img src="https://images1.vinted.net/t/05_005b6_tMWxfnmWzNJ8CJuG3GR5UZZu/f800/1773327292.webp?s=efc18d6e0790de4a4770dbe3e2a8528c924c38e0" loading="lazy"><img src="https://images1.vinted.net/t/04_0161f_7oK1TS6gJyMQzUNoo5CpGz3x/f800/1760359583.webp?s=47f00c455d968434936f980d6d676602241b91db" loading="lazy"></div>
+  <div class="body">
+    <div class="head">
+      
+      <a href="https://www.vinted.es/items/8376476639-boardshorts-swim-shorts-uomo-hawaiian-beach-sundek-viola-tropical-costume-tg-l" target="_blank" class="t">Boardshorts Swim Shorts Uomo Hawaiian Beach Sundek Viola Tro</a>
+    </div>
+    <div class="sub">34,90 € · tam L</div>
+    <div class="decisao d-r">DESCARTADO · 0pts · estampado, cor_ruim</div>
+    <div class="metricas"><span class="m m-g"><b>Sundek?</b> sim</span><span class="m m-g"><b>é short?</b> sim</span><span class="m m-r"><b>tipo</b> estampado</span></div>
+    <div class="evids"><div class='ev'><b>marca:</b> Texto &#x27;Sundek&#x27; visível nas peças, comprimento até meio da coxa e perna larga com formato separado.</div></div>
+  </div>
+</article>
+<article class="card">
+  <div class="thumbs"><img src="https://images1.vinted.net/t/04_01cce_bKDJaHHPzKMsyUtbdugVJUie/f800/1770735277.webp?s=e0c9e31921a7ca7e2271c7641da90e8a3a0f3ed5" class="main" loading="lazy"><img src="https://images1.vinted.net/t/05_002d5_jRwgyD9y6YDX47TEpT3uWy6R/f800/1770735277.webp?s=6361fe82b5700aab7736e5b30db0eeb648c58db7" loading="lazy"><img src="https://images1.vinted.net/t/01_0211a_sN2kYgTuk2NtR5F8fDq8c6mD/f800/1770735277.webp?s=e57dd78abc5c764d5e04622d21ac5e29ce843e76" loading="lazy"><img src="https://images1.vinted.net/t/06_017ce_5tTC2spBxnn4m6H3wbW851Pi/f800/1774978433.webp?s=68ceeb620e9ebad8d37395883fc6f516aceeb1d1" loading="lazy"></div>
+  <div class="body">
+    <div class="head">
+      
+      <a href="https://www.vinted.es/items/8145495085-costume-pantaloncino-uomo-sundek-m504bdrt3y2-verde-fluo-con-arcobaleno-sul-retro-taglia-s" target="_blank" class="t">Costume pantaloncino uomo Sundek M504BDRT3Y2, verde fluo con</a>
+    </div>
+    <div class="sub">45,00 € · tam S</div>
+    <div class="decisao d-r">DESCARTADO · 0pts · bicolor, bolso_frontal</div>
+    <div class="metricas"><span class="m m-g"><b>Sundek?</b> sim</span><span class="m m-g"><b>é short?</b> sim</span><span class="m m-g"><b>tipo</b> liso</span><span class="m m-r"><b>bicolor</b> sim</span><span class="m m-r"><b>bolso frontal</b> sim</span><span class="m m-n"><b>cor</b> ?</span><span class="m m-g"><b>tier</b> erro</span><span class="m m-g"><b>listra Sundek</b> sim</span><span class="m m-n"><b>cores listra</b> amarelo, azul, preto</span><span class="m m-g"><b>bolso traseiro</b> sim</span><span class="m m-g"><b>nome SUNDEK no bolso</b> sim</span><span class="m m-g"><b>elástico</b> sim</span><span class="m m-g"><b>fechamento</b> elastico</span><span class="m m-g"><b>etiqueta (hang tag)</b> sim</span></div>
+    <div class="evids"><div class='ev'><b>marca:</b> Etiqueta &#x27;SUNDEK&#x27; visível, logo na parte interna e na parte traseira, faixa multicolorida no cós.</div><div class='ev'><b>listra:</b> Três faixas paralelas de cores distintas (amarelo, azul, preto) no painel traseiro.</div><div class='ev'><b>bolso:</b> A vista traseira do short mostra um bolso com um patch costurado sobre ele. O patch tem o desenho do sol e a palavra &#x27;SUNDEK&#x27; escrita abaixo.</div><div class='ev'><b>elástico:</b> Cós visivelmente comprimido com dobras estruturais regulares ao longo de toda a extensão. Não há botão ou velcro visível no fly.</div><div class='ev'><b>etiqueta:</b> O short possui uma hang tag de papel pendurada, visível na primeira foto.</div></div>
+  </div>
+</article>
+<article class="card">
+  <div class="thumbs"><img src="https://images1.vinted.net/t/06_01dca_ZeXwprvSyYoQJ72vbBv3sVJG/f800/1770828200.webp?s=eab2baf44b2d4805c5e034746850cc231870e2e1" class="main" loading="lazy"><img src="https://images1.vinted.net/t/04_012fc_1rPagroU87qBxF8M8XE6WeSf/f800/1770828200.webp?s=bf59295106602ccf744c88542a218546e64aab4d" loading="lazy"><img src="https://images1.vinted.net/t/05_02636_sJXtxNmPLaFDaSTzq1GsVHH9/f800/1770828200.webp?s=94665f6f330e1078e65d8f9f4068aa7bd7b7ca7b" loading="lazy"><img src="https://images1.vinted.net/t/05_00b40_i3s6Knx5vw4A2Tw3iRm1J1dL/f800/1770828200.webp?s=6b5b430405f6c2b1cf9d14d3587cc353e3688132" loading="lazy"><img src="https://images1.vinted.net/t/06_017ce_5tTC2spBxnn4m6H3wbW851Pi/f800/1774978433.webp?s=68ceeb620e9ebad8d37395883fc6f516aceeb1d1" loading="lazy"></div>
+  <div class="body">
+    <div class="head">
+      
+      <a href="https://www.vinted.es/items/8153693133-costume-uomo-mutanda-sundek-m279ssl3000-slip-colore-azzurro-con-bande-laterali-colorate-s" target="_blank" class="t">Costume uomo mutanda Sundek M279SSL3000, slip colore azzurro</a>
+    </div>
+    <div class="sub">22,00 € · tam S</div>
+    <div class="decisao d-r">DESCARTADO · 0pts · nao_short, cor_ruim</div>
+    <div class="metricas"><span class="m m-r"><b>Sundek?</b> ?</span><span class="m m-r"><b>é short?</b> ?</span><span class="m m-r"><b>tipo</b> nao_short</span></div>
+    
+  </div>
+</article>
+<article class="card">
+  <div class="thumbs"><img src="https://images1.vinted.net/t/06_015c8_3SqaBFUFT5A26dhqLbo9M6eK/f800/1775902958.webp?s=c8d1981cadf94b0acf1a0498d98d2071aa0ea09d" class="main" loading="lazy"><img src="https://images1.vinted.net/t/06_010da_2t6qou7LampTfQyovqE5EW31/f800/1775902958.webp?s=6d68e0d41113b42a7f0666a34decc5da0802a803" loading="lazy"><img src="https://images1.vinted.net/t/05_00db3_yEEuBmbTR1iNTRYQjXTdD2ny/f800/1775902958.webp?s=e4614bd25b1639e3e286bae98d69e83d103e14d5" loading="lazy"><img src="https://images1.vinted.net/t/04_00b60_eQsDSaNTBmETwtoxHjijCmc7/f800/1775902958.webp?s=bdca84e9528614c857d4b5f8b65fee726ad3a6c0" loading="lazy"><img src="https://images1.vinted.net/t/06_0162a_SP1XBa7D2obc4mkCBxqXM9tj/f800/1775902958.webp?s=1f2bc1d808477c567f3439f59345874d36cd6b55" loading="lazy"><img src="https://images1.vinted.net/t/02_00b8a_jRhmHXd9toUpUDrd8cEQKDSv/f800/1762883800.webp?s=a3a4f34c01f2b7fdf2401b87219f13e24100a336" loading="lazy"></div>
+  <div class="body">
+    <div class="head">
+      
+      <a href="https://www.vinted.es/items/8619996131-pantaloncini-mare-uomo-sundek" target="_blank" class="t">Pantaloncini mare uomo Sundek</a>
+    </div>
+    <div class="sub">33,00 € · tam XL</div>
+    <div class="decisao d-r">DESCARTADO · 0pts · sem_listra_sundek, piping_nao_e_listra_sundek</div>
+    <div class="metricas"><span class="m m-g"><b>Sundek?</b> sim</span><span class="m m-g"><b>é short?</b> sim</span><span class="m m-g"><b>tipo</b> liso</span><span class="m m-n"><b>cor</b> ?</span><span class="m m-g"><b>tier</b> erro</span><span class="m m-r"><b>listra Sundek</b> não</span><span class="m m-r"><b>piping</b> sim</span></div>
+    <div class="evids"><div class='ev'><b>marca:</b> Etiqueta Sundek visível, logo na parte frontal e etiqueta pendurada.</div><div class='ev'><b>listra:</b> Linha fina branca contornando a borda lateral do short.</div></div>
+  </div>
+</article>
+<article class="card">
+  <div class="thumbs"><img src="https://images1.vinted.net/t/05_009ac_x65unUfzhzkEBjsVv3w5rANX/f800/1769857619.webp?s=3580bc8257cfaad63252af3267cf024c23ba8859" class="main" loading="lazy"><img src="https://images1.vinted.net/t/01_024d3_5VczKxY3th7icvASCo8N85V8/f800/1769857619.webp?s=5a760e65a029514dd96457bcc46912cc018d4415" loading="lazy"><img src="https://images1.vinted.net/t/05_02404_AxUyfXK4oRxVJxcs2Mgho7sw/f800/1769857619.webp?s=1ad58cc1155f819aa185c83a4bb02efd44325aa2" loading="lazy"><img src="https://images1.vinted.net/t/06_0054e_UyVd41UKLeNn4gG3hDB5khvm/f800/1769857619.webp?s=3ee4876d58952f198ca7edb0eb9ca04d3115b1c6" loading="lazy"><img src="https://images1.vinted.net/t/06_025ee_U6o21BzxmjGz855V58PE2m6A/f800/1769857619.webp?s=0ab895bf2fafbf02c0d5638994226d8de1808326" loading="lazy"><img src="https://images1.vinted.net/t/02_00b8a_jRhmHXd9toUpUDrd8cEQKDSv/f800/1762883800.webp?s=a3a4f34c01f2b7fdf2401b87219f13e24100a336" loading="lazy"></div>
+  <div class="body">
+    <div class="head">
+      
+      <a href="https://www.vinted.es/items/8065256301-costume-sundek" target="_blank" class="t">Costume Sundek</a>
+    </div>
+    <div class="sub">38,00 € · tam XL</div>
+    <div class="decisao d-r">DESCARTADO · 0pts · estampado, cor_ruim</div>
+    <div class="metricas"><span class="m m-g"><b>Sundek?</b> sim</span><span class="m m-g"><b>é short?</b> sim</span><span class="m m-r"><b>tipo</b> estampado</span></div>
+    <div class="evids"><div class='ev'><b>marca:</b> Texto &#x27;SUNDEK&#x27; visível na etiqueta interna e tag de papel pendurada. Peça com comprimento até meio da coxa e perna larga.</div></div>
+  </div>
+</article>
+<article class="card">
+  <div class="thumbs"><img src="https://images1.vinted.net/t/06_01e4e_v1JGAiF1Pajd2LcZ3AvRngKs/f800/1778461031.webp?s=7e72f26dab0c8ab2595a958395737ce3196ba5f0" class="main" loading="lazy"><img src="https://images1.vinted.net/t/06_01fbc_5q4yd2V3oo11RFVYMAgkg8wu/f800/1778461031.webp?s=046e1f73954c634fc9248aa395514e328a6c7a92" loading="lazy"><img src="https://images1.vinted.net/t/05_01b7f_Q1LPwfHaUMBpoEobS8CvmyMV/f800/1778461031.webp?s=b7495964c4dbbbfdcc8a2ff70569827ef45ed4db" loading="lazy"><img src="https://images1.vinted.net/t/06_017ce_5tTC2spBxnn4m6H3wbW851Pi/f800/1774978433.webp?s=68ceeb620e9ebad8d37395883fc6f516aceeb1d1" loading="lazy"></div>
+  <div class="body">
+    <div class="head">
+      
+      <a href="https://www.vinted.es/items/8880586941-costume-mare-uomo-a-mutanda-sundek-a3501-slip-verde-iconico-arcobaleno-sul-retro-xxl-nuovo" target="_blank" class="t">Costume mare uomo a mutanda Sundek A3501. Slip verde, iconic</a>
+    </div>
+    <div class="sub">25,00 € · tam XXL</div>
+    <div class="decisao d-r">DESCARTADO · 0pts · nao_short, cor_ruim, tamanho_XXL</div>
+    <div class="metricas"><span class="m m-r"><b>Sundek?</b> ?</span><span class="m m-r"><b>é short?</b> ?</span><span class="m m-r"><b>tipo</b> nao_short</span></div>
+    
+  </div>
+</article>
+<article class="card">
+  <div class="thumbs"><img src="https://images1.vinted.net/t/06_015b5_scYRTXzrBDd2gwCCAqoo5X2B/f800/1773327942.webp?s=a87d1a717133104a2e0ebe7939640ffd038c431b" class="main" loading="lazy"><img src="https://images1.vinted.net/t/05_00cd8_nWKfcG1fC8Xhz7W7iVD9KfaS/f800/1773327942.webp?s=56b4d32879df3e981623f5de16e36cfe568ed7a0" loading="lazy"><img src="https://images1.vinted.net/t/05_01e76_F9sW7q8yzoGrAMAmo1izE5VV/f800/1773327942.webp?s=d25524780be8262aec85d60d389b8d78e3a8f98a" loading="lazy"><img src="https://images1.vinted.net/t/04_01356_WneKhzmSWWnkzq1fbVHJYPpt/f800/1773327942.webp?s=69cbf4ad9f7f98f3199a2a09fbbe70dc3444d677" loading="lazy"><img src="https://images1.vinted.net/t/01_00719_Ar1hw44iJxwkS7JTpzBxkM5a/f800/1773327942.webp?s=f1a6123c5b13209ab4571fd5a5d9cc06078d3344" loading="lazy"><img src="https://images1.vinted.net/t/04_0161f_7oK1TS6gJyMQzUNoo5CpGz3x/f800/1760359583.webp?s=47f00c455d968434936f980d6d676602241b91db" loading="lazy"></div>
+  <div class="body">
+    <div class="head">
+      
+      <a href="https://www.vinted.es/items/8376573421-costume-mare-boardshort-uomo-surf-swim-shorts-sundek-azzurro-beach-shorts-taglia-30-44-s" target="_blank" class="t">Costume Mare Boardshort Uomo Surf Swim Shorts Sundek Azzurro</a>
+    </div>
+    <div class="sub">34,90 € · tam S</div>
+    <div class="decisao d-r">DESCARTADO · 0pts · nao_short, cor_ruim, tamanho_numerico_30</div>
+    <div class="metricas"><span class="m m-r"><b>Sundek?</b> ?</span><span class="m m-r"><b>é short?</b> ?</span><span class="m m-r"><b>tipo</b> nao_short</span></div>
+    
+  </div>
+</article>
+<article class="card">
+  <div class="thumbs"><img src="https://images1.vinted.net/t/06_025d9_KodTwXg6Wk5khxzmqr37mAgL/f800/1770911163.webp?s=d4c8b4512c368fb88d095799d36888db7e4b5e94" class="main" loading="lazy"><img src="https://images1.vinted.net/t/03_0191f_sknZgLN7ny2jHCYwp86DEbdT/f800/1770911163.webp?s=e32b24f2a803e6fb23c7757350d538ecab18bdfd" loading="lazy"><img src="https://images1.vinted.net/t/01_005a0_hVeJTcefeRvGW5kaCJkqDrw6/f800/1770911163.webp?s=900e7acb14ce5a66fa2ce7a338095f8fa02a849b" loading="lazy"><img src="https://images1.vinted.net/t/06_0222a_B8TzKcdKY7ToJ7npZUwDMJqT/f800/1770911163.webp?s=26f1b8c301e43de6af9e689bf02e3d4e4c951197" loading="lazy"><img src="https://images1.vinted.net/t/06_017ce_5tTC2spBxnn4m6H3wbW851Pi/f800/1774978433.webp?s=68ceeb620e9ebad8d37395883fc6f516aceeb1d1" loading="lazy"></div>
+  <div class="body">
+    <div class="head">
+      
+      <a href="https://www.vinted.es/items/8160017596-costume-uomo-mutanda-sundek-m279ssl3000-slip-colore-nero-bande-laterali-colorate-s" target="_blank" class="t">Costume uomo mutanda Sundek M279SSL3000, slip colore nero, b</a>
+    </div>
+    <div class="sub">22,00 € · tam S</div>
+    <div class="decisao d-r">DESCARTADO · 0pts · nao_short, cor_ruim</div>
+    <div class="metricas"><span class="m m-r"><b>Sundek?</b> ?</span><span class="m m-r"><b>é short?</b> ?</span><span class="m m-r"><b>tipo</b> nao_short</span></div>
+    
+  </div>
+</article>
+<article class="card">
+  <div class="thumbs"><img src="https://images1.vinted.net/t/05_00c8d_vutg36jEC2RgrogCnF73pD4Q/f800/1770458937.webp?s=c222d9eb56567d8dc2e35645e29a06c7112df8b9" class="main" loading="lazy"><img src="https://images1.vinted.net/t/01_00030_afSWDnHiXcahws9bFzBh3CGs/f800/1770458937.webp?s=4851087d7271a407050abb5ff7502640f0ea6e40" loading="lazy"><img src="https://images1.vinted.net/t/05_00f9a_ESHzk3rxeNCgUZJnjk5XtSnv/f800/1770458937.webp?s=6d331191b4238b4141d62afbc3f47d0a283fc1e2" loading="lazy"><img src="https://images1.vinted.net/t/06_0087a_DEjKBVpELrWm6RdGJdG1QuX7/f800/1770458937.webp?s=18237a43e2d3149e5dc92616f1646d8c09c60b5a" loading="lazy"><img src="https://images1.vinted.net/t/04_000e3_KD4bB82YBGF6T3xVJk465RC3/f800/1770458937.webp?s=29cd56d2c00b57df6e2d78d2382a8f15d0345121" loading="lazy"><img src="https://images1.vinted.net/t/02_00b8a_jRhmHXd9toUpUDrd8cEQKDSv/f800/1762883800.webp?s=a3a4f34c01f2b7fdf2401b87219f13e24100a336" loading="lazy"></div>
+  <div class="body">
+    <div class="head">
+      
+      <a href="https://www.vinted.es/items/8117977836-costume-sundek" target="_blank" class="t">Costume Sundek</a>
+    </div>
+    <div class="sub">32,00 € · tam XXL</div>
+    <div class="decisao d-r">DESCARTADO · 0pts · cor_ruim, bicolor, bolso_frontal, tamanho_XXL</div>
+    <div class="metricas"><span class="m m-g"><b>Sundek?</b> sim</span><span class="m m-g"><b>é short?</b> sim</span><span class="m m-g"><b>tipo</b> liso</span><span class="m m-r"><b>bicolor</b> sim</span><span class="m m-r"><b>bolso frontal</b> sim</span><span class="m m-n"><b>cor</b> Amarelo</span><span class="m m-r"><b>tier</b> ruim</span></div>
+    <div class="evids"><div class='ev'><b>marca:</b> Etiqueta interna com &#x27;SUNDEK&#x27;, logo bordado na parte de trás, e comprimento adequado para short.</div></div>
+  </div>
+</article>
+<article class="card">
+  <div class="thumbs"><img src="https://images1.vinted.net/t/01_01ac1_kAmaZSSNgsFvj6pMHDp5bE6f/f800/r3/1774982446.webp?s=2a600085a3ed3c936855e3ad3b5963a6ec3ac7f6" class="main" loading="lazy"><img src="https://images1.vinted.net/t/06_022a6_fnGomtxxvYwmBjLjZ4QYCLW1/f800/1774982446.webp?s=6e22aec1824fb7bf7c9961e3ce94aa069a9e69f8" loading="lazy"><img src="https://images1.vinted.net/t/05_00084_1QhoQGGRqfc7Q9aneqD5eLWD/f800/1774982446.webp?s=8874f727b8a8530d7125bc2cfb70a9ef62bba929" loading="lazy"><img src="https://images1.vinted.net/t/01_017b0_wAWECwRqRXr9nUwwuHgSSatk/f800/1774982446.webp?s=5483f19767616bed9e9f457a5cc066395a847acf" loading="lazy"><img src="https://images1.vinted.net/t/06_0106c_Cb4nn2jentwZH9ApHaAaE3dd/f800/1774982446.webp?s=8ffd3b08789fb6a856a4f6aa30e52917c2ebf6a1" loading="lazy"><img src="https://images1.vinted.net/t/02_00b8a_jRhmHXd9toUpUDrd8cEQKDSv/f800/1762883800.webp?s=a3a4f34c01f2b7fdf2401b87219f13e24100a336" loading="lazy"></div>
+  <div class="body">
+    <div class="head">
+      
+      <a href="https://www.vinted.es/items/7935142603-costume-sundek" target="_blank" class="t">Costume Sundek</a>
+    </div>
+    <div class="sub">35,00 € · tam S</div>
+    <div class="decisao d-r">DESCARTADO · 0pts · estampado, cor_ruim</div>
+    <div class="metricas"><span class="m m-g"><b>Sundek?</b> sim</span><span class="m m-g"><b>é short?</b> sim</span><span class="m m-r"><b>tipo</b> estampado</span></div>
+    <div class="evids"><div class='ev'><b>marca:</b> Texto &#x27;SUNDEK&#x27; visível na etiqueta interna e no bolso traseiro, faixa multicolorida característica no cós, comprimento até meio da coxa e perna larga e separada.</div></div>
+  </div>
+</article>
+<article class="card">
+  <div class="thumbs"><img src="https://images1.vinted.net/t/05_01fde_scwuYSMqeceifu7wJ2XDGfn5/f800/1773327563.webp?s=a4d5dda71aac6ac162c3a06ce324767f7629ff46" class="main" loading="lazy"><img src="https://images1.vinted.net/t/05_00c65_g2jonZFfTWGMSTSDuwcdTpZP/f800/1773327563.webp?s=0628cee1d4a5c9c6f38f3af0c2f237bc6a05c16b" loading="lazy"><img src="https://images1.vinted.net/t/04_00c62_aHQXR1LRe29B8h66feQEQzeA/f800/1773327563.webp?s=14f1177d78df05f7469ffed046eb5407d67f808b" loading="lazy"><img src="https://images1.vinted.net/t/06_01099_9QRyfMWa8umDsgwXgkXKSpZC/f800/1773327563.webp?s=dbeb1e64853608a9f46b51763f60ad14b1032f3d" loading="lazy"><img src="https://images1.vinted.net/t/05_01f9a_BBnUcdD8X4sgJTSz1RjdEE73/f800/1773327563.webp?s=0dac5f6021b349fb4fddd6916bd587b3e8b13fe9" loading="lazy"><img src="https://images1.vinted.net/t/04_0161f_7oK1TS6gJyMQzUNoo5CpGz3x/f800/1760359583.webp?s=47f00c455d968434936f980d6d676602241b91db" loading="lazy"></div>
+  <div class="body">
+    <div class="head">
+      
+      <a href="https://www.vinted.es/items/8376517259-costume-mare-boardshort-uomo-sundek-50th-anniversary-floral-surf-swim-shorts-36-50-l" target="_blank" class="t">Costume Mare Boardshort Uomo Sundek 50th Anniversary Floral </a>
+    </div>
+    <div class="sub">34,90 € · tam L</div>
+    <div class="decisao d-r">DESCARTADO · 0pts · nao_short, cor_ruim, tamanho_numerico_36</div>
+    <div class="metricas"><span class="m m-r"><b>Sundek?</b> ?</span><span class="m m-r"><b>é short?</b> ?</span><span class="m m-r"><b>tipo</b> nao_short</span></div>
+    
+  </div>
+</article>
+<article class="card">
+  <div class="thumbs"><img src="https://images1.vinted.net/t/05_0155d_F2AsjLSfwmmjhbridKkELW5y/f800/1773327774.webp?s=d9ef243c57bb74b85b34b2a271e82d13dc07c82c" class="main" loading="lazy"><img src="https://images1.vinted.net/t/01_00453_GTGGJJXWj15sYbd5Uq4iLzTq/f800/1773327774.webp?s=4cb221b60ba5a3a41f74438435b62fcbaae8996e" loading="lazy"><img src="https://images1.vinted.net/t/03_00b53_ahAEXZmTGyzWjz81BMkC7BcB/f800/1773327774.webp?s=165c097c7023d2fc5e62e6b12a260c0a05d30f3d" loading="lazy"><img src="https://images1.vinted.net/t/01_00959_Ebc6MGa4xTkz2oGNj9Qw9WKp/f800/1773327774.webp?s=29834d9e23d657ba295f384dbad361d26ff708e1" loading="lazy"><img src="https://images1.vinted.net/t/05_018e1_4tyRnE8DGzYKZtc5AkUPV5Qy/f800/1773327774.webp?s=cdf53ab4d15a1eba297b388e131f1caa0ca78efc" loading="lazy"><img src="https://images1.vinted.net/t/04_0161f_7oK1TS6gJyMQzUNoo5CpGz3x/f800/1760359583.webp?s=47f00c455d968434936f980d6d676602241b91db" loading="lazy"></div>
+  <div class="body">
+    <div class="head">
+      
+      <a href="https://www.vinted.es/items/8376548513-costume-mare-boardshort-uomo-sundek-floral-pink-surf-swim-shorts-taglia-30-44-s" target="_blank" class="t">Costume Mare Boardshort Uomo Sundek Floral Pink Surf Swim Sh</a>
+    </div>
+    <div class="sub">34,90 € · tam S</div>
+    <div class="decisao d-r">DESCARTADO · 0pts · nao_short, cor_ruim, tamanho_numerico_30</div>
+    <div class="metricas"><span class="m m-r"><b>Sundek?</b> ?</span><span class="m m-r"><b>é short?</b> ?</span><span class="m m-r"><b>tipo</b> nao_short</span></div>
+    
+  </div>
+</article>
+</div></body></html>

@@ -66,6 +66,12 @@ def _localizar(fotos: list[str]) -> dict:
         response_format={"type": "json_object"},
     )
     try:
+        from .cost_tracker import track as _track
+        _track("crop_localizar", IA["model"],
+               resp.usage.prompt_tokens, resp.usage.completion_tokens)
+    except Exception:
+        pass
+    try:
         return json.loads(resp.choices[0].message.content or "{}")
     except json.JSONDecodeError:
         return {"foto_index": -1}

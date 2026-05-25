@@ -21,6 +21,7 @@ from .config import IA
 from .prompts import liso_vs_estampado as prompt
 from .classify_elastico import verificar_elastico
 from .listra_tier import avaliar_combo
+from .ratelimit import pace_gpt4o
 from .score import calcular_score
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -71,6 +72,7 @@ def _classificar_forte(item: dict) -> dict:
         *[{"type": "image_url", "image_url": {"url": u, "detail": "low"}} for u in fotos],
     ]
 
+    pace_gpt4o()
     resp = _get_client().chat.completions.create(
         model=MODEL_FORTE,
         messages=[

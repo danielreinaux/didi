@@ -15,7 +15,7 @@ import time
 # gpt-4o: 30K TPM ÷ ~16K/chamada ≈ 1.8/min → 38s de folga.
 # mini:  200K TPM ÷ ~19K/chamada ≈ 10/min → 9s de folga.
 INTERVALO_GPT4O = 38.0
-INTERVALO_MINI = 9.0
+INTERVALO_MINI = 13.0
 
 _lock_4o = threading.Lock()
 _lock_mini = threading.Lock()
@@ -24,20 +24,25 @@ _ultima_mini = 0.0
 
 
 def pace_gpt4o() -> None:
-    """Bloqueia até ser seguro fazer outra chamada gpt-4o."""
+    """Bloqueia até ser seguro fazer outra chamada gpt-4o.
+    Sleep FORA do lock pra não travar outras threads."""
     global _ultima_4o
     with _lock_4o:
-        espera = INTERVALO_GPT4O - (time.monotonic() - _ultima_4o)
-        if espera > 0:
-            time.sleep(espera)
-        _ultima_4o = time.monotonic()
+        agora = time.monotonic()
+        espera = INTERVALO_GPT4O - (agora - _ultima_4o)
+        # reserva o slot adiantando o relógio — outras threads vão esperar a partir daqui
+        _ultima_4o = agora + max(espera, 0)
+    if espera > 0:
+        time.sleep(espera)
 
 
 def pace_mini() -> None:
-    """Bloqueia até ser seguro fazer outra chamada gpt-4o-mini."""
+    """Bloqueia até ser seguro fazer outra chamada gpt-4o-mini.
+    Sleep FORA do lock pra não travar outras threads."""
     global _ultima_mini
     with _lock_mini:
-        espera = INTERVALO_MINI - (time.monotonic() - _ultima_mini)
-        if espera > 0:
-            time.sleep(espera)
-        _ultima_mini = time.monotonic()
+        agora = time.monotonic()
+        espera = INTERVALO_MINI - (agora - _ultima_mini)
+        _ultima_mini = agora + max(espera, 0)
+    if espera > 0:
+        time.sleep(espera)

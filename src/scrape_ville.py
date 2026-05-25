@@ -1,8 +1,8 @@
-"""Entry point — orquestra a coleta completa.
+"""Coleta de Vilebrequin no Vinted.
 
 Uso:
-    python -m src.scrape                  # browser visível
-    HEADLESS=true python -m src.scrape    # silencioso
+    python -m src.scrape_ville                  # browser visível
+    HEADLESS=true python -m src.scrape_ville    # silencioso
 """
 import json
 import time
@@ -13,8 +13,8 @@ from playwright.sync_api import sync_playwright
 from .browser import abrir_sessao_vinted
 from .config import MAX_ITEMS_POR_RODADA
 from .extract import extract_item
-from .historico import atualizar_com_scrape
-from .sources.vinted import listar_urls_items, montar_url_sundek_hombre
+from .sources.vinted import listar_urls_items
+from .sources.vinted_ville import montar_url_ville_hombre
 
 ROOT = Path(__file__).resolve().parent.parent
 DATA = ROOT / "data"
@@ -25,14 +25,14 @@ def main() -> None:
     DATA.mkdir(exist_ok=True)
     SHOTS.mkdir(exist_ok=True)
 
-    print("=== Didi · radar Sundek (Vinted) ===\n")
+    print("=== Didi · radar Vilebrequin (Vinted) ===\n")
     t0 = time.time()
 
     with sync_playwright() as p:
         print("[1] Abrindo sessão (vinted.pt → Espanha → cookies)")
         browser, _, page = abrir_sessao_vinted(p)
 
-        url = montar_url_sundek_hombre()
+        url = montar_url_ville_hombre()
         print(f"[2] Catálogo filtrado:\n    {url}")
         page.goto(url, wait_until="domcontentloaded")
         try:
@@ -41,7 +41,6 @@ def main() -> None:
             pass
         page.wait_for_timeout(2500)
 
-        # fechar modal "Where do you live?" se aparecer
         try:
             if page.locator('text="Where do you live?"').is_visible(timeout=2000):
                 page.locator('text=España').first.click()
@@ -49,21 +48,22 @@ def main() -> None:
         except Exception:
             pass
 
-        page.screenshot(path=str(SHOTS / "00-catalogo.png"))
+        page.screenshot(path=str(SHOTS / "00-catalogo-ville.png"))
 
         print(f"[3] Listando até {MAX_ITEMS_POR_RODADA} URLs de items...")
         urls = listar_urls_items(page, MAX_ITEMS_POR_RODADA)
         print(f"    {len(urls)} URLs.\n")
 
         print("[4] Extraindo dados de cada item")
-        out = DATA / "coleta.json"
+        out = DATA / "coleta-ville.json"
         coletados = []
+
         for i, u in enumerate(urls):
             idx = f"{i + 1:02d}"
             print(f"    [{i + 1}/{len(urls)}] {u}")
             try:
                 item = extract_item(page, u)
-                page.screenshot(path=str(SHOTS / f"short-{idx}.png"))
+                page.screenshot(path=str(SHOTS / f"ville-{idx}.png"))
                 print(
                     f"        {item['titulo']} — {item['preco']} · "
                     f"{item['tamanho']} · {item['estado']} · {item['cor']}"
@@ -78,16 +78,7 @@ def main() -> None:
                 out.write_text(json.dumps(coletados, indent=2, ensure_ascii=False))
 
         out.write_text(json.dumps(coletados, indent=2, ensure_ascii=False))
-        print(f"\n[5] {len(coletados)} itens salvos em data/coleta.json")
-
-        # [6] Atualiza histórico longitudinal (preços, vendidos)
-        stats = atualizar_com_scrape(coletados)
-        print(f"\n[6] Histórico:")
-        print(f"    novos:           {stats['novos']}")
-        print(f"    ainda listados:  {stats['ainda_listados']}")
-        print(f"    baixaram preço:  {stats['preco_baixou']}")
-        print(f"    vendidos agora:  {stats['vendidos_agora']}")
-        print(f"    total tracking:  {stats['total_historico']}")
+        print(f"\n[5] {len(coletados)} itens salvos em data/coleta-ville.json")
         print(f"\n    duração total: {time.time() - t0:.1f}s")
 
         browser.close()
