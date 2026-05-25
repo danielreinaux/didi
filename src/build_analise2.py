@@ -24,6 +24,7 @@ LEGENDAS = {
     "tipo:desbotado": "Tecido com aparência de muito uso/lavagem.",
     "tipo:nao_short": "Não é short (sunga, camiseta, calça, etc). Detectado por título ou foto.",
     "tipo:tamanho_invalido": "É short, mas tamanho fora do range comercial (W29, W30, W36, XS, XXL, etc).",
+    "tipo:infantil": "Short infantil (taille X ans, tg X anni, bambino, kids, etc.) — não revendemos.",
     "tipo:nao_sundek": "Não é da marca Sundek (Nike, Adidas, etc).",
     "tipo:indefinido": "Foto borrada ou ângulo ruim, modelo não conseguiu decidir.",
     # Motivos de exclusão

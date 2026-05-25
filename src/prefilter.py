@@ -36,9 +36,13 @@ EXCLUSAO: list[tuple[re.Pattern, str]] = [
     (re.compile(r"\bgiacca\b|\bjacket\b|\bjaqueta\b|\bblazer\b", re.I), "jaqueta/casaco"),
     (re.compile(r"\bcappotto\b|\bcoat\b|\bcasaco\b", re.I), "casaco"),
 
-    # calças longas
-    (re.compile(r"\bpantalon[ei]\b|\bpants\b|\bcal[cç]a\b", re.I), "calça longa"),
+    # calças longas — em italiano, "pantalone/i" pode ser calça OU bermuda dependendo do contexto.
+    # Só excluímos quando NÃO há indicação de short (corto, corti, short, bagno, mare, costume).
+    (re.compile(r"\bpants\b|\bcal[cç]a\b", re.I), "calça longa"),
     (re.compile(r"\bjeans?\b", re.I), "jeans"),
+    # pantalone(s) sem qualquer indicador de short = provavelmente calça
+    # (usamos lookahead negativo: pantalone(i) NÃO seguido por corto/corti/short/bagno/mare/costume)
+    (re.compile(r"\bpantalon[ei]\b(?!.*(?:cort[oi]|short|bagno|mare|costume|cargo))", re.I), "calça longa"),
 
     # íntimos / sungas
     (re.compile(r"\bslip\b", re.I), "slip (sunga)"),
@@ -53,7 +57,10 @@ EXCLUSAO: list[tuple[re.Pattern, str]] = [
     (re.compile(r"\bborsa\b|\bbag\b|\bbolsa\b|\bzaino\b", re.I), "bolsa"),
     (re.compile(r"\bscarpe?\b|\bshoes\b|\bsapatos?\b|\bsneakers?\b", re.I), "calçado"),
 
-    # infantil (várias línguas)
+]
+
+# Regras de infantil — retornadas com categoria 'infantil' (não 'nao_short')
+EXCLUSAO_INFANTIL: list[tuple[re.Pattern, str]] = [
     (re.compile(r"\bbambin[oa]s?\b|\bbimb[oa]\b", re.I), "infantil (bambino)"),
     (re.compile(r"\bragazz[oa]\b", re.I), "infantil (ragazzo)"),
     (re.compile(r"\bni[ñn][oa]\b", re.I), "infantil (niño)"),
@@ -98,6 +105,9 @@ def parece_short(item: dict) -> Resultado:
     titulo = (item.get("titulo") or "").strip()
     if not titulo:
         return Resultado(False, "sem título", "nao_short")
+    for regex, motivo in EXCLUSAO_INFANTIL:
+        if regex.search(titulo):
+            return Resultado(False, motivo, "infantil")
     for regex, motivo in EXCLUSAO:
         if regex.search(titulo):
             return Resultado(False, motivo, "nao_short")

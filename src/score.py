@@ -111,7 +111,7 @@ def calcular_score(item: dict) -> dict:
 
     # Filtros de exclusão → score 0
     exclusoes = []
-    if tipo in ("estampado", "logo_grande", "nao_sundek", "nao_short", "tamanho_invalido"):
+    if tipo in ("estampado", "logo_grande", "nao_sundek", "nao_short", "tamanho_invalido", "infantil"):
         exclusoes.append(tipo)
     if cl.get("aparencia") == "desbotado" or tipo == "desbotado":
         exclusoes.append("desbotado")

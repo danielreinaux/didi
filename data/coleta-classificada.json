@@ -3899,7 +3899,6 @@
     "marca": "",
     "tamanho": "L",
     "estado": "Muy bueno",
-    "cor": "Azul marino",
     "upload": "hace 8 horas",
     "envio": "desde 2,99 €",
     "preco": "18,00 €",
@@ -3924,16 +3923,62 @@
       "pode_comprar": true
     },
     "coletado_em": "2026-05-24T02:23:39.631597+00:00",
+    "marca_check": {
+      "e_sundek": "sim",
+      "marca_identificada": null,
+      "e_short": "sim",
+      "formato_identificado": "short",
+      "evidencia": "Etiqueta 'SUNDEK' visível na peça, logo característico e comprimento adequado para short."
+    },
     "classificacao": {
-      "tipo": "nao_short",
-      "motivo": "calça longa",
-      "confianca": 1
+      "tipo": "liso",
+      "corpo_tem_padrao_repetido": false,
+      "tem_logo_grande": false,
+      "aparencia": "ok",
+      "tecido_brilhoso": false,
+      "listra_na_frente": false,
+      "justificativa": "Corpo do short em uma cor sólida sem padrão gráfico.",
+      "cores_listras": [
+        "azul",
+        "branco",
+        "azul claro"
+      ],
+      "e_piping": false,
+      "tem_listra_lateral_sundek": true,
+      "bicolor": false,
+      "listra_evidencia": "Três faixas paralelas de cores distintas (azul, branco, azul claro) no painel traseiro/lateral.",
+      "tem_bolso_traseiro": true,
+      "bolso_traseiro_tem_nome": false,
+      "tem_bolso_frontal": false,
+      "bolso_evidencia": "Bolso traseiro visível com patch sem a palavra 'SUNDEK'. Sem bolso cargo frontal."
+    },
+    "cor": {
+      "cor_principal": "azul marinho",
+      "tier": "maravilhoso",
+      "justificativa": "A cor principal é azul marinho, que tem alta demanda.",
+      "cores_listras": [
+        "azul",
+        "branco",
+        "azul claro"
+      ],
+      "listra_tier": "neutra",
+      "tier_final": "maravilhoso",
+      "combo_motivo": "listras ['azul', 'branco', 'azul claro'] confirmam tier 'maravilhoso'"
+    },
+    "elastico": {
+      "tem_elastico": false,
+      "tipo_fechamento": "cordao",
+      "evidencia": "Cós plano com cordão visível, sem sinais de elástico comprimido. Não há botão ou velcro visível no fly."
+    },
+    "etiqueta": {
+      "tem_etiqueta": false,
+      "evidencia": "Não há hang tag visível pendente nas fotos."
     },
     "score": {
       "score": 0,
       "teto": 0,
       "decisao": "descartado",
-      "motivo_exclusao": "nao_short, cor_ruim",
+      "motivo_exclusao": "bolso_so_logo_colecao_antiga",
       "breakdown": {}
     }
   },
@@ -3991,7 +4036,7 @@
       "evidencia": "Etiqueta Sundek visível, logo na parte traseira, faixa multicolorida no cós, comprimento e formato de short."
     },
     "classificacao": {
-      "tipo": "nao_short",
+      "tipo": "infantil",
       "motivo": "infantil (tamanho por idade)",
       "confianca": 1
     },
@@ -4008,7 +4053,7 @@
       "score": 0,
       "teto": 0,
       "decisao": "descartado",
-      "motivo_exclusao": "nao_short",
+      "motivo_exclusao": "infantil",
       "breakdown": {}
     }
   },
@@ -4452,7 +4497,7 @@
       "evidencia": "Texto 'SUNDEK' visível na etiqueta e no bolso traseiro, faixa multicolorida característica no cós, comprimento e formato de short com pernas separadas."
     },
     "classificacao": {
-      "tipo": "nao_short",
+      "tipo": "infantil",
       "motivo": "infantil (tamanho por idade)",
       "confianca": 1
     },
@@ -4469,7 +4514,7 @@
       "score": 0,
       "teto": 0,
       "decisao": "descartado",
-      "motivo_exclusao": "nao_short",
+      "motivo_exclusao": "infantil",
       "breakdown": {}
     }
   },
@@ -4673,7 +4718,7 @@
       "evidencia": "Etiqueta interna com 'SUNDEK' e logo visível, faixa multicolorida no cós, comprimento e formato de short."
     },
     "classificacao": {
-      "tipo": "nao_short",
+      "tipo": "infantil",
       "motivo": "infantil (ragazzo)",
       "confianca": 1
     },
@@ -4690,7 +4735,7 @@
       "score": 0,
       "teto": 0,
       "decisao": "descartado",
-      "motivo_exclusao": "nao_short, tamanho_XS",
+      "motivo_exclusao": "infantil, tamanho_XS",
       "breakdown": {}
     }
   },
