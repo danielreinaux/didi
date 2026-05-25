@@ -15,9 +15,9 @@ from pathlib import Path
 
 from playwright.async_api import async_playwright
 
-from .config import MAX_ITEMS_POR_RODADA, VINTED
-from .historico import atualizar_com_scrape
-from .sources.vinted import montar_url_sundek_hombre
+from ..config import MAX_ITEMS_POR_RODADA, VINTED
+from ..utils.historico import atualizar_com_scrape
+from ..sources.vinted import montar_url_sundek_hombre
 
 ROOT = Path(__file__).resolve().parent.parent
 DATA = ROOT / "data"

@@ -24,10 +24,10 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-from .classify_ville_brand import verificar_ville
-from .classify_tartaruga import classificar_tartaruga
-from .classify_color import classificar_cor
-from .classify_etiqueta import verificar_etiqueta
+from .ville_brand import verificar_ville
+from .tartaruga import classificar_tartaruga
+from .cor import classificar_cor
+from .etiqueta import verificar_etiqueta
 
 ROOT = Path(__file__).resolve().parent.parent
 DATA = ROOT / "data"

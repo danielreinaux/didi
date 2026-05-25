@@ -14,9 +14,9 @@ from pathlib import Path
 from dotenv import load_dotenv
 load_dotenv()
 
-from .classify import classificar_item
-from .classify_elastico import verificar_elastico
-from .listra_tier import avaliar_combo
+from .tipo import classificar_item
+from .elastico import verificar_elastico
+from ..utils.listra_tier import avaliar_combo
 
 ROOT = Path(__file__).resolve().parent.parent
 DATA = ROOT / "data"

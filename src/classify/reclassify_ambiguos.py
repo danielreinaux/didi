@@ -16,12 +16,12 @@ from pathlib import Path
 from dotenv import load_dotenv
 load_dotenv()
 
-from .classify import _get_client
-from .config import IA
-from .prompts import liso_vs_estampado as prompt
-from .classify_elastico import verificar_elastico
-from .listra_tier import avaliar_combo
-from .ratelimit import pace_gpt4o
+from .tipo import _get_client
+from ..config import IA
+from ..prompts import liso_vs_estampado as prompt
+from .elastico import verificar_elastico
+from ..utils.listra_tier import avaliar_combo
+from ..utils.ratelimit import pace_gpt4o
 from .score import calcular_score
 
 ROOT = Path(__file__).resolve().parent.parent

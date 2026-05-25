@@ -115,7 +115,7 @@ def card_html(it: dict) -> str:
 def main() -> None:
     itens = json.loads((DATA / "coleta-classificada.json").read_text())
 
-    from .score import calcular_score
+    from ..classify.score import calcular_score
     for it in itens:
         if "score" not in it:
             it["score"] = calcular_score(it)

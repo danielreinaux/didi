@@ -4,7 +4,7 @@ aceita cookies. Retorna (browser, context, page) prontos pra uso.
 import os
 from playwright.sync_api import sync_playwright
 
-from .config import VINTED
+from ..config import VINTED
 
 HEADLESS = os.environ.get("HEADLESS", "").lower() == "true"
 

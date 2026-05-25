@@ -16,8 +16,8 @@ import requests
 from openai import OpenAI
 from PIL import Image
 
-from .config import IA
-from .ratelimit import pace_mini
+from ..config import IA
+from ..utils.ratelimit import pace_mini
 
 _client: OpenAI | None = None
 
@@ -66,7 +66,7 @@ def _localizar(fotos: list[str]) -> dict:
         response_format={"type": "json_object"},
     )
     try:
-        from .cost_tracker import track as _track
+        from ..utils.cost_tracker import track as _track
         _track("crop_localizar", IA["model"],
                resp.usage.prompt_tokens, resp.usage.completion_tokens)
     except Exception:

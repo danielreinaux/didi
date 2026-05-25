@@ -21,15 +21,15 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-from .classify import classificar_item
-from .classify_bolso import verificar_bolso
-from .classify_brand import verificar_sundek
-from .classify_color import classificar_cor
-from .classify_elastico import verificar_elastico
-from .classify_etiqueta import verificar_etiqueta
-from .classify_listra import verificar_listra
-from .cost_tracker import track as _track, relatorio as _relatorio, dump_json as _dump_cost
-from .listra_tier import avaliar_combo
+from .tipo import classificar_item
+from .bolso import verificar_bolso
+from .brand import verificar_sundek
+from .cor import classificar_cor
+from .elastico import verificar_elastico
+from .etiqueta import verificar_etiqueta
+from .listra import verificar_listra
+from ..utils.cost_tracker import track as _track, relatorio as _relatorio, dump_json as _dump_cost
+from ..utils.listra_tier import avaliar_combo
 from .prefilter import parece_short
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -78,7 +78,7 @@ def _processar(item: dict, idx: str, total: int) -> tuple[dict, int, int]:
 
     # 2. Marca + formato
     try:
-        from .config import IA as _IA
+        from ..config import IA as _IA
         marca = verificar_sundek(item)
         u = marca.pop("_usage", {})
         in_tok += u.get("prompt_tokens", 0)
@@ -345,7 +345,7 @@ def main() -> None:
 
     # Custo real usando o cost_tracker (separa mini vs gpt-4o)
     # ⚠️ não use input_tokens × $0.15 — gpt-4o custa 17x mais que mini
-    from .cost_tracker import _dados as _ct
+    from ..utils.cost_tracker import _dados as _ct
     PRECOS = {"gpt-4o-mini": {"in": 0.15, "out": 0.60},
               "gpt-4o":      {"in": 2.50, "out": 10.00}}
     total_usd = 0.0

@@ -1,11 +1,11 @@
-"""Classifica o padrão de estampa do Vilebrequin: tartaruga_grande, tartaruga_pequena, liso, outro."""
+"""Verifica se a peça é REALMENTE Vilebrequin E se é original (bolso traseiro)."""
 import json
 import os
 
 from openai import OpenAI
 
-from .config import IA
-from .prompts import tartaruga as prompt
+from ..config import IA
+from ..prompts import verifica_ville as prompt
 
 _client: OpenAI | None = None
 
@@ -20,15 +20,15 @@ def _get_client() -> OpenAI:
     return _client
 
 
-def classificar_tartaruga(item: dict) -> dict:
+def verificar_ville(item: dict) -> dict:
     fotos = (item.get("fotos") or [])[:6]
     if not fotos:
         return {
-            "tipo": "indefinido",
-            "cor_principal": None,
-            "tartaruga_variedade": None,
-            "aparencia": "indefinido",
-            "justificativa": "sem fotos",
+            "e_vilebrequin": "indefinido",
+            "e_short": "indefinido",
+            "autenticidade": "sem_foto_bolso",
+            "bolso_ok": None,
+            "evidencia": "sem fotos",
             "confianca": 0,
         }
 
@@ -38,7 +38,7 @@ def classificar_tartaruga(item: dict) -> dict:
     ]
 
     resp = _get_client().chat.completions.create(
-        model=IA["model"],  # gpt-4o-mini — tartaruga grande é fácil de ver
+        model=IA["model_detalhes"],  # gpt-4o para visão mais fina (bolso traseiro)
         messages=[
             {"role": "system", "content": prompt.SISTEMA},
             {"role": "user", "content": conteudo},
@@ -53,11 +53,10 @@ def classificar_tartaruga(item: dict) -> dict:
         parsed = json.loads(texto)
     except json.JSONDecodeError:
         parsed = {
-            "tipo": "indefinido",
-            "cor_principal": None,
-            "tartaruga_variedade": None,
-            "aparencia": "indefinido",
-            "justificativa": "JSON inválido",
+            "e_vilebrequin": "indefinido",
+            "autenticidade": "indefinido",
+            "bolso_ok": None,
+            "evidencia": "JSON inválido",
             "confianca": 0,
             "raw": texto,
         }

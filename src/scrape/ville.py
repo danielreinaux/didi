@@ -10,11 +10,11 @@ from pathlib import Path
 
 from playwright.sync_api import sync_playwright
 
-from .browser import abrir_sessao_vinted
-from .config import MAX_ITEMS_POR_RODADA
+from ..utils.browser import abrir_sessao_vinted
+from ..config import MAX_ITEMS_POR_RODADA
 from .extract import extract_item
-from .sources.vinted import listar_urls_items
-from .sources.vinted_ville import montar_url_ville_hombre
+from ..sources.vinted import listar_urls_items
+from ..sources.vinted_ville import montar_url_ville_hombre
 
 ROOT = Path(__file__).resolve().parent.parent
 DATA = ROOT / "data"

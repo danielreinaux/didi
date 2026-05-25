@@ -4,7 +4,7 @@ de gastar chamada de IA. Regex-only, custo zero.
 import re
 from typing import NamedTuple
 
-from .config import SUNDEK
+from ..config import SUNDEK
 
 
 class Resultado(NamedTuple):

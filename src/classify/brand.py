@@ -4,9 +4,9 @@ import os
 
 from openai import OpenAI
 
-from .config import IA
-from .prompts import verifica_sundek as prompt
-from .ratelimit import pace_gpt4o, pace_mini
+from ..config import IA
+from ..prompts import verifica_sundek as prompt
+from ..utils.ratelimit import pace_gpt4o, pace_mini
 
 _client: OpenAI | None = None
 

@@ -1,12 +1,12 @@
-"""Classificador de cor (tier muito_boa/boa/ok/ruim). Roda só sobre lisos."""
+"""Cliente de classificação visual (liso/estampado/logo_grande) via OpenAI Vision."""
 import json
 import os
 
 from openai import OpenAI
 
-from .config import IA
-from .ratelimit import pace_mini
-from .prompts import cor_tier as prompt
+from ..config import IA
+from ..utils.ratelimit import pace_mini
+from ..prompts import liso_vs_estampado as prompt
 
 _client: OpenAI | None = None
 
@@ -16,18 +16,18 @@ def _get_client() -> OpenAI:
     if _client is not None:
         return _client
     if not os.environ.get("OPENAI_API_KEY"):
-        raise RuntimeError("OPENAI_API_KEY não definida")
+        raise RuntimeError("OPENAI_API_KEY não definida. Coloque em .env")
     _client = OpenAI(api_key=os.environ["OPENAI_API_KEY"], max_retries=8)
     return _client
 
 
-def classificar_cor(item: dict) -> dict:
-    fotos = (item.get("fotos") or [])[:4]
+def classificar_item(item: dict) -> dict:
+    fotos = (item.get("fotos") or [])[:6]
     if not fotos:
-        return {"tier": "indefinido", "justificativa": "sem fotos", "confianca": 0}
+        return {"tipo": "indefinido", "justificativa": "sem fotos", "confianca": 0}
 
-    conteudo = [
-        {"type": "text", "text": prompt.usuario(item.get("titulo") or "", item.get("cor"))},
+    conteudo_usuario = [
+        {"type": "text", "text": prompt.usuario(item.get("titulo") or "")},
         *[{"type": "image_url", "image_url": {"url": u, "detail": "low"}} for u in fotos],
     ]
 
@@ -36,7 +36,7 @@ def classificar_cor(item: dict) -> dict:
         model=IA["model"],
         messages=[
             {"role": "system", "content": prompt.SISTEMA},
-            {"role": "user", "content": conteudo},
+            {"role": "user", "content": conteudo_usuario},
         ],
         max_tokens=200,
         temperature=0.1,
@@ -47,7 +47,7 @@ def classificar_cor(item: dict) -> dict:
     try:
         parsed = json.loads(texto)
     except json.JSONDecodeError:
-        parsed = {"tier": "indefinido", "justificativa": "JSON inválido", "confianca": 0, "raw": texto}
+        parsed = {"tipo": "indefinido", "justificativa": "JSON inválido", "confianca": 0, "raw": texto}
 
     parsed["_usage"] = {
         "prompt_tokens": resp.usage.prompt_tokens,

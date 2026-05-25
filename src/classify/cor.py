@@ -1,12 +1,12 @@
-"""Detecta listra Sundek autêntica vs piping via vision dedicada."""
+"""Classificador de cor (tier muito_boa/boa/ok/ruim). Roda só sobre lisos."""
 import json
 import os
 
 from openai import OpenAI
 
-from .config import IA
-from .prompts import listra_sundek as prompt
-from .ratelimit import pace_gpt4o
+from ..config import IA
+from ..utils.ratelimit import pace_mini
+from ..prompts import cor_tier as prompt
 
 _client: OpenAI | None = None
 
@@ -16,27 +16,24 @@ def _get_client() -> OpenAI:
     if _client is not None:
         return _client
     if not os.environ.get("OPENAI_API_KEY"):
-        raise RuntimeError("OPENAI_API_KEY não definida. Coloque em .env")
+        raise RuntimeError("OPENAI_API_KEY não definida")
     _client = OpenAI(api_key=os.environ["OPENAI_API_KEY"], max_retries=8)
     return _client
 
 
-def verificar_listra(item: dict) -> dict:
-    """Retorna dict com cores, e_piping, e_listra_sundek, bicolor, evidencia."""
-    fotos = (item.get("fotos") or [])[:6]
+def classificar_cor(item: dict) -> dict:
+    fotos = (item.get("fotos") or [])[:4]
     if not fotos:
-        return {"cores": [], "e_piping": False, "e_listra_sundek": False,
-                "bicolor": False, "evidencia": "sem fotos"}
+        return {"tier": "indefinido", "justificativa": "sem fotos", "confianca": 0}
 
     conteudo = [
-        {"type": "text", "text": prompt.usuario(item.get("titulo") or "")},
+        {"type": "text", "text": prompt.usuario(item.get("titulo") or "", item.get("cor"))},
         *[{"type": "image_url", "image_url": {"url": u, "detail": "low"}} for u in fotos],
     ]
 
-    # gpt-4o porque a decisão é crítica e o detalhe de listra vs piping é sutil
-    pace_gpt4o()
+    pace_mini()
     resp = _get_client().chat.completions.create(
-        model=IA["model_detalhes"],
+        model=IA["model"],
         messages=[
             {"role": "system", "content": prompt.SISTEMA},
             {"role": "user", "content": conteudo},
@@ -50,8 +47,7 @@ def verificar_listra(item: dict) -> dict:
     try:
         parsed = json.loads(texto)
     except json.JSONDecodeError:
-        parsed = {"cores": [], "e_piping": False, "e_listra_sundek": False,
-                  "bicolor": False, "evidencia": "JSON inválido"}
+        parsed = {"tier": "indefinido", "justificativa": "JSON inválido", "confianca": 0, "raw": texto}
 
     parsed["_usage"] = {
         "prompt_tokens": resp.usage.prompt_tokens,

@@ -4,10 +4,10 @@ import os
 
 from openai import OpenAI
 
-from .config import IA
+from ..config import IA
 from .crop_bolso import recortar_bolso
-from .prompts import bolso_traseiro as prompt
-from .ratelimit import pace_gpt4o
+from ..prompts import bolso_traseiro as prompt
+from ..utils.ratelimit import pace_gpt4o
 
 _client: OpenAI | None = None
 

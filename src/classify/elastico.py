@@ -1,12 +1,12 @@
-"""Detecta se o short tem etiqueta original visível nas fotos via vision."""
+"""Detecta se o short tem elástico no cós via vision."""
 import json
 import os
 
 from openai import OpenAI
 
-from .config import IA
-from .ratelimit import pace_mini
-from .prompts import etiqueta as prompt
+from ..config import IA
+from ..prompts import elastico as prompt
+from ..utils.ratelimit import pace_gpt4o
 
 _client: OpenAI | None = None
 
@@ -21,21 +21,20 @@ def _get_client() -> OpenAI:
     return _client
 
 
-def verificar_etiqueta(item: dict) -> dict:
-    """Retorna dict com tem_etiqueta (true/false/null), evidencia, confianca, _usage."""
+def verificar_elastico(item: dict) -> dict:
+    """Retorna dict com tem_elastico, evidencia, confianca, _usage."""
     fotos = (item.get("fotos") or [])[:4]
     if not fotos:
-        return {"tem_etiqueta": None, "evidencia": "sem fotos", "confianca": 0}
+        return {"tem_elastico": True, "evidencia": "sem fotos", "confianca": 0}
 
     conteudo_usuario = [
         {"type": "text", "text": prompt.usuario(item.get("titulo") or "")},
         *[{"type": "image_url", "image_url": {"url": u, "detail": "low"}} for u in fotos],
     ]
 
-    # gpt-4o-mini — teste mostrou 97% concordância com gpt-4o (estratégia conservadora)
-    pace_mini()
+    pace_gpt4o()
     resp = _get_client().chat.completions.create(
-        model=IA["model"],
+        model=IA["model_detalhes"],
         messages=[
             {"role": "system", "content": prompt.SISTEMA},
             {"role": "user", "content": conteudo_usuario},
@@ -49,7 +48,7 @@ def verificar_etiqueta(item: dict) -> dict:
     try:
         parsed = json.loads(texto)
     except json.JSONDecodeError:
-        parsed = {"tem_etiqueta": None, "evidencia": "JSON inválido", "confianca": 0}
+        parsed = {"tem_elastico": True, "evidencia": "JSON inválido", "confianca": 0}
 
     parsed["_usage"] = {
         "prompt_tokens": resp.usage.prompt_tokens,
