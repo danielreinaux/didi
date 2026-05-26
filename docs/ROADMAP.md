@@ -221,15 +221,26 @@ CREATE TABLE custos (
 
 ---
 
-## 💰 Custo total mensal projetado (após tudo)
+## 💰 Custo total mensal projetado (REALISTA, ago/2026)
+
+Premissas reais informadas pelo cliente:
+- **Sundek**: ~2.000 anúncios novos/mês
+- **Vilebrequin**: ~300 anúncios novos/mês
 
 | Item | Mensal |
 |---|---|
 | GitHub Actions (cron) | R$ 0 |
 | Supabase (DB) | R$ 0 (free tier) |
 | Vercel (viewer + analise) | R$ 0 (hobby) |
-| OpenAI (3 runs/dia × ~150 itens novos × $0.012) | ~R$ 25-40 |
-| **TOTAL** | **~R$ 25-40/mês** |
+| **OpenAI Sundek** (2.000 × $0.024) | **~R$ 240** |
+| **OpenAI Vilebrequin** (300 × $0.08) | **~R$ 120** |
+| OpenAI double-check (~5%) | ~R$ 25 |
+| **TOTAL hoje (sem otimização)** | **~R$ 385/mês** |
+| Com Batch API (-50%) | **~R$ 200/mês** |
+| Stack completo (Batch + cache agressivo + tartaruga otimizada) | **~R$ 100-150/mês** |
+
+ROI: cada Sundek bem revendido = R$ 200-400 de margem. Vilebrequin = R$ 500-1000.
+**1 venda boa/mês paga 4-6 meses de pipeline**.
 
 ---
 
