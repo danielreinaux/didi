@@ -61,12 +61,14 @@ Sundeks clássicos têm cordão MAS cós plano sem elástico. O franzido do teci
 
 ## B) Botão/Velcro no fly
 
-### Sinais de BOTÃO NO FLY (tipo_fechamento = "botao")
-- Botão CIRCULAR (metálico, plástico ou de tecido) no CENTRO FRONTAL do short
-- Pode ter logo Sundek bordado/estampado no botão
-- Localização típica: centro da frente, abaixo da cintura, na abertura do fly
+### Sinais de BOTÃO NO FLY ou cintura (tipo_fechamento = "botao")
+- Botão CIRCULAR (metálico, plástico ou de tecido) localizado na cintura/fly
+- **Posição NÃO importa**: pode estar no CENTRO frontal OU NOS CANTOS (lados)
+  do fly. Boardshorts antigos têm snaps METÁLICOS nos CANTOS internos da cintura.
 - Pode ser snap, jeans-style button, ou botão emborrachado
-- Foto de close-up frequentemente mostra o botão claramente
+- **2 snaps metálicos visíveis no INTERIOR do cós, um em cada lado** = botão
+- Pode ter logo Sundek bordado/estampado no botão
+- Frequentemente visível em fotos de close-up do interior do cós/fly
 
 ### Sinais de VELCRO (tipo_fechamento = "velcro")
 - Tira de velcro visível na abertura frontal central
@@ -74,10 +76,16 @@ Sundeks clássicos têm cordão MAS cós plano sem elástico. O franzido do teci
 
 ### ⚠️ NÃO confundir botão de fechamento com:
 - Botão pequeno do BOLSO TRASEIRO (esse é normal, não conta)
-- ILHÓ do cordão (orifício metálico pequeno por onde passa o cordão)
+- ILHÓ do cordão — orifício metálico PEQUENO sem relevo, com furo passante.
+  Atenção: ilhó é PEQUENO e CHATO; snap/botão é MAIOR e tem RELEVO.
 - Logo Sundek bordado liso no patch (não tem relevo de botão)
 - Decoração lateral
-- Snap em painel lateral (decoração)
+
+### Diferenciando ILHÓ de SNAP/BOTÃO
+- ILHÓ: pequeno (~3-5mm), chato, com furo passante visível, posicionado na
+  cintura externa por onde o cordão passa. Geralmente 1 par na frente.
+- SNAP/BOTÃO METÁLICO: maior (~8-15mm), com relevo (parece um disco), pode
+  estar no INTERIOR do cós, em pares nas laterais. **Esses CONTAM como botão**.
 
 Esses NÃO contam como botão de fechamento.
 

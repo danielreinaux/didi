@@ -23,8 +23,7 @@ def _get_client() -> OpenAI:
 
 def verificar_elastico(item: dict) -> dict:
     """Retorna dict com tem_elastico, evidencia, confianca, _usage."""
-    # 6 fotos: o fly com botão costuma estar na 5ª-6ª foto (close-ups)
-    fotos = (item.get("fotos") or [])[:6]
+    fotos = (item.get("fotos") or [])[:4]
     if not fotos:
         return {"tem_elastico": True, "evidencia": "sem fotos", "confianca": 0}
 
@@ -40,7 +39,7 @@ def verificar_elastico(item: dict) -> dict:
             {"role": "system", "content": prompt.SISTEMA},
             {"role": "user", "content": conteudo_usuario},
         ],
-        max_tokens=100,
+        max_tokens=800,  # CoT v2 precisa de mais tokens pros campos pensamento_*
         temperature=0.1,
         response_format={"type": "json_object"},
     )

@@ -41,7 +41,7 @@ def verificar_listra(item: dict) -> dict:
             {"role": "system", "content": prompt.SISTEMA},
             {"role": "user", "content": conteudo},
         ],
-        max_tokens=200,
+        max_tokens=800,  # CoT v2 precisa de mais tokens pros campos pensamento_*
         temperature=0.1,
         response_format={"type": "json_object"},
     )
