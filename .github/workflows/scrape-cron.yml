@@ -69,49 +69,5 @@ jobs:
           git diff --cached --quiet || git commit -m "data: cron sundek $(date -u +'%Y-%m-%d %H:%M UTC')"
           git push
 
-  # Ville roda em job separado pra não competir cota OpenAI com Sundek no mesmo segundo.
-  # Aguarda Sundek terminar.
-  vilebrequin:
-    needs: sundek
-    runs-on: ubuntu-latest
-    timeout-minutes: 120
-    if: success() || failure()   # roda mesmo se Sundek falhou
-    concurrency:
-      group: scrape-ville
-      cancel-in-progress: false
-    steps:
-      - name: Checkout repo (já com últimos dados do Sundek)
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 1
-          ref: main
-
-      - name: Setup Python 3.12
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-          cache: 'pip'
-
-      - name: Install deps
-        run: |
-          pip install -r requirements.txt
-          playwright install --with-deps chromium
-
-      - name: Scrape Vilebrequin
-        env:
-          HEADLESS: 'true'
-        run: python -m src.scrape.ville
-
-      - name: Classify Vilebrequin
-        env:
-          OPENAI_API_KEY: ${{ secrets.API_KEY }}
-        run: python -m src.classify.ville_run --workers 2
-
-      - name: Commit dados Ville
-        run: |
-          git pull --rebase
-          git config user.name "Didi Bot"
-          git config user.email "bot@didi.local"
-          git add data/coleta-ville.json data/coleta-ville-classificada.json data/historico.json
-          git diff --cached --quiet || git commit -m "data: cron ville $(date -u +'%Y-%m-%d %H:%M UTC')"
-          git push
+  # Vilebrequin desabilitado por enquanto — pipeline ainda em desenvolvimento.
+  # Quando voltar, reativar com `needs: sundek` (rodar depois pra não competir cota).
