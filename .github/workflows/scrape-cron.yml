@@ -1,0 +1,117 @@
+name: Scrape + Classify (3x/dia)
+
+# Horários em UTC. Brasil = UTC-3.
+#   08:00 UTC = 05:00 BRT
+#   16:00 UTC = 13:00 BRT
+#   22:30 UTC = 19:30 BRT
+on:
+  schedule:
+    - cron: '0 8 * * *'    # 05:00 BRT
+    - cron: '0 16 * * *'   # 13:00 BRT
+    - cron: '30 22 * * *'  # 19:30 BRT
+  workflow_dispatch:        # permite disparar manual também
+
+permissions:
+  contents: write            # pra commitar os JSONs de dados de volta no repo
+
+jobs:
+  sundek:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    concurrency:
+      group: scrape-sundek
+      cancel-in-progress: false
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Setup Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+
+      - name: Install deps
+        run: |
+          pip install -r requirements.txt
+          playwright install --with-deps chromium
+
+      - name: Scrape Sundek
+        env:
+          HEADLESS: 'true'
+        run: python -m src.scrape.sundek
+
+      - name: Classify Sundek
+        env:
+          OPENAI_API_KEY: ${{ secrets.API_KEY }}
+        run: python -m src.classify.run --workers 2
+
+      - name: Build analise.html
+        run: python -m src.build.analise
+
+      - name: Deploy analise.html no Vercel
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_KEY }}
+        run: |
+          cp data/analise.html votacao/public/analise.html
+          cd votacao
+          npx vercel --prod --token="$VERCEL_TOKEN" --yes
+          # ↑ a env var ainda é VERCEL_TOKEN porque é o nome que a CLI espera;
+          # o valor vem do secret VERCEL_KEY que você cadastrou.
+
+      - name: Commit dados de volta no repo
+        run: |
+          git config user.name "Didi Bot"
+          git config user.email "bot@didi.local"
+          git add data/coleta.json data/coleta-classificada.json data/historico.json data/custo_por_etapa.json data/analise.html votacao/public/analise.html
+          git diff --cached --quiet || git commit -m "data: cron sundek $(date -u +'%Y-%m-%d %H:%M UTC')"
+          git push
+
+  # Ville roda em job separado pra não competir cota OpenAI com Sundek no mesmo segundo.
+  # Aguarda Sundek terminar.
+  vilebrequin:
+    needs: sundek
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    if: success() || failure()   # roda mesmo se Sundek falhou
+    concurrency:
+      group: scrape-ville
+      cancel-in-progress: false
+    steps:
+      - name: Checkout repo (já com últimos dados do Sundek)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          ref: main
+
+      - name: Setup Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+
+      - name: Install deps
+        run: |
+          pip install -r requirements.txt
+          playwright install --with-deps chromium
+
+      - name: Scrape Vilebrequin
+        env:
+          HEADLESS: 'true'
+        run: python -m src.scrape.ville
+
+      - name: Classify Vilebrequin
+        env:
+          OPENAI_API_KEY: ${{ secrets.API_KEY }}
+        run: python -m src.classify.ville_run --workers 2
+
+      - name: Commit dados Ville
+        run: |
+          git pull --rebase
+          git config user.name "Didi Bot"
+          git config user.email "bot@didi.local"
+          git add data/coleta-ville.json data/coleta-ville-classificada.json data/historico.json
+          git diff --cached --quiet || git commit -m "data: cron ville $(date -u +'%Y-%m-%d %H:%M UTC')"
+          git push
