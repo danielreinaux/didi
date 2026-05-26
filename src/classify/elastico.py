@@ -23,7 +23,8 @@ def _get_client() -> OpenAI:
 
 def verificar_elastico(item: dict) -> dict:
     """Retorna dict com tem_elastico, evidencia, confianca, _usage."""
-    fotos = (item.get("fotos") or [])[:4]
+    # 6 fotos: o fly com botão costuma estar na 5ª-6ª foto (close-ups)
+    fotos = (item.get("fotos") or [])[:6]
     if not fotos:
         return {"tem_elastico": True, "evidencia": "sem fotos", "confianca": 0}
 

@@ -78,6 +78,10 @@ def _tamanho_ok(tamanho: str | None) -> bool:
     if not tamanho:
         return True  # sem info de tamanho → deixa passar, IA decide
     t = tamanho.strip()
+    # "Talla única" no Vinted-ES geralmente é piece infantil que vendedor não soube classificar
+    # (adulto Sundek sempre tem S/M/L/XL/numérico). Marca como suspeita de tamanho_invalido.
+    if "talla" in t.lower() and ("única" in t.lower() or "unica" in t.lower()):
+        return False
     for ok in _TAMANHOS:
         if ok.lower() in t.lower():
             return True
