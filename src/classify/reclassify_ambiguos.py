@@ -24,7 +24,7 @@ from ..utils.listra_tier import avaliar_combo
 from ..utils.ratelimit import pace_gpt4o
 from .score import calcular_score
 
-ROOT = Path(__file__).resolve().parent.parent
+ROOT = Path(__file__).resolve().parent.parent.parent
 DATA = ROOT / "data"
 PATH = DATA / "coleta-classificada.json"
 

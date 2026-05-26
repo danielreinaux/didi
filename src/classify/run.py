@@ -32,7 +32,7 @@ from ..utils.cost_tracker import track as _track, relatorio as _relatorio, dump_
 from ..utils.listra_tier import avaliar_combo
 from .prefilter import parece_short
 
-ROOT = Path(__file__).resolve().parent.parent
+ROOT = Path(__file__).resolve().parent.parent.parent
 DATA = ROOT / "data"
 
 _print_lock = threading.Lock()

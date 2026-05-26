@@ -29,7 +29,7 @@ from .tartaruga import classificar_tartaruga
 from .cor import classificar_cor
 from .etiqueta import verificar_etiqueta
 
-ROOT = Path(__file__).resolve().parent.parent
+ROOT = Path(__file__).resolve().parent.parent.parent
 DATA = ROOT / "data"
 
 _print_lock = threading.Lock()

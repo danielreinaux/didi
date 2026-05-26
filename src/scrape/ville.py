@@ -16,7 +16,7 @@ from .extract import extract_item
 from ..sources.vinted import listar_urls_items
 from ..sources.vinted_ville import montar_url_ville_hombre
 
-ROOT = Path(__file__).resolve().parent.parent
+ROOT = Path(__file__).resolve().parent.parent.parent
 DATA = ROOT / "data"
 SHOTS = DATA / "screenshots"
 

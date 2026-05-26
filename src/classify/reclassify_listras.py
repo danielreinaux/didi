@@ -18,7 +18,7 @@ from .tipo import classificar_item
 from .elastico import verificar_elastico
 from ..utils.listra_tier import avaliar_combo
 
-ROOT = Path(__file__).resolve().parent.parent
+ROOT = Path(__file__).resolve().parent.parent.parent
 DATA = ROOT / "data"
 PATH = DATA / "coleta-classificada.json"
 
