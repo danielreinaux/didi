@@ -17,7 +17,7 @@ permissions:
 jobs:
   sundek:
     runs-on: ubuntu-latest
-    timeout-minutes: 120
+    timeout-minutes: 180
     concurrency:
       group: scrape-sundek
       cancel-in-progress: false
