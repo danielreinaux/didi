@@ -45,7 +45,7 @@ jobs:
 
       - name: Classify Sundek
         env:
-          OPENAI_API_KEY: ${{ secrets.API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: python -m src.classify.run --workers 2
 
       - name: Build analise.html

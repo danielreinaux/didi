@@ -16,7 +16,7 @@ def _get_client() -> OpenAI:
         return _client
     if not os.environ.get("OPENAI_API_KEY"):
         raise RuntimeError("OPENAI_API_KEY não definida")
-    _client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
+    _client = OpenAI(api_key=os.environ["OPENAI_API_KEY"].strip())
     return _client
 
 
