@@ -3,7 +3,8 @@
 Baseado no histórico de 380 compras e no feedback de votação do dono.
 
 Regras:
-- Cores sempre ruins independente das listras: amarelo, vermelho, roxo, verde-limão, neon
+- Hard-exclude SÓ neon/fluo/metálico — o modelo (cor_tier.py) já tiera o resto certo.
+  (decisão do dono: ser permissivo; rosa suave, vermelho vinho, amarelo mostarda = ok)
 - Listras neutras (azul, branco, cinza, preto) salvam cores "ok" como laranja, verde, coral
 - Listras monocromáticas (mesma cor do short) são seguras quando a cor base já é boa
 """
@@ -17,9 +18,15 @@ _LISTRAS_NEUTRAS = {"azul", "branco", "cinza", "preto", "azul escuro", "azul mar
 # Listras top do histórico (azul 108x, laranja 70x, verde 38x, amarela 35x, salmão 34x)
 _LISTRAS_TOP = {"azul", "laranja", "verde", "amarela", "salmão", "azul escuro"}
 
-# Cores que listras não salvam — ruim absoluto
-_CORES_RUIM_ABSOLUTO = {"amarelo", "amarelo discreto", "vermelho", "vermelho médio", "roxo",
-                         "verde-limão", "verde limão", "rosa", "rosa suave"}
+# Hard-exclude: SÓ neon/fluo/metálico. Cores normais (rosa suave, vermelho médio,
+# amarelo discreto, azul vivo) NÃO entram aqui — o prompt cor_tier.py já as trata
+# como "ok"/superior. Esta lista só evita que listras neutras "salvem" um neon real
+# (ex: "verde-limão" contém "verde", que é salvável — sem este guard, subiria ruim→ok).
+_CORES_RUIM_ABSOLUTO = {"neon", "fluo", "fluor", "fluorescente",
+                        "verde-limão", "verde limão", "verde limao",
+                        "rosa fluo", "rosa neon", "pink fluo", "pink neon",
+                        "amarelo neon", "amarelo fluo", "laranja neon", "laranja fluo",
+                        "verde neon", "roxo elétrico", "roxo eletrico"}
 
 
 def avaliar_combo(cor_short: str, cores_listras: list[str], tier_cor: str) -> dict:

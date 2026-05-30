@@ -383,10 +383,19 @@ def main() -> None:
     except Exception:
         pass
 
-    # Recalcula scores antes do gpt-4o (ele só roda em compráveis/ambíguos)
+    # Recalcula combo (cor+listra) E score em TODOS os itens — inclusive os pulados
+    # por checkpoint. Ambos são funções puras sobre o dado já salvo (sem API), então
+    # mudanças em listra_tier.py / score.py propagam pros itens antigos a cada run.
     from .score import calcular_score
+    from ..utils.listra_tier import avaliar_combo
     final = json.loads(checkpoint_path.read_text())
     for it in final:
+        cor = it.get("cor")
+        if isinstance(cor, dict) and cor.get("tier"):
+            combo = avaliar_combo(cor.get("cor_principal", "") or "", cor.get("cores_listras") or [], cor.get("tier"))
+            cor["listra_tier"] = combo["listra_tier"]
+            cor["tier_final"] = combo["tier_final"]
+            cor["combo_motivo"] = combo["motivo"]
         if not it.get("manual_exclusao"):
             it["score"] = calcular_score(it)
     checkpoint_path.write_text(json.dumps(final, indent=2, ensure_ascii=False))
