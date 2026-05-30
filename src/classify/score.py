@@ -96,6 +96,9 @@ def calcular_score(item: dict) -> dict:
     etiqueta = item.get("etiqueta") or {}
 
     tipo = cl.get("tipo")
+    # cor só é avaliada nos 'liso'; nos demais (estampado/desbotado/tamanho/marca)
+    # vem vazia. Distinguir os dois evita o carimbo fantasma de 'cor_ruim'.
+    cor_avaliada = bool(cor.get("tier") or cor.get("tier_final"))
     tier_final = cor.get("tier_final") or cor.get("tier") or "ruim"
     tamanho = item.get("tamanho") or ""
     tam_key = _tamanho_key(tamanho)
@@ -120,7 +123,7 @@ def calcular_score(item: dict) -> dict:
         exclusoes.append(tipo)
     if cl.get("aparencia") == "desbotado" or tipo == "desbotado":
         exclusoes.append("desbotado")
-    if tier_final == "ruim":
+    if tier_final == "ruim" and cor_avaliada:
         exclusoes.append("cor_ruim")
     if tecido_brilhoso:
         exclusoes.append("tecido_brilhoso")
