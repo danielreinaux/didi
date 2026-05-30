@@ -15,6 +15,7 @@ import sys
 import time
 import threading
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from datetime import datetime, timezone
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -39,18 +40,30 @@ _print_lock = threading.Lock()
 _counters_lock = threading.Lock()
 
 
-def _salvar(resultados: list, itens_orig: list, ja_processados: dict, path: Path) -> None:
+def _salvar(resultados: list, itens_orig: list, acervo_previo: dict, path: Path) -> None:
+    """Acumula por id: acervo prévio + resultados desta rodada (que sobrescrevem).
+    Itens já vistos e AUSENTES do scrape atual são PRESERVADOS — nada se perde.
+    Marca status/timestamps; reaparecer no scrape reativa (status='ativo')."""
     por_idx = {i: r for i, r in resultados}
-    out = []
+    agora = datetime.now(timezone.utc).isoformat()
+    acervo = dict(acervo_previo)  # id -> item (cópia)
     for i, item in enumerate(itens_orig):
+        rid = item.get("id")
+        if not rid:
+            continue  # stub de scrape sem id — não acumula
         if i in por_idx:
-            out.append(por_idx[i])
-        elif item.get("id") in ja_processados:
-            out.append(ja_processados[item["id"]])
+            novo = por_idx[i]
+        elif rid in acervo:
+            novo = acervo[rid]  # cacheado (fotos iguais) — mantém classificação
         else:
-            out.append(item)
+            novo = item
+        prev = acervo.get(rid, {})
+        novo["primeiro_visto"] = prev.get("primeiro_visto") or prev.get("coletado_em") or agora
+        novo["ultimo_visto"] = agora
+        novo["status"] = "ativo"  # reapareceu no scrape → ativo
+        acervo[rid] = novo
     with _print_lock:
-        path.write_text(json.dumps(out, indent=2, ensure_ascii=False))
+        path.write_text(json.dumps(list(acervo.values()), indent=2, ensure_ascii=False))
 
 
 def _log(msg: str) -> None:
@@ -281,16 +294,23 @@ def main() -> None:
     resultados: list[tuple[int, dict]] = []
     input_tokens = output_tokens = 0
 
-    # carregar checkpoint existente (IDs já processados)
+    # carregar acervo acumulado (TODOS já vistos, por id) + subset classificado p/ skip
     checkpoint_path = DATA / "coleta-classificada.json"
+    acervo_previo: dict[str, dict] = {}
     ja_processados: dict[str, dict] = {}
     if checkpoint_path.exists():
         try:
             for x in json.loads(checkpoint_path.read_text()):
-                if x.get("id") and (x.get("classificacao") or {}).get("tipo") not in (None, "erro"):
-                    ja_processados[x["id"]] = x
+                rid = x.get("id")
+                if not rid:
+                    continue
+                acervo_previo[rid] = x
+                if (x.get("classificacao") or {}).get("tipo") not in (None, "erro"):
+                    ja_processados[rid] = x
         except Exception:
             pass
+    if acervo_previo:
+        print(f"  acervo acumulado: {len(acervo_previo)} itens já conhecidos.")
 
     # Pular só se ID já processado E fotos não mudaram (mesma URL list)
     def _mesmas_fotos(item_novo: dict, item_velho: dict) -> bool:
@@ -335,9 +355,9 @@ def main() -> None:
                 concluidos += 1
                 # salvar checkpoint a cada 20 itens concluídos
                 if concluidos % 20 == 0:
-                    _salvar(resultados, itens, ja_processados, checkpoint_path)
+                    _salvar(resultados, itens, acervo_previo, checkpoint_path)
 
-    _salvar(resultados, itens, ja_processados, checkpoint_path)
+    _salvar(resultados, itens, acervo_previo, checkpoint_path)
 
     out = json.loads(checkpoint_path.read_text())
     cnt_tipo = lambda t: sum(1 for x in out if (x.get("classificacao") or {}).get("tipo") == t)

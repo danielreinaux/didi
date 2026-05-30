@@ -70,6 +70,12 @@ TIPO_LABELS = {
 
 def main() -> None:
     itens = json.loads((DATA / "coleta-classificada.json").read_text())
+    # Acervo acumula histórico; o site mostra só o que ainda está à venda.
+    total_acervo = len(itens)
+    itens = [x for x in itens if x.get("status") not in ("vendido", "inativo")]
+    inativos = total_acervo - len(itens)
+    if inativos:
+        print(f"  {inativos} itens vendidos/inativos ocultados ({total_acervo} no acervo).")
 
     # Tenta carregar custo
     custo_total = 0.0

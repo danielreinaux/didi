@@ -48,7 +48,16 @@ jobs:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: python -m src.classify.run --workers 2
 
+      # Revisita itens do acervo que sumiram do scrape e marca os vendidos/removidos.
+      # Sem OpenAI — só scraping. if:always() pra rodar mesmo se o classify falhar.
+      - name: Verifica vendidos
+        if: always()
+        env:
+          HEADLESS: 'true'
+        run: python -m src.scrape.verifica_vendidos --max 80
+
       - name: Build analise.html
+        if: always()
         run: python -m src.build.analise
 
       - name: Deploy analise.html no Vercel
