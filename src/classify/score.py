@@ -36,15 +36,6 @@ PTS_SEM_ELASTICO = -15  # sem elástico — perde muita pontuação (doc 1.2)
 PTS_ETIQUETA = 10    # hang-tag de papel visível na foto
 PTS_LISTRA_SALVA = 5 # bônus quando listra salva a cor
 
-# Condição DECLARADA no anúncio (manual 1.7: Novo c/etiq > Novo s/etiq > Muito bom).
-# Sinal independente do hang-tag visual (PTS_ETIQUETA) — os dois podem somar.
-PTS_CONDICAO = {
-    "nuevo_con_etiquetas": 8,
-    "nuevo_sin_etiquetas": 5,
-    "muy_bueno":           2,
-    "bueno":               0,   # abaixo do manual, sem bônus
-}
-
 # Exclusões automáticas (além de ruim/estampado/desbotado):
 # bicolor, botao/velcro, tecido_brilhoso → descarte direto no bloco de exclusoes
 # sem elástico + tamanho numérico fora de 31-34 → exclusão (doc 1.2)
@@ -61,22 +52,6 @@ def _parse_preco(preco_str: str | None) -> float | None:
         return float(nums[0].replace(",", "."))
     except ValueError:
         return None
-
-
-def _condicao_key(estado: str | None) -> str | None:
-    """Normaliza o 'estado' da listagem (espanhol/pt/en) p/ uma chave de PTS_CONDICAO."""
-    if not estado:
-        return None
-    e = estado.lower().strip()
-    if "etiqueta" in e or "etichett" in e or "tag" in e:
-        if "sin " in e or "sem " in e or "without" in e or "senza" in e:
-            return "nuevo_sin_etiquetas"
-        return "nuevo_con_etiquetas"
-    if "muy bueno" in e or "muito bom" in e or "very good" in e or "ottimo" in e:
-        return "muy_bueno"
-    if "bueno" in e or "bom" in e or "good" in e or "buono" in e:
-        return "bueno"
-    return None
 
 
 def _tamanho_key(tamanho: str | None) -> str:
@@ -186,8 +161,7 @@ def calcular_score(item: dict) -> dict:
     pts_el = PTS_ELASTICO if tem_elastico else PTS_SEM_ELASTICO
     pts_et = PTS_ETIQUETA if tem_etiqueta else 0
     pts_listra = PTS_LISTRA_SALVA if listra_salva else 0
-    pts_cond = PTS_CONDICAO.get(_condicao_key(item.get("estado")), 0)
-    pts_atributos = max(0, pts_tier + pts_tam + pts_el + pts_et + pts_listra + pts_cond)
+    pts_atributos = max(0, pts_tier + pts_tam + pts_el + pts_et + pts_listra)
 
     # Parte 2 — Eficiência de preço (0~30)
     teto = calcular_teto(tier_final, tamanho, tem_elastico, tem_etiqueta)
@@ -258,7 +232,6 @@ def calcular_score(item: dict) -> dict:
             "tamanho": pts_tam,
             "elastico": pts_el,
             "etiqueta": pts_et,
-            "condicao": pts_cond,
             "listra_bonus": pts_listra,
             "preco": pts_preco,
             "ratio_preco_teto": round(ratio, 2) if ratio else None,
