@@ -101,7 +101,12 @@ def calcular_score(item: dict) -> dict:
     tam_key = _tamanho_key(tamanho)
     tem_elastico = elastico.get("tem_elastico") is True
     tipo_fechamento = elastico.get("tipo_fechamento") or ("elastico" if tem_elastico else "sem")
-    tem_etiqueta = etiqueta.get("tem_etiqueta") is True
+    # Ganha o bônus de etiqueta se a foto mostra a hang-tag OU o anúncio é
+    # "Novo com etiqueta" (manual 1.7). Binário — sem escala de condição.
+    _estado = (item.get("estado") or "").lower()
+    _declarado_com_etiqueta = ("etiqueta" in _estado or "etichett" in _estado or "tag" in _estado) and \
+        not ("sin " in _estado or "sem " in _estado or "without" in _estado or "senza" in _estado)
+    tem_etiqueta = etiqueta.get("tem_etiqueta") is True or _declarado_com_etiqueta
     listra_salva = cor.get("listra_tier") == "salva"
     bicolor = cl.get("bicolor", False)
     tecido_brilhoso = cl.get("tecido_brilhoso", False)
