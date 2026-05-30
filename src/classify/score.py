@@ -117,6 +117,17 @@ def calcular_score(item: dict) -> dict:
     listra_na_frente = cl.get("listra_na_frente", False)
     tem_bolso_traseiro = cl.get("tem_bolso_traseiro")  # None = indefinido (não exclui)
 
+    # Item que FALHOU na classificação (ex: cota 429, rede) não é "descartado"
+    # (não foi julgado) — é "não classificado": precisa reprocessar.
+    if tipo == "erro":
+        return {
+            "score": 0,
+            "teto": 0,
+            "decisao": "nao_classificado",
+            "motivo": "erro na classificação (cota/rede) — será reprocessado",
+            "breakdown": {},
+        }
+
     # Filtros de exclusão → score 0
     exclusoes = []
     if tipo in ("estampado", "logo_grande", "nao_sundek", "nao_short", "tamanho_invalido", "infantil"):

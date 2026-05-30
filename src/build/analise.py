@@ -96,6 +96,8 @@ def main() -> None:
     compraveis = [it for it in visiveis if (it.get("score") or {}).get("decisao") == "compravel"]
     medios = [it for it in visiveis if (it.get("score") or {}).get("decisao") == "medio"]
     descartados = [it for it in visiveis if (it.get("score") or {}).get("decisao") == "descartado"]
+    # Itens que FALHARAM ao classificar (cota/rede) — não foram julgados, só reprocessar.
+    nao_classificados = [it for it in visiveis if (it.get("score") or {}).get("decisao") == "nao_classificado"]
 
     # Conta por motivo de exclusão
     motivos = Counter()
@@ -251,6 +253,16 @@ def main() -> None:
   <div class="subs">{''.join(sub_motivos)}</div>
 </details>""")
 
+    # Não classificados (falha de cota/rede) — separados dos descartados
+    if nao_classificados:
+        cards = "\n".join(card(it, mostrar_score=False) for it in nao_classificados[:120])
+        mais = "" if len(nao_classificados) <= 120 else f'<div class="more">+ {len(nao_classificados) - 120} itens</div>'
+        secoes.append(f"""<details class="grupo">
+  <summary><span class="cnt" style="background:#92400e">⟳ {len(nao_classificados)}</span> NÃO CLASSIFICADOS (falha de cota/rede — serão reprocessados)</summary>
+  <div class="lista">{cards}</div>
+  {mais}
+</details>""")
+
     html = f"""<!DOCTYPE html>
 <html lang="pt-BR"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
@@ -353,6 +365,7 @@ details.sub summary {{ padding:10px 14px; font-size:13px; font-weight:500; }}
   <div class="stat ok"><div class="v">{dec.get('compravel', 0)}</div><div class="l">Compráveis</div></div>
   <div class="stat mid"><div class="v">{dec.get('medio', 0)}</div><div class="l">Barganha (médios)</div></div>
   <div class="stat x"><div class="v">{dec.get('descartado', 0)}</div><div class="l">Descartados</div></div>
+  <div class="stat"><div class="v" style="color:#92400e">{dec.get('nao_classificado', 0)}</div><div class="l">Não classificados (reprocessar)</div></div>
   <div class="stat"><div class="v">{tipos.get('liso', 0)}</div><div class="l">Lisos detectados</div></div>
   <div class="stat"><div class="v">{tipos.get('estampado', 0) + tipos.get('logo_grande', 0)}</div><div class="l">Estampados / Logo</div></div>
   <div class="stat"><div class="v">{tipos.get('nao_short', 0) + tipos.get('nao_sundek', 0)}</div><div class="l">Não-short / Não-Sundek</div></div>
