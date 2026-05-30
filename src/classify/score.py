@@ -208,6 +208,19 @@ def calcular_score(item: dict) -> dict:
             decisao = "medio"
             motivo = "elástico + preço ≤ €14"
 
+    # Override SEM elástico (manual 1.2 + decisão do dono):
+    # teto duro €25; mas pechincha com cor elite compra mesmo sem elástico.
+    if not tem_elastico and preco:
+        if preco > 25:
+            decisao = "descartado"
+            motivo = f"sem elástico + preço €{preco:.2f} > €25 (teto do manual)"
+        elif tier_final == "maravilhoso" and preco <= 10:
+            decisao = "compravel"
+            motivo = "sem elástico mas cor perfeita + preço ≤ €10 (pechincha)"
+        elif tier_final in ("boa", "muito_boa", "maravilhoso") and decisao == "descartado":
+            decisao = "medio"
+            motivo = "sem elástico + cor boa+ + preço ≤ €25 (barganha)"
+
     return {
         "score": score,
         "teto": round(teto, 2),
