@@ -124,7 +124,14 @@ def calcular_score(item: dict) -> dict:
     if cl.get("aparencia") == "desbotado" or tipo == "desbotado":
         exclusoes.append("desbotado")
     if tier_final == "ruim" and cor_avaliada:
-        exclusoes.append("cor_ruim")
+        # Distingue "a cor já é ruim" de "a cor era ok mas a COMBINAÇÃO com a
+        # listra ficou ruim" (ex: listra rara/destoante derruba uma cor ok).
+        _tier_raw = cor.get("tier")
+        _motivo_combo = cor.get("combo_motivo") or ""
+        if _tier_raw == "ruim" or "independente das listras" in _motivo_combo:
+            exclusoes.append("cor_ruim")
+        else:
+            exclusoes.append("combinacao_listra_cor_ruim")
     if tecido_brilhoso:
         exclusoes.append("tecido_brilhoso")
     if bicolor:

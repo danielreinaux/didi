@@ -35,6 +35,7 @@ LEGENDAS = {
     "nao_short-visual": "Foto mostra sunga, slip, calça ou outra peça que não é short.",
     "nao_sundek": "Marca diferente identificada pelo modelo.",
     "cor_ruim": "Cor sem apelo comercial (neon, fluo, berrante, etc).",
+    "combinacao_listra_cor_ruim": "A cor sozinha era aceitável, mas a combinação com a listra (rara/destoante) derrubou pra ruim.",
     "tecido_brilhoso": "Tecido reflexivo/acetinado (wet look).",
     "bicolor": "Dois painéis grandes de cores diferentes no corpo (não vende bem).",
     "bolso_frontal": "Bolso grande tipo cargo na frente/lateral da perna.",
