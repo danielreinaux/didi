@@ -54,6 +54,20 @@ def _parse_preco(preco_str: str | None) -> float | None:
         return None
 
 
+def _preco_efetivo(item: dict) -> float | None:
+    """Preço que o comprador REALMENTE paga = item + proteção ao comprador
+    (campo 'preco_total' do Vinted, ex: 20,00 → 21,70). NÃO inclui frete.
+    Trava de sanidade: o total só vale se ficar entre o base e ~base×1.4+€2
+    (proteção é ~5% + €0.70); fora disso (ex: capturou frete) cai pro base."""
+    base = _parse_preco(item.get("preco"))
+    total = _parse_preco(item.get("preco_total"))
+    if total is not None and base is not None:
+        if base <= total <= base * 1.4 + 2:
+            return total
+        return base  # total suspeito (provável frete) → usa base
+    return total if base is None else base
+
+
 def _tamanho_key(tamanho: str | None) -> str:
     if not tamanho:
         return "L"
@@ -191,8 +205,8 @@ def calcular_score(item: dict) -> dict:
 
     # Parte 2 — Eficiência de preço (0~30)
     teto = calcular_teto(tier_final, tamanho, tem_elastico, tem_etiqueta)
-    # preco_total do Vinted é instável (captura envio ou outros valores) — usar só preco
-    preco = _parse_preco(item.get("preco"))
+    # Preço efetivo = item + proteção ao comprador (o que o comprador paga de fato).
+    preco = _preco_efetivo(item)
 
     pts_preco = 0
     ratio = None
