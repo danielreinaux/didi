@@ -34,15 +34,20 @@ Combinações típicas do histórico de 380 peças:
 Características obrigatórias (TODAS precisam estar presentes):
 1. MÚLTIPLAS faixas paralelas adjacentes
 2. Mínimo **2 cores DIFERENTES** entre si (não só "branco e branco")
-3. Localização: painel traseiro/lateral
-4. Direção: VERTICAL (cós → barra)
+3. Localização: lateral/perna do short (painel traseiro, costura lateral, ou
+   ao redor da abertura da perna / do bolso)
+4. Corre AO LONGO da lateral/perna (do cós à barra). ⚠️ Pode PARECER horizontal
+   ou curva na foto se a peça está DOBRADA/deitada ou se acompanha a abertura da
+   perna — isso NÃO desqualifica. Orientação não é critério confiável.
 5. É elemento gráfico DESTACADO sobre o tecido base
 
 ## Armadilhas (NÃO são listra Sundek)
 
-### #1 — PIPING de costura
-Linha fina única que segue a costura, contorna barra/aberturas. É decoração
-de costura, não listra. Ex: cordão laranja com linha laranja fina contornando.
+### #1 — PIPING de costura (UMA cor só)
+Linha/cordão fino de **UMA ÚNICA cor** que segue a costura, contorna barra/aberturas.
+É decoração de costura, não listra. Ex: cordão laranja com linha laranja contornando.
+⚠️ Só conta como piping se for de UMA cor. **Duas ou mais cores DIFERENTES
+adjacentes NÃO são piping** — mesmo que sigam a costura ou contornem o bolso.
 
 ### #2 — Múltiplas linhas da MESMA cor
 Duas linhas brancas paralelas → ainda é só "branco" (1 cor) → PIPING.
@@ -56,8 +61,12 @@ Muitos Sundeks têm o cós com 2-3 faixas paralelas HORIZONTAIS coloridas
 da cintura, NÃO o painel traseiro/lateral. A listra Sundek corre VERTICALMENTE
 no painel traseiro, não horizontalmente no cós.
 
-### #4 — Faixa horizontal na barra ou meio do corpo
-Decoração horizontal. Não é listra Sundek.
+### #4 — Faixa horizontal no MEIO do corpo ou no CÓS
+Banda que atravessa o corpo na horizontal (no meio) ou que fica na cintura (cós).
+Não é listra Sundek.
+⚠️ CUIDADO: a listra LATERAL, numa foto com o short DOBRADO/deitado, aparece
+"horizontal" — isso é a listra lateral vista dobrada, NÃO esta armadilha. Só marque
+#4 se a faixa cruza claramente o MEIO do corpo ou está na CINTURA (cós).
 
 ### #5 — Bordas/contornos coloridos das aberturas das pernas
 Acabamento de costura, não listra.
@@ -96,10 +105,16 @@ Pergunte a si mesmo:
 Se SIM pra qualquer uma → é piping ou decoração, não listra.
 
 ## Passo 4 — VEREDITO
-Aplique a regra final:
-- piping = true → listra_sundek = false
-- < 2 cores DIFERENTES → listra_sundek = false
-- 2+ cores diferentes E piping = false → listra_sundek = true
+REGRA DOMINANTE (a COR manda sobre a forma): se você contou **2+ cores DIFERENTES**
+em faixas adjacentes na LATERAL/PERNA (inclusive ao redor da abertura da perna ou do
+bolso) → `e_listra_sundek = true`, `e_piping = false`. Parecer horizontal (peça
+dobrada) ou curva (acompanha a costura) NÃO derruba isso.
+
+Aplique então, em ordem:
+- Faixa multicolor SÓ no cós (cintura) ou cruzando o MEIO do corpo → listra_sundek = false
+- 2+ cores DIFERENTES na lateral/perna → listra_sundek = true (piping = false)
+- 1 cor só (qualquer nº de linhas) ou linha única → e_piping = true → listra_sundek = false
+- nenhuma faixa / < 2 cores → listra_sundek = false
 
 ## Passo 5 — BICOLOR
 Pergunte: "O CORPO tem 2 zonas LARGAS de cor sólida diferentes (sem contar
@@ -107,8 +122,8 @@ listras laterais finas)?" Se sim → bicolor = true.
 
 ## Passo 6 — SELF-CHECK
 Releia seu veredito. Faça este ÚLTIMO teste:
-- Marcou listra=true: você lista ≥2 cores diferentes E confirma que estão
-  VERTICAIS no painel traseiro/lateral (não no cós)?
+- Marcou listra=true: você lista ≥2 cores diferentes na lateral/perna (não no cós)?
+  (NÃO precisa ser vertical — dobrada, curva ou aparentando horizontal conta)
 - Marcou listra=false: descartou conscientemente as 5 armadilhas?
 Se o self-check falhar, REVISE antes de finalizar.
 
