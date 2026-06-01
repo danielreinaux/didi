@@ -56,9 +56,11 @@ jobs:
           HEADLESS: 'true'
         run: python -m src.scrape.verifica_vendidos --max 80
 
-      - name: Build analise.html
+      - name: Build analise.html + items de votação
         if: always()
-        run: python -m src.build.analise
+        run: |
+          python -m src.build.analise
+          python -m src.build.votacao_items   # gera votacao/public/items.json (só compráveis+barganha)
 
       - name: Deploy analise.html no Vercel
         env:
@@ -77,7 +79,7 @@ jobs:
         run: |
           git config user.name "Didi Bot"
           git config user.email "bot@didi.local"
-          git add data/coleta.json data/coleta-classificada.json data/historico.json data/custo_por_etapa.json data/analise.html votacao/public/analise.html
+          git add data/coleta.json data/coleta-classificada.json data/historico.json data/custo_por_etapa.json data/analise.html votacao/public/analise.html votacao/public/items.json
           git diff --cached --quiet && echo "nada a commitar" && exit 0
           git commit -m "data: cron sundek $(date -u +'%Y-%m-%d %H:%M UTC')"
           # O job dura 1-3h; outro run pode ter empurrado pro main nesse meio-tempo.

@@ -2,72 +2,72 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { Item, Tier, TIER_LABELS, TIER_COLORS } from "@/lib/types";
+import { Item, Reaction, REACTIONS, REACTION_LABELS } from "@/lib/types";
 
-const TIER_ORDER: Tier[] = ["maravilhoso", "muito_boa", "boa", "ok", "ruim"];
-
-interface VotoInfo {
-  tier: Tier;
-  votado_em: string;
+interface Reacao {
+  reaction?: Reaction;
+  observacao?: string;
 }
+
+const ORDER: Reaction[] = ["gostei", "nao_gostei", "discordo"];
 
 export default function Resultados() {
   const [items, setItems] = useState<Item[]>([]);
-  const [votos, setVotos] = useState<Record<string, VotoInfo>>({});
-  const [filtro, setFiltro] = useState<Tier | "todos">("todos");
+  const [reacoes, setReacoes] = useState<Record<string, Reacao>>({});
+  const [filtro, setFiltro] = useState<Reaction | "todos">("todos");
 
   useEffect(() => {
-    fetch("/items.json").then((r) => r.json()).then(setItems);
-    fetch("/api/resultados")
+    fetch("/items.json").then((r) => r.json()).then(setItems).catch(() => {});
+    fetch("/api/reactions")
       .then((r) => r.json())
-      .then((data) => setVotos(data.resultados || {}))
+      .then((data) => setReacoes(data || {}))
       .catch(() => {});
   }, []);
 
-  const totalVotados = Object.keys(votos).length;
-
-  const contagem = TIER_ORDER.reduce(
-    (acc, t) => {
-      acc[t] = Object.values(votos).filter((v) => v.tier === t).length;
-      return acc;
-    },
-    {} as Record<Tier, number>
-  );
-
   const itensMapa = Object.fromEntries(items.map((i) => [i.id, i]));
 
-  const votadosComInfo = Object.entries(votos)
-    .map(([id, info]) => ({ id, ...info, item: itensMapa[id] }))
-    .filter((v) => v.item)
-    .sort((a, b) => TIER_ORDER.indexOf(a.tier) - TIER_ORDER.indexOf(b.tier));
+  const contagem = ORDER.reduce((acc, r) => {
+    acc[r] = Object.values(reacoes).filter((v) => v.reaction === r).length;
+    return acc;
+  }, {} as Record<Reaction, number>);
+  const totalVotos = ORDER.reduce((s, r) => s + contagem[r], 0);
 
-  const filtrados = filtro === "todos" ? votadosComInfo : votadosComInfo.filter((v) => v.tier === filtro);
+  const votados = Object.entries(reacoes)
+    .map(([id, v]) => ({ id, ...v, item: itensMapa[id] }))
+    .filter((v) => v.item && v.reaction)
+    .sort((a, b) => ORDER.indexOf(a.reaction!) - ORDER.indexOf(b.reaction!));
+
+  const filtrados = filtro === "todos" ? votados : votados.filter((v) => v.reaction === filtro);
 
   return (
     <div className="min-h-screen bg-gray-50">
       <header className="bg-white border-b border-gray-200 sticky top-0 z-10 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 py-3 flex flex-col gap-3">
           <div className="flex items-center justify-between flex-wrap gap-2">
-            <h1 className="text-xl font-bold text-gray-800">Resultados da Votacao</h1>
+            <h1 className="text-xl font-bold text-gray-800">Resultados</h1>
             <div className="flex items-center gap-3">
-              <span className="text-sm text-gray-500">{totalVotados} votos registrados</span>
-              <a href="/" className="text-sm text-blue-600 hover:underline font-medium">Voltar a votacao</a>
+              <span className="text-sm text-gray-500">{totalVotos} votos</span>
+              <a href="/" className="text-sm text-blue-600 hover:underline font-medium">Voltar</a>
             </div>
           </div>
-
-          {/* Summary bar */}
-          <div className="flex gap-3 flex-wrap">
-            {TIER_ORDER.map((t) => (
+          <div className="flex gap-2 flex-wrap">
+            <button
+              onClick={() => setFiltro("todos")}
+              className={`px-3 py-1.5 rounded-lg text-sm font-medium ${
+                filtro === "todos" ? "bg-gray-800 text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+              }`}
+            >
+              Todos ({totalVotos})
+            </button>
+            {ORDER.map((r) => (
               <button
-                key={t}
-                onClick={() => setFiltro(filtro === t ? "todos" : t)}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-sm font-medium transition-all border-2 ${
-                  filtro === t ? "border-gray-800 shadow" : "border-transparent"
-                } bg-white`}
+                key={r}
+                onClick={() => setFiltro(r)}
+                className={`px-3 py-1.5 rounded-lg text-sm font-medium ${
+                  filtro === r ? "bg-gray-800 text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                }`}
               >
-                <span className={`w-2.5 h-2.5 rounded-full ${t === "ruim" ? "bg-red-500" : t === "ok" ? "bg-orange-400" : t === "boa" ? "bg-yellow-400" : t === "muito_boa" ? "bg-green-500" : "bg-blue-600"}`} />
-                <span>{TIER_LABELS[t]}</span>
-                <span className="font-bold">{contagem[t] || 0}</span>
+                {REACTION_LABELS[r]} ({contagem[r]})
               </button>
             ))}
           </div>
@@ -76,34 +76,38 @@ export default function Resultados() {
 
       <main className="max-w-7xl mx-auto px-4 py-6">
         {filtrados.length === 0 ? (
-          <p className="text-center text-gray-400 mt-20 text-lg">Nenhum voto ainda</p>
+          <p className="text-center text-gray-400 mt-20 text-lg">Nenhum voto ainda.</p>
         ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
-            {filtrados.map(({ id, tier, item }) => (
-              <div key={id} className="bg-white rounded-2xl shadow-md overflow-hidden border border-gray-200 flex flex-col">
-                <div className="relative w-full aspect-square bg-gray-100">
-                  {item.fotos[0] ? (
-                    <Image src={item.fotos[0]} alt={item.titulo} fill className="object-cover" unoptimized />
-                  ) : (
-                    <div className="flex items-center justify-center h-full text-gray-400 text-sm">Sem foto</div>
-                  )}
-                  <div className="absolute top-2 right-2">
-                    <span className={`text-xs font-bold px-2 py-1 rounded-full text-white ${tier === "ruim" ? "bg-red-500" : tier === "ok" ? "bg-orange-400" : tier === "boa" ? "bg-yellow-500" : tier === "muito_boa" ? "bg-green-500" : "bg-blue-600"}`}>
-                      {TIER_LABELS[tier]}
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {filtrados.map(({ id, item, reaction, observacao }) => {
+              const meta = REACTIONS.find((x) => x.key === reaction)!;
+              const foto = item.fotos[0];
+              return (
+                <div key={id} className="bg-white rounded-2xl shadow-md overflow-hidden border border-gray-200 flex flex-col">
+                  <div className="relative w-full aspect-square bg-gray-100">
+                    {foto ? (
+                      <Image src={foto} alt={item.titulo} fill className="object-cover" unoptimized />
+                    ) : (
+                      <div className="flex items-center justify-center h-full text-gray-400 text-sm">Sem foto</div>
+                    )}
+                    <span className={`absolute top-2 left-2 text-xs px-2 py-0.5 rounded-full font-semibold ${meta.selected}`}>
+                      {meta.emoji} {meta.label}
                     </span>
                   </div>
-                </div>
-                <div className="p-2 flex flex-col gap-1">
-                  <a href={item.url} target="_blank" rel="noreferrer" className="text-xs text-gray-600 line-clamp-2 hover:underline">{item.titulo}</a>
-                  <div className="flex gap-1 text-xs text-gray-500 flex-wrap">
-                    <span>{item.tamanho}</span>
-                    <span>·</span>
-                    <span className="font-semibold text-gray-800">{item.preco_total || item.preco}</span>
+                  <div className="p-3 flex flex-col gap-1.5">
+                    <a href={item.url} target="_blank" rel="noreferrer" className="text-sm font-medium text-gray-800 line-clamp-2 hover:underline">
+                      {item.titulo}
+                    </a>
+                    <div className="text-xs text-gray-500">
+                      {item.tamanho} · {item.preco_total || item.preco} · {item.cor_ia}
+                    </div>
+                    {observacao && (
+                      <div className="text-xs text-gray-600 bg-gray-50 rounded-lg px-2 py-1 italic">“{observacao}”</div>
+                    )}
                   </div>
-                  <div className="text-xs text-gray-400">IA: {item.cor_ia}</div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </main>

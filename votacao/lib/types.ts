@@ -1,4 +1,4 @@
-export type Tier = "ruim" | "ok" | "boa" | "muito_boa" | "maravilhoso";
+export type Decisao = "compravel" | "medio";
 
 export interface Item {
   id: string;
@@ -10,31 +10,46 @@ export interface Item {
   preco_total: string;
   fotos: string[];
   cor_ia: string;
-  tier_ia: Tier;
-  bicolor: boolean;
-  aparencia: string;
+  tier_ia: string;
+  decisao: Decisao;
+  score: number;
+  destaques: string[];
 }
 
-export const TIER_LABELS: Record<Tier, string> = {
-  ruim: "Ruim",
-  ok: "Ok",
-  boa: "Boa",
-  muito_boa: "Muito boa",
-  maravilhoso: "Maravilhoso",
-};
+export type Reaction = "gostei" | "nao_gostei" | "discordo";
 
-export const TIER_COLORS: Record<Tier, string> = {
-  ruim: "bg-red-500 hover:bg-red-600 text-white",
-  ok: "bg-orange-400 hover:bg-orange-500 text-white",
-  boa: "bg-yellow-400 hover:bg-yellow-500 text-black",
-  muito_boa: "bg-green-500 hover:bg-green-600 text-white",
-  maravilhoso: "bg-blue-600 hover:bg-blue-700 text-white",
-};
+export const REACTIONS: {
+  key: Reaction;
+  label: string;
+  emoji: string;
+  base: string;
+  selected: string;
+}[] = [
+  {
+    key: "gostei",
+    label: "Gostei",
+    emoji: "👍",
+    base: "bg-green-100 text-green-800 hover:bg-green-200",
+    selected: "bg-green-600 text-white ring-2 ring-green-300",
+  },
+  {
+    key: "nao_gostei",
+    label: "Não gostei",
+    emoji: "👎",
+    base: "bg-red-100 text-red-800 hover:bg-red-200",
+    selected: "bg-red-600 text-white ring-2 ring-red-300",
+  },
+  {
+    key: "discordo",
+    label: "Discordo",
+    emoji: "⚠️",
+    base: "bg-amber-100 text-amber-800 hover:bg-amber-200",
+    selected: "bg-amber-600 text-white ring-2 ring-amber-300",
+  },
+];
 
-export const TIER_SELECTED: Record<Tier, string> = {
-  ruim: "ring-4 ring-red-300 scale-105",
-  ok: "ring-4 ring-orange-300 scale-105",
-  boa: "ring-4 ring-yellow-300 scale-105",
-  muito_boa: "ring-4 ring-green-300 scale-105",
-  maravilhoso: "ring-4 ring-blue-300 scale-105",
+export const REACTION_LABELS: Record<Reaction, string> = {
+  gostei: "👍 Gostei",
+  nao_gostei: "👎 Não gostei",
+  discordo: "⚠️ Discordo",
 };
