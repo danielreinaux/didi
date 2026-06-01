@@ -1,35 +1,43 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f9fafb;
-  --foreground: #171717;
+  --background: #f5f7fa;
+  --foreground: #0d1118;
+
+  /* Aura — paleta (light mode) */
+  --aura-blue: rgb(0, 122, 255);
+  --aura-gray: rgb(142, 142, 147);
+  --aura-purple: rgb(175, 82, 222);
+  --aura-green: rgb(52, 199, 89);
+  --aura-orange: rgb(255, 149, 0);
+
+  --text-primary: #0d1118;
+  --text-secondary: #45556c;
+  --text-tertiary: #90a1b9;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-poppins);
+  --font-sans: var(--font-poppins), "Poppins", system-ui, sans-serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  height: 100%;
 }
 
-html,
 body {
+  height: 100%;
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-poppins), "Poppins", system-ui, sans-serif;
 }
 
-/* Ícones de lixeira: sempre laranja */
+/* Ícones de lixeira: sempre laranja, nunca rosa */
 .trash-icon,
 [data-icon="trash"],
 svg.trash-icon {
-  color: rgb(255, 149, 0) !important;
-  fill: rgb(255, 149, 0) !important;
-  stroke: rgb(255, 149, 0) !important;
+  color: var(--aura-orange) !important;
+  fill: var(--aura-orange) !important;
+  stroke: var(--aura-orange) !important;
 }

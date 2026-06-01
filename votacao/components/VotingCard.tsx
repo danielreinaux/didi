@@ -3,6 +3,7 @@
 import { useState, useRef } from "react";
 import Image from "next/image";
 import { Item, Reaction, REACTIONS } from "@/lib/types";
+import { CARD } from "@/lib/theme";
 
 interface Props {
   item: Item;
@@ -60,20 +61,20 @@ export default function VotingCard({ item, reacaoInicial, obsInicial, onReacao }
 
   return (
     <div
-      className={`bg-white rounded-2xl shadow-md overflow-hidden flex flex-col transition-all ${
-        reacao ? "border-2 border-blue-400" : "border border-gray-200"
+      className={`${CARD} overflow-hidden flex flex-col transition-all ${
+        reacao ? "ring-2 ring-[rgb(0,122,255)]" : ""
       }`}
     >
       {/* Foto */}
       <div
-        className="relative w-full aspect-square bg-gray-100 select-none"
+        className="relative w-full aspect-square bg-[rgba(0,0,0,0.04)] select-none"
         onTouchStart={onTouchStart}
         onTouchEnd={onTouchEnd}
       >
         {foto ? (
           <Image src={foto} alt={item.titulo} fill className="object-cover" unoptimized />
         ) : (
-          <div className="flex items-center justify-center h-full text-gray-400 text-sm">Sem foto</div>
+          <div className="flex items-center justify-center h-full text-[#90a1b9] text-sm">Sem foto</div>
         )}
         {nFotos > 1 && (
           <>
@@ -111,8 +112,8 @@ export default function VotingCard({ item, reacaoInicial, obsInicial, onReacao }
         {/* Badge decisão + score */}
         <div className="absolute top-2 left-2 flex gap-1">
           <span
-            className={`text-xs px-2 py-0.5 rounded-full font-semibold ${
-              compravel ? "bg-green-600 text-white" : "bg-amber-500 text-white"
+            className={`text-xs px-2 py-0.5 rounded-full text-white ${
+              compravel ? "bg-[rgb(52,199,89)]" : "bg-[rgb(255,149,0)]"
             }`}
           >
             {compravel ? "✓ Comprável" : "~ Barganha"} · {item.score}
@@ -126,23 +127,26 @@ export default function VotingCard({ item, reacaoInicial, obsInicial, onReacao }
           href={item.url}
           target="_blank"
           rel="noreferrer"
-          className="text-sm font-medium text-gray-800 line-clamp-2 hover:underline"
+          className="text-sm text-[#0d1118] line-clamp-2 hover:underline"
         >
           {item.titulo}
         </a>
-        <div className="flex gap-1.5 text-xs text-gray-500 flex-wrap">
+        <div className="flex gap-1.5 text-xs text-[#45556c] flex-wrap">
           <span>{item.tamanho}</span>
           <span>·</span>
           <span>{item.estado}</span>
           <span>·</span>
-          <span className="font-semibold text-gray-800">{item.preco_total || item.preco}</span>
+          <span className="text-[#0d1118]">{item.preco_total || item.preco}</span>
         </div>
 
         {/* Destaques (por que é candidato) */}
         {item.destaques?.length > 0 && (
           <div className="flex flex-wrap gap-1">
             {item.destaques.map((d, i) => (
-              <span key={i} className="bg-blue-50 text-blue-700 text-[11px] px-2 py-0.5 rounded-full">
+              <span
+                key={i}
+                className="bg-[rgba(0,122,255,0.1)] text-[rgb(0,122,255)] text-[11px] px-2 py-0.5 rounded-full"
+              >
                 {d}
               </span>
             ))}
@@ -151,17 +155,17 @@ export default function VotingCard({ item, reacaoInicial, obsInicial, onReacao }
 
         {/* Por quê — como o score/preço foi formado */}
         {item.por_que && (
-          <div className="text-[11px] text-indigo-800 bg-indigo-50 rounded-lg px-2 py-1 leading-snug">
+          <div className="text-[11px] text-[rgb(175,82,222)] bg-[rgba(175,82,222,0.08)] rounded-lg px-2 py-1 leading-snug">
             {item.por_que}
           </div>
         )}
         {item.evidencias && (item.evidencias.listra || item.evidencias.bolso || item.evidencias.elastico) && (
-          <details className="text-[11px] text-gray-500">
-            <summary className="cursor-pointer text-gray-600 select-none">Por quê? (análise da IA)</summary>
-            <div className="mt-1 flex flex-col gap-0.5 border-l-2 border-gray-200 pl-2">
-              {item.evidencias.listra && <div><b className="text-gray-700">listra:</b> {item.evidencias.listra}</div>}
-              {item.evidencias.bolso && <div><b className="text-gray-700">bolso:</b> {item.evidencias.bolso}</div>}
-              {item.evidencias.elastico && <div><b className="text-gray-700">elástico:</b> {item.evidencias.elastico}</div>}
+          <details className="text-[11px] text-[#45556c]">
+            <summary className="cursor-pointer text-[#45556c] select-none">Por quê? (análise da IA)</summary>
+            <div className="mt-1 flex flex-col gap-0.5 border-l-2 border-[rgba(0,0,0,0.06)] pl-2">
+              {item.evidencias.listra && <div><b className="font-medium text-[#0d1118]">listra:</b> {item.evidencias.listra}</div>}
+              {item.evidencias.bolso && <div><b className="font-medium text-[#0d1118]">bolso:</b> {item.evidencias.bolso}</div>}
+              {item.evidencias.elastico && <div><b className="font-medium text-[#0d1118]">elástico:</b> {item.evidencias.elastico}</div>}
             </div>
           </details>
         )}
@@ -189,7 +193,7 @@ export default function VotingCard({ item, reacaoInicial, obsInicial, onReacao }
           onChange={(e) => setObs(e.target.value)}
           onBlur={salvarObs}
           placeholder="Observação (opcional)…"
-          className="w-full text-xs border border-gray-200 rounded-lg px-2 py-1.5 resize-none focus:outline-none focus:ring-2 focus:ring-blue-200"
+          className="w-full text-xs text-[#0d1118] bg-[rgba(255,255,255,0.6)] border border-[rgba(0,0,0,0.06)] rounded-lg px-2 py-1.5 resize-none focus:outline-none focus:ring-2 focus:ring-[rgba(0,122,255,0.3)] placeholder:text-[#90a1b9]"
           rows={2}
         />
       </div>
