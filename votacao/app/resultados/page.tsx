@@ -40,20 +40,20 @@ export default function Resultados() {
   const filtrados = filtro === "todos" ? votados : votados.filter((v) => v.reaction === filtro);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="h-full overflow-y-auto">
       <header className="bg-white border-b border-gray-200 sticky top-0 z-10 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 py-3 flex flex-col gap-3">
           <div className="flex items-center justify-between flex-wrap gap-2">
-            <h1 className="text-xl font-bold text-gray-800">Resultados</h1>
+            <h1 className="text-2xl text-gray-800">Resultados</h1>
             <div className="flex items-center gap-3">
               <span className="text-sm text-gray-500">{totalVotos} votos</span>
-              <a href="/" className="text-sm text-blue-600 hover:underline font-medium">Voltar</a>
+              <a href="/" className="text-sm text-blue-600 hover:underline">Voltar</a>
             </div>
           </div>
           <div className="flex gap-2 flex-wrap">
             <button
               onClick={() => setFiltro("todos")}
-              className={`px-3 py-1.5 rounded-lg text-sm font-medium ${
+              className={`px-3 py-1.5 rounded-lg text-xs ${
                 filtro === "todos" ? "bg-gray-800 text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"
               }`}
             >
@@ -63,7 +63,7 @@ export default function Resultados() {
               <button
                 key={r}
                 onClick={() => setFiltro(r)}
-                className={`px-3 py-1.5 rounded-lg text-sm font-medium ${
+                className={`px-3 py-1.5 rounded-lg text-xs ${
                   filtro === r ? "bg-gray-800 text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                 }`}
               >

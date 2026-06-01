@@ -173,7 +173,7 @@ export default function VotingCard({ item, reacaoInicial, obsInicial, onReacao }
               key={r.key}
               onClick={() => reagir(r.key)}
               disabled={loading}
-              className={`py-2 rounded-xl text-xs font-semibold transition-all ${
+              className={`py-2 rounded-xl text-xs transition-all ${
                 reacao === r.key ? r.selected : r.base
               } ${loading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
             >

@@ -1,15 +1,14 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
+  --background: #f9fafb;
   --foreground: #171717;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-poppins);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -19,8 +18,18 @@
   }
 }
 
+html,
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-poppins), "Poppins", system-ui, sans-serif;
+}
+
+/* Ícones de lixeira: sempre laranja */
+.trash-icon,
+[data-icon="trash"],
+svg.trash-icon {
+  color: rgb(255, 149, 0) !important;
+  fill: rgb(255, 149, 0) !important;
+  stroke: rgb(255, 149, 0) !important;
 }

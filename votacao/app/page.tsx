@@ -58,7 +58,7 @@ export default function Home() {
   const botao = (f: Filtro, label: string) => (
     <button
       onClick={() => setFiltro(f)}
-      className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+      className={`px-3 py-1.5 rounded-lg text-xs transition-colors ${
         filtro === f ? "bg-gray-800 text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"
       }`}
     >
@@ -69,7 +69,7 @@ export default function Home() {
   const abaLoja = (l: Loja, label: string) => (
     <button
       onClick={() => setLoja(l)}
-      className={`px-5 py-2.5 rounded-t-lg text-sm font-semibold transition-colors border-b-2 ${
+      className={`px-5 py-2.5 rounded-t-lg text-xs transition-colors border-b-2 ${
         loja === l
           ? "bg-white text-gray-900 border-blue-500"
           : "bg-transparent text-gray-500 hover:text-gray-700 border-transparent"
@@ -80,7 +80,7 @@ export default function Home() {
   );
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="h-full overflow-y-auto">
       <div className="bg-gray-100 border-b border-gray-200 sticky top-0 z-20">
         <div className="max-w-7xl mx-auto px-4 flex gap-1 items-end">
           {abaLoja("sundek", "Sundek")}
@@ -90,7 +90,7 @@ export default function Home() {
 
       {loja === "ville" ? (
         <main className="max-w-7xl mx-auto px-4 py-20 text-center text-gray-500">
-          <h2 className="text-2xl font-bold text-gray-700 mb-2">Ville</h2>
+          <h2 className="text-2xl text-gray-700 mb-2">Ville</h2>
           <p>Em breve.</p>
         </main>
       ) : (
@@ -98,12 +98,12 @@ export default function Home() {
       <header className="bg-white border-b border-gray-200 sticky top-[49px] z-10 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 py-3 flex flex-col gap-2">
           <div className="flex items-center justify-between flex-wrap gap-2">
-            <h1 className="text-xl font-bold text-gray-800">
+            <h1 className="text-2xl text-gray-800">
               Sundek · Candidatos a compra
             </h1>
             <div className="flex items-center gap-3">
               <span className="text-sm text-gray-500">{votados}/{items.length} avaliados</span>
-              <a href="/resultados" className="text-sm text-blue-600 hover:underline font-medium">
+              <a href="/resultados" className="text-sm text-blue-600 hover:underline">
                 Ver resultados
               </a>
             </div>
