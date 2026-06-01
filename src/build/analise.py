@@ -67,6 +67,34 @@ TIPO_LABELS = {
     "indefinido": "Indefinido (foto ruim)",
 }
 
+# Como cada componente do score chegou no valor (regras de score.py / manual).
+_PTS_LABEL = {"tier": "cor", "tamanho": "tam", "elastico": "elástico",
+              "etiqueta": "etiqueta", "condicao": "condição", "listra_bonus": "listra",
+              "preco": "preço"}
+
+
+def _explicacao_score(s: dict) -> str:
+    """Linha legível de COMO o score foi formado + o que falta (p/ casos 'score baixo')."""
+    bd = s.get("breakdown") or {}
+    if not bd:
+        return ""
+    partes = []
+    for k in ("tier", "tamanho", "elastico", "etiqueta", "condicao", "listra_bonus", "preco"):
+        if k in bd:
+            v = bd[k]
+            partes.append(f"{_PTS_LABEL.get(k, k)} {'+' if v >= 0 else ''}{v}")
+    linha = " · ".join(partes)
+    score = s.get("score", 0)
+    teto = s.get("teto")
+    extra = ""
+    # descartado SEM veto (só score baixo) → mostra o que faltou p/ barganha (45)
+    if s.get("decisao") == "descartado" and not s.get("motivo_exclusao"):
+        falta = 45 - score
+        if falta > 0:
+            extra = f" — faltou <b>{falta}</b> p/ barganha (subiria com M, etiqueta, ou preço menor)"
+    teto_txt = f" · teto €{teto}" if teto else ""
+    return f'<div class="bd">score <b>{score}</b>{teto_txt}: {linha}{extra}</div>'
+
 
 def main() -> None:
     itens = json.loads((DATA / "coleta-classificada.json").read_text())
@@ -194,6 +222,7 @@ def main() -> None:
     <div class="meta">{preco} · {tam} · {score_html}</div>
     <div class="tags">{''.join(tags)}</div>
     {motivo_html}
+    {_explicacao_score(s)}
     <div class="evid">{evid}</div>
     <div class="feedback">
       <button class="disagree-btn" data-id="{item_id}">⚠ Discordo</button>
@@ -339,6 +368,9 @@ details.sub summary {{ padding:10px 14px; font-size:13px; font-weight:500; }}
 .tag.cor-ok {{ background:#fde68a; color:#713f12; }}
 .tag.cor-ruim {{ background:#fecaca; color:#7f1d1d; }}
 .motivo {{ color:#7f1d1d; font-size:12px; font-style:italic; margin-top:4px; }}
+.bd {{ color:#3730a3; background:#eef2ff; border-radius:5px; padding:4px 8px;
+  font-size:11px; margin-top:5px; line-height:1.5; }}
+.bd b {{ color:#1e1b4b; }}
 .evid {{ color:#666; font-size:11px; line-height:1.5; margin-top:6px;
   padding-top:6px; border-top:1px dashed #ddd; }}
 .evid b {{ color:#333; }}
