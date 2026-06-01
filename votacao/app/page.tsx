@@ -118,7 +118,7 @@ export default function Home() {
           {loja === "sundek" ? (
             <>
               <h1 className="text-2xl text-[#f5f5f7] leading-tight">
-                Sundek · Candidatos a compra
+                Sundek
               </h1>
               <p className={`text-xs ${TEXT_SECONDARY}`}>
                 Só os{" "}
