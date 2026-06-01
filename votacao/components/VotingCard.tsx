@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Image from "next/image";
 import { Item, Reaction, REACTIONS } from "@/lib/types";
 
@@ -42,6 +42,19 @@ export default function VotingCard({ item, reacaoInicial, obsInicial, onReacao }
     }).catch(() => {});
   }
 
+  const nFotos = item.fotos.length;
+  const irFoto = (delta: number) => setFotoIdx((i) => (i + delta + nFotos) % nFotos);
+  const touchX = useRef<number | null>(null);
+  function onTouchStart(e: React.TouchEvent) {
+    touchX.current = e.touches[0].clientX;
+  }
+  function onTouchEnd(e: React.TouchEvent) {
+    if (touchX.current === null || nFotos <= 1) return;
+    const dx = e.changedTouches[0].clientX - touchX.current;
+    if (Math.abs(dx) > 35) irFoto(dx < 0 ? 1 : -1);
+    touchX.current = null;
+  }
+
   const foto = item.fotos[fotoIdx] ?? item.fotos[0];
   const compravel = item.decisao === "compravel";
 
@@ -52,23 +65,48 @@ export default function VotingCard({ item, reacaoInicial, obsInicial, onReacao }
       }`}
     >
       {/* Foto */}
-      <div className="relative w-full aspect-square bg-gray-100">
+      <div
+        className="relative w-full aspect-square bg-gray-100 select-none"
+        onTouchStart={onTouchStart}
+        onTouchEnd={onTouchEnd}
+      >
         {foto ? (
           <Image src={foto} alt={item.titulo} fill className="object-cover" unoptimized />
         ) : (
           <div className="flex items-center justify-center h-full text-gray-400 text-sm">Sem foto</div>
         )}
-        {item.fotos.length > 1 && (
-          <div className="absolute bottom-2 left-0 right-0 flex justify-center gap-1">
-            {item.fotos.map((_, i) => (
-              <button
-                key={i}
-                onClick={() => setFotoIdx(i)}
-                aria-label={`foto ${i + 1}`}
-                className={`w-2 h-2 rounded-full ${i === fotoIdx ? "bg-white" : "bg-white/50"}`}
-              />
-            ))}
-          </div>
+        {nFotos > 1 && (
+          <>
+            {/* Setas (toque/clique) */}
+            <button
+              onClick={() => irFoto(-1)}
+              aria-label="foto anterior"
+              className="absolute left-1.5 top-1/2 -translate-y-1/2 w-9 h-9 flex items-center justify-center rounded-full bg-black/45 text-white text-xl leading-none active:bg-black/70 hover:bg-black/60"
+            >
+              ‹
+            </button>
+            <button
+              onClick={() => irFoto(1)}
+              aria-label="próxima foto"
+              className="absolute right-1.5 top-1/2 -translate-y-1/2 w-9 h-9 flex items-center justify-center rounded-full bg-black/45 text-white text-xl leading-none active:bg-black/70 hover:bg-black/60"
+            >
+              ›
+            </button>
+            {/* Contador + dots */}
+            <span className="absolute top-2 right-2 bg-black/50 text-white text-[10px] px-1.5 py-0.5 rounded-full">
+              {fotoIdx + 1}/{nFotos}
+            </span>
+            <div className="absolute bottom-2 left-0 right-0 flex justify-center gap-1">
+              {item.fotos.map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => setFotoIdx(i)}
+                  aria-label={`foto ${i + 1}`}
+                  className={`w-2 h-2 rounded-full ${i === fotoIdx ? "bg-white" : "bg-white/50"}`}
+                />
+              ))}
+            </div>
+          </>
         )}
         {/* Badge decisão + score */}
         <div className="absolute top-2 left-2 flex gap-1">
