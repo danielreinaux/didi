@@ -10,12 +10,17 @@ Se subir de tier, aumente os limites (Tier 2: gpt-4o 450K → pode quase zerar).
 import threading
 import time
 
-# Intervalo mínimo entre chamadas (segundos).
-# Chamadas de visão são pesadas: mini ~18-20K tokens, gpt-4o ~14-18K.
-# gpt-4o: 30K TPM ÷ ~16K/chamada ≈ 1.8/min → 38s de folga.
-# mini:  200K TPM ÷ ~19K/chamada ≈ 10/min → 9s de folga.
-INTERVALO_GPT4O = 38.0
-INTERVALO_MINI = 13.0
+# Intervalo mínimo entre chamadas (segundos). Calibrado pelos limites REAIS da
+# conta (confirmados por header e por teste de rajada: 45 chamadas concorrentes,
+# 0x 429). NÃO é Tier 1.
+#   gpt-4o-mini: 2.000.000 TPM, 5000 req/min
+#   gpt-4o:        450.000 TPM, 5000 req/min
+# Chamadas de visão: mini ~18-20K tokens, gpt-4o ~14-20K.
+#   gpt-4o: p/ não estourar 450K TPM com ~20K/chamada → 22/min (2.7s). Usamos 4s
+#           de margem (~15/min, ~300K TPM).
+#   mini:   2M TPM dá folga enorme; 1.5s (~40/min) fica muito longe do teto.
+INTERVALO_GPT4O = 4.0
+INTERVALO_MINI = 1.5
 
 _lock_4o = threading.Lock()
 _lock_mini = threading.Lock()
