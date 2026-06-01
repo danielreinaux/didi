@@ -19,41 +19,39 @@ Para o short Sundek nas fotos, decidir:
 
 ## A listra Sundek autêntica
 
-Conjunto de MÚLTIPLAS faixas paralelas adjacentes, tipicamente **2 a 4 cores
-DIFERENTES** em sequência, que correm **VERTICALMENTE** no painel
-TRASEIRO/LATERAL do short, do cós até a barra. É um elemento gráfico DISTINTO
-sobre o tecido base — o olho percebe um "conjunto arco-íris" sobre a costura.
+A Sundek tem DUAS formas de listra lateral, **AMBAS válidas como listra Sundek**:
 
-Combinações típicas do histórico de 380 peças:
-- vermelho + branco + azul (a clássica "americana")
-- amarelo + laranja + vermelho (sunset)
-- verde + amarelo + verde claro (verão)
-- preto + cinza + branco
-- vermelho + amarelo + verde + azul (4 cores, vintage)
+**(A) Listra COLORIDA ("rainbow")** — 2 a 4 cores DIFERENTES em faixas paralelas
+adjacentes. Ex. do histórico: vermelho+branco+azul, amarelo+laranja+vermelho,
+verde+amarelo+verde claro, preto+cinza+branco.
 
-Características obrigatórias (TODAS precisam estar presentes):
-1. MÚLTIPLAS faixas paralelas adjacentes
-2. Mínimo **2 cores DIFERENTES** entre si (não só "branco e branco")
-3. Localização: lateral/perna do short (painel traseiro, costura lateral, ou
-   ao redor da abertura da perna / do bolso)
-4. Corre AO LONGO da lateral/perna (do cós à barra). ⚠️ Pode PARECER horizontal
-   ou curva na foto se a peça está DOBRADA/deitada ou se acompanha a abertura da
-   perna — isso NÃO desqualifica. Orientação não é critério confiável.
-5. É elemento gráfico DESTACADO sobre o tecido base
+**(B) "Racing stripe" BRANCA/CLARA** — uma FAIXA branca (ou clara), sozinha ou em
+par, frequentemente com um FIO FINO escuro (preto/navy) na borda. Muito comum nos
+modelos vintage. **Conta como listra Sundek mesmo sendo branca / de uma cor só.**
+
+Ambas correm pela LATERAL/PERNA — no painel traseiro, na costura lateral, ou
+**contornando a abertura da perna / o bolso**.
+
+Características (basta ser UMA faixa distinta na lateral/perna):
+1. É uma FAIXA/BANDA linear distinta sobre o tecido — colorida (rainbow) OU
+   branca/clara (racing stripe), com presença visível (não é só um fio de costura).
+2. Localização: lateral/perna (painel traseiro, costura lateral, ou contornando a
+   abertura da perna/bolso). **NÃO no cós (cintura).**
+3. Orientação NÃO importa: vertical, curva, ou aparentando horizontal (peça
+   dobrada) — tudo conta.
 
 ## Armadilhas (NÃO são listra Sundek)
 
-### #1 — PIPING de costura (UMA cor só)
-Linha/cordão fino de **UMA ÚNICA cor** que segue a costura, contorna barra/aberturas.
-É decoração de costura, não listra. Ex: cordão laranja com linha laranja contornando.
-⚠️ Só conta como piping se for de UMA cor. **Duas ou mais cores DIFERENTES
-adjacentes NÃO são piping** — mesmo que sigam a costura ou contornem o bolso.
+### #1 — Cordão / jareta / costura pura (SEM faixa)
+O CORDÃO (drawstring) que sai do cós, ou a linha de costura que só fecha a borda
+SEM formar uma faixa visível. Isso não é listra.
+⚠️ NÃO confunda com a racing stripe: se há uma FAIXA branca/clara com presença
+visível (largura de stripe) correndo pela lateral/perna ou contornando o bolso,
+É listra Sundek — mesmo branca, mesmo com fio escuro fino na borda, mesmo curva.
 
-### #2 — Múltiplas linhas da MESMA cor
-Duas linhas brancas paralelas → ainda é só "branco" (1 cor) → PIPING.
-Três linhas pretas → ainda é só "preto" (1 cor) → PIPING.
-**Regra**: se todas as faixas são da MESMA COR (mesmo variando espessura), é
-piping decorativo.
+### #2 — (reservado)
+Faixas brancas/claras (sozinhas, em par, ou com fio escuro na borda) **CONTAM como
+listra** (racing stripe). Não as descarte por serem "uma cor só".
 
 ### #3 — Faixas no CÓS (cintura)
 Muitos Sundeks têm o cós com 2-3 faixas paralelas HORIZONTAIS coloridas
@@ -96,25 +94,27 @@ Conte INDIVIDUALMENTE cada faixa adjacente paralela. Liste a cor exata de cada
 uma. Cores semelhantes mas diferentes (verde escuro vs verde claro) contam
 como cores DIFERENTES.
 
-## Passo 3 — CHECK DE ARMADILHAS
+## Passo 3 — CHECK
 Pergunte a si mesmo:
-- As faixas estão no CÓS (horizontal) ou no painel traseiro/lateral (vertical)?
-- Todas as faixas são da MESMA cor (espessuras diferentes)?
-- É linha única seguindo a costura?
-- É faixa horizontal na barra?
-Se SIM pra qualquer uma → é piping ou decoração, não listra.
+- A faixa está no CÓS (cintura) ou cruzando o MEIO do corpo? → NÃO é listra.
+- É só o cordão/jareta, ou costura de borda SEM faixa visível? → NÃO é listra.
+- Caso contrário (há uma faixa distinta na lateral/perna — colorida OU branca/clara)
+  → É listra Sundek.
 
 ## Passo 4 — VEREDITO
-REGRA DOMINANTE (a COR manda sobre a forma): se você contou **2+ cores DIFERENTES**
-em faixas adjacentes na LATERAL/PERNA (inclusive ao redor da abertura da perna ou do
-bolso) → `e_listra_sundek = true`, `e_piping = false`. Parecer horizontal (peça
-dobrada) ou curva (acompanha a costura) NÃO derruba isso.
+`e_listra_sundek = true` se há uma FAIXA distinta na LATERAL/PERNA (incluindo
+contornando a perna/bolso), seja:
+- COLORIDA: 2+ cores diferentes (rainbow), OU
+- BRANCA/CLARA: racing stripe (sozinha ou em par, com ou sem fio escuro na borda).
+Orientação (curva, ou horizontal por estar dobrada) NÃO desqualifica.
 
-Aplique então, em ordem:
-- Faixa multicolor SÓ no cós (cintura) ou cruzando o MEIO do corpo → listra_sundek = false
-- 2+ cores DIFERENTES na lateral/perna → listra_sundek = true (piping = false)
-- 1 cor só (qualquer nº de linhas) ou linha única → e_piping = true → listra_sundek = false
-- nenhuma faixa / < 2 cores → listra_sundek = false
+`e_listra_sundek = false` (e_piping=true quando aplicável) se:
+- só o cordão/jareta, ou costura de borda sem faixa visível;
+- faixa apenas no cós (cintura) ou cruzando o meio do corpo;
+- tecido liso, sem nenhuma faixa na lateral/perna.
+
+⚠️ Preencha `cores` com as cores da faixa — inclua **"branca"** quando for a racing
+stripe branca (não deixe `cores` vazio se você viu uma faixa branca).
 
 ## Passo 5 — BICOLOR
 Pergunte: "O CORPO tem 2 zonas LARGAS de cor sólida diferentes (sem contar
@@ -148,21 +148,22 @@ claro) no painel lateral traseiro, do cós até a barra.
 }
 ```
 
-## Exemplo B — Piping mascarado (mesma cor)
-Fotos: short azul marinho com 2 linhas brancas finas paralelas na lateral.
+## Exemplo B — Racing stripe BRANCA (conta como listra)
+Fotos: short azul marinho com uma faixa branca (fio preto fino na borda) que
+desce pela lateral e contorna o bolso traseiro.
 ```json
 {
-  "pensamento_inspecao": "Duas linhas brancas finas paralelas seguindo a costura lateral",
-  "pensamento_contagem": "2 faixas — ambas brancas",
-  "pensamento_armadilhas": "ARMADILHA #2: mesma cor (branco) em ambas → piping",
-  "pensamento_veredito": "Mesma cor → piping decorativo, não listra",
-  "pensamento_bicolor": "Corpo azul marinho uniforme",
-  "pensamento_self_check": "Descartei armadilha #2; só 1 cor presente",
-  "cores": ["branco", "branco"],
-  "e_piping": true,
-  "e_listra_sundek": false,
+  "pensamento_inspecao": "Faixa branca com fio escuro fino na borda, na lateral, contornando o bolso traseiro",
+  "pensamento_contagem": "1 faixa branca (racing stripe) com borda escura fina",
+  "pensamento_armadilhas": "Não é o cós nem o cordão; é uma faixa com presença, na lateral/perna → racing stripe",
+  "pensamento_veredito": "Racing stripe branca na lateral → listra Sundek (branca conta)",
+  "pensamento_bicolor": "Corpo azul marinho uniforme; a faixa é estreita",
+  "pensamento_self_check": "Faixa distinta na lateral, não é cordão nem cós — é listra",
+  "cores": ["branca"],
+  "e_piping": false,
+  "e_listra_sundek": true,
   "bicolor": false,
-  "evidencia": "2 linhas brancas finas paralelas, mesma cor — piping decorativo"
+  "evidencia": "Racing stripe branca (borda escura fina) na lateral contornando o bolso"
 }
 ```
 
