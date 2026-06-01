@@ -34,6 +34,25 @@ def _destaques(it: dict) -> list[str]:
     return d
 
 
+_PTS_LABEL = {"tier": "cor", "tamanho": "tam", "elastico": "elástico",
+              "etiqueta": "etiqueta", "condicao": "condição", "listra_bonus": "listra",
+              "preco": "preço"}
+
+
+def _por_que(it: dict) -> str:
+    """Frase de como o score foi formado (mesma lógica do analise.html)."""
+    s = it.get("score") or {}
+    bd = s.get("breakdown") or {}
+    partes = []
+    for k in ("tier", "tamanho", "elastico", "etiqueta", "condicao", "listra_bonus", "preco"):
+        if k in bd:
+            v = bd[k]
+            partes.append(f"{_PTS_LABEL.get(k, k)} {'+' if v >= 0 else ''}{v}")
+    linha = " · ".join(partes)
+    teto = s.get("teto")
+    return f"score {s.get('score', 0)}" + (f" (teto €{teto})" if teto else "") + (f": {linha}" if linha else "")
+
+
 def main() -> None:
     itens = json.loads((DATA / "coleta-classificada.json").read_text())
     cand = []
@@ -44,6 +63,13 @@ def main() -> None:
         if it.get("status") in ("vendido", "inativo"):
             continue
         cor = it.get("cor") if isinstance(it.get("cor"), dict) else {}
+        cl = it.get("classificacao") or {}
+        el = it.get("elastico") or {}
+        evid = {
+            "listra": cl.get("listra_evidencia"),
+            "bolso": cl.get("bolso_evidencia"),
+            "elastico": el.get("evidencia"),
+        }
         cand.append({
             "id": str(it.get("id") or ""),
             "url": it.get("url") or "",
@@ -57,7 +83,10 @@ def main() -> None:
             "tier_ia": cor.get("tier_final") or cor.get("tier") or "",
             "decisao": s.get("decisao"),
             "score": s.get("score", 0),
+            "teto": s.get("teto"),
             "destaques": _destaques(it),
+            "por_que": _por_que(it),
+            "evidencias": {k: v for k, v in evid.items() if v},
         })
     # comprável primeiro, depois por score desc
     cand.sort(key=lambda x: (0 if x["decisao"] == "compravel" else 1, -x["score"]))

@@ -13,7 +13,10 @@ export interface Item {
   tier_ia: string;
   decisao: Decisao;
   score: number;
+  teto?: number;
   destaques: string[];
+  por_que?: string;
+  evidencias?: { listra?: string; bolso?: string; elastico?: string };
 }
 
 export type Reaction = "gostei" | "nao_gostei" | "discordo";

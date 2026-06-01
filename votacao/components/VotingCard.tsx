@@ -111,6 +111,23 @@ export default function VotingCard({ item, reacaoInicial, obsInicial, onReacao }
           </div>
         )}
 
+        {/* Por quê — como o score/preço foi formado */}
+        {item.por_que && (
+          <div className="text-[11px] text-indigo-800 bg-indigo-50 rounded-lg px-2 py-1 leading-snug">
+            {item.por_que}
+          </div>
+        )}
+        {item.evidencias && (item.evidencias.listra || item.evidencias.bolso || item.evidencias.elastico) && (
+          <details className="text-[11px] text-gray-500">
+            <summary className="cursor-pointer text-gray-600 select-none">Por quê? (análise da IA)</summary>
+            <div className="mt-1 flex flex-col gap-0.5 border-l-2 border-gray-200 pl-2">
+              {item.evidencias.listra && <div><b className="text-gray-700">listra:</b> {item.evidencias.listra}</div>}
+              {item.evidencias.bolso && <div><b className="text-gray-700">bolso:</b> {item.evidencias.bolso}</div>}
+              {item.evidencias.elastico && <div><b className="text-gray-700">elástico:</b> {item.evidencias.elastico}</div>}
+            </div>
+          </details>
+        )}
+
         {/* Botões de reação */}
         <div className="mt-auto grid grid-cols-3 gap-1.5 pt-2">
           {REACTIONS.map((r) => (
