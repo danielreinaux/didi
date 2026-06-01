@@ -1,81 +1,101 @@
-# Design System
+# Design System Carbon
 
 ## Filosofia
 
-Inspirado nos princípios da Apple: neutralidade, elegância e sofisticação. Cores suaves e profissionais que transmitem confiança sem cansar a vista em sessões longas.
+Estética única, escura e densa. Inspirada em interfaces "carbon": fundo quase preto com um leve gradiente radial, vidro fosco translúcido sobre o fundo, e poucos acentos neon (ciano, verde, âmbar, magenta) usados com economia para guiar a atenção. **Não existe light mode** — a interface é uma só.
 
-## Paleta de Cores
+## Paleta
 
-| Cor | Dark Mode | Light Mode | Uso |
-|---|---|---|---|
-| Azul Primário | `rgb(94,158,214)` | `rgb(0,122,255)` | Ações primárias, links, elementos ativos |
-| Cinza Neutro | `rgb(142,142,147)` | `rgb(142,142,147)` | Elementos secundários, ícones desabilitados |
-| Roxo Terciário | `rgb(175,82,222)` | `rgb(175,82,222)` | Favoritos, destaques, canais de mídia |
-| Verde Sucesso | `rgb(52,199,89)` | `rgb(52,199,89)` | Aprovações, status ativo, trending up |
-| Laranja Alerta | `rgb(255,149,0)` | `rgb(255,149,0)` | Alertas, reprovações, ações destrutivas |
+| Token | Valor | Uso |
+|---|---|---|
+| Primário (ciano) | `#00d9ff` | Ações primárias, links, elementos ativos, foco |
+| Sucesso | `#00ff88` | Aprovações, "comprável", trending up |
+| Alerta | `#ffaa00` | Alertas, "barganha", ações destrutivas, ícones de lixeira |
+| Info / Destaque | `#ff66e2` | Anotações da IA, badges secundárias, destaques pontuais |
+| Neutro | `#6b6b78` | Elementos desabilitados, ícones secundários, "discordo" |
+
+### Variantes derivadas
+
+- Primário (soft): `rgba(0,217,255,0.12)` — fundos de tags, hovers sutis
+- Gradiente ativo: `linear-gradient(to right, rgba(0,217,255,0.5), rgba(0,255,170,0.3))` — exclusivo para estado ativo (segmented, pills selecionadas)
 
 ## Texto
 
-| Nível | Dark | Light | Tamanho |
-|---|---|---|---|
-| Primário | `#ffffff` | `#0d1118` | Títulos, valores |
-| Secundário | `#90a1b9` | `#45556c` | Labels, descrições |
-| Terciário | `#90a1b9` | `#90a1b9` | Placeholders, hints |
+| Nível | Cor | Uso |
+|---|---|---|
+| Primário | `#f5f5f7` | Títulos, valores |
+| Secundário | `#b8b8c0` | Labels, descrições, meta |
+| Terciário | `#6b6b78` | Placeholders, hints, contadores |
 
 ## Backgrounds
 
-| Elemento | Dark | Light |
-|---|---|---|
-| Principal | `#0a0f1a` | `#f5f7fa` |
-| Cards | `rgba(255,255,255,0.03)` + `backdrop-blur-xl` | `rgba(255,255,255,0.7)` + `backdrop-blur-[40px]` |
-| Bordas | `rgba(255,255,255,0.1)` | `rgba(0,0,0,0.06)` |
+| Elemento | Valor |
+|---|---|
+| Principal | `#0a0a0c` + `radial-gradient(ellipse at top, #1a1a1e 0%, #0a0a0c 60%)` aplicado no `body` |
+| Cards | `rgba(255,255,255,0.025)` + `backdrop-blur-[40px]` |
+| Bordas | `rgba(255,255,255,0.07)` |
+| Pill / chip neutro | `rgba(255,255,255,0.04)` |
+| Sombra de card | `0px 8px 32px 0px rgba(0,0,0,0.6)` |
 
 ## Componentes
 
-### Botão Primário
+### Card (glassmorphism)
+
 ```tsx
-className={`px-4 py-2 rounded-lg text-xs transition-all ${
-  isDark 
-    ? 'bg-gradient-to-r from-[rgba(94,158,214,0.6)] to-[rgba(142,142,147,0.4)] text-white hover:opacity-90' 
-    : 'bg-gradient-to-r from-[rgba(0,122,255,0.4)] to-[rgba(142,142,147,0.3)] text-[#0d1118] hover:opacity-90'
-}`}
+className="rounded-xl backdrop-blur-[40px] bg-[rgba(255,255,255,0.025)] border border-[rgba(255,255,255,0.07)] shadow-[0px_8px_32px_0px_rgba(0,0,0,0.6)]"
 ```
 
-### Card Glassmorphism
+### Botão / pill — estado neutro
+
 ```tsx
-className={`rounded-xl backdrop-blur-[40px] ${
-  isDark
-    ? 'bg-[rgba(255,255,255,0.03)] border border-[rgba(255,255,255,0.1)] shadow-[0px_8px_32px_0px_rgba(0,0,0,0.4)]'
-    : 'bg-[rgba(255,255,255,0.7)] border border-[rgba(0,0,0,0.06)] shadow-[0px_4px_24px_0px_rgba(0,0,0,0.08)]'
-}`}
+className="px-3 py-1.5 rounded-lg text-xs bg-[rgba(255,255,255,0.04)] text-[#b8b8c0] hover:bg-[rgba(255,255,255,0.08)] hover:text-[#f5f5f7] transition-all"
+```
+
+### Botão / pill — estado ativo
+
+```tsx
+className="px-3 py-1.5 rounded-lg text-xs bg-gradient-to-r from-[rgba(0,217,255,0.5)] to-[rgba(0,255,170,0.3)] text-[#f5f5f7] shadow-[0_1px_3px_rgba(0,0,0,0.4)] transition-all"
+```
+
+### Segmented control
+
+```tsx
+<div className="inline-flex p-1 rounded-xl bg-[rgba(255,255,255,0.04)] border border-[rgba(255,255,255,0.07)]">
+  <button className="px-5 py-1.5 rounded-lg text-xs ..." />  {/* aplica neutro ou ativo */}
+</div>
+```
+
+### Header sticky
+
+```tsx
+<header className="sticky top-0 z-20 backdrop-blur-[40px] bg-[rgba(10,10,12,0.8)] border-b border-[rgba(255,255,255,0.07)]">
 ```
 
 ### Modal
+
 ```tsx
-<div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-  <div className={`w-full max-w-md rounded-xl p-6 ${
-    isDark
-      ? 'bg-[rgba(13,17,24,0.95)] border border-[rgba(255,255,255,0.1)]'
-      : 'bg-white border border-[rgba(0,0,0,0.1)]'
-  }`}>
+<div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+  <div className="w-full max-w-md rounded-xl p-6 bg-[rgba(20,20,24,0.95)] border border-[rgba(255,255,255,0.1)] backdrop-blur-[40px]">
 ```
 
 ## Regras
 
-- Fonte: Poppins (padrão global)
-- Títulos: `text-2xl`, cor sólida, sem gradiente, sem bold
-- Botões: `text-xs`, sem `font-medium`
-- Ícones de lixeira: sempre laranja (`rgb(255,149,0)`), nunca rosa
-- Background de página: apenas `className="h-full overflow-y-auto"` (tema global gerencia)
-- Gradientes: apenas em estados ativos e avatares, nunca em texto
+- **Fonte:** Poppins (padrão global)
+- **Títulos:** `text-2xl`, cor sólida (`#f5f5f7`), sem gradiente, sem bold
+- **Botões:** `text-xs`, sem `font-medium` no estado base
+- **Ícones de lixeira:** sempre âmbar de alerta (`#ffaa00`), nunca rosa nem vermelho
+- **Background de página:** apenas `className="h-full overflow-y-auto"` (tema global aplica o fundo no `body`)
+- **Gradientes:** apenas em estados ativos (pills, segmented control selecionado) e em avatares/badges decorativos. Nunca em texto.
+- **Backdrop blur:** padrão `backdrop-blur-[40px]` em cards e headers; modais usam `backdrop-blur-sm` no overlay.
 
 ## Cores Proibidas
 
-- `#00e5cc`, `#00a88c` (verde água antigo)
-- `#ff0080`, `#c00060` (rosa antigo)
-- `#8b5cf6` (roxo antigo — usar `rgb(175,82,222)`)
-- `#0080ff` (azul antigo — usar `rgb(94,158,214)` / `rgb(0,122,255)`)
-
+- `#ffffff` puro como fundo (a interface é escura)
+- Cinzas claros como base (`bg-gray-50/100/200`, `bg-white`)
+- Light text-grays (`text-gray-800/900`) — sem light mode
+- Rosa quente fora de `#ff66e2` (info magenta controlado): `#ff0080`, `#c00060`, `bg-pink-*`
+- Vermelho saturado puro (`bg-red-*` em estado solid) — para "negativo" use o âmbar `#ffaa00`
+- Verde água antigo `#00e5cc`, `#00a88c` — substituir por `#00ff88`
 
 ---
 
@@ -97,37 +117,23 @@ Isso se aplica especialmente a:
 O container do modal/drawer nunca deve ultrapassar a viewport. Use `max-h` com margem de segurança e delegue o scroll para a área de conteúdo interno, nunca para o painel inteiro.
 
 ```tsx
-// Container do modal
 <div className="flex flex-col max-h-[90vh] overflow-hidden rounded-xl">
-  {/* Header fixo */}
   <div className="flex-shrink-0 p-5 border-b ...">...</div>
-
-  {/* Corpo com scroll interno se necessário */}
   <div className="flex-1 overflow-y-auto p-5">...</div>
-
-  {/* Footer fixo com ações */}
   <div className="flex-shrink-0 p-4 border-t ...">...</div>
 </div>
 ```
 
 **2. Layout em colunas para modais com múltiplas seções**
 
-Quando o conteúdo tem duas áreas distintas (ex: seleção de área + seleção de usuário), use `flex-row` em vez de empilhar verticalmente. Isso reduz a altura necessária e mantém tudo visível.
-
 ```tsx
 <div className="flex flex-row gap-0 flex-1 overflow-hidden">
-  <div className="w-52 flex-shrink-0 border-r overflow-y-auto p-4">
-    {/* Painel esquerdo */}
-  </div>
-  <div className="flex-1 min-w-0 overflow-y-auto p-4">
-    {/* Painel direito */}
-  </div>
+  <div className="w-52 flex-shrink-0 border-r overflow-y-auto p-4">...</div>
+  <div className="flex-1 min-w-0 overflow-y-auto p-4">...</div>
 </div>
 ```
 
 **3. Evitar altura fixa em containers internos**
-
-Não use `h-[Xpx]` fixo em containers que dependem do conteúdo. Prefira `min-h-0` + `flex-1` para que o layout se adapte ao espaço disponível.
 
 ```tsx
 // ❌ Evitar
@@ -139,8 +145,4 @@ Não use `h-[Xpx]` fixo em containers que dependem do conteúdo. Prefira `min-h-
 
 **4. Ações sempre visíveis**
 
-Botões de confirmação/cancelamento devem estar no footer fixo (`flex-shrink-0`), nunca no final de uma lista scrollável. O usuário não deve precisar rolar para confirmar uma ação.
-
-### Referência de implementação
-
-O `DirectReassignmentModal` é o exemplo canônico desta política: layout em duas colunas (`flex-row`), header e footer fixos com `flex-shrink-0`, e `min-w-0` no painel direito para evitar overflow.
+Botões de confirmação/cancelamento devem estar no footer fixo (`flex-shrink-0`), nunca no final de uma lista scrollável.

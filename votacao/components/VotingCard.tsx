@@ -62,19 +62,19 @@ export default function VotingCard({ item, reacaoInicial, obsInicial, onReacao }
   return (
     <div
       className={`${CARD} overflow-hidden flex flex-col transition-all ${
-        reacao ? "ring-2 ring-[rgb(0,122,255)]" : ""
+        reacao ? "ring-2 ring-[#00d9ff]" : ""
       }`}
     >
       {/* Foto */}
       <div
-        className="relative w-full aspect-square bg-[rgba(0,0,0,0.04)] select-none"
+        className="relative w-full aspect-square bg-[rgba(255,255,255,0.03)] select-none"
         onTouchStart={onTouchStart}
         onTouchEnd={onTouchEnd}
       >
         {foto ? (
           <Image src={foto} alt={item.titulo} fill className="object-cover" unoptimized />
         ) : (
-          <div className="flex items-center justify-center h-full text-[#90a1b9] text-sm">Sem foto</div>
+          <div className="flex items-center justify-center h-full text-[#6b6b78] text-sm">Sem foto</div>
         )}
         {nFotos > 1 && (
           <>
@@ -112,8 +112,8 @@ export default function VotingCard({ item, reacaoInicial, obsInicial, onReacao }
         {/* Badge decisão + score */}
         <div className="absolute top-2 left-2 flex gap-1">
           <span
-            className={`text-xs px-2 py-0.5 rounded-full text-white ${
-              compravel ? "bg-[rgb(52,199,89)]" : "bg-[rgb(255,149,0)]"
+            className={`text-xs px-2 py-0.5 rounded-full ${
+              compravel ? "bg-[#00ff88] text-[#07140a]" : "bg-[#ffaa00] text-[#1c1100]"
             }`}
           >
             {compravel ? "✓ Comprável" : "~ Barganha"} · {item.score}
@@ -127,16 +127,16 @@ export default function VotingCard({ item, reacaoInicial, obsInicial, onReacao }
           href={item.url}
           target="_blank"
           rel="noreferrer"
-          className="text-sm text-[#0d1118] line-clamp-2 hover:underline"
+          className="text-sm text-[#f5f5f7] line-clamp-2 hover:underline"
         >
           {item.titulo}
         </a>
-        <div className="flex gap-1.5 text-xs text-[#45556c] flex-wrap">
+        <div className="flex gap-1.5 text-xs text-[#b8b8c0] flex-wrap">
           <span>{item.tamanho}</span>
           <span>·</span>
           <span>{item.estado}</span>
           <span>·</span>
-          <span className="text-[#0d1118]">{item.preco_total || item.preco}</span>
+          <span className="text-[#f5f5f7]">{item.preco_total || item.preco}</span>
         </div>
 
         {/* Destaques (por que é candidato) */}
@@ -145,7 +145,7 @@ export default function VotingCard({ item, reacaoInicial, obsInicial, onReacao }
             {item.destaques.map((d, i) => (
               <span
                 key={i}
-                className="bg-[rgba(0,122,255,0.1)] text-[rgb(0,122,255)] text-[11px] px-2 py-0.5 rounded-full"
+                className="bg-[rgba(0,217,255,0.12)] text-[#00d9ff] text-[11px] px-2 py-0.5 rounded-full"
               >
                 {d}
               </span>
@@ -155,17 +155,17 @@ export default function VotingCard({ item, reacaoInicial, obsInicial, onReacao }
 
         {/* Por quê — como o score/preço foi formado */}
         {item.por_que && (
-          <div className="text-[11px] text-[rgb(175,82,222)] bg-[rgba(175,82,222,0.08)] rounded-lg px-2 py-1 leading-snug">
+          <div className="text-[11px] text-[#ff66e2] bg-[rgba(255,102,226,0.1)] rounded-lg px-2 py-1 leading-snug">
             {item.por_que}
           </div>
         )}
         {item.evidencias && (item.evidencias.listra || item.evidencias.bolso || item.evidencias.elastico) && (
-          <details className="text-[11px] text-[#45556c]">
-            <summary className="cursor-pointer text-[#45556c] select-none">Por quê? (análise da IA)</summary>
-            <div className="mt-1 flex flex-col gap-0.5 border-l-2 border-[rgba(0,0,0,0.06)] pl-2">
-              {item.evidencias.listra && <div><b className="font-medium text-[#0d1118]">listra:</b> {item.evidencias.listra}</div>}
-              {item.evidencias.bolso && <div><b className="font-medium text-[#0d1118]">bolso:</b> {item.evidencias.bolso}</div>}
-              {item.evidencias.elastico && <div><b className="font-medium text-[#0d1118]">elástico:</b> {item.evidencias.elastico}</div>}
+          <details className="text-[11px] text-[#b8b8c0]">
+            <summary className="cursor-pointer text-[#b8b8c0] select-none">Por quê? (análise da IA)</summary>
+            <div className="mt-1 flex flex-col gap-0.5 border-l-2 border-[rgba(255,255,255,0.07)] pl-2">
+              {item.evidencias.listra && <div><b className="font-medium text-[#f5f5f7]">listra:</b> {item.evidencias.listra}</div>}
+              {item.evidencias.bolso && <div><b className="font-medium text-[#f5f5f7]">bolso:</b> {item.evidencias.bolso}</div>}
+              {item.evidencias.elastico && <div><b className="font-medium text-[#f5f5f7]">elástico:</b> {item.evidencias.elastico}</div>}
             </div>
           </details>
         )}
@@ -193,7 +193,7 @@ export default function VotingCard({ item, reacaoInicial, obsInicial, onReacao }
           onChange={(e) => setObs(e.target.value)}
           onBlur={salvarObs}
           placeholder="Observação (opcional)…"
-          className="w-full text-xs text-[#0d1118] bg-[rgba(255,255,255,0.6)] border border-[rgba(0,0,0,0.06)] rounded-lg px-2 py-1.5 resize-none focus:outline-none focus:ring-2 focus:ring-[rgba(0,122,255,0.3)] placeholder:text-[#90a1b9]"
+          className="w-full text-xs text-[#f5f5f7] bg-[rgba(255,255,255,0.03)] border border-[rgba(255,255,255,0.07)] rounded-lg px-2 py-1.5 resize-none focus:outline-none focus:ring-2 focus:ring-[rgba(0,217,255,0.4)] placeholder:text-[#6b6b78]"
           rows={2}
         />
       </div>

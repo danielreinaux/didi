@@ -1,19 +1,23 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f5f7fa;
-  --foreground: #0d1118;
+  --background: #0a0a0c;
+  --foreground: #f5f5f7;
 
-  /* Aura — paleta (light mode) */
-  --aura-blue: rgb(0, 122, 255);
-  --aura-gray: rgb(142, 142, 147);
-  --aura-purple: rgb(175, 82, 222);
-  --aura-green: rgb(52, 199, 89);
-  --aura-orange: rgb(255, 149, 0);
+  /* Carbon — paleta única */
+  --carbon-cyan: #00d9ff;
+  --carbon-green: #00ff88;
+  --carbon-amber: #ffaa00;
+  --carbon-magenta: #ff66e2;
+  --carbon-neutral: #6b6b78;
 
-  --text-primary: #0d1118;
-  --text-secondary: #45556c;
-  --text-tertiary: #90a1b9;
+  --text-primary: #f5f5f7;
+  --text-secondary: #b8b8c0;
+  --text-tertiary: #6b6b78;
+
+  --card-bg: rgba(255,255,255,0.025);
+  --card-border: rgba(255,255,255,0.07);
+  --pill-bg: rgba(255,255,255,0.04);
 }
 
 @theme inline {
@@ -29,15 +33,17 @@ html {
 body {
   height: 100%;
   background: var(--background);
+  background-image: radial-gradient(ellipse at top, #1a1a1e 0%, #0a0a0c 60%);
+  background-attachment: fixed;
   color: var(--foreground);
   font-family: var(--font-poppins), "Poppins", system-ui, sans-serif;
 }
 
-/* Ícones de lixeira: sempre laranja, nunca rosa */
+/* Ícones de lixeira: sempre âmbar de alerta */
 .trash-icon,
 [data-icon="trash"],
 svg.trash-icon {
-  color: var(--aura-orange) !important;
-  fill: var(--aura-orange) !important;
-  stroke: var(--aura-orange) !important;
+  color: var(--carbon-amber) !important;
+  fill: var(--carbon-amber) !important;
+  stroke: var(--carbon-amber) !important;
 }

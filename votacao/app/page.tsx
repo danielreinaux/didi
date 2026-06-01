@@ -3,7 +3,13 @@
 import { useEffect, useState } from "react";
 import VotingCard from "@/components/VotingCard";
 import { Item, Reaction, REACTIONS } from "@/lib/types";
-import { ACTIVE_GRADIENT, TEXT_SECONDARY, TEXT_TERTIARY } from "@/lib/theme";
+import {
+  ACTIVE_GRADIENT,
+  PILL_NEUTRAL,
+  HEADER_BG,
+  TEXT_SECONDARY,
+  TEXT_TERTIARY,
+} from "@/lib/theme";
 
 type Filtro = "todos" | "compravel" | "medio" | "nao_votados";
 type Loja = "sundek" | "ville";
@@ -65,9 +71,7 @@ export default function Home() {
     <button
       onClick={() => setFiltro(f)}
       className={`px-3 py-1.5 rounded-lg text-xs transition-all ${
-        filtro === f
-          ? `${ACTIVE_GRADIENT} shadow-sm`
-          : "bg-[rgba(0,0,0,0.04)] text-[#45556c] hover:bg-[rgba(0,0,0,0.07)]"
+        filtro === f ? ACTIVE_GRADIENT : PILL_NEUTRAL
       }`}
     >
       {label}
@@ -76,20 +80,19 @@ export default function Home() {
 
   return (
     <div className="h-full overflow-y-auto">
-      {/* Cabeçalho — sempre visível */}
-      <header className="sticky top-0 z-20 backdrop-blur-[40px] bg-[rgba(245,247,250,0.8)] border-b border-[rgba(0,0,0,0.06)]">
+      <header className={`sticky top-0 z-20 ${HEADER_BG}`}>
         <div className="max-w-7xl mx-auto px-4 py-3 flex flex-col gap-3">
           {/* Linha 1: seletor de loja + atalho de resultados */}
           <div className="flex items-center justify-between gap-3 flex-wrap">
-            <div className="inline-flex p-1 rounded-xl bg-[rgba(0,0,0,0.04)] border border-[rgba(0,0,0,0.06)]">
+            <div className="inline-flex p-1 rounded-xl bg-[rgba(255,255,255,0.04)] border border-[rgba(255,255,255,0.07)]">
               {LOJAS.map((l) => (
                 <button
                   key={l.key}
                   onClick={() => setLoja(l.key)}
                   className={`px-5 py-1.5 rounded-lg text-xs transition-all ${
                     loja === l.key
-                      ? `${ACTIVE_GRADIENT} shadow-sm`
-                      : `${TEXT_SECONDARY} hover:text-[#0d1118]`
+                      ? ACTIVE_GRADIENT
+                      : `${TEXT_SECONDARY} hover:text-[#f5f5f7]`
                   }`}
                 >
                   {l.label}
@@ -104,30 +107,28 @@ export default function Home() {
               )}
               <a
                 href="/resultados"
-                className="text-xs text-[rgb(0,122,255)] hover:underline"
+                className="text-xs text-[#00d9ff] hover:underline"
               >
                 Ver resultados
               </a>
             </div>
           </div>
 
-          {/* Linha 2: título + contexto da loja */}
+          {/* Linha 2: título + contexto */}
           {loja === "sundek" ? (
             <>
-              <div className="flex items-end justify-between gap-3 flex-wrap">
-                <h1 className="text-2xl text-[#0d1118] leading-tight">
-                  Sundek · Candidatos a compra
-                </h1>
-              </div>
+              <h1 className="text-2xl text-[#f5f5f7] leading-tight">
+                Sundek · Candidatos a compra
+              </h1>
               <p className={`text-xs ${TEXT_SECONDARY}`}>
                 Só os{" "}
-                <b className="font-medium text-[rgb(52,199,89)]">{compraveis} compráveis</b> e{" "}
-                <b className="font-medium text-[rgb(255,149,0)]">{barganhas} barganhas</b> — vote
+                <b className="font-medium text-[#00ff88]">{compraveis} compráveis</b> e{" "}
+                <b className="font-medium text-[#ffaa00]">{barganhas} barganhas</b> — vote
                 👍 / 👎 / ⚠️ em cada um.
               </p>
-              <div className="w-full h-1.5 bg-[rgba(0,0,0,0.06)] rounded-full overflow-hidden">
+              <div className="w-full h-1.5 bg-[rgba(255,255,255,0.04)] rounded-full overflow-hidden">
                 <div
-                  className="h-full rounded-full bg-[rgb(0,122,255)] transition-all"
+                  className="h-full rounded-full bg-[#00d9ff] transition-all"
                   style={{ width: `${progresso}%` }}
                 />
               </div>
@@ -139,7 +140,7 @@ export default function Home() {
               </div>
             </>
           ) : (
-            <h1 className="text-2xl text-[#0d1118] leading-tight">Ville</h1>
+            <h1 className="text-2xl text-[#f5f5f7] leading-tight">Ville</h1>
           )}
         </div>
       </header>

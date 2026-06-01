@@ -32,22 +32,22 @@ export const REACTIONS: {
     key: "gostei",
     label: "Gostei",
     emoji: "👍",
-    base: "bg-[rgba(52,199,89,0.12)] text-[#1d7a3e] hover:bg-[rgba(52,199,89,0.2)]",
-    selected: "bg-[rgb(52,199,89)] text-white",
+    base: "bg-[rgba(0,255,136,0.12)] text-[#7cffba] hover:bg-[rgba(0,255,136,0.2)]",
+    selected: "bg-[#00ff88] text-[#07140a]",
   },
   {
     key: "nao_gostei",
     label: "Não gostei",
     emoji: "👎",
-    base: "bg-[rgba(255,149,0,0.12)] text-[#a85f00] hover:bg-[rgba(255,149,0,0.2)]",
-    selected: "bg-[rgb(255,149,0)] text-white",
+    base: "bg-[rgba(255,170,0,0.12)] text-[#ffcc66] hover:bg-[rgba(255,170,0,0.2)]",
+    selected: "bg-[#ffaa00] text-[#1c1100]",
   },
   {
     key: "discordo",
     label: "Discordo",
     emoji: "⚠️",
-    base: "bg-[rgba(142,142,147,0.15)] text-[#45556c] hover:bg-[rgba(142,142,147,0.25)]",
-    selected: "bg-[rgb(142,142,147)] text-white",
+    base: "bg-[rgba(255,255,255,0.05)] text-[#b8b8c0] hover:bg-[rgba(255,255,255,0.1)]",
+    selected: "bg-[#6b6b78] text-[#0a0a0c]",
   },
 ];
 
