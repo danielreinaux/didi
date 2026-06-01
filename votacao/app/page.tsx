@@ -5,12 +5,14 @@ import VotingCard from "@/components/VotingCard";
 import { Item, Reaction, REACTIONS } from "@/lib/types";
 
 type Filtro = "todos" | "compravel" | "medio" | "nao_votados";
+type Loja = "sundek" | "ville";
 
 export default function Home() {
   const [items, setItems] = useState<Item[]>([]);
   const [reacoes, setReacoes] = useState<Record<string, Reaction>>({});
   const [obs, setObs] = useState<Record<string, string>>({});
   const [filtro, setFiltro] = useState<Filtro>("todos");
+  const [loja, setLoja] = useState<Loja>("sundek");
 
   useEffect(() => {
     fetch("/items.json").then((r) => r.json()).then(setItems).catch(() => {});
@@ -64,9 +66,36 @@ export default function Home() {
     </button>
   );
 
+  const abaLoja = (l: Loja, label: string) => (
+    <button
+      onClick={() => setLoja(l)}
+      className={`px-5 py-2.5 rounded-t-lg text-sm font-semibold transition-colors border-b-2 ${
+        loja === l
+          ? "bg-white text-gray-900 border-blue-500"
+          : "bg-transparent text-gray-500 hover:text-gray-700 border-transparent"
+      }`}
+    >
+      {label}
+    </button>
+  );
+
   return (
     <div className="min-h-screen bg-gray-50">
-      <header className="bg-white border-b border-gray-200 sticky top-0 z-10 shadow-sm">
+      <div className="bg-gray-100 border-b border-gray-200 sticky top-0 z-20">
+        <div className="max-w-7xl mx-auto px-4 flex gap-1 items-end">
+          {abaLoja("sundek", "Sundek")}
+          {abaLoja("ville", "Ville")}
+        </div>
+      </div>
+
+      {loja === "ville" ? (
+        <main className="max-w-7xl mx-auto px-4 py-20 text-center text-gray-500">
+          <h2 className="text-2xl font-bold text-gray-700 mb-2">Ville</h2>
+          <p>Em breve.</p>
+        </main>
+      ) : (
+      <>
+      <header className="bg-white border-b border-gray-200 sticky top-[49px] z-10 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 py-3 flex flex-col gap-2">
           <div className="flex items-center justify-between flex-wrap gap-2">
             <h1 className="text-xl font-bold text-gray-800">
@@ -116,6 +145,8 @@ export default function Home() {
       <footer className="text-center text-xs text-gray-400 pb-8">
         {REACTIONS.map((r) => `${r.emoji} ${r.label}`).join("   ·   ")}
       </footer>
+      </>
+      )}
     </div>
   );
 }
