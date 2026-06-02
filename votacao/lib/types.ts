@@ -2,6 +2,7 @@ export type Decisao = "compravel" | "medio";
 
 export interface Item {
   id: string;
+  marca: string; // "sundek" | "vilebrequin"
   url: string;
   titulo: string;
   tamanho: string;
@@ -15,6 +16,7 @@ export interface Item {
   score: number;
   teto?: number;
   destaques: string[];
+  flags?: string[]; // avisos (ex: verificar_autenticidade, rever_fotos) — Ville
   por_que?: string;
   evidencias?: { listra?: string; bolso?: string; elastico?: string };
 }

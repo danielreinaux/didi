@@ -12,6 +12,12 @@ interface Props {
   onReacao?: (id: string, r: Reaction | null) => void;
 }
 
+// Rótulos amigáveis pras flags de aviso vindas do score (Ville).
+const FLAG_LABELS: Record<string, string> = {
+  verificar_autenticidade: "verificar autenticidade (sem foto do bolso)",
+  rever_fotos: "rever fotos (padrão indefinido)",
+};
+
 export default function VotingCard({ item, reacaoInicial, obsInicial, onReacao }: Props) {
   const [reacao, setReacao] = useState<Reaction | null>(reacaoInicial ?? null);
   const [obs, setObs] = useState(obsInicial ?? "");
@@ -148,6 +154,20 @@ export default function VotingCard({ item, reacaoInicial, obsInicial, onReacao }
                 className="bg-[rgba(0,217,255,0.12)] text-[#00d9ff] text-[11px] px-2 py-0.5 rounded-full"
               >
                 {d}
+              </span>
+            ))}
+          </div>
+        )}
+
+        {/* Flags / avisos (Ville): ex. verificar autenticidade, rever fotos */}
+        {item.flags && item.flags.length > 0 && (
+          <div className="flex flex-wrap gap-1">
+            {item.flags.map((f, i) => (
+              <span
+                key={i}
+                className="bg-[rgba(255,170,0,0.14)] text-[#ffcc66] text-[11px] px-2 py-0.5 rounded-full"
+              >
+                ⚑ {FLAG_LABELS[f] ?? f.replace(/_/g, " ")}
               </span>
             ))}
           </div>
