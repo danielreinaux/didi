@@ -4,7 +4,7 @@ Mostra SÓ: foto(s) do short, preço, a sugestão de negociação (o que tentar,
 tentar) e os botões 👍 / 👎 / ⚠️. Vota no MESMO backend (/api/reactions) usado
 pela página principal, com namespace próprio 'oferta:' pra não misturar votos.
 
-Inclui compráveis + barganha do Sundek (e Ville, se houver).
+Inclui SÓ compráveis + barganha do Sundek (Ville fica de fora desta página).
 Uso: python -m src.build.oferta
 """
 import json
@@ -19,11 +19,10 @@ NS = "oferta:"
 
 
 def _candidatos() -> list[dict]:
+    # APENAS Sundek (coleta-classificada.json). Ville fica de fora desta página.
     out = []
-    for nome in ("coleta-classificada.json", "coleta-ville-classificada.json"):
-        p = DATA / nome
-        if not p.exists():
-            continue
+    p = DATA / "coleta-classificada.json"
+    if p.exists():
         for it in json.loads(p.read_text(encoding="utf-8")):
             s = it.get("score") or {}
             if s.get("decisao") not in ("compravel", "medio"):
