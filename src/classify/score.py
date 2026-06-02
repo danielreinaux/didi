@@ -6,6 +6,7 @@ Resultado:
   45~69 → médio (tenta barganha)
   < 45  → descartado
 """
+import math
 import re
 
 # Tetos base por tier_final (€)
@@ -31,7 +32,7 @@ PTS_TIER = {
     "ruim":         0,
 }
 PTS_TAMANHO = {"M": 20, "L": 16, "XL": 8, "S": 4}
-PTS_ELASTICO = 15    # com elástico
+PTS_ELASTICO = 22    # com elástico — atributo forte (doc 1.2: padrão preferido)
 PTS_SEM_ELASTICO = -15  # sem elástico — perde muita pontuação (doc 1.2)
 PTS_ETIQUETA = 10    # hang-tag de papel visível na foto
 PTS_LISTRA_SALVA = 5 # bônus quando listra salva a cor
@@ -52,6 +53,38 @@ def _parse_preco(preco_str: str | None) -> float | None:
         return float(nums[0].replace(",", "."))
     except ValueError:
         return None
+
+
+def _oferta_redonda(base: float) -> int:
+    """Preço de oferta 'psicológico': maior múltiplo de 5 abaixo do preço base,
+    com piso de 80% do base (não ofender em itens baratos).
+    Ex: base 35 → 30 · 34 → 30 · 20 → 16 · 9 → 7."""
+    alvo5 = math.floor((base - 0.01) / 5) * 5
+    piso = round(base * 0.80)
+    return max(int(alvo5), int(piso), 1)
+
+
+def _negociacao(base: float | None, teto: float, ratio: float | None) -> dict:
+    """Sugestão de como abordar o vendedor (oferta no Vinted é sobre o preço BASE).
+    - preço já dentro do teto (ratio ≤ 1) → FECHAR: oferta concreta redonda.
+    - preço acima do teto (ratio > 1, distante) → NEGOCIAR: pedir 'best price', alvo = teto.
+    """
+    if not base:
+        return {}
+    if ratio is not None and ratio <= 1.0:
+        oferta = _oferta_redonda(base)
+        return {
+            "modo": "fechar",
+            "oferta": oferta,
+            "msg": f"💰 Oferecer €{oferta} — \"por {oferta} aceita?\". Se recusar, ainda vale o preço pedido.",
+        }
+    alvo = int(round(teto)) if teto else None
+    return {
+        "modo": "negociar",
+        "oferta": alvo,
+        "msg": (f"🗨️ Pedir desconto: \"What's your best price?\" — alvo ≤ €{alvo}."
+                if alvo else "🗨️ Pedir: \"What's your best price?\""),
+    }
 
 
 def _preco_efetivo(item: dict) -> float | None:
@@ -261,12 +294,18 @@ def calcular_score(item: dict) -> dict:
             decisao = "medio"
             motivo = "sem elástico + cor boa+ + preço ≤ €25 (barganha)"
 
+    # Sugestão de negociação (preço a oferecer) — só pra candidatos.
+    negociacao = {}
+    if decisao in ("compravel", "medio"):
+        negociacao = _negociacao(_parse_preco(item.get("preco")), teto, ratio)
+
     return {
         "score": score,
         "teto": round(teto, 2),
         "preco_num": round(preco, 2) if preco else None,
         "decisao": decisao,
         "motivo": motivo,
+        "negociacao": negociacao,
         "breakdown": {
             "tier": pts_tier,
             "tamanho": pts_tam,
