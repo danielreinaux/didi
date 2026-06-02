@@ -5,12 +5,15 @@ Espelha os reclassify_* do Sundek.
 
 Uso:
   python -m src.classify.reclassify_ville                 # só recalcula o SCORE (sem IA, grátis)
+  python -m src.classify.reclassify_ville --etapa prefilter  # re-rotula título + renomeia (sem IA)
   python -m src.classify.reclassify_ville --etapa cor     # refaz cor + score
   python -m src.classify.reclassify_ville --etapa tartaruga --workers 8
   python -m src.classify.reclassify_ville --etapa autenticidade
   python -m src.classify.reclassify_ville --id 8940219584 # só um item (todas as etapas de IA)
 
-Etapas: score (default) | cor | tartaruga | autenticidade
+Etapas: score (default) | prefilter | cor | tartaruga | autenticidade
+  prefilter = sem IA: aplica o prefilter de título novo (infantil/não-short) e
+              unifica nao_vilebrequin→nao_ville (P2/P3) nos dados já coletados.
 Quando usar: você mexeu no prompt/regra de UMA etapa e quer o efeito sem
 repagar o pipeline todo. O score é sempre recalculado no fim.
 """
@@ -103,8 +106,34 @@ def main() -> None:
         _resumo(itens)
         return
 
+    if etapa == "prefilter":
+        # Sem IA: migração de dados (P2/P3). Renomeia nao_vilebrequin→nao_ville e
+        # re-roda o prefilter de título pra re-tagar infantil/não-short que escaparam.
+        from .ville_run import _parece_ville
+        renomeados = re_tagueados = 0
+        for it in alvos:
+            cl = it.get("classificacao") or {}
+            tipo = cl.get("tipo")
+            if tipo == "nao_vilebrequin":
+                cl = {**cl, "tipo": "nao_ville"}
+                it["classificacao"] = cl
+                tipo = "nao_ville"
+                renomeados += 1
+            ok, tipo_pf, motivo = _parece_ville(it)
+            # Só re-tag quando o título dispara uma exclusão e o tipo atual difere
+            # (ex: item que a IA deixou passar mas o título diz 'enfant'/'polo').
+            if not ok and tipo != tipo_pf:
+                it["classificacao"] = {**cl, "tipo": tipo_pf, "motivo": motivo}
+                re_tagueados += 1
+            it["score"] = calcular_score(it)
+        PATH.write_text(json.dumps(itens, indent=2, ensure_ascii=False), encoding="utf-8")
+        print(f"Prefilter aplicado: {renomeados} renomeados (nao_vilebrequin→nao_ville), "
+              f"{re_tagueados} re-tagueados por título. Score recalculado.")
+        _resumo(itens)
+        return
+
     if etapa not in ("cor", "tartaruga", "autenticidade"):
-        print(f"Etapa inválida: {etapa}. Use: score | cor | tartaruga | autenticidade")
+        print(f"Etapa inválida: {etapa}. Use: score | prefilter | cor | tartaruga | autenticidade")
         sys.exit(1)
 
     print(f"=== Reclassify Ville · etapa={etapa} · {len(alvos)} itens · {workers} workers ===\n")

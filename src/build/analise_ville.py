@@ -30,9 +30,10 @@ LEGENDAS = {
     "desbotado": "Tecido com aparência lavada/envelhecida.",
     "tamanho_invalido": "Tamanho fora de S/M/L/XL (XS, XXL, numérico, talla única).",
     "cor_liso_fora_whitelist": "Liso numa cor que o cliente não compra (só preto/branco/navy/cinza/musgo/vermelho).",
-    "nao_ville": "Título não bate com Vilebrequin (prefilter).",
-    "nao_vilebrequin": "Marca diferente identificada pela foto.",
-    "nao_short": "Não é short de banho (camiseta, calça, sunga, infantil, etc.).",
+    "nao_ville": "Não é Vilebrequin — título sem a marca (prefilter) ou marca diferente na foto.",
+    "nao_vilebrequin": "Marca diferente identificada pela foto (legado — agora vira nao_ville).",
+    "nao_short": "Não é short de banho (camiseta, calça, sunga, etc.) — pego pelo título ou foto.",
+    "infantil": "Peça infantil (X ans, kids, bambino, etc.) — pega pelo título antes da IA.",
     "fora das faixas de compra": "Padrão/cor/preço não se encaixam em nenhuma regra de compra.",
 }
 

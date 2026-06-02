@@ -50,8 +50,9 @@ PTS_AUTH_ORIGINAL = 5
 # Tipos que já vieram excluídos das etapas anteriores (regex/marca).
 EXCLUI_UPSTREAM = {
     "nao_ville": "nao_ville",
-    "nao_vilebrequin": "nao_vilebrequin",
+    "nao_vilebrequin": "nao_ville",  # alias legado (P3): unificado em nao_ville
     "nao_short": "nao_short",
+    "infantil": "infantil",
     "falso": "autenticidade_falsa",
     "outro": "padrao_outro_nao_compra",
 }

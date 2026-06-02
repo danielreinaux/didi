@@ -36,6 +36,8 @@ from .autenticidade_ville import verificar_autenticidade
 from .cor import classificar_cor
 from .etiqueta import verificar_etiqueta
 from .score_ville import calcular_score
+# Reusa as exclusões de título do Sundek (infantil, não-short) — P2.
+from .prefilter import EXCLUSAO, EXCLUSAO_INFANTIL
 
 ROOT = Path(__file__).resolve().parent.parent.parent
 DATA = ROOT / "data"
@@ -49,12 +51,42 @@ _VILLE_RE = re.compile(
     re.IGNORECASE,
 )
 
+# Indício de que há um SHORT no anúncio (mesmo que o título cite t-shirt/polo).
+# Salva os "Ensemble Homme T-shirt + Short de bain Tortues" — conjuntos que
+# incluem o short comprável (o doc cita 'Ensemble...' como comprável clássico).
+_SHORT_HINT = re.compile(
+    r"\bshorts?\b|maillot|\bbain\b|bermuda|\bswim\b|costume\s+da\s+bagno|"
+    r"zwembroek|badebroek|ba[ñn]ador|\bmare\b",
+    re.IGNORECASE,
+)
 
-def _parece_ville(item: dict) -> tuple[bool, str]:
-    titulo = (item.get("titulo") or "").lower()
-    if _VILLE_RE.search(titulo):
-        return True, ""
-    return False, "titulo sem Vilebrequin"
+
+def _parece_ville(item: dict) -> tuple[bool, str, str]:
+    """Prefilter de título (regex, sem IA). Retorna (ok, tipo, motivo).
+
+    Corta de graça, antes de gastar visão:
+      - título sem "vilebrequin"        → nao_ville
+      - infantil (X ans, kids, etc.)     → infantil
+      - não-short (polo, camiseta, sunga…) → nao_short
+    tipo é "" quando ok=True.
+    """
+    titulo = (item.get("titulo") or "").strip()
+    if not titulo:
+        return False, "nao_ville", "sem título"
+    if not _VILLE_RE.search(titulo.lower()):
+        return False, "nao_ville", "titulo sem Vilebrequin"
+    for regex, motivo in EXCLUSAO_INFANTIL:
+        if regex.search(titulo):
+            return False, "infantil", motivo
+    # Se o título também menciona short/maillot/bain, é provável conjunto
+    # (ex: "Ensemble T-shirt + Short de bain") → não exclui, deixa a IA decidir.
+    tem_short = bool(_SHORT_HINT.search(titulo))
+    for regex, motivo in EXCLUSAO:
+        if regex.search(titulo):
+            if tem_short:
+                continue
+            return False, "nao_short", motivo
+    return True, "", ""
 
 
 def _log(msg: str) -> None:
@@ -86,10 +118,10 @@ def _processar(item: dict, idx: str, total: int) -> tuple[dict, int, int]:
         return item, 0, 0
 
     # 1. Prefilter
-    ok, motivo = _parece_ville(item)
+    ok, tipo_pf, motivo = _parece_ville(item)
     if not ok:
-        _log(f"{prefix} → × NAO-VILLE [{motivo}]")
-        return {**item, "classificacao": {"tipo": "nao_ville", "motivo": motivo, "confianca": 1}}, 0, 0
+        _log(f"{prefix} → × {tipo_pf.upper()} [{motivo}]")
+        return {**item, "classificacao": {"tipo": tipo_pf, "motivo": motivo, "confianca": 1}}, 0, 0
 
     # 2. Marca + autenticidade
     try:
@@ -101,8 +133,9 @@ def _processar(item: dict, idx: str, total: int) -> tuple[dict, int, int]:
         marca = {"e_vilebrequin": "indefinido", "autenticidade": "indefinido", "evidencia": f"erro: {e}", "confianca": 0}
 
     if marca.get("e_vilebrequin") == "nao":
-        _log(f"{prefix} → × NAO-VILEBREQUIN")
-        return {**item, "marca_check": marca, "classificacao": {"tipo": "nao_vilebrequin", "confianca": marca.get("confianca", 1)}}, in_tok, out_tok
+        _log(f"{prefix} → × NAO-VILLE (marca)")
+        # P3: unifica com o prefilter — tudo que não é Vilebrequin vira nao_ville.
+        return {**item, "marca_check": marca, "classificacao": {"tipo": "nao_ville", "motivo": "marca diferente (visão)", "confianca": marca.get("confianca", 1)}}, in_tok, out_tok
 
     if marca.get("e_short") == "nao":
         _log(f"{prefix} → × NAO-SHORT")
@@ -281,9 +314,9 @@ def main() -> None:
     print(f"  Tartaruga pequena: {cnt('tartaruga_pequena')}")
     print(f"  Lisos:             {cnt('liso')}")
     print(f"  Outros padrões:    {cnt('outro')}")
-    print(f"  Falsos:            {cnt('falso')}")
-    print(f"  Não-Vilebrequin:   {cnt('nao_vilebrequin')}")
+    print(f"  Não-Ville:         {cnt('nao_ville')}")
     print(f"  Não-shorts:        {cnt('nao_short')}")
+    print(f"  Infantis:          {cnt('infantil')}")
     print(f"  Indefinidos:       {cnt('indefinido')}")
     print(f"  Erros:             {cnt('erro')}")
     print(f"  Tokens IN:         {input_tokens:,}")
