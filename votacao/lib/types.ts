@@ -19,6 +19,7 @@ export interface Item {
   flags?: string[]; // avisos (ex: verificar_autenticidade, rever_fotos) — Ville
   por_que?: string;
   evidencias?: { listra?: string; bolso?: string; elastico?: string };
+  negociacao?: { modo?: "fechar" | "negociar"; oferta?: number; msg?: string };
 }
 
 export type Reaction = "gostei" | "nao_gostei" | "discordo";

@@ -173,6 +173,19 @@ export default function VotingCard({ item, reacaoInicial, obsInicial, onReacao }
           </div>
         )}
 
+        {/* Sugestão de negociação — a ação prática */}
+        {item.negociacao?.msg && (
+          <div
+            className={`text-xs rounded-lg px-2 py-1.5 leading-snug border ${
+              item.negociacao.modo === "fechar"
+                ? "bg-[rgba(0,255,136,0.1)] text-[#00ff88] border-[rgba(0,255,136,0.25)]"
+                : "bg-[rgba(255,170,0,0.1)] text-[#ffcc66] border-[rgba(255,170,0,0.25)]"
+            }`}
+          >
+            {item.negociacao.msg}
+          </div>
+        )}
+
         {/* Por quê — como o score/preço foi formado */}
         {item.por_que && (
           <div className="text-[11px] text-[#ff66e2] bg-[rgba(255,102,226,0.1)] rounded-lg px-2 py-1 leading-snug">

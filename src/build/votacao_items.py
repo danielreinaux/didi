@@ -127,6 +127,7 @@ def _carregar(path: Path, marca: str) -> list[dict]:
             "destaques": _destaques(it),
             "por_que": _por_que(it),
             "evidencias": {k: v for k, v in evid.items() if v},
+            "negociacao": s.get("negociacao") or {},
         })
     return cand
 
