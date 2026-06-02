@@ -34,7 +34,8 @@ def classificar_tartaruga(item: dict) -> dict:
 
     conteudo = [
         {"type": "text", "text": prompt.usuario(item.get("titulo") or "")},
-        *[{"type": "image_url", "image_url": {"url": u, "detail": "auto"}} for u in fotos],
+        # detail=low: tartaruga grande é fácil de ver em baixa resolução (~10x mais barato).
+        *[{"type": "image_url", "image_url": {"url": u, "detail": "low"}} for u in fotos],
     ]
 
     resp = _get_client().chat.completions.create(

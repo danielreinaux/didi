@@ -34,11 +34,13 @@ def verificar_ville(item: dict) -> dict:
 
     conteudo = [
         {"type": "text", "text": prompt.usuario(item.get("titulo") or "")},
-        *[{"type": "image_url", "image_url": {"url": u, "detail": "auto"}} for u in fotos],
+        # detail=low: marca já é pré-confirmada pelo título (prefilter exige "vilebrequin");
+        # aqui só confirmamos marca + é-short. Autenticidade é etapa dedicada (zoom).
+        *[{"type": "image_url", "image_url": {"url": u, "detail": "low"}} for u in fotos],
     ]
 
     resp = _get_client().chat.completions.create(
-        model=IA["model_detalhes"],  # gpt-4o para visão mais fina (bolso traseiro)
+        model=IA["model_detalhes"],  # gpt-4o — confirmação de marca/formato
         messages=[
             {"role": "system", "content": prompt.SISTEMA},
             {"role": "user", "content": conteudo},

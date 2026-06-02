@@ -24,10 +24,18 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+# Console do Windows é cp1252 e quebra em ✓/✗/🐢 — força UTF-8 na saída.
+try:
+    sys.stdout.reconfigure(encoding="utf-8")
+except Exception:
+    pass
+
 from .ville_brand import verificar_ville
 from .tartaruga import classificar_tartaruga
+from .autenticidade_ville import verificar_autenticidade
 from .cor import classificar_cor
 from .etiqueta import verificar_etiqueta
+from .score_ville import calcular_score
 
 ROOT = Path(__file__).resolve().parent.parent.parent
 DATA = ROOT / "data"
@@ -65,7 +73,7 @@ def _salvar(resultados: list, itens_orig: list, ja_processados: dict, path: Path
         else:
             out.append(item)
     with _print_lock:
-        path.write_text(json.dumps(out, indent=2, ensure_ascii=False))
+        path.write_text(json.dumps(out, indent=2, ensure_ascii=False), encoding="utf-8")
 
 
 def _processar(item: dict, idx: str, total: int) -> tuple[dict, int, int]:
@@ -100,18 +108,7 @@ def _processar(item: dict, idx: str, total: int) -> tuple[dict, int, int]:
         _log(f"{prefix} → × NAO-SHORT")
         return {**item, "marca_check": marca, "classificacao": {"tipo": "nao_short", "confianca": marca.get("confianca", 1)}}, in_tok, out_tok
 
-    if marca.get("autenticidade") == "falso":
-        _log(f"{prefix} → × FALSO")
-        return {**item, "marca_check": marca, "classificacao": {"tipo": "falso", "confianca": marca.get("confianca", 1)}}, in_tok, out_tok
-
-    auth_tag = {
-        "original": "✓ orig",
-        "suspeito": "~ sus",
-        "sem_foto_bolso": "? s/bolso",
-        "indefinido": "? indef",
-    }.get(marca.get("autenticidade", ""), "?")
-
-    # 3. Tartaruga
+    # 3. Tartaruga (padrão de estampa)
     try:
         tartaruga = classificar_tartaruga(item)
         u = tartaruga.pop("_usage", {})
@@ -128,6 +125,33 @@ def _processar(item: dict, idx: str, total: int) -> tuple[dict, int, int]:
         "outro": "OUTRO",
         "indefinido": "? indef",
     }.get(tipo_tart, "?")
+
+    # 4. Autenticidade dedicada (zoom no bolso traseiro — critério central da marca).
+    # Pula a chamada de IA quando o short é liso (sem padrão pra continuar no bolso)
+    # ou quando o padrão é indefinido — economiza ~$0.03/item.
+    if tipo_tart == "liso":
+        autenticidade = {"autenticidade": "indefinido",
+                         "evidencia": "short liso — sem padrão de referência no bolso"}
+    elif tipo_tart == "indefinido":
+        autenticidade = {"autenticidade": "indefinido",
+                         "evidencia": "padrão indefinido — não dá pra avaliar o bolso"}
+    else:
+        try:
+            autenticidade = verificar_autenticidade(item)
+            u = autenticidade.pop("_usage", {})
+            in_tok += u.get("prompt_tokens", 0)
+            out_tok += u.get("completion_tokens", 0)
+        except Exception as e:
+            autenticidade = {"autenticidade": "indefinido", "evidencia": f"erro: {e}"}
+
+    auth_val = autenticidade.get("autenticidade", "indefinido")
+    auth_tag = {
+        "original": "✓ orig",
+        "falso": "✗ FALSO",
+        "suspeito": "~ sus",
+        "sem_foto_bolso": "? s/bolso",
+        "indefinido": "? indef",
+    }.get(auth_val, "?")
 
     linha = f"{prefix} → {auth_tag} | {tag_tart} conf={tartaruga.get('confianca')}"
 
@@ -156,15 +180,20 @@ def _processar(item: dict, idx: str, total: int) -> tuple[dict, int, int]:
     except Exception as e:
         etiqueta = {"tem_etiqueta": None, "erro": str(e)}
 
-    _log(linha)
-    return {
+    resultado = {
         **item,
         "marca_check": marca,
         "tartaruga": tartaruga,
+        "autenticidade": autenticidade,
         "cor": cor,
         "etiqueta": etiqueta,
-        "classificacao": {"tipo": tipo_tart, "autenticidade": marca.get("autenticidade")},
-    }, in_tok, out_tok
+        "classificacao": {"tipo": tipo_tart, "autenticidade": auth_val},
+    }
+    resultado["score"] = calcular_score(resultado)
+    s = resultado["score"]
+    linha += f" | {s.get('decisao')} ({s.get('score')})"
+    _log(linha)
+    return resultado, in_tok, out_tok
 
 
 def main() -> None:
@@ -178,7 +207,7 @@ def main() -> None:
         if arg == "--workers" and i + 1 < len(sys.argv[1:]):
             workers = int(sys.argv[i + 2])
 
-    itens = json.loads(inp.read_text())
+    itens = json.loads(inp.read_text(encoding="utf-8"))
     total = len(itens)
     print(f"=== Classificação Vilebrequin · {total} itens · {workers} workers ===\n")
 
@@ -190,7 +219,7 @@ def main() -> None:
     ja_processados: dict[str, dict] = {}
     if checkpoint_path.exists():
         try:
-            for x in json.loads(checkpoint_path.read_text()):
+            for x in json.loads(checkpoint_path.read_text(encoding="utf-8")):
                 if x.get("id") and (x.get("classificacao") or {}).get("tipo") not in (None, "erro"):
                     ja_processados[x["id"]] = x
         except Exception:
@@ -224,14 +253,30 @@ def main() -> None:
 
     _salvar(resultados, itens, ja_processados, checkpoint_path)
 
-    out = json.loads(checkpoint_path.read_text())
+    # Pass final: garante que TODO item tenha score (inclusive os cacheados de
+    # rodadas antigas, que foram pulados e podem não ter passado pelo score_ville).
+    out = json.loads(checkpoint_path.read_text(encoding="utf-8"))
+    mudou = False
+    for x in out:
+        if "score" not in x and (x.get("classificacao") or {}).get("tipo"):
+            x["score"] = calcular_score(x)
+            mudou = True
+    if mudou:
+        checkpoint_path.write_text(json.dumps(out, indent=2, ensure_ascii=False), encoding="utf-8")
+
     cnt = lambda t: sum(1 for x in out if (x.get("classificacao") or {}).get("tipo") == t)
+    dec = lambda d: sum(1 for x in out if (x.get("score") or {}).get("decisao") == d)
 
     in_usd = (input_tokens / 1_000_000) * 0.15
     out_usd = (output_tokens / 1_000_000) * 0.60
     total_usd = in_usd + out_usd
 
     print("\n=== Resumo ===")
+    print(f"  ✓ Compráveis:      {dec('compravel')}")
+    print(f"  ~ Médios:          {dec('medio')}")
+    print(f"  ✗ Descartados:     {dec('descartado')}")
+    print(f"  ⟳ Não classific.:  {dec('nao_classificado')}")
+    print(f"  ---")
     print(f"  Tartaruga grande:  {cnt('tartaruga_grande')}")
     print(f"  Tartaruga pequena: {cnt('tartaruga_pequena')}")
     print(f"  Lisos:             {cnt('liso')}")
