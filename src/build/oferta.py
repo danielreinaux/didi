@@ -102,6 +102,7 @@ h1 {{ font-size:20px; margin-bottom:4px; }}
 .card.voted {{ border-color:#00d9ff; }}
 .ph {{ position:relative; width:100%; aspect-ratio:1; background:#0b0b0f; }}
 .ph img {{ width:100%; height:100%; object-fit:cover; display:block; }}
+.ph img[hidden] {{ display:none; }}
 .nav {{ position:absolute; top:50%; transform:translateY(-50%); width:38px; height:38px;
   border:none; border-radius:50%; background:rgba(0,0,0,.45); color:#fff; font-size:22px;
   cursor:pointer; display:flex; align-items:center; justify-content:center; }}
