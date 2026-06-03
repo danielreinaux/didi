@@ -73,10 +73,12 @@ def _negociacao(base: float | None, teto: float, ratio: float | None) -> dict:
         return {}
     if ratio is not None and ratio <= 1.0:
         oferta = _oferta_redonda(base)
+        # Vinted: botão de oferta só vai até 60% do anúncio; abaixo disso, pelo CHAT.
+        via = "pelo chat" if oferta < base * 0.6 else "pela oferta"
         return {
             "modo": "fechar",
             "oferta": oferta,
-            "msg": f"💰 Oferecer €{oferta} — \"por {oferta} aceita?\". Se recusar, ainda vale o preço pedido.",
+            "msg": f"💰 Oferecer €{oferta} ({via}) — \"por {oferta} aceita?\". Se recusar, ainda vale o preço pedido.",
         }
     alvo = int(round(teto)) if teto else None
     return {
@@ -281,18 +283,32 @@ def calcular_score(item: dict) -> dict:
             decisao = "medio"
             motivo = "elástico + preço ≤ €14"
 
-    # Override SEM elástico (manual 1.2 + decisão do dono):
-    # teto duro €25; mas pechincha com cor elite compra mesmo sem elástico.
+    # Override SEM elástico (decisão do dono + feedback de votação):
+    #   só vale se a cor for preto / branco / azul marinho.
+    #   preto → até €15 · branco/navy → até €10.
+    #   fora dessas cores → descarta. EXCEÇÃO: etiqueta visível → não descarta (revisar).
     if not tem_elastico and preco:
-        if preco > 25:
-            decisao = "descartado"
-            motivo = f"sem elástico + preço €{preco:.2f} > €25 (teto do manual)"
-        elif tier_final == "maravilhoso" and preco <= 10:
+        cor_nome = (cor.get("cor_principal") or "").lower()
+        is_preto = "preto" in cor_nome or "negro" in cor_nome
+        is_branco_navy = ("branco" in cor_nome or "blanco" in cor_nome
+                          or "marinho" in cor_nome or "navy" in cor_nome)
+        cor_elite = is_preto or is_branco_navy
+        cap = 15 if is_preto else (10 if is_branco_navy else 0)
+
+        if cor_elite and preco <= cap:
             decisao = "compravel"
-            motivo = "sem elástico mas cor perfeita + preço ≤ €10 (pechincha)"
-        elif tier_final in ("boa", "muito_boa", "maravilhoso") and decisao == "descartado":
-            decisao = "medio"
-            motivo = "sem elástico + cor boa+ + preço ≤ €25 (barganha)"
+            motivo = f"sem elástico, {cor.get('cor_principal')} ≤ €{cap}"
+        elif tem_etiqueta:
+            # etiqueta visível → não descarta de cara, vale dar uma olhada
+            if decisao == "descartado":
+                decisao = "medio"
+            motivo = "sem elástico, mas etiqueta visível — revisar"
+        elif not cor_elite:
+            decisao = "descartado"
+            motivo = "sem elástico + cor fora de preto/branco/azul marinho"
+        else:
+            decisao = "descartado"
+            motivo = f"sem elástico, {cor.get('cor_principal')} acima de €{cap}"
 
     # Sugestão de negociação (preço a oferecer) — só pra candidatos.
     negociacao = {}
