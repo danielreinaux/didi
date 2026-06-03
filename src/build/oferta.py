@@ -74,6 +74,7 @@ def _card(it: dict) -> str:
       <button class="v nao" data-r="nao_gostei">👎 Não</button>
       <button class="v disc" data-r="discordo">⚠️ Discordo</button>
     </div>
+    <textarea class="obs" rows="2" placeholder="Comentário (opcional): o que achou? até quanto pagaria?"></textarea>
     <div class="status"></div>
   </div>
 </div>"""
@@ -127,6 +128,11 @@ h1 {{ font-size:20px; margin-bottom:4px; }}
 .v.sel.gostei {{ background:#00ff88; color:#07140a; border-color:#00ff88; }}
 .v.sel.nao {{ background:#ff4d6d; color:#fff; border-color:#ff4d6d; }}
 .v.sel.disc {{ background:#ffaa00; color:#1c1100; border-color:#ffaa00; }}
+.obs {{ width:100%; margin-top:2px; padding:9px 10px; border-radius:10px; resize:vertical;
+  background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.12); color:#f5f5f7;
+  font-size:14px; font-family:inherit; line-height:1.4; }}
+.obs::placeholder {{ color:#7a7a86; }}
+.obs:focus {{ outline:none; border-color:#00d9ff; }}
 .status {{ font-size:11px; color:#00d9ff; min-height:14px; }}
 </style></head><body>
 <div class="wrap">
@@ -140,9 +146,10 @@ const API="{API}", NS="{NS}";
 // carrega votos já feitos
 fetch(API+"/reactions").then(r=>r.json()).then(data=>{{
   document.querySelectorAll(".card").forEach(c=>{{
-    const v=data[NS+c.dataset.id]; if(!v||!v.reaction) return;
-    const b=c.querySelector(`.v[data-r="${{v.reaction}}"]`);
-    if(b){{ b.classList.add("sel"); c.classList.add("voted"); }}
+    const v=data[NS+c.dataset.id]; if(!v) return;
+    if(v.reaction){{ const b=c.querySelector(`.v[data-r="${{v.reaction}}"]`);
+      if(b){{ b.classList.add("sel"); c.classList.add("voted"); }} }}
+    if(v.observacao){{ c.querySelector(".obs").value=v.observacao; }}
   }});
 }}).catch(()=>{{}});
 
@@ -174,6 +181,15 @@ document.querySelectorAll(".card").forEach(card=>{{
       catch(e){{ st.textContent="erro"; st.style.color="#ff4d6d"; }}
       setTimeout(()=>st.textContent="",2000);
     }};
+  }});
+  // comentário — salva ao sair do campo
+  const obs=card.querySelector(".obs");
+  obs.addEventListener("blur",async()=>{{
+    const st=card.querySelector(".status"); st.textContent="salvando…"; st.style.color="#00d9ff";
+    try{{ await fetch(API+"/reactions",{{method:"POST",headers:{{"Content-Type":"application/json"}},
+      body:JSON.stringify({{id:NS+card.dataset.id,observacao:obs.value}})}}); st.textContent="comentário salvo ✓"; }}
+    catch(e){{ st.textContent="erro"; st.style.color="#ff4d6d"; }}
+    setTimeout(()=>st.textContent="",2000);
   }});
 }});
 </script>

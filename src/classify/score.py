@@ -207,6 +207,13 @@ def calcular_score(item: dict) -> dict:
         exclusoes.append("bolso_so_logo_colecao_antiga")
     if tipo == "liso" and cl.get("tem_listra_lateral_sundek") is False:
         exclusoes.append("sem_listra_sundek")
+    # SEM elástico só vale em preto / branco / azul marinho (decisão do dono + feedback
+    # do voto). Fora dessas cores → exclui. EXCEÇÃO: etiqueta visível (dá pra olhar).
+    if not tem_elastico:
+        _cn = (cor.get("cor_principal") or "").lower()
+        _cor_elite = any(k in _cn for k in ("preto", "negro", "branco", "blanco", "marinho", "navy"))
+        if not _cor_elite and not tem_etiqueta:
+            exclusoes.append("sem_elastico_cor_fraca")
     # Piping: prompt dedicado detecta acabamento de costura disfarçado de listra
     if tipo == "liso" and cl.get("e_piping") is True:
         exclusoes.append("piping_nao_e_listra_sundek")
@@ -281,18 +288,30 @@ def calcular_score(item: dict) -> dict:
             decisao = "medio"
             motivo = "elástico + preço ≤ €14"
 
-    # Override SEM elástico (manual 1.2 + decisão do dono):
-    # teto duro €25; mas pechincha com cor elite compra mesmo sem elástico.
+    # Override SEM elástico (decisão do dono + feedback de votação):
+    #   só vale se a cor for preto / branco / azul marinho.
+    #   preto → até €15 · branco/navy → até €10.
+    #   fora dessas cores → descarta. EXCEÇÃO: etiqueta visível → não descarta (revisar).
     if not tem_elastico and preco:
-        if preco > 25:
-            decisao = "descartado"
-            motivo = f"sem elástico + preço €{preco:.2f} > €25 (teto do manual)"
-        elif tier_final == "maravilhoso" and preco <= 10:
+        cor_nome = (cor.get("cor_principal") or "").lower()
+        is_preto = "preto" in cor_nome or "negro" in cor_nome
+        is_branco_navy = ("branco" in cor_nome or "blanco" in cor_nome
+                          or "marinho" in cor_nome or "navy" in cor_nome)
+        cor_elite = is_preto or is_branco_navy
+        cap = 15 if is_preto else (10 if is_branco_navy else 0)
+
+        # (cor não-elite sem etiqueta já foi excluída no bloco de exclusões acima)
+        if cor_elite and preco <= cap:
             decisao = "compravel"
-            motivo = "sem elástico mas cor perfeita + preço ≤ €10 (pechincha)"
-        elif tier_final in ("boa", "muito_boa", "maravilhoso") and decisao == "descartado":
-            decisao = "medio"
-            motivo = "sem elástico + cor boa+ + preço ≤ €25 (barganha)"
+            motivo = f"sem elástico, {cor.get('cor_principal')} ≤ €{cap}"
+        elif cor_elite:  # cor elite mas acima do cap (preto>15 / branco-navy>10)
+            decisao = "descartado"
+            motivo = f"sem elástico, {cor.get('cor_principal')} acima de €{cap}"
+        elif tem_etiqueta:
+            # cor fraca MAS etiqueta visível → não descarta, vale dar uma olhada
+            if decisao == "descartado":
+                decisao = "medio"
+            motivo = "sem elástico, mas etiqueta visível — revisar"
 
     # Sugestão de negociação (preço a oferecer) — só pra candidatos.
     negociacao = {}
