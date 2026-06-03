@@ -16075,29 +16075,16 @@
       "evidencia": "Não há hang tag visível nas fotos."
     },
     "classificacao": {
-      "tipo": "indefinido",
-      "autenticidade": "indefinido"
+      "tipo": "sem_evidencia",
+      "motivo": "Imagem não mostra o produto, apenas palmeiras.",
+      "confianca": 0
     },
     "score": {
-      "score": 18,
-      "teto": 42,
-      "preco_num": 65.0,
-      "decisao": "medio",
-      "motivo": "padrão indefinido — rever fotos",
-      "flags": [
-        "rever_fotos",
-        "verificar_autenticidade"
-      ],
-      "breakdown": {
-        "padrao": 0,
-        "cor": 6,
-        "tamanho": 12,
-        "etiqueta": 0,
-        "autenticidade": 0,
-        "preco": 0,
-        "ratio_preco_teto": 1.55,
-        "cor_bucket": "aceitavel"
-      }
+      "score": 0,
+      "teto": 0,
+      "decisao": "descartado",
+      "motivo_exclusao": "sem_evidencia_produto",
+      "breakdown": {}
     }
   },
   {

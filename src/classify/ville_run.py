@@ -141,6 +141,13 @@ def _processar(item: dict, idx: str, total: int) -> tuple[dict, int, int]:
         _log(f"{prefix} → × NAO-SHORT")
         return {**item, "marca_check": marca, "classificacao": {"tipo": "nao_short", "confianca": marca.get("confianca", 1)}}, in_tok, out_tok
 
+    # Sem evidência do produto: a IA não conseguiu ver nem marca nem formato
+    # (ex.: única foto é de paisagem/palmeira). Descarta antes de gastar tartaruga/
+    # autenticidade/cor/etiqueta — economiza ~4 chamadas de visão por item lixo.
+    if marca.get("e_vilebrequin") == "indefinido" and (marca.get("confianca") or 0) == 0:
+        _log(f"{prefix} → × SEM-EVIDENCIA [{marca.get('evidencia','')[:60]}]")
+        return {**item, "marca_check": marca, "classificacao": {"tipo": "sem_evidencia", "motivo": marca.get("evidencia") or "sem evidência visual do produto", "confianca": 0}}, in_tok, out_tok
+
     # 3. Tartaruga (padrão de estampa)
     try:
         tartaruga = classificar_tartaruga(item)

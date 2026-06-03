@@ -55,6 +55,7 @@ EXCLUI_UPSTREAM = {
     "infantil": "infantil",
     "falso": "autenticidade_falsa",
     "outro": "padrao_outro_nao_compra",
+    "sem_evidencia": "sem_evidencia_produto",  # foto não mostra o produto
 }
 
 
