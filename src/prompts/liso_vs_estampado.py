@@ -38,11 +38,17 @@ INDEFINIDO: as fotos não permitem decidir (borrada, ângulo bloqueia, peça dob
 APARÊNCIA DO TECIDO (aparencia):
 ═══════════════════════════════════════════════════════════════════════
 
-aparencia "ok": tecido com aspecto de novo, cor uniforme, sem desgaste.
+aparencia "ok": tecido com aspecto de novo, limpo, cor uniforme, sem desgaste.
 
-aparencia "desbotado": tecido com VIBE JEANS DESBOTADO ou aspecto LAVADO/desgastado.
-  Cor irregular puxando pra tom apagado, manchas claras de desbotamento, tecido
-  amassado de uso, aspecto "envelhecido" — mesmo se o vendedor anuncia como "Nuevo".
+aparencia "desbotado": sinal CLARO de uso/idade/sujeira (na dúvida, prefira "ok").
+  Marque desbotado se houver UM ou mais destes, de forma EVIDENTE:
+  • cor desbotada/lavada, vibe jeans desbotado, tom visivelmente apagado;
+  • manchas ou sujeira EVIDENTES no tecido (encardido óbvio, áreas sujas, amarelado de uso);
+  • cordão/jareta (drawstring) puído, esfiapado ou estourado;
+  • aspecto claramente VELHO/surrado, costuras desgastadas.
+  ⚠️ NÃO marque desbotado por: tom CREME/OFF-WHITE natural (Sundek tem brancos
+  acrema dos de fábrica), sombra/iluminação da foto, ou tecido só amassado/dobrado.
+  Só desbotado se a peça parece MESMO suja/gasta/velha. Na dúvida → "ok".
 
 aparencia "indefinido": foto não permite avaliar.
 
