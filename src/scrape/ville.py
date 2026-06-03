@@ -75,9 +75,9 @@ def main() -> None:
                 coletados.append({"url": u, "erro": str(e)})
 
             if (i + 1) % 20 == 0:
-                out.write_text(json.dumps(coletados, indent=2, ensure_ascii=False))
+                out.write_text(json.dumps(coletados, indent=2, ensure_ascii=False), encoding="utf-8")
 
-        out.write_text(json.dumps(coletados, indent=2, ensure_ascii=False))
+        out.write_text(json.dumps(coletados, indent=2, ensure_ascii=False), encoding="utf-8")
         print(f"\n[5] {len(coletados)} itens salvos em data/coleta-ville.json")
         print(f"\n    duração total: {time.time() - t0:.1f}s")
 
