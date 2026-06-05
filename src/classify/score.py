@@ -202,7 +202,7 @@ def calcular_score(item: dict) -> dict:
         exclusoes.append("listra_na_frente")
     if tem_bolso_traseiro is False:
         exclusoes.append("sem_bolso_traseiro")
-    # Bolso traseiro só com logo (sem nome SUNDEK) = coleção antiga, exclui
+    # Bolso só com logo (SEM o nome SUNDEK escrito) = coleção antiga → exclusão.
     if tem_bolso_traseiro is True and cl.get("bolso_traseiro_tem_nome") is False:
         exclusoes.append("bolso_so_logo_colecao_antiga")
     if tipo == "liso" and cl.get("tem_listra_lateral_sundek") is False:
