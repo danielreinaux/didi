@@ -27,7 +27,7 @@ def _candidatos() -> list[dict]:
             s = it.get("score") or {}
             if s.get("decisao") not in ("compravel", "medio"):
                 continue
-            if it.get("status") in ("vendido", "inativo"):
+            if it.get("status") in ("vendido", "inativo", "removido"):
                 continue
             out.append(it)
     out.sort(key=lambda x: (

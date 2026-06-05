@@ -77,7 +77,7 @@ def _card(it: dict) -> str:
 
 def main() -> None:
     itens = json.loads((DATA / "coleta-classificada.json").read_text())
-    itens = [x for x in itens if x.get("status") not in ("vendido", "inativo")]
+    itens = [x for x in itens if x.get("status") not in ("vendido", "inativo", "removido")]
     desc = [x for x in itens if (x.get("score") or {}).get("decisao") == "descartado"]
 
     # agrupa por motivo (1º motivo de cada item)
