@@ -5,6 +5,7 @@ discordo em cada candidato. Lê data/coleta-classificada.json (Sundek) e
 data/coleta-ville-classificada.json (Ville), filtra decisão in (compravel, medio),
 e exporta os campos que o front usa, com os "destaques" (por que virou candidato).
 """
+import argparse
 import json
 from pathlib import Path
 
@@ -133,7 +134,15 @@ def _carregar(path: Path, marca: str) -> list[dict]:
 
 
 def main() -> None:
-    cand = _carregar(DATA / "coleta-classificada.json", "sundek")
+    # --so-ville: gera items.json apenas com a Vilebrequin (usado no deploy do Vercel
+    # quando só o feedback da Ville interessa). Default mantém Sundek + Ville.
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--so-ville", action="store_true", help="exporta apenas itens da Vilebrequin")
+    args = parser.parse_args()
+
+    cand = []
+    if not args.so_ville:
+        cand += _carregar(DATA / "coleta-classificada.json", "sundek")
     cand += _carregar(DATA / "coleta-ville-classificada.json", "vilebrequin")
     # comprável primeiro, depois por score desc
     cand.sort(key=lambda x: (0 if x["decisao"] == "compravel" else 1, -x["score"]))
