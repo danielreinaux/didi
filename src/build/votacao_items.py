@@ -97,7 +97,7 @@ def _carregar(path: Path, marca: str) -> list[dict]:
         s = it.get("score") or {}
         if s.get("decisao") not in ("compravel", "medio"):
             continue
-        if it.get("status") in ("vendido", "inativo"):
+        if it.get("status") in ("vendido", "inativo", "removido"):
             continue
         cor = it.get("cor") if isinstance(it.get("cor"), dict) else {}
         cl = it.get("classificacao") or {}

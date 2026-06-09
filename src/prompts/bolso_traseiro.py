@@ -65,13 +65,18 @@ Se nenhuma foto mostra a traseira do short, declare isso.
 - Se traseira não está visível → tem_bolso=null
 
 ## Passo 3 — LER O PATCH (se houver bolso)
-Olhe especificamente para o patch do bolso. Procure:
-- Apenas o ÍCONE (sol/montanha/onda em laranja) → patch SÓ LOGO
-- Ícone + letras "SUNDEK" escritas → patch COM NOME
+Olhe MUITO de perto o patch do bolso (dê zoom mental). O nome "SUNDEK" quase sempre
+aparece em letras PEQUENAS num arco ABAIXO do desenho (sol/onda), e é fácil não
+enxergar. Procure por esse texto com atenção.
 
-⚠️ Cuidado: o patch meio-sol clássico costuma ter "SUNDEK" escrito em letras
-PEQUENAS num arco abaixo do desenho do sol. Mas há também patches apenas com
-ícone, sem texto. Confirme visualmente a presença de letras.
+⚠️ REGRA CRÍTICA (evitar falso "sem nome"): "sem nome" causa EXCLUSÃO do item.
+Então só marque tem_nome=false se você tem CERTEZA de que o patch tem APENAS o
+ícone, sem NENHUMA letra. Se houver qualquer texto, ou se as letras estiverem
+pequenas/borradas/ilegíveis, ou se a foto não deixa confirmar → marque tem_nome=true
+(não exclua por dúvida). Só "sem nome" quando for clarissimamente só o ícone.
+
+⚠️ NÃO use a etiqueta INTERNA (tag de tecido/laranja dentro do cós, com SUNDEK +
+código) pra decidir — ela não é o patch do bolso. Decida só pelo patch EXTERNO.
 
 ## Passo 4 — VERIFICAR BOLSO FRONTAL
 Veja as fotos da FRENTE/lateral externa da perna. Há um bolso GRANDE com aba
