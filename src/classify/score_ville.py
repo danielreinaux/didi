@@ -258,7 +258,8 @@ def calcular_score(item: dict) -> dict:
         "breakdown": {
             "padrao": pts_padrao,
             "cor": pts_cor,
-            "fundo": pts_fundo,
+            # fundo só aparece quando há nerf, pra não poluir a linha "por_que".
+            **({"fundo": pts_fundo} if pts_fundo else {}),
             "tamanho": pts_tam,
             "etiqueta": pts_et,
             "autenticidade": pts_auth,

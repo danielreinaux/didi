@@ -68,9 +68,9 @@ def _destaques(it: dict) -> list[str]:
 # Labels por chave de breakdown (cobre Sundek e Ville).
 _PTS_LABEL = {"tier": "cor", "padrao": "padrão", "tamanho": "tam", "elastico": "elástico",
               "etiqueta": "etiqueta", "condicao": "condição", "listra_bonus": "listra",
-              "autenticidade": "autent.", "cor": "cor", "preco": "preço"}
+              "autenticidade": "autent.", "cor": "cor", "fundo": "fundo", "preco": "preço"}
 # Ordem de exibição (chaves ausentes são ignoradas).
-_ORDEM = ("tier", "padrao", "cor", "tamanho", "elastico", "etiqueta",
+_ORDEM = ("tier", "padrao", "cor", "fundo", "tamanho", "elastico", "etiqueta",
           "autenticidade", "condicao", "listra_bonus", "preco")
 
 

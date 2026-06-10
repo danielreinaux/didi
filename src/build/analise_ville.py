@@ -37,7 +37,7 @@ LEGENDAS = {
     "fora das faixas de compra": "Padrão/cor/preço não se encaixam em nenhuma regra de compra.",
 }
 
-_PTS_LABEL = {"padrao": "padrão", "cor": "cor", "tamanho": "tam",
+_PTS_LABEL = {"padrao": "padrão", "cor": "cor", "fundo": "fundo", "tamanho": "tam",
               "etiqueta": "etiqueta", "autenticidade": "autent.", "preco": "preço"}
 
 
@@ -46,7 +46,7 @@ def _explicacao_score(s: dict) -> str:
     if not bd:
         return ""
     partes = []
-    for k in ("padrao", "cor", "tamanho", "etiqueta", "autenticidade", "preco"):
+    for k in ("padrao", "cor", "fundo", "tamanho", "etiqueta", "autenticidade", "preco"):
         if k in bd:
             v = bd[k]
             partes.append(f"{_PTS_LABEL.get(k, k)} {'+' if v >= 0 else ''}{v}")
