@@ -105,6 +105,26 @@ def referencias_few_shot() -> list[dict]:
         },
         {
             "type": "text",
+            "text": (
+                "[REF 4 — ORIGINAL com COSTURA DUPLA] Short com gradiente azul/laranja. "
+                "Este caso é importante: a Vilebrequin usa COSTURA DUPLA (pesponto duplo, "
+                "duas linhas paralelas reforçando o bolso). Essa costura é uma LINHA RETA "
+                "passando POR CIMA do tecido — ela NÃO interrompe o padrão. O tecido "
+                "abaixo da costura continua o desenho do corpo normalmente. NÃO confunda "
+                "a linha de costura (que é fio, não tecido) com 'padrão quebrado'. Se o "
+                "que parece quebra é só a linha reta da costura e o desenho continua "
+                "atrás/abaixo dela, é ORIGINAL."
+            ),
+        },
+        {
+            "type": "image_url",
+            "image_url": {
+                "url": _ref_data_url("original_gradiente_costura_dupla.jpg"),
+                "detail": "high",
+            },
+        },
+        {
+            "type": "text",
             "text": "=== FIM DAS REFERÊNCIAS — agora analise o item abaixo ===",
         },
     ]
@@ -147,6 +167,27 @@ NÍVEL 3 — DÚVIDA SUTIL:
   Se o desalinhamento for MUITO sutil (1-2 mm, possivelmente causado por
   ângulo da foto / short amassado / tecido caído), classifique como
   INDEFINIDO. Só marque FALSO quando o corte for ÓBVIO.
+
+⚠️  O QUE NÃO É QUEBRA DE PADRÃO (não marcar falso por isso):
+
+  • COSTURA DUPLA / PESPONTO DUPLO: Vilebrequin usa duas linhas paralelas
+    de costura na borda do bolso. Isso é FIO costurado POR CIMA do tecido,
+    não é o tecido em si. A linha reta da costura cobre uma fração de
+    milímetro do desenho mas o tecido continua o padrão por baixo/atrás.
+    Se o que te incomoda é apenas a LINHA RETA da costura cortando
+    visualmente um motivo, mas a continuação do desenho está presente,
+    isso é ORIGINAL. Ver REF 4.
+
+  • SOMBRA / DOBRA NA BORDA do bolso: tecido acumula sombra na costura,
+    pode parecer que o motivo "some" ali. Olhe o que vem DEPOIS da sombra.
+
+  • PEQUENO DESLOCAMENTO POR ELASTICIDADE: bolso pode esticar ligeiramente.
+    Desalinhamento de poucos milímetros = INDEFINIDO, não falso.
+
+  REGRA PRÁTICA: para marcar FALSO, o motivo (tartaruga, peixe etc.) precisa
+  estar visivelmente CORTADO ou COMEÇANDO DO ZERO dentro do bolso de forma
+  que NENHUMA interpretação razoável (costura + sombra + dobra) explique.
+  Na dúvida entre falso e original com costura visível → INDEFINIDO.
 
 ═══════════════════════════════════════════════════════════════════════
 PROTOCOLO DE ANÁLISE:
@@ -193,8 +234,11 @@ def usuario(titulo: str) -> str:
         f'Short Vilebrequin a analisar. Título do anúncio: "{titulo}". '
         f"Olhe o BOLSO TRASEIRO. Aplique o teste em 2 níveis: (1) tecido do bolso "
         f"é o mesmo do corpo? (2) o padrão atravessa a borda do bolso de forma "
-        f"contínua, ou está quebrado/cortado? Compare com os 3 exemplos de "
-        f"referência que você acabou de ver. Se desalinhamento for muito sutil, "
-        f"marque indefinido. Se short é todo liso, indefinido. Se não há foto do "
-        f"bolso, sem_foto_bolso."
+        f"contínua, ou está quebrado/cortado? Compare com os 4 exemplos de "
+        f"referência. ATENÇÃO: COSTURA DUPLA da Vilebrequin (linhas paralelas no "
+        f"bolso) NÃO é quebra de padrão — é fio por cima do tecido. Se o que "
+        f"parece corte é só a linha da costura, é ORIGINAL (ver REF 4). Só marque "
+        f"FALSO quando o motivo está claramente CORTADO ou COMEÇA DO ZERO no "
+        f"bolso sem qualquer alinhamento. Desalinhamento sutil → indefinido. "
+        f"Short todo liso → indefinido. Sem foto do bolso → sem_foto_bolso."
     )

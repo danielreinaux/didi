@@ -9,15 +9,34 @@ Uso:
   python -m src.classify.reclassify_ville --etapa cor     # refaz cor + score
   python -m src.classify.reclassify_ville --etapa tartaruga --workers 8
   python -m src.classify.reclassify_ville --etapa autenticidade
+  python -m src.classify.reclassify_ville --etapa autenticidade --so-original --limite 30
   python -m src.classify.reclassify_ville --id 8940219584 # só um item (todas as etapas de IA)
 
 Etapas: score (default) | prefilter | cor | tartaruga | autenticidade
   prefilter = sem IA: aplica o prefilter de título novo (infantil/não-short) e
               unifica nao_vilebrequin→nao_ville (P2/P3) nos dados já coletados.
+
+Filtros (combinam com --etapa):
+  --so-original  Atalho: equivale a --autenticidade original
+  --autenticidade X
+                 Só processa itens com classificacao.autenticidade na lista X
+                 (vírgula). Valores: original | falso | suspeito | indefinido
+                 | sem_foto_bolso. Ex: --autenticidade falso = só reanalisa os
+                 que estão marcados como falso hoje (útil quando você refinou
+                 o prompt e quer revisitar potenciais falso-positivos).
+  --decisao X    Só processa itens com score.decisao na lista X (separada
+                 por vírgula). Valores: compravel | medio | descartado.
+                 Ex: --decisao compravel,medio = compráveis + barganhas
+                 (= tudo que está hoje na página de votação).
+                 Combina com --so-original.
+  --limite N     Limita a uma amostra aleatória de N itens (seed fixa = 42,
+                 reproduzível). Aplica DEPOIS dos outros filtros.
+
 Quando usar: você mexeu no prompt/regra de UMA etapa e quer o efeito sem
 repagar o pipeline todo. O score é sempre recalculado no fim.
 """
 import json
+import random
 import sys
 import threading
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -91,9 +110,37 @@ def main() -> None:
     etapa = _arg("--etapa", "score")
     workers = int(_arg("--workers", "4"))
     only_id = _arg("--id")
+    so_original = "--so-original" in sys.argv
+    autenticidade_filtro = _arg("--autenticidade")
+    if so_original and not autenticidade_filtro:
+        autenticidade_filtro = "original"  # alias retrocompatível
+    decisao = _arg("--decisao")
+    limite = _arg("--limite")
+    limite = int(limite) if limite else None
 
     itens = json.loads(PATH.read_text(encoding="utf-8"))
     alvos = [it for it in itens if (not only_id or str(it.get("id")) == str(only_id))]
+
+    if decisao:
+        decisoes = {d.strip() for d in decisao.split(",") if d.strip()}
+        antes = len(alvos)
+        alvos = [it for it in alvos
+                 if (it.get("score") or {}).get("decisao") in decisoes]
+        print(f"--decisao {','.join(sorted(decisoes))}: {antes} → {len(alvos)} itens")
+
+    if autenticidade_filtro:
+        valores = {v.strip() for v in autenticidade_filtro.split(",") if v.strip()}
+        antes = len(alvos)
+        alvos = [it for it in alvos
+                 if (it.get("classificacao") or {}).get("autenticidade") in valores]
+        print(f"--autenticidade {','.join(sorted(valores))}: {antes} → {len(alvos)} itens")
+
+    if limite and len(alvos) > limite:
+        # Amostra aleatória reproduzível (seed fixa) — dá variedade de cores/padrões
+        # em vez de pegar só os N primeiros.
+        rnd = random.Random(42)
+        alvos = rnd.sample(alvos, limite)
+        print(f"--limite {limite}: amostra aleatória (seed=42)")
 
     if etapa == "score":
         # Sem IA: só recalcula a decisão de compra em cima do que já está classificado.
