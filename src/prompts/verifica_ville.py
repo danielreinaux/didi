@@ -26,6 +26,24 @@ VERIFICAÇÃO 2 — É um SHORT de banho (maillot/swim short)?
 Sinais de SIM: short de banho masculino (com cordão/elástico na cintura, comprimento curto).
 Sinais de NÃO: é camiseta, polo, calça, sunga/slip, boné, bolsa, ou peça infantil.
 
+═══════════════════════════════════════════════════════════════════════
+REGRA CRÍTICA DE CONFIANÇA — leia com atenção:
+═══════════════════════════════════════════════════════════════════════
+
+Se as fotos NÃO mostram o produto em si (ex.: foto de paisagem, palmeira,
+horizonte, selfie do vendedor, embalagem fechada, ambiente vazio, animal,
+ou qualquer imagem onde não há peça de roupa visível), você DEVE devolver:
+  - e_vilebrequin = "indefinido"
+  - e_short = "indefinido"
+  - confianca = 0
+
+NÃO chute "sim" baseado no título — o título é só contexto. Sua decisão
+deve vir EXCLUSIVAMENTE do que está visível nas fotos. Se a foto não
+mostra roupa, a confiança é ZERO, não importa o que o título diga.
+
+confianca > 0 SOMENTE quando há alguma peça de roupa real visível nas
+fotos que você possa avaliar.
+
 Responda APENAS com JSON válido:
 
 {

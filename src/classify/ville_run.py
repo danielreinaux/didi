@@ -34,6 +34,7 @@ from .ville_brand import verificar_ville
 from .tartaruga import classificar_tartaruga
 from .autenticidade_ville import verificar_autenticidade
 from .cor import classificar_cor
+from .cordao_ville import verificar_cordao
 from .etiqueta import verificar_etiqueta
 from .score_ville import calcular_score
 # Reusa as exclusões de título do Sundek (infantil, não-short) — P2.
@@ -144,9 +145,19 @@ def _processar(item: dict, idx: str, total: int) -> tuple[dict, int, int]:
     # Sem evidência do produto: a IA não conseguiu ver nem marca nem formato
     # (ex.: única foto é de paisagem/palmeira). Descarta antes de gastar tartaruga/
     # autenticidade/cor/etiqueta — economiza ~4 chamadas de visão por item lixo.
-    if marca.get("e_vilebrequin") == "indefinido" and (marca.get("confianca") or 0) == 0:
+    # Duas regras cobrem o caso:
+    #   (1) marca indefinida com confianca ZERO (legado — IA sinalizou "não vi nada")
+    #   (2) AMBOS marca e formato indefinidos com confianca baixa (<0.4) — pega
+    #       o caso onde a IA não cravou 0 mas também não viu nem marca nem short.
+    e_vb = marca.get("e_vilebrequin")
+    e_sh = marca.get("e_short")
+    conf = marca.get("confianca") or 0
+    sem_ev = (e_vb == "indefinido" and conf == 0) or (
+        e_vb == "indefinido" and e_sh == "indefinido" and conf < 0.4
+    )
+    if sem_ev:
         _log(f"{prefix} → × SEM-EVIDENCIA [{marca.get('evidencia','')[:60]}]")
-        return {**item, "marca_check": marca, "classificacao": {"tipo": "sem_evidencia", "motivo": marca.get("evidencia") or "sem evidência visual do produto", "confianca": 0}}, in_tok, out_tok
+        return {**item, "marca_check": marca, "classificacao": {"tipo": "sem_evidencia", "motivo": marca.get("evidencia") or "sem evidência visual do produto", "confianca": conf}}, in_tok, out_tok
 
     # 3. Tartaruga (padrão de estampa)
     try:
@@ -195,7 +206,7 @@ def _processar(item: dict, idx: str, total: int) -> tuple[dict, int, int]:
 
     linha = f"{prefix} → {auth_tag} | {tag_tart} conf={tartaruga.get('confianca')}"
 
-    cor = etiqueta = None
+    cor = etiqueta = cordao = None
 
     # 4. Cor (sempre — Ville não tem critério de listras)
     try:
@@ -220,6 +231,20 @@ def _processar(item: dict, idx: str, total: int) -> tuple[dict, int, int]:
     except Exception as e:
         etiqueta = {"tem_etiqueta": None, "erro": str(e)}
 
+    # 6. Cordão (cor do drawstring) — define coleção antiga (cinza) no score.
+    try:
+        cordao = verificar_cordao(item)
+        u = cordao.pop("_usage", {})
+        in_tok += u.get("prompt_tokens", 0)
+        out_tok += u.get("completion_tokens", 0)
+        cc = cordao.get("cordao_cor")
+        if cc == "cinza":
+            linha += " | cordão=cinza (antiga)"
+        elif cc and cc != "indefinido":
+            linha += f" | cordão={cc}"
+    except Exception as e:
+        cordao = {"cordao_cor": "indefinido", "erro": str(e)}
+
     resultado = {
         **item,
         "marca_check": marca,
@@ -227,6 +252,7 @@ def _processar(item: dict, idx: str, total: int) -> tuple[dict, int, int]:
         "autenticidade": autenticidade,
         "cor": cor,
         "etiqueta": etiqueta,
+        "cordao": cordao,
         "classificacao": {"tipo": tipo_tart, "autenticidade": auth_val},
     }
     resultado["score"] = calcular_score(resultado)

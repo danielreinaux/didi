@@ -10,9 +10,11 @@ Uso:
   python -m src.classify.reclassify_ville --etapa tartaruga --workers 8
   python -m src.classify.reclassify_ville --etapa autenticidade
   python -m src.classify.reclassify_ville --etapa autenticidade --so-original --limite 30
+  python -m src.classify.reclassify_ville --etapa cordao  # refaz cor do cordão + score
+  python -m src.classify.reclassify_ville --etapa marca   # refaz verifica_ville (marca + é-short + sem_evidencia)
   python -m src.classify.reclassify_ville --id 8940219584 # só um item (todas as etapas de IA)
 
-Etapas: score (default) | prefilter | cor | tartaruga | autenticidade
+Etapas: score (default) | prefilter | cor | tartaruga | autenticidade | cordao | marca
   prefilter = sem IA: aplica o prefilter de título novo (infantil/não-short) e
               unifica nao_vilebrequin→nao_ville (P2/P3) nos dados já coletados.
 
@@ -55,6 +57,8 @@ except Exception:
 from .tartaruga import classificar_tartaruga
 from .autenticidade_ville import verificar_autenticidade
 from .cor import classificar_cor
+from .cordao_ville import verificar_cordao
+from .ville_brand import verificar_ville
 from .score_ville import calcular_score
 
 ROOT = Path(__file__).resolve().parent.parent.parent
@@ -75,6 +79,36 @@ def _arg(nome: str, default=None):
 def _refazer_etapa(item: dict, etapa: str) -> dict:
     """Refaz a etapa de IA pedida no item (in-place no dict) e devolve."""
     tipo = (item.get("classificacao") or {}).get("tipo")
+
+    # Etapa "marca" pode reabilitar itens que viraram sem_evidencia/nao_ville/nao_short,
+    # então é a única que processa esses tipos. Demais etapas pulam.
+    if etapa == "marca":
+        # Pula só itens nunca classificados ou com erro técnico — todo o resto
+        # pode mudar de status com a nova regra de sem_evidencia.
+        if tipo in (None, "erro"):
+            return item
+        marca = verificar_ville(item)
+        marca.pop("_usage", None)
+        item["marca_check"] = marca
+        e_vb = marca.get("e_vilebrequin")
+        e_sh = marca.get("e_short")
+        conf = marca.get("confianca") or 0
+        # Replica a lógica do ville_run (B+C) — mantém os dois fluxos em sincronia.
+        if e_vb == "nao":
+            item["classificacao"] = {**(item.get("classificacao") or {}), "tipo": "nao_ville",
+                                     "motivo": "marca diferente (visão)", "confianca": conf}
+        elif e_sh == "nao":
+            item["classificacao"] = {**(item.get("classificacao") or {}), "tipo": "nao_short",
+                                     "confianca": conf}
+        elif (e_vb == "indefinido" and conf == 0) or (
+            e_vb == "indefinido" and e_sh == "indefinido" and conf < 0.4
+        ):
+            item["classificacao"] = {**(item.get("classificacao") or {}), "tipo": "sem_evidencia",
+                                     "motivo": marca.get("evidencia") or "sem evidência visual do produto",
+                                     "confianca": conf}
+        # Caso já tenha passado num run anterior e a marca confirma → não mexe no tipo.
+        return item
+
     # Só faz sentido rodar IA em itens que chegaram à classificação de padrão.
     if tipo in (None, "erro", "nao_ville", "nao_vilebrequin", "nao_short"):
         return item
@@ -99,6 +133,10 @@ def _refazer_etapa(item: dict, etapa: str) -> dict:
             item["autenticidade"] = a
         item["classificacao"] = {**(item.get("classificacao") or {}),
                                  "autenticidade": item["autenticidade"].get("autenticidade")}
+    elif etapa == "cordao":
+        cd = verificar_cordao(item)
+        cd.pop("_usage", None)
+        item["cordao"] = cd
     return item
 
 
@@ -179,8 +217,8 @@ def main() -> None:
         _resumo(itens)
         return
 
-    if etapa not in ("cor", "tartaruga", "autenticidade"):
-        print(f"Etapa inválida: {etapa}. Use: score | prefilter | cor | tartaruga | autenticidade")
+    if etapa not in ("cor", "tartaruga", "autenticidade", "cordao", "marca"):
+        print(f"Etapa inválida: {etapa}. Use: score | prefilter | cor | tartaruga | autenticidade | cordao | marca")
         sys.exit(1)
 
     print(f"=== Reclassify Ville · etapa={etapa} · {len(alvos)} itens · {workers} workers ===\n")

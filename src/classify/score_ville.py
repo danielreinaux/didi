@@ -46,6 +46,8 @@ PTS_COR = {"preferida": 15, "neutra": 12, "aceitavel": 6, "penalizada": -12}
 PTS_TAMANHO = {"M": 15, "L": 12, "S": 8, "XL": 8}
 PTS_ETIQUETA = 5
 PTS_AUTH_ORIGINAL = 5
+# Coleção antiga (cordão cinza) — penaliza, NÃO exclui.
+PTS_COLECAO_ANTIGA = -8
 
 # Tipos que já vieram excluídos das etapas anteriores (regex/marca).
 EXCLUI_UPSTREAM = {
@@ -108,6 +110,16 @@ def _cor_principal(item: dict) -> str | None:
     cor = item.get("cor") if isinstance(item.get("cor"), dict) else {}
     tart = item.get("tartaruga") if isinstance(item.get("tartaruga"), dict) else {}
     return cor.get("cor_principal") or tart.get("cor_principal")
+
+
+def e_colecao_antiga(item: dict) -> bool:
+    """Coleção antiga = cordão CINZA (regra do dono).
+
+    Branco / colorido / sem_cordao / indefinido → NÃO conta como antiga
+    (na dúvida, não penaliza — mesma postura do Sundek pra dúvida).
+    """
+    cordao = item.get("cordao") if isinstance(item.get("cordao"), dict) else {}
+    return cordao.get("cordao_cor") == "cinza"
 
 
 def _tem_etiqueta(item: dict) -> bool:
@@ -173,7 +185,10 @@ def calcular_score(item: dict) -> dict:
     pts_tam = PTS_TAMANHO.get(tam_key or "L", 12)
     pts_et = PTS_ETIQUETA if tem_etiqueta else 0
     pts_auth = PTS_AUTH_ORIGINAL if autenticidade == "original" else 0
-    pts_atributos = max(0, pts_padrao + pts_cor + pts_fundo + pts_tam + pts_et + pts_auth)
+    # Coleção antiga (cordão cinza) penaliza em todos os tipos. Não exclui.
+    colecao_antiga = e_colecao_antiga(item)
+    pts_colecao = PTS_COLECAO_ANTIGA if colecao_antiga else 0
+    pts_atributos = max(0, pts_padrao + pts_cor + pts_fundo + pts_tam + pts_et + pts_auth + pts_colecao)
 
     # ── Eficiência de preço (0~30) ───────────────────────────────────────
     teto = TETO.get(tipo, 42)
@@ -263,9 +278,12 @@ def calcular_score(item: dict) -> dict:
             "tamanho": pts_tam,
             "etiqueta": pts_et,
             "autenticidade": pts_auth,
+            # colecao só aparece quando há penalidade (cordão cinza), mesmo padrão do fundo.
+            **({"colecao_antiga": pts_colecao} if pts_colecao else {}),
             "preco": pts_preco,
             "ratio_preco_teto": round(ratio, 2) if ratio else None,
             "cor_bucket": cor_bucket,
             "fundo_problema": fundo_problema,
+            "colecao_antiga": colecao_antiga,
         },
     }

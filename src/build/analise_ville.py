@@ -24,6 +24,10 @@ LEGENDAS = {
     "auth:suspeito": "Bolso ambíguo — trava em médio até confirmar.",
     "auth:sem_foto_bolso": "Sem foto do bolso — possível compra, com flag de verificar.",
     "auth:indefinido": "Não dá pra avaliar o bolso (ex: liso) — possível compra, com flag.",
+    # Coleção (derivada da cor do cordão)
+    "colecao:antiga": "Cordão CINZA — coleção antiga. Penaliza -8 no score (não exclui).",
+    "colecao:atual": "Cordão branco ou colorido — coleção atual. Sem penalidade.",
+    "colecao:indefinido": "Cordão não visível ou cor ambígua — sem efeito no score.",
     # Motivos de exclusão
     "padrao_outro_nao_compra": "Padrão não é tartaruga nem liso (peixe/coral/âncora/etc.) — cliente não compra.",
     "autenticidade_falsa": "Bolso traseiro sem o padrão — peça falsa.",
@@ -38,7 +42,8 @@ LEGENDAS = {
 }
 
 _PTS_LABEL = {"padrao": "padrão", "cor": "cor", "fundo": "fundo", "tamanho": "tam",
-              "etiqueta": "etiqueta", "autenticidade": "autent.", "preco": "preço"}
+              "etiqueta": "etiqueta", "autenticidade": "autent.", "preco": "preço",
+              "colecao_antiga": "coleção"}
 
 
 def _explicacao_score(s: dict) -> str:
@@ -46,7 +51,7 @@ def _explicacao_score(s: dict) -> str:
     if not bd:
         return ""
     partes = []
-    for k in ("padrao", "cor", "fundo", "tamanho", "etiqueta", "autenticidade", "preco"):
+    for k in ("padrao", "cor", "fundo", "tamanho", "etiqueta", "autenticidade", "colecao_antiga", "preco"):
         if k in bd:
             v = bd[k]
             partes.append(f"{_PTS_LABEL.get(k, k)} {'+' if v >= 0 else ''}{v}")
@@ -112,6 +117,13 @@ def main() -> None:
             tags.append(f'<span class="tag mid">{escape(av)}</span>')
         if et.get("tem_etiqueta") is True:
             tags.append('<span class="tag ok">etiqueta</span>')
+        # Coleção (derivada do cordão): cinza = antiga, branco/colorido = atual.
+        cordao = it.get("cordao") if isinstance(it.get("cordao"), dict) else {}
+        cc = cordao.get("cordao_cor")
+        if cc == "cinza":
+            tags.append('<span class="tag x">coleção antiga</span>')
+        elif cc in ("branco", "colorido"):
+            tags.append('<span class="tag ok">coleção atual</span>')
         for fl in (s.get("flags") or []):
             tags.append(f'<span class="tag mid">⚑ {escape(fl)}</span>')
 
@@ -122,6 +134,8 @@ def main() -> None:
             ev.append(f"<b>bolso:</b> {escape(auth['evidencia'])}")
         if tart.get("justificativa"):
             ev.append(f"<b>padrão:</b> {escape(tart['justificativa'])}")
+        if cordao.get("evidencia") and cc and cc != "sem_cordao":
+            ev.append(f"<b>cordão ({escape(cc)}):</b> {escape(cordao['evidencia'])}")
         evid = "<br>".join(ev)
 
         motivo = (s.get("motivo_exclusao") or "") or (s.get("motivo") or "")
@@ -157,7 +171,8 @@ def main() -> None:
 
     leg_padroes = "".join(f'<tr><td><span class="tag tipo">{escape(k.replace("padrao:",""))}</span></td><td>{escape(v)}</td></tr>' for k, v in LEGENDAS.items() if k.startswith("padrao:"))
     leg_auth = "".join(f'<tr><td><code>{escape(k.replace("auth:",""))}</code></td><td>{escape(v)}</td></tr>' for k, v in LEGENDAS.items() if k.startswith("auth:"))
-    leg_motivos = "".join(f'<tr><td><code>{escape(k)}</code></td><td>{escape(v)}</td></tr>' for k, v in LEGENDAS.items() if not k.startswith(("padrao:", "auth:")))
+    leg_colecao = "".join(f'<tr><td><code>{escape(k.replace("colecao:",""))}</code></td><td>{escape(v)}</td></tr>' for k, v in LEGENDAS.items() if k.startswith("colecao:"))
+    leg_motivos = "".join(f'<tr><td><code>{escape(k)}</code></td><td>{escape(v)}</td></tr>' for k, v in LEGENDAS.items() if not k.startswith(("padrao:", "auth:", "colecao:")))
 
     html = f"""<!DOCTYPE html>
 <html lang="pt-BR"><head>
@@ -221,6 +236,7 @@ details.sub summary{{padding:10px 14px;font-size:13px;font-weight:500}}
   <summary>📖 Legenda — clique pra entender</summary>
   <h2>Padrão de estampa</h2><table>{leg_padroes}</table>
   <h2>Autenticidade (bolso traseiro)</h2><table>{leg_auth}</table>
+  <h2>Coleção (cor do cordão)</h2><table>{leg_colecao}</table>
   <h2>Motivos de exclusão</h2><table>{leg_motivos}</table>
 </details>
 <h2>Itens classificados</h2>
