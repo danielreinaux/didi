@@ -75,6 +75,34 @@ def e_cor_bonita(nome: str | None) -> bool:
     return bucket_cor(nome) == "preferida"
 
 
+def e_fundo_problematico(item: dict) -> bool:
+    """Fundo do short é multicolor/gradiente — cliente não quer.
+
+    Detectado pelo prompt do tartaruga.py (campo fundo_padrao). Tartarugas
+    coloridas/mistas NÃO contam — só o fundo do tecido. Quando True, a cor
+    do item é tratada como 'penalizada' independente da cor_principal.
+    """
+    tart = item.get("tartaruga") if isinstance(item.get("tartaruga"), dict) else {}
+    return tart.get("fundo_padrao") in ("multicolor", "gradiente")
+
+
+def bucket_cor_item(item: dict) -> str:
+    """Versão item-aware: aplica o filtro de fundo multicolor por cima do bucket_cor.
+
+    Use esta no score (em vez de bucket_cor) quando quiser respeitar a regra de
+    fundo problemático.
+    """
+    if e_fundo_problematico(item):
+        return "penalizada"
+    return bucket_cor(_cor_principal_do_item(item))
+
+
+def _cor_principal_do_item(item: dict) -> str | None:
+    cor = item.get("cor") if isinstance(item.get("cor"), dict) else {}
+    tart = item.get("tartaruga") if isinstance(item.get("tartaruga"), dict) else {}
+    return cor.get("cor_principal") or tart.get("cor_principal")
+
+
 def cor_aceita_em_liso(nome: str | None) -> bool:
     """No liso o cliente só compra: preto, branco, navy, cinza, musgo,
     vermelho não-alaranjado. Qualquer outra cor → descarta."""

@@ -1,4 +1,94 @@
 """Prompt de CLASSIFICAÇÃO — padrão de estampa do Vilebrequin (tartaruga grande/pequena/liso/outro)."""
+from __future__ import annotations
+
+import base64
+from functools import lru_cache
+from pathlib import Path
+
+_REFS_DIR = Path(__file__).parent / "refs" / "ville_cor"
+
+
+def _detectar_mime(dados: bytes) -> str:
+    if dados[:3] == b"\xff\xd8\xff":
+        return "image/jpeg"
+    if dados[:8] == b"\x89PNG\r\n\x1a\n":
+        return "image/png"
+    if dados[:4] == b"RIFF" and dados[8:12] == b"WEBP":
+        return "image/webp"
+    if dados[:6] in (b"GIF87a", b"GIF89a"):
+        return "image/gif"
+    return "image/jpeg"
+
+
+@lru_cache(maxsize=None)
+def _ref_data_url(nome: str) -> str:
+    arquivo = _REFS_DIR / nome
+    dados = arquivo.read_bytes()
+    mime = _detectar_mime(dados)
+    b64 = base64.b64encode(dados).decode("ascii")
+    return f"data:{mime};base64,{b64}"
+
+
+def referencias_few_shot() -> list[dict]:
+    """2 exemplos pra calibrar fundo_padrao:
+    - 1 POSITIVO (gradiente azul→laranja → multicolor/gradiente)
+    - 1 CONTRA-EXEMPLO (azul ciano amassado → uniforme, NÃO multicolor)
+    """
+    return [
+        {
+            "type": "text",
+            "text": (
+                "════════ EXEMPLOS DE CALIBRAÇÃO (NÃO são o item a classificar) ════════\n"
+                "Você verá 2 fotos de REFERÊNCIA para entender o campo fundo_padrao. "
+                "ATENÇÃO: estas fotos NÃO são o item que você vai classificar. NUNCA "
+                "descreva estas imagens no campo justificativa — a justificativa deve "
+                "descrever APENAS o ITEM real que vem DEPOIS das referências."
+            ),
+        },
+        {
+            "type": "text",
+            "text": (
+                "[REF 1 — POSITIVO: fundo_padrao = \"gradiente\"] Esta foto mostra um "
+                "short com gradiente real (azul → branco → laranja) atravessando o corpo "
+                "do tecido. Múltiplas cores fortes em zonas diferentes do mesmo short. "
+                "Esse tipo de fundo é o que deve ser marcado como multicolor/gradiente."
+            ),
+        },
+        {
+            "type": "image_url",
+            "image_url": {
+                "url": _ref_data_url("fundo_multicolor_gradiente.jpg"),
+                "detail": "low",
+            },
+        },
+        {
+            "type": "text",
+            "text": (
+                "[REF 2 — CONTRA-EXEMPLO: fundo_padrao = \"uniforme\"] Esta foto mostra "
+                "um short AZUL CIANO UNIFORME, amassado e com dobras na foto. Variações "
+                "de tom causadas por AMASSADOS, DOBRAS, SOMBRAS de iluminação ou "
+                "REFLEXOS do tecido NÃO são multicolor. O short é de uma cor só. Mesmo "
+                "que partes pareçam mais escuras (por sombra) ou mais claras (por "
+                "reflexo de luz), continua sendo \"uniforme\". Só marque "
+                "multicolor/gradiente quando houver REGIÕES DE CORES DIFERENTES de "
+                "verdade no tecido — não sombra/dobra."
+            ),
+        },
+        {
+            "type": "image_url",
+            "image_url": {
+                "url": _ref_data_url("uniforme_com_amassados.jpg"),
+                "detail": "low",
+            },
+        },
+        {
+            "type": "text",
+            "text": (
+                "════════ FIM DAS REFERÊNCIAS — agora vem o ITEM a classificar ════════"
+            ),
+        },
+    ]
+
 
 SISTEMA = """Você é especialista em classificar shorts Vilebrequin pelo padrão de estampa.
 
@@ -39,6 +129,47 @@ ALÉM DO TIPO, AVALIE:
 cor_principal: a cor de fundo do short (não das tartarugas). Use nomes simples:
   "azul", "azul escuro", "navy", "preto", "branco", "verde", "laranja",
   "vermelho", "amarelo", "cinza", "lilás", "roxo", "rosa", "azul bebê", "verde piscina".
+  Se o fundo for multicolor/gradiente, escolha a cor que ocupa a maior área —
+  MAS marque fundo_padrao corretamente (veja abaixo).
+
+fundo_padrao: avalie a HOMOGENEIDADE do fundo (corpo do short, não das tartarugas).
+  Este é um campo CRÍTICO — fundos muito misturados não vendem bem.
+
+  "uniforme": fundo de UMA cor dominante clara. Pode ter variações sutis de
+    tom/sombra/iluminação. As tartarugas/motivos podem ser de qualquer cor
+    (inclusive multicolor) — isso NÃO afeta o fundo_padrao. Exemplos:
+    - fundo navy sólido com tartarugas coloridas = uniforme
+    - fundo branco com tartarugas pretas = uniforme
+    - fundo laranja com tartarugas azuis = uniforme
+    - azul ciano amassado, com partes mais claras (reflexo) e mais escuras
+      (sombra/dobra) = uniforme (ver REF 2)
+    Mesmo gradientes muito suaves de uma cor só (azul claro → azul médio)
+    contam como uniforme.
+
+  "multicolor": fundo com 3+ cores fortes/distintas formando blocos, manchas
+    ou regiões grandes. O olho não consegue dizer "qual é a cor do short"
+    porque há múltiplas cores competindo no corpo do tecido.
+
+  "gradiente": fundo com transição visível entre 2+ cores fortes diferentes
+    (ex: azul → laranja, rosa → azul, verde → amarelo). A transição atravessa
+    o short e cria zonas claramente de cores diferentes. Ver REF 1.
+
+  ⚠️  O QUE NÃO É MULTICOLOR/GRADIENTE (REGRA ANTI-FALSO-POSITIVO):
+    • AMASSADOS, DOBRAS, VINCOS do tecido → variação de TOM, não de cor.
+    • SOMBRAS (de mesa, ângulo da foto, partes que ficam embaixo) → não.
+    • REFLEXOS de luz / brilho do tecido em áreas iluminadas → não.
+    • Foto com fundo (sofá, grama, mesa) de cor diferente do short → o que
+      importa é a cor DO SHORT, não do entorno.
+    • Etiqueta interna, costura, elástico de cor diferente → não.
+    Em qualquer dúvida entre uniforme e multicolor por causa de iluminação,
+    escolha UNIFORME. Só marque multicolor/gradiente quando você vê
+    REGIÕES DE COR DIFERENTE pintadas no tecido, não causadas por luz/dobra.
+
+  REGRA PRÁTICA: se você pudesse pintar uma amostra do tecido em uma única
+  cor pra mostrar ao cliente, daria? → uniforme. Se precisaria de várias cores
+  pra representar fielmente → multicolor/gradiente.
+
+  As TARTARUGAS coloridas/mistas NÃO contam. Só o FUNDO importa aqui.
 
 tartaruga_variedade: descreva brevemente a variação de cores das tartarugas.
   Exemplos: "tartarugas pretas", "tartarugas coloridas mistas", "tartarugas brancas",
@@ -50,18 +181,36 @@ aparencia: avalie o estado visual do tecido.
   "desbotado": cor apagada, aspecto lavado/envelhecido.
   "indefinido": foto não permite avaliar.
 
+⚠️  REGRA ANTI-ALUCINAÇÃO PARA A JUSTIFICATIVA:
+  A justificativa deve descrever EXCLUSIVAMENTE o ITEM real que está sendo
+  classificado (as fotos do item, que vêm DEPOIS das referências). NUNCA
+  descreva o conteúdo das fotos de referência (REF 1, REF 2) no campo
+  justificativa. Se o item é um azul ciano liso, escreva "azul ciano liso";
+  NÃO escreva "gradiente azul-laranja com tartarugas coloridas" só porque
+  você viu isso na referência. Cada campo (tipo, cor_principal, fundo_padrao,
+  tartaruga_variedade, justificativa) deve ser sobre o item analisado.
+
 Responda APENAS com JSON válido:
 
 {
   "tipo": "tartaruga_grande" | "tartaruga_pequena" | "liso" | "outro" | "indefinido",
   "cor_principal": "<cor>",
+  "fundo_padrao": "uniforme" | "multicolor" | "gradiente" | "indefinido",
   "tartaruga_variedade": "<descrição ou null>",
   "padrao_identificado": "<nome do padrão se tipo=outro, senão null>",
   "aparencia": "ok" | "desbotado" | "indefinido",
-  "justificativa": "<frase curta>",
+  "justificativa": "<frase curta DESCREVENDO O ITEM REAL, não as referências>",
   "confianca": 0.0-1.0
 }"""
 
 
 def usuario(titulo: str) -> str:
-    return f'Short Vilebrequin. Título: "{titulo}". Classifique o padrão de estampa.'
+    return (
+        f'AGORA é o ITEM REAL a classificar (as fotos abaixo). Título: "{titulo}". '
+        f'Classifique o padrão de estampa deste item. '
+        f'ATENÇÃO ao campo "fundo_padrao": olhe apenas o FUNDO (corpo do tecido), '
+        f'ignorando as tartarugas, amassados, sombras e reflexos de luz. Compare '
+        f'com REF 1 (gradiente real = multicolor) e REF 2 (azul ciano amassado = '
+        f'uniforme, NÃO multicolor). A justificativa deve descrever ESTE item, '
+        f'NÃO as referências.'
+    )

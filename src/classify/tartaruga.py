@@ -32,11 +32,10 @@ def classificar_tartaruga(item: dict) -> dict:
             "confianca": 0,
         }
 
-    conteudo = [
-        {"type": "text", "text": prompt.usuario(item.get("titulo") or "")},
-        # detail=low: tartaruga grande é fácil de ver em baixa resolução (~10x mais barato).
-        *[{"type": "image_url", "image_url": {"url": u, "detail": "low"}} for u in fotos],
-    ]
+    conteudo = list(prompt.referencias_few_shot())  # 1 ref de fundo multicolor pra calibrar
+    conteudo.append({"type": "text", "text": prompt.usuario(item.get("titulo") or "")})
+    # detail=low: tartaruga grande é fácil de ver em baixa resolução (~10x mais barato).
+    conteudo += [{"type": "image_url", "image_url": {"url": u, "detail": "low"}} for u in fotos]
 
     resp = _get_client().chat.completions.create(
         model=IA["model"],  # gpt-4o-mini — tartaruga grande é fácil de ver

@@ -26,7 +26,7 @@ Resultado: >=70 comprável · 45-69 médio · <45 descartado (com overrides de f
 """
 import re
 
-from .cor_ville import bucket_cor, e_cor_bonita, cor_aceita_em_liso
+from .cor_ville import bucket_cor, bucket_cor_item, e_cor_bonita, e_fundo_problematico, cor_aceita_em_liso
 
 # Tetos de preço (€) por padrão — base do cálculo de eficiência de preço.
 TETO = {
@@ -139,7 +139,9 @@ def calcular_score(item: dict) -> dict:
     autenticidade = auth_block.get("autenticidade") or marca.get("autenticidade") or "indefinido"
 
     cor_nome = _cor_principal(item)
-    cor_bucket = bucket_cor(cor_nome)
+    # bucket_cor_item: penaliza fundo multicolor/gradiente como se fosse neon.
+    cor_bucket = bucket_cor_item(item)
+    fundo_problema = e_fundo_problematico(item)
     tam_key = _tamanho_key(item.get("tamanho"), item.get("titulo"))
     preco = _preco_efetivo(item)
     tem_etiqueta = _tem_etiqueta(item)
@@ -165,10 +167,13 @@ def calcular_score(item: dict) -> dict:
     # ── Score de atributos (0~70) ────────────────────────────────────────
     pts_padrao = PTS_PADRAO.get(tipo, 0)
     pts_cor = PTS_COR.get(cor_bucket, 0)
+    # Nerf extra de ranking pra fundo multicolor/gradiente (-12 do bucket + -8 = -20 total).
+    # Mantém honesto o ordenamento entre itens "uniforme penalizada" (neon) vs multicolor.
+    pts_fundo = -8 if fundo_problema else 0
     pts_tam = PTS_TAMANHO.get(tam_key or "L", 12)
     pts_et = PTS_ETIQUETA if tem_etiqueta else 0
     pts_auth = PTS_AUTH_ORIGINAL if autenticidade == "original" else 0
-    pts_atributos = max(0, pts_padrao + pts_cor + pts_tam + pts_et + pts_auth)
+    pts_atributos = max(0, pts_padrao + pts_cor + pts_fundo + pts_tam + pts_et + pts_auth)
 
     # ── Eficiência de preço (0~30) ───────────────────────────────────────
     teto = TETO.get(tipo, 42)
@@ -188,7 +193,9 @@ def calcular_score(item: dict) -> dict:
     score = min(100, pts_atributos + pts_preco)
 
     # ── Decisão por faixa de preço (autoritativa) ────────────────────────
-    cor_bonita = e_cor_bonita(cor_nome)
+    # Fundo multicolor cancela "cor bonita" — visual confuso não vale como preferida
+    # mesmo se a cor dominante for navy/vermelho/etc.
+    cor_bonita = e_cor_bonita(cor_nome) and not fundo_problema
     flags: list[str] = []
     decisao, motivo = "medio", ""
 
@@ -230,6 +237,14 @@ def calcular_score(item: dict) -> dict:
     if autenticidade in ("indefinido", "sem_foto_bolso") and decisao in ("compravel", "medio"):
         flags.append("verificar_autenticidade")
 
+    # ── Teto em medio pra fundo multicolor (Opção B) ─────────────────────
+    # Multicolor/gradiente nunca vira compravel automático — força revisão humana.
+    if fundo_problema:
+        flags.append("fundo_multicolor")
+        if decisao == "compravel":
+            decisao = "medio"
+            motivo = "fundo multicolor/gradiente — revisar antes de comprar"
+
     if decisao == "descartado" and not motivo:
         motivo = "fora das faixas de compra"
 
@@ -243,11 +258,13 @@ def calcular_score(item: dict) -> dict:
         "breakdown": {
             "padrao": pts_padrao,
             "cor": pts_cor,
+            "fundo": pts_fundo,
             "tamanho": pts_tam,
             "etiqueta": pts_et,
             "autenticidade": pts_auth,
             "preco": pts_preco,
             "ratio_preco_teto": round(ratio, 2) if ratio else None,
             "cor_bucket": cor_bucket,
+            "fundo_problema": fundo_problema,
         },
     }
