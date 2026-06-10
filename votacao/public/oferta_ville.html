@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="pt-BR"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>Vilebrequin · Vote nos candidatos</title>
+<style>
+* { box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
+body { font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; background:#0e0e12; color:#f5f5f7; padding:16px 12px 60px; }
+.wrap { max-width:760px; margin:0 auto; }
+h1 { font-size:20px; margin-bottom:4px; }
+.sub { color:#b8b8c0; font-size:13px; margin-bottom:18px; }
+.grid { display:grid; grid-template-columns:1fr; gap:14px; }
+@media(min-width:640px) { .grid { grid-template-columns:1fr 1fr; } }
+.card { background:#17171d; border:1px solid rgba(255,255,255,.08); border-radius:16px; overflow:hidden; }
+.card.voted { border-color:#00d9ff; }
+.ph { position:relative; width:100%; aspect-ratio:1; background:#0b0b0f; }
+.ph img { width:100%; height:100%; object-fit:cover; display:block; }
+.ph img[hidden] { display:none; }
+.nav { position:absolute; top:50%; transform:translateY(-50%); width:38px; height:38px; border:none; border-radius:50%; background:rgba(0,0,0,.45); color:#fff; font-size:22px; cursor:pointer; }
+.nav.prev { left:8px; } .nav.next { right:8px; }
+.count { position:absolute; top:8px; right:8px; background:rgba(0,0,0,.5); color:#fff; font-size:11px; padding:2px 7px; border-radius:99px; }
+.badge { position:absolute; top:8px; left:8px; font-size:12px; padding:3px 9px; border-radius:99px; font-weight:600; }
+.badge.comp { background:#00ff88; color:#07140a; }
+.badge.barg { background:#ffaa00; color:#1c1100; }
+.body { padding:12px; display:flex; flex-direction:column; gap:9px; }
+.t { color:#f5f5f7; text-decoration:none; font-size:14px; line-height:1.35; }
+.meta { color:#b8b8c0; font-size:13px; } .meta b { color:#f5f5f7; }
+.chips { display:flex; flex-wrap:wrap; gap:6px; }
+.chip { background:rgba(167,139,250,.14); color:#c4b5fd; font-size:11px; padding:2px 8px; border-radius:99px; }
+.vote { display:grid; grid-template-columns:1fr 1fr 1fr; gap:6px; margin-top:2px; }
+.v { padding:9px 4px; border:1px solid rgba(255,255,255,.12); border-radius:10px; background:rgba(255,255,255,.04); color:#f5f5f7; font-size:12px; font-weight:600; cursor:pointer; }
+.v.sel.gostei { background:#00ff88; color:#07140a; border-color:#00ff88; }
+.v.sel.nao { background:#ff4d6d; color:#fff; border-color:#ff4d6d; }
+.v.sel.disc { background:#ffaa00; color:#1c1100; border-color:#ffaa00; }
+.obs { width:100%; padding:9px 10px; border-radius:10px; resize:vertical; background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.12); color:#f5f5f7; font-size:14px; font-family:inherit; }
+.obs::placeholder { color:#7a7a86; }
+.obs:focus { outline:none; border-color:#00d9ff; }
+.status { font-size:11px; color:#00d9ff; min-height:14px; }
+</style></head><body>
+<div class="wrap">
+  <h1>Vilebrequin · Candidatos a compra</h1>
+  <div class="sub">14 peças (9 compráveis · 5 barganha).
+    O foco é a TARTARUGA GRANDE. Veja e vote 👍 / 👎 / ⚠️.</div>
+  <div class="grid"><div class="card" data-id="8902465116">
+  <div class="ph"><img src="https://images1.vinted.net/t/06_00480_THBTpMskdpJUdWGSnNZkJhQs/f800/1778687720.webp?s=e0f26bfc57d7a4e89cb50934040a13d056e18212" loading="lazy"><img src="https://images1.vinted.net/t/05_02117_5ty9Xm7uczKsviNmRzgeLNVw/f800/1778687720.webp?s=dfc8942089816b19b17833fa147e39b139b183f0" loading="lazy" hidden><img src="https://images1.vinted.net/t/01_005ed_XrS8JwtuHwYiTP3Sewi2RHsW/f800/1778687720.webp?s=c93c6ebed1319866ac6dc99219f3676f5cf7a99d" loading="lazy" hidden><button class="nav prev">‹</button><button class="nav next">›</button><span class="count"></span><span class="badge comp">✓ Comprável · 95</span></div>
+  <div class="body">
+    <a class="t" href="https://www.vinted.es/items/8902465116-short-vilebrequin-en-tres-bon-etat" target="_blank" rel="noreferrer">Short vilebrequin en très bon état</a>
+    <div class="meta">M · <b>53,20 €</b></div>
+    <div class="chips"><span class="chip">🐢 tartaruga grande (tartarugas azuis)</span><span class="chip">cor vermelho</span><span class="chip">autêntico (bolso)</span></div>
+    <div class="vote">
+      <button class="v gostei" data-r="gostei">👍 Gostei</button>
+      <button class="v nao" data-r="nao_gostei">👎 Não</button>
+      <button class="v disc" data-r="discordo">⚠️ Discordo</button>
+    </div>
+    <textarea class="obs" rows="2" placeholder="Comentário (opcional): o que achou? até quanto pagaria?"></textarea>
+    <div class="status"></div>
+  </div>
+</div>
+<div class="card" data-id="8708248877">
+  <div class="ph"><img src="https://images1.vinted.net/t/01_00c94_GLnCiGw3AAwBqvpDJyfZEdP4/f800/1776714255.webp?s=fca1f1a1acdefddea22f18356ebbd26dbe9b6751" loading="lazy"><img src="https://images1.vinted.net/t/06_0095c_bnJcS6J1w6d4TQm3e5ryokHN/f800/1776714255.webp?s=493c8112195f9e1d77a53c5db4acc6912936281a" loading="lazy" hidden><img src="https://images1.vinted.net/t/06_0074e_6w2UTTrgneEHoAk5hiUHrWaE/f800/1776714255.webp?s=828ba13a4c38ca83aa7620f724745315d262b989" loading="lazy" hidden><img src="https://images1.vinted.net/t/05_01f7d_yA4Z9HF7BGkREttJdwLCWB8Y/f800/1776714255.webp?s=87194e2f9c3b9caef7621f8d62e52159f7b62043" loading="lazy" hidden><img src="https://images1.vinted.net/t/05_017f9_Hw5DnT79Z24LMBqVyx4aNBaf/f800/1776714255.webp?s=a186311be3b6cb7687c2b537616917aed518e83a" loading="lazy" hidden><img src="https://images1.vinted.net/t/06_0018a_N8v9xNMWwKgby2ZAtYrZXPaE/f800/1771539913.webp?s=ac6be95f65838ac2dbdf505ce75a85b61518f42f" loading="lazy" hidden><button class="nav prev">‹</button><button class="nav next">›</button><span class="count"></span><span class="badge comp">✓ Comprável · 86</span></div>
+  <div class="body">
+    <a class="t" href="https://www.vinted.es/items/8708248877-short-de-bain-vilebrequin-maillot-taille-m-tortue-orange" target="_blank" rel="noreferrer">short de bain vilebrequin maillot taille M tortue orange</a>
+    <div class="meta">M · <b>47,95 €</b></div>
+    <div class="chips"><span class="chip">🐢 tartaruga grande (tartarugas pretas)</span><span class="chip">cor coral</span><span class="chip">autêntico (bolso)</span></div>
+    <div class="vote">
+      <button class="v gostei" data-r="gostei">👍 Gostei</button>
+      <button class="v nao" data-r="nao_gostei">👎 Não</button>
+      <button class="v disc" data-r="discordo">⚠️ Discordo</button>
+    </div>
+    <textarea class="obs" rows="2" placeholder="Comentário (opcional): o que achou? até quanto pagaria?"></textarea>
+    <div class="status"></div>
+  </div>
+</div>
+<div class="card" data-id="8648366519">
+  <div class="ph"><img src="https://images1.vinted.net/t/05_01c4e_FbnvEUpQWkvqBf9uxCvv6uWJ/f800/1776150274.webp?s=f50d13a56b992dca4420b441b6754814e840280c" loading="lazy"><img src="https://images1.vinted.net/t/06_00f7a_TXhnCguztZ6j2GZvKQkUQ5iH/f800/1776150274.webp?s=6b0555dbbe351ae43dec113c320b38c8fcd93965" loading="lazy" hidden><img src="https://images1.vinted.net/t/05_01014_9R2cAY1TJJrALuoYhF5srwjq/f800/1776150274.webp?s=fda89143c2881278b52f55cdea532339dae0980a" loading="lazy" hidden><img src="https://images1.vinted.net/t/06_01708_JwmDsusYFRCxDrzgjLqLvwZQ/f800/1776150274.webp?s=82742fb892e1394a44b15ee2686811a4945887cf" loading="lazy" hidden><img src="https://images1.vinted.net/t/06_012f6_cRizCHnimsDF7kgc4ZH8ziBB/f800/1776150274.webp?s=f030335fd1d47d93fd12509b0b4d89aab7420ef3" loading="lazy" hidden><button class="nav prev">‹</button><button class="nav next">›</button><span class="count"></span><span class="badge comp">✓ Comprável · 85</span></div>
+  <div class="body">
+    <a class="t" href="https://www.vinted.es/items/8648366519-short-de-bain-vilebrequin" target="_blank" rel="noreferrer">Short de bain Vilebrequin</a>
+    <div class="meta">M · <b>63,70 €</b></div>
+    <div class="chips"><span class="chip">🐢 tartaruga grande (tartarugas coloridas mistas)</span><span class="chip">cor azul marinho</span><span class="chip">autêntico (bolso)</span></div>
+    <div class="vote">
+      <button class="v gostei" data-r="gostei">👍 Gostei</button>
+      <button class="v nao" data-r="nao_gostei">👎 Não</button>
+      <button class="v disc" data-r="discordo">⚠️ Discordo</button>
+    </div>
+    <textarea class="obs" rows="2" placeholder="Comentário (opcional): o que achou? até quanto pagaria?"></textarea>
+    <div class="status"></div>
+  </div>
+</div>
+<div class="card" data-id="8960256349">
+  <div class="ph"><img src="https://images1.vinted.net/t/06_0025d_cmYL3Q4uUmkiEWfb5QVS5ANv/f800/1779219252.webp?s=91ecd3305b7fe01d61b849edb98314603dacfbd6" loading="lazy"><img src="https://images1.vinted.net/t/06_00629_MXTeYGCGbfbCR2R79Jp3x1UE/f800/1779219252.webp?s=6fb7b63bbc088ba00a169e642c95fe6f1c83d43e" loading="lazy" hidden><img src="https://images1.vinted.net/t/05_025be_r6UcQ7fASjzoTg4ksY2dbs97/f800/1779219252.webp?s=fdbc615b58cd465876b0232aab4422a629a65aa9" loading="lazy" hidden><img src="https://images1.vinted.net/t/01_01c87_auaFzfsk2VGsKXmVjaH9mTXE/f800/1779219252.webp?s=97316b8fadabb70ae2bc51e32842a807f690b458" loading="lazy" hidden><img src="https://images1.vinted.net/t/05_020dd_atyn7bM1mhQ5jHpeFSRYpUaU/f800/1779219252.webp?s=1051c9dffaebf775df287eff39198758c6c21436" loading="lazy" hidden><img src="https://images1.vinted.net/t/05_02150_QiQCK5Caa7hEyaGWqjmfZka8/f800/1778764879.webp?s=217aafb8a1fb82ff8d8c413ed552bbc125e71504" loading="lazy" hidden><button class="nav prev">‹</button><button class="nav next">›</button><span class="count"></span><span class="badge comp">✓ Comprável · 82</span></div>
+  <div class="body">
+    <a class="t" href="https://www.vinted.es/items/8960256349-ensemble-vilebrequin-homme-t-shirt-logo-short-de-bain-tortues-glow-in-the-dark" target="_blank" rel="noreferrer">Ensemble Vilebrequin Homme T-shirt Logo + Short de bain Tortues Glow i</a>
+    <div class="meta">L · <b>63,70 €</b></div>
+    <div class="chips"><span class="chip">🐢 tartaruga grande (tartarugas coloridas mistas)</span><span class="chip">cor azul escuro</span><span class="chip">⚠ conferir autenticidade</span><span class="chip">etiqueta</span></div>
+    <div class="vote">
+      <button class="v gostei" data-r="gostei">👍 Gostei</button>
+      <button class="v nao" data-r="nao_gostei">👎 Não</button>
+      <button class="v disc" data-r="discordo">⚠️ Discordo</button>
+    </div>
+    <textarea class="obs" rows="2" placeholder="Comentário (opcional): o que achou? até quanto pagaria?"></textarea>
+    <div class="status"></div>
+  </div>
+</div>
+<div class="card" data-id="7824102520">
+  <div class="ph"><img src="https://images1.vinted.net/t/01_00119_CCm9JGYpKgbD6uw1nwynk8tZ/f800/1766865226.webp?s=10ec71c93725d6033b0c668ab3b22a5425dc4d61" loading="lazy"><img src="https://images1.vinted.net/t/05_006b6_b8LWqomFXaptWjomQbayJo4H/f800/1766865226.webp?s=922070b0eab2fb2d7b25312dc5eab0e8697523e6" loading="lazy" hidden><img src="https://images1.vinted.net/t/06_015c7_ashmyvzaeijLMzNmQXQYVF8e/f800/1766865226.webp?s=27e0a4562f69de4427f1d56c8c3febef516becfd" loading="lazy" hidden><img src="https://images1.vinted.net/t/06_0080e_JyEaR7y7bGMjJbWMjayzraWw/f800/1766865205.webp?s=c101d7c45ae665fbe4bfc451fa6eec59f3b4d809" loading="lazy" hidden><img src="https://images1.vinted.net/t/02_01ddf_5XJvd2yuj5NBdKqWcWqfyZRQ/f800/1611178496.webp?s=b4ab4be598404a6840a4fbde3d8b6174c919b610" loading="lazy" hidden><button class="nav prev">‹</button><button class="nav next">›</button><span class="count"></span><span class="badge comp">✓ Comprável · 82</span></div>
+  <div class="body">
+    <a class="t" href="https://www.vinted.es/items/7824102520-maillot-villebrequin" target="_blank" rel="noreferrer">Maillot villebrequin</a>
+    <div class="meta">L · <b>63,70 €</b></div>
+    <div class="chips"><span class="chip">🐢 tartaruga grande (tartarugas coloridas mistas)</span><span class="chip">cor Preto</span><span class="chip">autêntico (bolso)</span></div>
+    <div class="vote">
+      <button class="v gostei" data-r="gostei">👍 Gostei</button>
+      <button class="v nao" data-r="nao_gostei">👎 Não</button>
+      <button class="v disc" data-r="discordo">⚠️ Discordo</button>
+    </div>
+    <textarea class="obs" rows="2" placeholder="Comentário (opcional): o que achou? até quanto pagaria?"></textarea>
+    <div class="status"></div>
+  </div>
+</div>
+<div class="card" data-id="8960360002">
+  <div class="ph"><img src="https://images1.vinted.net/t/01_022d7_DCrtVwomcePTBGos4tpZHoGk/f800/1779219951.webp?s=78213a51dbc27e286e44dca9448fc579ed9e2566" loading="lazy"><img src="https://images1.vinted.net/t/06_00b15_s9YC6B6k932r4SLimbEM4Jdh/f800/1779219951.webp?s=a127613c17779bb3fa4071881c7ebcd4046121c4" loading="lazy" hidden><img src="https://images1.vinted.net/t/05_01d2f_55zLcBBsQ7zppnM713Dm89HP/f800/1779219952.webp?s=e54d80b13f0d758c91f29c15fc90ba9dba498870" loading="lazy" hidden><img src="https://images1.vinted.net/t/05_01c34_nY2cPZzZ8JBj4Xr36DzFYz17/f800/1779219952.webp?s=d6f8efe03fde865f86b78063ed75ae4dd37077f8" loading="lazy" hidden><img src="https://images1.vinted.net/t/06_020bd_rvQnS7qWAuTmphYgRKbwKosS/f800/1779219952.webp?s=4eeacd5a12d22f08774691c29cf291670652c366" loading="lazy" hidden><img src="https://images1.vinted.net/t/05_02045_Qk13SGHEmxj9ypuPkHDvadMc/f800/1775855521.webp?s=980510d1fcfd6bf49e2e671e4a2eb3a96068bc82" loading="lazy" hidden><button class="nav prev">‹</button><button class="nav next">›</button><span class="count"></span><span class="badge comp">✓ Comprável · 79</span></div>
+  <div class="body">
+    <a class="t" href="https://www.vinted.es/items/8960360002-short-de-bain-vilebrequin-homme-bleu-tortues-taille-xl-tres-bon-etat" target="_blank" rel="noreferrer">Short de bain Vilebrequin homme bleu tortues – taille XL – très bon ét</a>
+    <div class="meta">XL · <b>53,20 €</b></div>
+    <div class="chips"><span class="chip">🐢 tartaruga grande (tartarugas coloridas mistas)</span><span class="chip">cor Azul claro</span><span class="chip">autêntico (bolso)</span></div>
+    <div class="vote">
+      <button class="v gostei" data-r="gostei">👍 Gostei</button>
+      <button class="v nao" data-r="nao_gostei">👎 Não</button>
+      <button class="v disc" data-r="discordo">⚠️ Discordo</button>
+    </div>
+    <textarea class="obs" rows="2" placeholder="Comentário (opcional): o que achou? até quanto pagaria?"></textarea>
+    <div class="status"></div>
+  </div>
+</div>
+<div class="card" data-id="7872902872">
+  <div class="ph"><img src="https://images1.vinted.net/t/05_00efd_55vNDyt815iVvFYDsXtrEECD/f800/1767539363.webp?s=1bbceba0fc0ba3e763c401a0f058221eea02573c" loading="lazy"><img src="https://images1.vinted.net/t/06_01886_jo5VGVkqogpayhwDCXDvBcfe/f800/1767539363.webp?s=7e4b686ed6823954c57367bd95de957356edafa8" loading="lazy" hidden><img src="https://images1.vinted.net/t/01_00835_EYLYHjq3MePUfin6n3bapwEJ/f800/1767539363.webp?s=e23a88cec30768f3000137ec9d344d4e4d559aad" loading="lazy" hidden><img src="https://images1.vinted.net/t/06_015c4_p1XjamFaqdLqzCT2gDjZz1vP/f800/1767539363.webp?s=a3e7d7646dc91256e4a31cb79124aefae20a72bc" loading="lazy" hidden><img src="https://images1.vinted.net/t/05_021c0_q8awvZ1ikgQaFfDMWnvw4yEN/f800/1767539363.webp?s=30f62a589b8cfd214b7ac9b1c360895bc57b4bb5" loading="lazy" hidden><img src="https://images1.vinted.net/t/02_0172c_cwLwrKiDE4NCmWZXGbVeNAAJ/f800/1673719229.webp?s=e48b39d404547b74e4bf38ef0796c208c31f6c4c" loading="lazy" hidden><button class="nav prev">‹</button><button class="nav next">›</button><span class="count"></span><span class="badge comp">✓ Comprável · 78</span></div>
+  <div class="body">
+    <a class="t" href="https://www.vinted.es/items/7872902872-banador-vilebrequin" target="_blank" rel="noreferrer">Bañador Vilebrequin</a>
+    <div class="meta">L · <b>53,20 €</b></div>
+    <div class="chips"><span class="chip">🐢 tartaruga grande (tartarugas azuis)</span><span class="chip">cor Amarelo</span><span class="chip">⚠ conferir autenticidade</span></div>
+    <div class="vote">
+      <button class="v gostei" data-r="gostei">👍 Gostei</button>
+      <button class="v nao" data-r="nao_gostei">👎 Não</button>
+      <button class="v disc" data-r="discordo">⚠️ Discordo</button>
+    </div>
+    <textarea class="obs" rows="2" placeholder="Comentário (opcional): o que achou? até quanto pagaria?"></textarea>
+    <div class="status"></div>
+  </div>
+</div>
+<div class="card" data-id="6771746174">
+  <div class="ph"><img src="https://images1.vinted.net/t/01_014a9_dLtPCmEUoBz5at5mFkcLqD4X/f800/1753787710.webp?s=44fb60a16a2a832b108ccb5867bc92539b492d1e" loading="lazy"><img src="https://images1.vinted.net/t/03_01611_DxMGzvtMugsS3Uae5UotftHg/f800/1753787710.webp?s=5bb8306474b0b8cae8b53c46c998e7555591ec0f" loading="lazy" hidden><img src="https://images1.vinted.net/t/01_01c7a_mNmEcDEDE9QZhoz9kE6MNXra/f800/1753787710.webp?s=bea2dda37fa7f0ff449df7116bbf19155b49148e" loading="lazy" hidden><img src="https://images1.vinted.net/t/03_020e6_gicdaod5MJ2enHXD3tNzuowN/f800/1663258621.webp?s=1d5b611b5fd77ad11333453867b15a98382c846d" loading="lazy" hidden><button class="nav prev">‹</button><button class="nav next">›</button><span class="count"></span><span class="badge comp">✓ Comprável · 68</span></div>
+  <div class="body">
+    <a class="t" href="https://www.vinted.es/items/6771746174-costume-uomo-vilebrequin-xl" target="_blank" rel="noreferrer">Costume uomo vilebrequin XL</a>
+    <div class="meta">XL · <b>84,70 €</b></div>
+    <div class="chips"><span class="chip">🐢 tartaruga grande (tartarugas azuis)</span><span class="chip">cor Branco</span><span class="chip">autêntico (bolso)</span></div>
+    <div class="vote">
+      <button class="v gostei" data-r="gostei">👍 Gostei</button>
+      <button class="v nao" data-r="nao_gostei">👎 Não</button>
+      <button class="v disc" data-r="discordo">⚠️ Discordo</button>
+    </div>
+    <textarea class="obs" rows="2" placeholder="Comentário (opcional): o que achou? até quanto pagaria?"></textarea>
+    <div class="status"></div>
+  </div>
+</div>
+<div class="card" data-id="8844174339">
+  <div class="ph"><img src="https://images1.vinted.net/t/06_01294_3o9hJdzM5EwiDroMTy2tHi8Y/f800/1778094895.webp?s=51ac29a40ec4dd6f8d56beca387f6c6d4024cff5" loading="lazy"><img src="https://images1.vinted.net/t/05_02429_TofaqK3kvcGm6EbvAyLYC77q/f800/1778094895.webp?s=06bb32a890af9dccdd305dc8024e9e19a7f3809c" loading="lazy" hidden><img src="https://images1.vinted.net/t/05_00986_V7wNnSiKyMUQtwPypx2ahC21/f800/1778094895.webp?s=ce76f52b2d0550c6c2a1960d4c0371f48e0caeab" loading="lazy" hidden><img src="https://images1.vinted.net/t/02_008b3_DXfSRDE61KhKhZNaQC7PwXuX/f800/1666007997.webp?s=882168b46f12206b3414ee8939456af4daef5881" loading="lazy" hidden><button class="nav prev">‹</button><button class="nav next">›</button><span class="count"></span><span class="badge comp">✓ Comprável · 67</span></div>
+  <div class="body">
+    <a class="t" href="https://www.vinted.es/items/8844174339-costume-villebrequin" target="_blank" rel="noreferrer">Costume villebrequin</a>
+    <div class="meta">L · <b>84,70 €</b></div>
+    <div class="chips"><span class="chip">🐢 tartaruga grande (tartarugas azuis)</span><span class="chip">cor Branco</span><span class="chip">⚠ conferir autenticidade</span></div>
+    <div class="vote">
+      <button class="v gostei" data-r="gostei">👍 Gostei</button>
+      <button class="v nao" data-r="nao_gostei">👎 Não</button>
+      <button class="v disc" data-r="discordo">⚠️ Discordo</button>
+    </div>
+    <textarea class="obs" rows="2" placeholder="Comentário (opcional): o que achou? até quanto pagaria?"></textarea>
+    <div class="status"></div>
+  </div>
+</div>
+<div class="card" data-id="8916958515">
+  <div class="ph"><img src="https://images1.vinted.net/t/06_00e5f_de4RVqz8bp9w875gGsqmV6Am/f800/1778836701.webp?s=2fc6cc0683d25094bbac438522107cd34e92ad21" loading="lazy"><img src="https://images1.vinted.net/t/05_00ea4_K4yP7u3kzMpn8B5XjULeaWcv/f800/1778836701.webp?s=f65bc4bf47297a74fa6ab015d15e19628b2bd6db" loading="lazy" hidden><img src="https://images1.vinted.net/t/06_01099_m6f1cwQ4HMjaVjKRDmerbSbm/f800/1778836701.webp?s=96ad21d256e137f61ac8b2191168effea5b795c0" loading="lazy" hidden><button class="nav prev">‹</button><button class="nav next">›</button><span class="count"></span><span class="badge barg">~ Barganha · 73</span></div>
+  <div class="body">
+    <a class="t" href="https://www.vinted.es/items/8916958515-costume-villebrequin" target="_blank" rel="noreferrer">Costume Villebrequin</a>
+    <div class="meta">L · <b>63,70 €</b></div>
+    <div class="chips"><span class="chip">🐢 tartaruga grande (tartarugas pretas)</span><span class="chip">cor azul claro</span><span class="chip">autêntico (bolso)</span></div>
+    <div class="vote">
+      <button class="v gostei" data-r="gostei">👍 Gostei</button>
+      <button class="v nao" data-r="nao_gostei">👎 Não</button>
+      <button class="v disc" data-r="discordo">⚠️ Discordo</button>
+    </div>
+    <textarea class="obs" rows="2" placeholder="Comentário (opcional): o que achou? até quanto pagaria?"></textarea>
+    <div class="status"></div>
+  </div>
+</div>
+<div class="card" data-id="8723889084">
+  <div class="ph"><img src="https://images1.vinted.net/t/01_006f7_2Uxtf644EuhUXhQSCPK7CTox/f800/1776880713.webp?s=5bbe8dbc5cc0333bf7e139ff1899dc37fd154142" loading="lazy"><img src="https://images1.vinted.net/t/04_0203a_XmfFKwzeHPqv51pUwNyxUTV5/f800/1776880713.webp?s=38ab2368c6145fd2a948b2ef5f5a34c0b73e13e8" loading="lazy" hidden><img src="https://images1.vinted.net/t/01_0167f_UjV1KPszkRLZCkZm3Mv9hiis/f800/1776880713.webp?s=a395eab6528237984b9b4079e5665fb0bc4516c1" loading="lazy" hidden><img src="https://images1.vinted.net/t/06_00145_ey64TBiSFMwSsjGAs5Z1YV9i/f800/1776880713.webp?s=0eb06eddd84444a03cffbe57bef5aa677d318954" loading="lazy" hidden><img src="https://images1.vinted.net/t/03_0005e_uHvi2Hdqd1t6vXvAGS9KT3Ao/f800/1776880713.webp?s=243b76c2a59e2d81dc0a74d42e4cbbe761f227d7" loading="lazy" hidden><img src="https://images1.vinted.net/t/06_001f2_S1qGr94x5ycMxspDZFPhsd6C/f800/1765719609.webp?s=cfc9d7f56b3b86ed27c1edf2bf47048eb761bd22" loading="lazy" hidden><button class="nav prev">‹</button><button class="nav next">›</button><span class="count"></span><span class="badge barg">~ Barganha · 68</span></div>
+  <div class="body">
+    <a class="t" href="https://www.vinted.es/items/8723889084-maillot-de-bain-homme-vilebrequin" target="_blank" rel="noreferrer">Maillot de bain homme Vilebrequin</a>
+    <div class="meta">L · <b>68,95 €</b></div>
+    <div class="chips"><span class="chip">🐢 tartaruga grande (tartarugas coloridas mistas)</span><span class="chip">cor laranja</span><span class="chip">autêntico (bolso)</span></div>
+    <div class="vote">
+      <button class="v gostei" data-r="gostei">👍 Gostei</button>
+      <button class="v nao" data-r="nao_gostei">👎 Não</button>
+      <button class="v disc" data-r="discordo">⚠️ Discordo</button>
+    </div>
+    <textarea class="obs" rows="2" placeholder="Comentário (opcional): o que achou? até quanto pagaria?"></textarea>
+    <div class="status"></div>
+  </div>
+</div>
+<div class="card" data-id="8683248907">
+  <div class="ph"><img src="https://images1.vinted.net/t/05_02171_2gTzdVUf6mmZsx43hi7Zq57p/f800/1776512154.webp?s=c5adaaccaa1ee61fc5d3854b821c34f2bd8595ab" loading="lazy"><img src="https://images1.vinted.net/t/01_01aed_rrMNSKYMPbE92FGLXqN9ngic/f800/1776512154.webp?s=2e9427a4ce20dcf577fec66e805ff24e420f0ec6" loading="lazy" hidden><img src="https://images1.vinted.net/t/06_007c3_tHZU2RwNmaRYaViDXgMxmZeK/f800/1776512154.webp?s=cf3f2406b455db356005a43287bdd083db42cadf" loading="lazy" hidden><img src="https://images1.vinted.net/t/05_020cd_3MwaF9qvHqQPr4ShoLYGewN7/f800/1776512154.webp?s=03ee27d2160b2cdcac564841e413761573ab3b6c" loading="lazy" hidden><img src="https://images1.vinted.net/t/05_01821_ZYe82hH6KQzkEYzhQqWSte4x/f800/1776512154.webp?s=ae8d137ac90cc990438ee1941d531f8d31762364" loading="lazy" hidden><img src="https://images1.vinted.net/t/03_001fd_EvTgbRYmhekLBgev3T3r73zM/f800/1776956194.webp?s=26bedd5d68cbb91829b6826c4386a483ff7e2ad3" loading="lazy" hidden><button class="nav prev">‹</button><button class="nav next">›</button><span class="count"></span><span class="badge barg">~ Barganha · 64</span></div>
+  <div class="body">
+    <a class="t" href="https://www.vinted.es/items/8683248907-short-vilebrequin-de-bain" target="_blank" rel="noreferrer">Short vilebrequin de bain</a>
+    <div class="meta">XL · <b>74,20 €</b></div>
+    <div class="chips"><span class="chip">🐢 tartaruga grande (tartarugas azuis e pretas)</span><span class="chip">cor Laranja</span><span class="chip">autêntico (bolso)</span></div>
+    <div class="vote">
+      <button class="v gostei" data-r="gostei">👍 Gostei</button>
+      <button class="v nao" data-r="nao_gostei">👎 Não</button>
+      <button class="v disc" data-r="discordo">⚠️ Discordo</button>
+    </div>
+    <textarea class="obs" rows="2" placeholder="Comentário (opcional): o que achou? até quanto pagaria?"></textarea>
+    <div class="status"></div>
+  </div>
+</div>
+<div class="card" data-id="8672681479">
+  <div class="ph"><img src="https://images1.vinted.net/t/06_01cb1_PVMf6TxVeu1zs1jPqwvjocGt/f800/1776387995.webp?s=b5a3c27533f762a9abccfe591e5bb62ac2f7fc6e" loading="lazy"><img src="https://images1.vinted.net/t/05_02007_meDkirK8EivfgMsyG9Ypc9ma/f800/1776387995.webp?s=dfd6b6761e13876f42140801ddecdc544b042d61" loading="lazy" hidden><img src="https://images1.vinted.net/t/05_0173a_Sdcg61PXhboZxMfJS9kxsanN/f800/1776387995.webp?s=4c89f3904a10a9a9f53786a21187a53bb3608ab2" loading="lazy" hidden><img src="https://images1.vinted.net/t/01_00e53_dkqvEbCaaphPfzRdSytKh6Gn/f800/1776387995.webp?s=5a3ae14d561db9cba4c98f2f7697100734e00849" loading="lazy" hidden><img src="https://images1.vinted.net/t/03_007bc_1QC1aLjZmhwp8SshXXdCr9mH/f800/1776387995.webp?s=ed751f9d2e9599dd0ab260817e5be3c165ab90e2" loading="lazy" hidden><img src="https://images1.vinted.net/t/01_010f6_1sDJLtUoTZmcGST2cbCBafbs/f800/1754933554.webp?s=18d1c46afbdcf2db1b2d430074f15d92e0643c66" loading="lazy" hidden><button class="nav prev">‹</button><button class="nav next">›</button><span class="count"></span><span class="badge barg">~ Barganha · 63</span></div>
+  <div class="body">
+    <a class="t" href="https://www.vinted.es/items/8672681479-short-de-bain-vilebrequin" target="_blank" rel="noreferrer">Short de bain Vilebrequin</a>
+    <div class="meta">L · <b>84,70 €</b></div>
+    <div class="chips"><span class="chip">🐢 tartaruga grande (tartarugas azuis)</span><span class="chip">cor Azul claro</span><span class="chip">autêntico (bolso)</span></div>
+    <div class="vote">
+      <button class="v gostei" data-r="gostei">👍 Gostei</button>
+      <button class="v nao" data-r="nao_gostei">👎 Não</button>
+      <button class="v disc" data-r="discordo">⚠️ Discordo</button>
+    </div>
+    <textarea class="obs" rows="2" placeholder="Comentário (opcional): o que achou? até quanto pagaria?"></textarea>
+    <div class="status"></div>
+  </div>
+</div>
+<div class="card" data-id="8825468601">
+  <div class="ph"><img src="https://images1.vinted.net/t/03_0132f_Mo2P34xtc1aYwzzMhpSGbSdz/f800/1777914570.webp?s=1daa016b7dc1eaaa8b3fc27a74c6513d5796e698" loading="lazy"><img src="https://images1.vinted.net/t/04_00f6c_nTCLqv7NiREPMHpzq81gKtaU/f800/1777914570.webp?s=ea02bcb0c28bc977d35b3631278b6c15a36e26e5" loading="lazy" hidden><img src="https://images1.vinted.net/t/06_01aba_e5z8jvfnKs5P9F7cQLgD1SJQ/f800/1777914570.webp?s=d9945a2d643fd9c5a642664e167234f8596ddf7b" loading="lazy" hidden><img src="https://images1.vinted.net/t/01_01257_xp3vFJ1tLBCvkiXkB7iH7pPy/f800/1777914570.webp?s=be25fdcff2f1a0868dc76ed395275dff99b8494e" loading="lazy" hidden><img src="https://images1.vinted.net/t/05_0024a_WHwu2t2y6Q5ZUSBoEoqm2shg/f800/1777914570.webp?s=bc9e46be4254f82cdbaac08996c8f2098cb1ccfb" loading="lazy" hidden><img src="https://images1.vinted.net/t/02_00e51_JkuRWbRFJJFJxQqbnMguKTiD/f800/1655819640.webp?s=e8f367e7d45751a4db2d8023ee70d091b2060d70" loading="lazy" hidden><button class="nav prev">‹</button><button class="nav next">›</button><span class="count"></span><span class="badge barg">~ Barganha · 59</span></div>
+  <div class="body">
+    <a class="t" href="https://www.vinted.es/items/8825468601-costume-uomo-vilebrequin" target="_blank" rel="noreferrer">Costume uomo Vilebrequin</a>
+    <div class="meta">S · <b>74,20 €</b></div>
+    <div class="chips"><span class="chip">🐢 tartaruga grande (tartarugas coloridas mistas)</span><span class="chip">cor azul claro</span></div>
+    <div class="vote">
+      <button class="v gostei" data-r="gostei">👍 Gostei</button>
+      <button class="v nao" data-r="nao_gostei">👎 Não</button>
+      <button class="v disc" data-r="discordo">⚠️ Discordo</button>
+    </div>
+    <textarea class="obs" rows="2" placeholder="Comentário (opcional): o que achou? até quanto pagaria?"></textarea>
+    <div class="status"></div>
+  </div>
+</div></div>
+</div>
+<script>
+const API="https://votacao-two.vercel.app/api", NS="oferta_ville:";
+fetch(API+"/reactions").then(r=>r.json()).then(data=>{
+  document.querySelectorAll(".card").forEach(c=>{
+    const v=data[NS+c.dataset.id]; if(!v) return;
+    if(v.reaction){ const b=c.querySelector(`.v[data-r="${v.reaction}"]`); if(b){ b.classList.add("sel"); c.classList.add("voted"); } }
+    if(v.observacao){ c.querySelector(".obs").value=v.observacao; }
+  });
+}).catch(()=>{});
+document.querySelectorAll(".card").forEach(card=>{
+  const imgs=[...card.querySelectorAll(".ph img")], cnt=card.querySelector(".count"); let idx=0;
+  const show=i=>{ idx=(i+imgs.length)%imgs.length; imgs.forEach((im,j)=>im.hidden=j!==idx); if(cnt)cnt.textContent=(idx+1)+"/"+imgs.length; };
+  if(imgs.length>1){ show(0);
+    card.querySelector(".prev").onclick=()=>show(idx-1); card.querySelector(".next").onclick=()=>show(idx+1);
+    let x0=null; const ph=card.querySelector(".ph");
+    ph.addEventListener("touchstart",e=>x0=e.touches[0].clientX,{passive:true});
+    ph.addEventListener("touchend",e=>{ if(x0==null)return; const dx=e.changedTouches[0].clientX-x0; if(Math.abs(dx)>35)show(idx+(dx<0?1:-1)); x0=null; });
+  }
+  const st=card.querySelector(".status");
+  card.querySelectorAll(".v").forEach(btn=>{
+    btn.onclick=async()=>{
+      const sel=btn.classList.contains("sel");
+      card.querySelectorAll(".v").forEach(b=>b.classList.remove("sel"));
+      const r=sel?null:btn.dataset.r; if(!sel)btn.classList.add("sel");
+      card.classList.toggle("voted",!sel); st.textContent="salvando…";
+      try{ await fetch(API+"/reactions",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({id:NS+card.dataset.id,reaction:r})}); st.textContent=sel?"removido":"salvo ✓"; }catch(e){ st.textContent="erro"; }
+      setTimeout(()=>st.textContent="",2000);
+    };
+  });
+  const obs=card.querySelector(".obs");
+  obs.addEventListener("blur",async()=>{ st.textContent="salvando…";
+    try{ await fetch(API+"/reactions",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({id:NS+card.dataset.id,observacao:obs.value})}); st.textContent="comentário salvo ✓"; }catch(e){ st.textContent="erro"; }
+    setTimeout(()=>st.textContent="",2000);
+  });
+});
+</script>
+</body></html>
