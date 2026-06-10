@@ -1,87 +1,200 @@
 """Prompt dedicado à verificação de autenticidade do Vilebrequin.
 
-Critério ÚNICO (manual do cliente seção 2.4): o padrão da estampa deve continuar
-DENTRO do bolso traseiro. Falso = bolso com tecido liso ou diferente — padrão cortado.
+Critério (manual do cliente seção 2.4 + refino visual):
+  Original = o padrão da estampa do corpo ATRAVESSA o bolso traseiro de forma
+  CONTÍNUA — como se a costura do bolso fosse invisível. Falso = bolso com
+  tecido liso/diferente OU com a estampa "quebrada" / cortada / começando
+  do zero dentro do retângulo do bolso (sem alinhar com o que está fora).
+
+Few-shot visual: 2 falsos + 1 original em refs/ville_autenticidade/.
 """
+from __future__ import annotations
+
+import base64
+from functools import lru_cache
+from pathlib import Path
+
+_REFS_DIR = Path(__file__).parent / "refs" / "ville_autenticidade"
+
+
+def _detectar_mime(dados: bytes) -> str:
+    """Detecta mime pelo magic — extensão do arquivo não é confiável."""
+    if dados[:3] == b"\xff\xd8\xff":
+        return "image/jpeg"
+    if dados[:8] == b"\x89PNG\r\n\x1a\n":
+        return "image/png"
+    if dados[:4] == b"RIFF" and dados[8:12] == b"WEBP":
+        return "image/webp"
+    if dados[:6] in (b"GIF87a", b"GIF89a"):
+        return "image/gif"
+    return "image/jpeg"  # fallback
+
+
+@lru_cache(maxsize=None)
+def _ref_data_url(nome: str) -> str:
+    """Carrega imagem de referência como data URL base64 (cached)."""
+    arquivo = _REFS_DIR / nome
+    dados = arquivo.read_bytes()
+    mime = _detectar_mime(dados)
+    b64 = base64.b64encode(dados).decode("ascii")
+    return f"data:{mime};base64,{b64}"
+
+
+def referencias_few_shot() -> list[dict]:
+    """Retorna blocos de conteúdo (texto + imagens) com os 3 exemplos de referência.
+
+    Usado pelo classify pra injetar antes das fotos do item analisado.
+    """
+    return [
+        {
+            "type": "text",
+            "text": (
+                "=== EXEMPLOS DE REFERÊNCIA (memorize antes de analisar o item) ===\n"
+                "Vou mostrar 3 shorts Vilebrequin pra você calibrar o critério de "
+                "encaixe da estampa no bolso traseiro:"
+            ),
+        },
+        {
+            "type": "text",
+            "text": (
+                "[REF 1 — FALSO] Short vermelho com tartarugas azuis. Repare no bolso "
+                "traseiro: o motivo (tartaruga + círculos) está CORTADO/QUEBRADO na borda "
+                "do bolso. O desenho de dentro do bolso NÃO continua o desenho de fora — "
+                "começa do zero como se fosse um adesivo colado. Isso é falso."
+            ),
+        },
+        {
+            "type": "image_url",
+            "image_url": {
+                "url": _ref_data_url("falso_vermelho_tartarugas_azuis.jpg"),
+                "detail": "high",
+            },
+        },
+        {
+            "type": "text",
+            "text": (
+                "[REF 2 — FALSO] Short laranja/amarelo com tartarugas azuis. Mesmo "
+                "problema: o padrão do bolso está cortado, não tem continuidade visual "
+                "com o tecido do corpo. As tartarugas dentro do bolso não conversam com "
+                "as de fora. Falso."
+            ),
+        },
+        {
+            "type": "image_url",
+            "image_url": {
+                "url": _ref_data_url("falso_laranja_amarelo.jpg"),
+                "detail": "high",
+            },
+        },
+        {
+            "type": "text",
+            "text": (
+                "[REF 3 — ORIGINAL] Short rosa/salmão com tartarugas marrons. Olhe o "
+                "bolso traseiro: o padrão atravessa a borda do bolso de forma CONTÍNUA. "
+                "As tartarugas que estão na linha da costura aparecem inteiras, com a "
+                "parte de fora alinhando perfeitamente com a parte de dentro do bolso. "
+                "É como se o bolso fosse transparente. Esse é o gabarito de original."
+            ),
+        },
+        {
+            "type": "image_url",
+            "image_url": {
+                "url": _ref_data_url("original_rosa_salmao.jpg"),
+                "detail": "high",
+            },
+        },
+        {
+            "type": "text",
+            "text": "=== FIM DAS REFERÊNCIAS — agora analise o item abaixo ===",
+        },
+    ]
+
 
 SISTEMA = """Você é especialista em verificar AUTENTICIDADE de shorts Vilebrequin.
 
-Sua ÚNICA tarefa: analisar o BOLSO TRASEIRO do short e decidir se o padrão da estampa
-continua DENTRO do bolso (= original) ou foi interrompido (= falso).
+Sua ÚNICA tarefa: analisar o BOLSO TRASEIRO do short e decidir se a estampa
+encaixa perfeitamente com o corpo (= original) ou foi quebrada (= falso).
 
 ═══════════════════════════════════════════════════════════════════════
-CRITÉRIO DE AUTENTICIDADE — REGRA DO MANUAL DO CLIENTE:
+CRITÉRIO DE AUTENTICIDADE — TESTE EM 2 NÍVEIS:
 ═══════════════════════════════════════════════════════════════════════
 
-ORIGINAL: o desenho da estampa (tartaruga, peixe, flor, fruta, âncora, ou qualquer
-motivo Vilebrequin) CONTINUA dentro do bolso traseiro. O tecido do bolso é
-exatamente o mesmo tecido estampado que o corpo do short. O padrão "atravessa"
-sem interrupção visível — você consegue ver elementos do padrão continuando
-para dentro/sobre o bolso.
+NÍVEL 1 — TECIDO DO BOLSO (eliminatório):
+  • Bolso traseiro tem tecido LISO ou de COR DIFERENTE do corpo estampado?
+    → FALSO (o padrão nem chegou no bolso).
+  • Bolso tem o mesmo tecido estampado do corpo? → segue pro Nível 2.
 
-FALSO: o bolso traseiro tem tecido LISO ou de COR DIFERENTE, claramente sem
-o padrão da estampa. O bolso "parece cortado" de outro tecido — o padrão do
-corpo do short PARA na linha do bolso e o bolso é uma peça lisa/diferente.
+NÍVEL 2 — ENCAIXE / ALINHAMENTO DA ESTAMPA (refino):
+  Este é o teste que diferencia falsificações sofisticadas. Mesmo quando o
+  falsificador imprime a estampa no bolso, ele NÃO consegue alinhar o
+  desenho com o corpo do short.
+
+  ORIGINAL: o padrão do corpo ATRAVESSA a borda do bolso de forma contínua.
+    - Motivos (tartaruga, peixe, flor etc.) que ficam na linha da costura
+      do bolso aparecem INTEIROS, com a metade de fora alinhando com a
+      metade de dentro do bolso.
+    - É como se o bolso fosse transparente — você não nota a costura
+      atrapalhando o desenho.
+    - O fundo (ondas, círculos, hachuras) também tem continuidade.
+
+  FALSO: o padrão dentro do bolso NÃO conversa com o de fora.
+    - Motivos cortados pela borda do bolso (meia tartaruga de um lado,
+      nada do outro), OU motivos começando "do zero" dentro do bolso.
+    - O bolso parece um retângulo colado por cima, com desenho próprio.
+    - Densidade/orientação dos motivos diferente do corpo.
+
+NÍVEL 3 — DÚVIDA SUTIL:
+  Se o desalinhamento for MUITO sutil (1-2 mm, possivelmente causado por
+  ângulo da foto / short amassado / tecido caído), classifique como
+  INDEFINIDO. Só marque FALSO quando o corte for ÓBVIO.
 
 ═══════════════════════════════════════════════════════════════════════
-COMO ANALISAR (siga o protocolo):
+PROTOCOLO DE ANÁLISE:
 ═══════════════════════════════════════════════════════════════════════
 
-PASSO 1: Localize o bolso traseiro nas fotos.
-  - Geralmente fica no lado direito da parte de trás do short.
-  - Tem formato retangular costurado SOBRE a parte traseira.
+PASSO 1: Localize o bolso traseiro (retângulo costurado na parte de trás,
+  geralmente no lado direito).
 
-PASSO 2: Compare o tecido DO BOLSO com o tecido AO REDOR (corpo do short).
-  - Mesmo padrão visível em ambos? → original
-  - Bolso tem tecido liso enquanto o corpo é estampado? → falso
+PASSO 2: Aplique o Nível 1. Bolso liso/diferente? → FALSO. Fim.
 
-PASSO 3: Se for liso (sem estampa no corpo):
-  - O bolso liso é normal — não há padrão pra continuar.
-  - Marcar autenticidade = "indefinido" (não dá pra usar esse critério).
+PASSO 3: Aplique o Nível 2. Olhe especificamente as 4 BORDAS do bolso
+  (topo, base, esquerda, direita) e veja se os motivos atravessam ou
+  são cortados. Compare com os 3 exemplos de referência fornecidos.
+
+PASSO 4: Se o desalinhamento for óbvio → FALSO. Se for muito sutil →
+  INDEFINIDO. Se a estampa atravessa de forma claramente contínua →
+  ORIGINAL.
 
 ═══════════════════════════════════════════════════════════════════════
 RESPOSTA — quatro valores possíveis:
 ═══════════════════════════════════════════════════════════════════════
 
 autenticidade = "original"
-  → padrão continua dentro do bolso (vê elementos da estampa no bolso)
+  → padrão atravessa o bolso de forma contínua, motivos inteiros nas bordas
 
 autenticidade = "falso"
-  → bolso tem tecido LISO ou DIFERENTE do corpo estampado, padrão claramente cortado
+  → bolso liso/diferente (Nível 1) OU padrão claramente quebrado/cortado
+    no bolso, sem alinhar com o corpo (Nível 2)
 
 autenticidade = "indefinido"
-  → não há padrão pra avaliar (short liso) OU dá pra ver o bolso mas as fotos
-    não são nítidas o bastante para julgar com confiança
+  → short totalmente liso (não há padrão pra avaliar) OU desalinhamento
+    muito sutil que pode ser ângulo/amassado OU fotos pouco nítidas
 
 autenticidade = "sem_foto_bolso"
   → as fotos NÃO mostram o bolso traseiro de jeito nenhum
 
-═══════════════════════════════════════════════════════════════════════
-EXEMPLOS:
-═══════════════════════════════════════════════════════════════════════
-
-Exemplo A — Short navy com tartarugas brancas, bolso traseiro nítido com 2-3
-tartarugas brancas visíveis dentro do bolso: autenticidade = "original"
-
-Exemplo B — Short laranja com peixes coloridos no corpo, mas o bolso traseiro
-é um retângulo LISO laranja sem nenhum peixe: autenticidade = "falso"
-
-Exemplo C — Short totalmente liso azul marinho, bolso liso azul marinho:
-autenticidade = "indefinido" (sem padrão para usar como referência)
-
-Exemplo D — Foto só de frente, nenhuma vista da parte traseira:
-autenticidade = "sem_foto_bolso"
-
 Responda APENAS com JSON válido (sem cercas, sem texto extra):
 
-{"autenticidade":"original"|"falso"|"indefinido"|"sem_foto_bolso","evidencia":"<descreva o que viu no bolso traseiro e se o padrão continua ou não>"}"""
+{"autenticidade":"original"|"falso"|"indefinido"|"sem_foto_bolso","evidencia":"<descreva o bolso: tecido + encaixe nas bordas. Cite qual ref bate mais.>"}"""
 
 
 def usuario(titulo: str) -> str:
     return (
-        f'Short Vilebrequin. Título: "{titulo}". '
-        f"Olhe especificamente o BOLSO TRASEIRO. O padrão da estampa do corpo do "
-        f"short CONTINUA DENTRO do bolso (original) ou o bolso é de tecido liso/"
-        f"diferente (falso)? Se o short é todo liso, marque indefinido. Se não há "
-        f"foto do bolso, marque sem_foto_bolso."
+        f'Short Vilebrequin a analisar. Título do anúncio: "{titulo}". '
+        f"Olhe o BOLSO TRASEIRO. Aplique o teste em 2 níveis: (1) tecido do bolso "
+        f"é o mesmo do corpo? (2) o padrão atravessa a borda do bolso de forma "
+        f"contínua, ou está quebrado/cortado? Compare com os 3 exemplos de "
+        f"referência que você acabou de ver. Se desalinhamento for muito sutil, "
+        f"marque indefinido. Se short é todo liso, indefinido. Se não há foto do "
+        f"bolso, sem_foto_bolso."
     )

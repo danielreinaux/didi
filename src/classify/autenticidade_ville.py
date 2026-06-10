@@ -46,9 +46,11 @@ def verificar_autenticidade(item: dict) -> dict:
     crop_info = recortar_bolso(item)
     crop_url = crop_info.get("crop")
 
-    conteudo = [{"type": "text", "text": prompt.usuario(item.get("titulo") or "")}]
+    # Few-shot visual: 2 falsos + 1 original como referência de encaixe
+    conteudo = list(prompt.referencias_few_shot())
+    conteudo.append({"type": "text", "text": prompt.usuario(item.get("titulo") or "")})
     if crop_url:
-        conteudo.append({"type": "text", "text": "ZOOM do bolso traseiro (use esta pra ver se o padrão continua):"})
+        conteudo.append({"type": "text", "text": "ZOOM do bolso traseiro do item (foque o encaixe da estampa nas bordas):"})
         conteudo.append({"type": "image_url", "image_url": {"url": crop_url, "detail": "high"}})
         conteudo.append({"type": "text", "text": "Fotos gerais do short (contexto):"})
     # Fotos gerais em LOW — só servem de contexto; o zoom é onde está a informação.
