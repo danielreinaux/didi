@@ -207,12 +207,12 @@ def calcular_score(item: dict) -> dict:
         exclusoes.append("bolso_so_logo_colecao_antiga")
     if tipo == "liso" and cl.get("tem_listra_lateral_sundek") is False:
         exclusoes.append("sem_listra_sundek")
-    # SEM elástico só vale em preto / branco / azul marinho (decisão do dono + feedback
-    # do voto). Fora dessas cores → exclui. EXCEÇÃO: etiqueta visível (dá pra olhar).
+    # SEM elástico só vale em preto / branco / azul marinho (decisão do dono +
+    # feedback do voto). Fora dessas cores → EXCLUSÃO sempre (etiqueta não salva).
     if not tem_elastico:
         _cn = (cor.get("cor_principal") or "").lower()
         _cor_elite = any(k in _cn for k in ("preto", "negro", "branco", "blanco", "marinho", "navy"))
-        if not _cor_elite and not tem_etiqueta:
+        if not _cor_elite:
             exclusoes.append("sem_elastico_cor_fraca")
     # Piping: prompt dedicado detecta acabamento de costura disfarçado de listra
     if tipo == "liso" and cl.get("e_piping") is True:
@@ -300,18 +300,13 @@ def calcular_score(item: dict) -> dict:
         cor_elite = is_preto or is_branco_navy
         cap = 15 if is_preto else (10 if is_branco_navy else 0)
 
-        # (cor não-elite sem etiqueta já foi excluída no bloco de exclusões acima)
+        # (cor não-elite já foi EXCLUÍDA no bloco de exclusões — aqui só chega cor elite)
         if cor_elite and preco <= cap:
             decisao = "compravel"
             motivo = f"sem elástico, {cor.get('cor_principal')} ≤ €{cap}"
         elif cor_elite:  # cor elite mas acima do cap (preto>15 / branco-navy>10)
             decisao = "descartado"
             motivo = f"sem elástico, {cor.get('cor_principal')} acima de €{cap}"
-        elif tem_etiqueta:
-            # cor fraca MAS etiqueta visível → não descarta, vale dar uma olhada
-            if decisao == "descartado":
-                decisao = "medio"
-            motivo = "sem elástico, mas etiqueta visível — revisar"
 
     # Sugestão de negociação (preço a oferecer) — só pra candidatos.
     negociacao = {}
