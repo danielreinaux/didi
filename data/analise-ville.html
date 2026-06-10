@@ -60,6 +60,7 @@ details.sub summary{padding:10px 14px;font-size:13px;font-weight:500}
   <summary>📖 Legenda — clique pra entender</summary>
   <h2>Padrão de estampa</h2><table><tr><td><span class="tag tipo">tartaruga_grande</span></td><td>Tartaruga GRANDE dominando o tecido — o foco da marca, comprável.</td></tr><tr><td><span class="tag tipo">tartaruga_pequena</span></td><td>Tartarugas pequenas/mini — exceção, só com cor neutra + preço bom.</td></tr><tr><td><span class="tag tipo">liso</span></td><td>Cor sólida sem estampa — comprável só nas cores aceitas e preço bom.</td></tr><tr><td><span class="tag tipo">outro</span></td><td>Outro padrão (peixe, coral, âncora, estrela, etc.) — cliente não compra.</td></tr><tr><td><span class="tag tipo">indefinido</span></td><td>Foto insuficiente pra dizer o padrão — vai pra análise manual.</td></tr></table>
   <h2>Autenticidade (bolso traseiro)</h2><table><tr><td><code>original</code></td><td>Padrão continua dentro do bolso traseiro — original.</td></tr><tr><td><code>falso</code></td><td>Bolso liso/cortado — padrão interrompido — falso. Descarta.</td></tr><tr><td><code>suspeito</code></td><td>Bolso ambíguo — trava em médio até confirmar.</td></tr><tr><td><code>sem_foto_bolso</code></td><td>Sem foto do bolso — possível compra, com flag de verificar.</td></tr><tr><td><code>indefinido</code></td><td>Não dá pra avaliar o bolso (ex: liso) — possível compra, com flag.</td></tr></table>
+  <h2>Coleção (cor do cordão)</h2><table><tr><td><code>antiga</code></td><td>Cordão CINZA — coleção antiga. Penaliza -8 no score (não exclui).</td></tr><tr><td><code>atual</code></td><td>Cordão branco ou colorido — coleção atual. Sem penalidade.</td></tr><tr><td><code>indefinido</code></td><td>Cordão não visível ou cor ambígua — sem efeito no score.</td></tr></table>
   <h2>Motivos de exclusão</h2><table><tr><td><code>padrao_outro_nao_compra</code></td><td>Padrão não é tartaruga nem liso (peixe/coral/âncora/etc.) — cliente não compra.</td></tr><tr><td><code>autenticidade_falsa</code></td><td>Bolso traseiro sem o padrão — peça falsa.</td></tr><tr><td><code>desbotado</code></td><td>Tecido com aparência lavada/envelhecida.</td></tr><tr><td><code>tamanho_invalido</code></td><td>Tamanho fora de S/M/L/XL (XS, XXL, numérico, talla única).</td></tr><tr><td><code>cor_liso_fora_whitelist</code></td><td>Liso numa cor que o cliente não compra (só preto/branco/navy/cinza/musgo/vermelho).</td></tr><tr><td><code>nao_ville</code></td><td>Não é Vilebrequin — título sem a marca (prefilter) ou marca diferente na foto.</td></tr><tr><td><code>nao_vilebrequin</code></td><td>Marca diferente identificada pela foto (legado — agora vira nao_ville).</td></tr><tr><td><code>nao_short</code></td><td>Não é short de banho (camiseta, calça, sunga, etc.) — pego pelo título ou foto.</td></tr><tr><td><code>infantil</code></td><td>Peça infantil (X ans, kids, bambino, etc.) — pega pelo título antes da IA.</td></tr><tr><td><code>fora das faixas de compra</code></td><td>Padrão/cor/preço não se encaixam em nenhuma regra de compra.</td></tr></table>
 </details>
 <h2>Itens classificados</h2>
@@ -70,7 +71,7 @@ details.sub summary{padding:10px 14px;font-size:13px;font-weight:500}
     <div class="meta">45,00 € · M · <span class="score">score <b>86</b></span></div>
     <div class="tags"><span class="tag tipo">tartaruga_grande</span><span class="tag">coral</span><span class="tag">tartarugas pretas</span><span class="tag ok">original</span></div>
     
-    <div class="bd">score <b>86</b> · teto €80: padrão +40 · cor +6 · tam +15 · etiqueta +0 · autent. +5 · preço +20</div>
+    <div class="bd">score <b>86</b> · teto €80: padrão +40 · cor +6 · fundo +0 · tam +15 · etiqueta +0 · autent. +5 · preço +20</div>
     <div class="evid"><b>bolso:</b> O tecido do bolso traseiro é o mesmo do corpo, e o padrão atravessa a borda do bolso de forma contínua, com motivos inteiros nas bordas. Isso é consistente com o REF 3.<br><b>padrão:</b> short com fundo laranja uniforme e tartarugas pretas visíveis.</div>
   </div>
 </div>
@@ -81,7 +82,7 @@ details.sub summary{padding:10px 14px;font-size:13px;font-weight:500}
     <div class="meta">60,00 € · M · <span class="score">score <b>85</b></span></div>
     <div class="tags"><span class="tag tipo">tartaruga_grande</span><span class="tag">Preto</span><span class="tag">tartarugas coloridas mistas</span><span class="tag mid">sem_foto_bolso</span><span class="tag ok">etiqueta</span><span class="tag mid">⚑ verificar_autenticidade</span></div>
     
-    <div class="bd">score <b>85</b> · teto €80: padrão +40 · cor +15 · tam +15 · etiqueta +5 · autent. +0 · preço +10</div>
+    <div class="bd">score <b>85</b> · teto €80: padrão +40 · cor +15 · fundo +0 · tam +15 · etiqueta +5 · autent. +0 · preço +10</div>
     <div class="evid"><b>padrão:</b> short de banho preto com tartarugas coloridas visíveis e bem definidas.</div>
   </div>
 </div>
@@ -92,7 +93,7 @@ details.sub summary{padding:10px 14px;font-size:13px;font-weight:500}
     <div class="meta">60,00 € · L · <span class="score">score <b>82</b></span></div>
     <div class="tags"><span class="tag tipo">tartaruga_grande</span><span class="tag">azul escuro</span><span class="tag">tartarugas coloridas mistas</span><span class="tag mid">sem_foto_bolso</span><span class="tag ok">etiqueta</span><span class="tag mid">⚑ verificar_autenticidade</span></div>
     
-    <div class="bd">score <b>82</b> · teto €80: padrão +40 · cor +15 · tam +12 · etiqueta +5 · autent. +0 · preço +10</div>
+    <div class="bd">score <b>82</b> · teto €80: padrão +40 · cor +15 · fundo +0 · tam +12 · etiqueta +5 · autent. +0 · preço +10</div>
     <div class="evid"><b>padrão:</b> short de banho preto com tartarugas coloridas visíveis, fundo uniforme.</div>
   </div>
 </div>
@@ -103,7 +104,7 @@ details.sub summary{padding:10px 14px;font-size:13px;font-weight:500}
     <div class="meta">60,00 € · M · <span class="score">score <b>80</b></span></div>
     <div class="tags"><span class="tag tipo">tartaruga_grande</span><span class="tag">azul marinho</span><span class="tag">tartarugas coloridas mistas</span><span class="tag mid">sem_foto_bolso</span><span class="tag mid">⚑ verificar_autenticidade</span></div>
     
-    <div class="bd">score <b>80</b> · teto €80: padrão +40 · cor +15 · tam +15 · etiqueta +0 · autent. +0 · preço +10</div>
+    <div class="bd">score <b>80</b> · teto €80: padrão +40 · cor +15 · fundo +0 · tam +15 · etiqueta +0 · autent. +0 · preço +10</div>
     <div class="evid"><b>bolso:</b> As fotos não mostram o bolso traseiro de forma clara para análise.<br><b>padrão:</b> short com tartarugas grandes e coloridas sobre fundo preto uniforme.</div>
   </div>
 </div>
@@ -114,7 +115,7 @@ details.sub summary{padding:10px 14px;font-size:13px;font-weight:500}
     <div class="meta">43,00 € · XL · <span class="score">score <b>74</b></span></div>
     <div class="tags"><span class="tag tipo">tartaruga_grande</span><span class="tag">Laranja</span><span class="tag">tartarugas marrons</span><span class="tag mid">sem_foto_bolso</span><span class="tag mid">⚑ verificar_autenticidade</span></div>
     
-    <div class="bd">score <b>74</b> · teto €80: padrão +40 · cor +6 · tam +8 · etiqueta +0 · autent. +0 · preço +20</div>
+    <div class="bd">score <b>74</b> · teto €80: padrão +40 · cor +6 · fundo +0 · tam +8 · etiqueta +0 · autent. +0 · preço +20</div>
     <div class="evid"><b>bolso:</b> As fotos fornecidas não mostram o bolso traseiro do short, impossibilitando a análise do tecido e do encaixe da estampa.<br><b>padrão:</b> short com tartarugas marrons sobre fundo laranja uniforme.</div>
   </div>
 </div>
@@ -125,7 +126,7 @@ details.sub summary{padding:10px 14px;font-size:13px;font-weight:500}
     <div class="meta">50,00 € · XL · <span class="score">score <b>74</b></span></div>
     <div class="tags"><span class="tag tipo">tartaruga_grande</span><span class="tag">Azul claro</span><span class="tag">tartarugas coloridas mistas</span><span class="tag mid">sem_foto_bolso</span><span class="tag mid">⚑ verificar_autenticidade</span></div>
     
-    <div class="bd">score <b>74</b> · teto €80: padrão +40 · cor +6 · tam +8 · etiqueta +0 · autent. +0 · preço +20</div>
+    <div class="bd">score <b>74</b> · teto €80: padrão +40 · cor +6 · fundo +0 · tam +8 · etiqueta +0 · autent. +0 · preço +20</div>
     <div class="evid"><b>bolso:</b> As fotos fornecidas não mostram o bolso traseiro do short para análise.<br><b>padrão:</b> short azul com tartarugas coloridas visíveis, fundo uniforme.</div>
   </div>
 </div>
@@ -136,7 +137,7 @@ details.sub summary{padding:10px 14px;font-size:13px;font-weight:500}
     <div class="meta">65,00 € · XL · <span class="score">score <b>73</b></span></div>
     <div class="tags"><span class="tag tipo">tartaruga_grande</span><span class="tag">Azul marinho</span><span class="tag">tartarugas azuis claras</span><span class="tag ok">original</span></div>
     
-    <div class="bd">score <b>73</b> · teto €80: padrão +40 · cor +15 · tam +8 · etiqueta +0 · autent. +5 · preço +5</div>
+    <div class="bd">score <b>73</b> · teto €80: padrão +40 · cor +15 · fundo +0 · tam +8 · etiqueta +0 · autent. +5 · preço +5</div>
     <div class="evid"><b>bolso:</b> O tecido do bolso traseiro é o mesmo do corpo, com a estampa de tartarugas azuis. O padrão atravessa a borda do bolso de forma contínua, com as tartarugas alinhadas entre o corpo e o bolso, semelhante à REF 3.<br><b>padrão:</b> short navy com tartarugas azuis claras visíveis, fundo uniforme.</div>
   </div>
 </div>
@@ -147,7 +148,7 @@ details.sub summary{padding:10px 14px;font-size:13px;font-weight:500}
     <div class="meta">80,00 € · L · <span class="score">score <b>67</b></span></div>
     <div class="tags"><span class="tag tipo">tartaruga_grande</span><span class="tag">Branco</span><span class="tag">tartarugas azuis</span><span class="tag mid">sem_foto_bolso</span><span class="tag mid">⚑ verificar_autenticidade</span></div>
     
-    <div class="bd">score <b>67</b> · teto €80: padrão +40 · cor +15 · tam +12 · etiqueta +0 · autent. +0 · preço +0</div>
+    <div class="bd">score <b>67</b> · teto €80: padrão +40 · cor +15 · fundo +0 · tam +12 · etiqueta +0 · autent. +0 · preço +0</div>
     <div class="evid"><b>padrão:</b> short branco com tartarugas azuis grandes e visíveis.</div>
   </div>
 </div></div></details><details class="grupo" open><summary><span class="cnt cnt-mid">~ 2</span> BARGANHA (médios)</summary><div class="lista"><div class="card">
@@ -157,7 +158,7 @@ details.sub summary{padding:10px 14px;font-size:13px;font-weight:500}
     <div class="meta">65,00 € · L · <span class="score">score <b>42</b></span></div>
     <div class="tags"><span class="tag tipo">tartaruga_grande</span><span class="tag">laranja</span><span class="tag">tartarugas coloridas mistas</span><span class="tag ok">original</span><span class="tag mid">⚑ fundo_multicolor</span></div>
     <div class="motivo">€60-80: depende da cor</div>
-    <div class="bd">score <b>42</b> · teto €80: padrão +40 · cor -12 · tam +12 · etiqueta +0 · autent. +5 · preço +5</div>
+    <div class="bd">score <b>42</b> · teto €80: padrão +40 · cor -12 · fundo -8 · tam +12 · etiqueta +0 · autent. +5 · preço +5</div>
     <div class="evid"><b>bolso:</b> O bolso traseiro tem o mesmo tecido estampado do corpo. O padrão atravessa a borda do bolso de forma contínua, com as tartarugas alinhando perfeitamente entre o corpo e o bolso. A costura dupla está presente, mas não interrompe o padrão. Isso é consistente com a REF 4.<br><b>padrão:</b> short com tartarugas grandes e visíveis em um fundo com gradiente de azul para laranja.</div>
   </div>
 </div>
@@ -168,7 +169,7 @@ details.sub summary{padding:10px 14px;font-size:13px;font-weight:500}
     <div class="meta">65,00 € · L · <span class="score">score <b>18</b></span></div>
     <div class="tags"><span class="tag tipo">indefinido</span><span class="tag">bege</span><span class="tag">null</span><span class="tag mid">⚑ rever_fotos</span><span class="tag mid">⚑ verificar_autenticidade</span></div>
     <div class="motivo">padrão indefinido — rever fotos</div>
-    <div class="bd">score <b>18</b> · teto €42: padrão +0 · cor +6 · tam +12 · etiqueta +0 · autent. +0 · preço +0</div>
+    <div class="bd">score <b>18</b> · teto €42: padrão +0 · cor +6 · fundo +0 · tam +12 · etiqueta +0 · autent. +0 · preço +0</div>
     <div class="evid"><b>padrão:</b> Foto não permite avaliar o item devido à falta de clareza.</div>
   </div>
 </div></div></details><details class="grupo"><summary><span class="cnt cnt-x">✗ 875</span> DESCARTADOS (por motivo)</summary><div class="subs"><details class="sub"><summary><span class="cnt-sub">416</span> <code>padrao_outro_nao_compra</code> <span class="leg">— Padrão não é tartaruga nem liso (peixe/coral/âncora/etc.) — cliente não compra.</span></summary><div class="lista"><div class="card">
@@ -3902,7 +3903,7 @@ details.sub summary{padding:10px 14px;font-size:13px;font-weight:500}
     <div class="meta">50,00 € · M · </div>
     <div class="tags"><span class="tag tipo">tartaruga_pequena</span><span class="tag">Azul claro</span><span class="tag">tartarugas verdes</span><span class="tag ok">original</span></div>
     <div class="motivo">preço €53.20 acima da faixa (€42)</div>
-    <div class="bd">score <b>44</b> · teto €42: padrão +18 · cor +6 · tam +15 · etiqueta +0 · autent. +5 · preço +0</div>
+    <div class="bd">score <b>44</b> · teto €42: padrão +18 · cor +6 · fundo +0 · tam +15 · etiqueta +0 · autent. +5 · preço +0</div>
     <div class="evid"><b>padrão:</b> short azul com tartarugas pequenas em padrão repetido.</div>
   </div>
 </div>
@@ -3913,7 +3914,7 @@ details.sub summary{padding:10px 14px;font-size:13px;font-weight:500}
     <div class="meta">50,00 € · XL · </div>
     <div class="tags"><span class="tag tipo">liso</span><span class="tag">Azul marinho</span><span class="tag ok">original</span></div>
     <div class="motivo">preço €53.20 acima da faixa (€42)</div>
-    <div class="bd">score <b>53</b> · teto €42: padrão +25 · cor +15 · tam +8 · etiqueta +0 · autent. +5 · preço +0</div>
+    <div class="bd">score <b>53</b> · teto €42: padrão +25 · cor +15 · fundo +0 · tam +8 · etiqueta +0 · autent. +5 · preço +0</div>
     <div class="evid"><b>padrão:</b> short navy liso sem estampa, com detalhes discretos.</div>
   </div>
 </div>
@@ -3924,7 +3925,7 @@ details.sub summary{padding:10px 14px;font-size:13px;font-weight:500}
     <div class="meta">50,00 € · XL · </div>
     <div class="tags"><span class="tag tipo">liso</span><span class="tag">Azul marinho</span><span class="tag ok">original</span></div>
     <div class="motivo">preço €53.20 acima da faixa (€42)</div>
-    <div class="bd">score <b>53</b> · teto €42: padrão +25 · cor +15 · tam +8 · etiqueta +0 · autent. +5 · preço +0</div>
+    <div class="bd">score <b>53</b> · teto €42: padrão +25 · cor +15 · fundo +0 · tam +8 · etiqueta +0 · autent. +5 · preço +0</div>
     <div class="evid"><b>padrão:</b> Short de bain em cor sólida preta, sem estampa visível.</div>
   </div>
 </div>
@@ -3935,7 +3936,7 @@ details.sub summary{padding:10px 14px;font-size:13px;font-weight:500}
     <div class="meta">50,00 € · M · </div>
     <div class="tags"><span class="tag tipo">liso</span><span class="tag">Azul marinho</span><span class="tag mid">indefinido</span></div>
     <div class="motivo">preço €53.20 acima da faixa (€42)</div>
-    <div class="bd">score <b>55</b> · teto €42: padrão +25 · cor +15 · tam +15 · etiqueta +0 · autent. +0 · preço +0</div>
+    <div class="bd">score <b>55</b> · teto €42: padrão +25 · cor +15 · fundo +0 · tam +15 · etiqueta +0 · autent. +0 · preço +0</div>
     <div class="evid"><b>padrão:</b> short navy liso, sem estampa visível.</div>
   </div>
 </div>
@@ -3946,7 +3947,7 @@ details.sub summary{padding:10px 14px;font-size:13px;font-weight:500}
     <div class="meta">50,00 € · M · </div>
     <div class="tags"><span class="tag tipo">tartaruga_pequena</span><span class="tag">branco</span><span class="tag">tartarugas coloridas mistas</span><span class="tag ok">original</span></div>
     <div class="motivo">preço €53.20 acima da faixa (€42)</div>
-    <div class="bd">score <b>53</b> · teto €42: padrão +18 · cor +15 · tam +15 · etiqueta +0 · autent. +5 · preço +0</div>
+    <div class="bd">score <b>53</b> · teto €42: padrão +18 · cor +15 · fundo +0 · tam +15 · etiqueta +0 · autent. +5 · preço +0</div>
     <div class="evid"><b>padrão:</b> Short com fundo branco e tartarugas coloridas em padrão repetido.</div>
   </div>
 </div>
@@ -3957,7 +3958,7 @@ details.sub summary{padding:10px 14px;font-size:13px;font-weight:500}
     <div class="meta">50,00 € · XL · </div>
     <div class="tags"><span class="tag tipo">liso</span><span class="tag">vermelho médio</span><span class="tag mid">indefinido</span></div>
     <div class="motivo">preço €53.20 acima da faixa (€42)</div>
-    <div class="bd">score <b>48</b> · teto €42: padrão +25 · cor +15 · tam +8 · etiqueta +0 · autent. +0 · preço +0</div>
+    <div class="bd">score <b>48</b> · teto €42: padrão +25 · cor +15 · fundo +0 · tam +8 · etiqueta +0 · autent. +0 · preço +0</div>
     <div class="evid"><b>padrão:</b> Short Vilebrequin vermelho liso, sem estampas visíveis.</div>
   </div>
 </div>
@@ -3968,7 +3969,7 @@ details.sub summary{padding:10px 14px;font-size:13px;font-weight:500}
     <div class="meta">50,00 € · M · </div>
     <div class="tags"><span class="tag tipo">liso</span><span class="tag">vermelho médio</span><span class="tag mid">indefinido</span><span class="tag ok">etiqueta</span></div>
     <div class="motivo">preço €53.20 acima da faixa (€42)</div>
-    <div class="bd">score <b>60</b> · teto €42: padrão +25 · cor +15 · tam +15 · etiqueta +5 · autent. +0 · preço +0</div>
+    <div class="bd">score <b>60</b> · teto €42: padrão +25 · cor +15 · fundo +0 · tam +15 · etiqueta +5 · autent. +0 · preço +0</div>
     <div class="evid"><b>padrão:</b> short vermelho liso, sem estampa visível.</div>
   </div>
 </div>
@@ -3979,7 +3980,7 @@ details.sub summary{padding:10px 14px;font-size:13px;font-weight:500}
     <div class="meta">50,00 € · L · </div>
     <div class="tags"><span class="tag tipo">liso</span><span class="tag">Branco</span><span class="tag mid">indefinido</span></div>
     <div class="motivo">preço €53.20 acima da faixa (€42)</div>
-    <div class="bd">score <b>52</b> · teto €42: padrão +25 · cor +15 · tam +12 · etiqueta +0 · autent. +0 · preço +0</div>
+    <div class="bd">score <b>52</b> · teto €42: padrão +25 · cor +15 · fundo +0 · tam +12 · etiqueta +0 · autent. +0 · preço +0</div>
     <div class="evid"><b>padrão:</b> short branco liso, sem estampa visível.</div>
   </div>
 </div>
@@ -3990,7 +3991,7 @@ details.sub summary{padding:10px 14px;font-size:13px;font-weight:500}
     <div class="meta">50,00 € · L · </div>
     <div class="tags"><span class="tag tipo">liso</span><span class="tag">Azul marinho</span><span class="tag mid">sem_foto_bolso</span></div>
     <div class="motivo">preço €53.20 acima da faixa (€42)</div>
-    <div class="bd">score <b>52</b> · teto €42: padrão +25 · cor +15 · tam +12 · etiqueta +0 · autent. +0 · preço +0</div>
+    <div class="bd">score <b>52</b> · teto €42: padrão +25 · cor +15 · fundo +0 · tam +12 · etiqueta +0 · autent. +0 · preço +0</div>
     <div class="evid"><b>padrão:</b> short preto liso sem estampa.</div>
   </div>
 </div>
@@ -4001,7 +4002,7 @@ details.sub summary{padding:10px 14px;font-size:13px;font-weight:500}
     <div class="meta">50,00 € · L · </div>
     <div class="tags"><span class="tag tipo">liso</span><span class="tag">Azul marinho</span><span class="tag mid">sem_foto_bolso</span></div>
     <div class="motivo">preço €53.20 acima da faixa (€42)</div>
-    <div class="bd">score <b>52</b> · teto €42: padrão +25 · cor +15 · tam +12 · etiqueta +0 · autent. +0 · preço +0</div>
+    <div class="bd">score <b>52</b> · teto €42: padrão +25 · cor +15 · fundo +0 · tam +12 · etiqueta +0 · autent. +0 · preço +0</div>
     <div class="evid"><b>padrão:</b> Short sem estampa, em cor sólida azul.</div>
   </div>
 </div>
@@ -4012,7 +4013,7 @@ details.sub summary{padding:10px 14px;font-size:13px;font-weight:500}
     <div class="meta">50,00 € · S · </div>
     <div class="tags"><span class="tag tipo">liso</span><span class="tag">Azul marinho</span><span class="tag mid">indefinido</span></div>
     <div class="motivo">preço €53.20 acima da faixa (€42)</div>
-    <div class="bd">score <b>48</b> · teto €42: padrão +25 · cor +15 · tam +8 · etiqueta +0 · autent. +0 · preço +0</div>
+    <div class="bd">score <b>48</b> · teto €42: padrão +25 · cor +15 · fundo +0 · tam +8 · etiqueta +0 · autent. +0 · preço +0</div>
     <div class="evid"><b>padrão:</b> Short sem estampa, cor sólida navy.</div>
   </div>
 </div>
@@ -4023,7 +4024,7 @@ details.sub summary{padding:10px 14px;font-size:13px;font-weight:500}
     <div class="meta">50,00 € · L · </div>
     <div class="tags"><span class="tag tipo">liso</span><span class="tag">vermelho médio</span><span class="tag mid">indefinido</span></div>
     <div class="motivo">preço €53.20 acima da faixa (€42)</div>
-    <div class="bd">score <b>52</b> · teto €42: padrão +25 · cor +15 · tam +12 · etiqueta +0 · autent. +0 · preço +0</div>
+    <div class="bd">score <b>52</b> · teto €42: padrão +25 · cor +15 · fundo +0 · tam +12 · etiqueta +0 · autent. +0 · preço +0</div>
     <div class="evid"><b>padrão:</b> Short sem estampa, cor sólida vermelha.</div>
   </div>
 </div>
@@ -4034,7 +4035,7 @@ details.sub summary{padding:10px 14px;font-size:13px;font-weight:500}
     <div class="meta">50,00 € · M · </div>
     <div class="tags"><span class="tag tipo">liso</span><span class="tag">Azul marinho</span><span class="tag ok">original</span><span class="tag ok">etiqueta</span></div>
     <div class="motivo">preço €53.20 acima da faixa (€42)</div>
-    <div class="bd">score <b>65</b> · teto €42: padrão +25 · cor +15 · tam +15 · etiqueta +5 · autent. +5 · preço +0</div>
+    <div class="bd">score <b>65</b> · teto €42: padrão +25 · cor +15 · fundo +0 · tam +15 · etiqueta +5 · autent. +5 · preço +0</div>
     <div class="evid"><b>padrão:</b> Short sem estampa, cor sólida navy.</div>
   </div>
 </div></div></details><details class="sub"><summary><span class="cnt-sub">7</span> <code>preço €105.70 acima da faixa (€42)</code> <span class="leg">— —</span></summary><div class="lista"><div class="card">
@@ -4044,7 +4045,7 @@ details.sub summary{padding:10px 14px;font-size:13px;font-weight:500}
     <div class="meta">100,00 € · S · </div>
     <div class="tags"><span class="tag tipo">liso</span><span class="tag">Azul marinho</span><span class="tag mid">indefinido</span></div>
     <div class="motivo">preço €105.70 acima da faixa (€42)</div>
-    <div class="bd">score <b>48</b> · teto €42: padrão +25 · cor +15 · tam +8 · etiqueta +0 · autent. +0 · preço +0</div>
+    <div class="bd">score <b>48</b> · teto €42: padrão +25 · cor +15 · fundo +0 · tam +8 · etiqueta +0 · autent. +0 · preço +0</div>
     <div class="evid"><b>padrão:</b> short preto liso, sem estampa visível.</div>
   </div>
 </div>
@@ -4055,7 +4056,7 @@ details.sub summary{padding:10px 14px;font-size:13px;font-weight:500}
     <div class="meta">100,00 € · XL · </div>
     <div class="tags"><span class="tag tipo">liso</span><span class="tag">Branco</span><span class="tag mid">indefinido</span></div>
     <div class="motivo">preço €105.70 acima da faixa (€42)</div>
-    <div class="bd">score <b>48</b> · teto €42: padrão +25 · cor +15 · tam +8 · etiqueta +0 · autent. +0 · preço +0</div>
+    <div class="bd">score <b>48</b> · teto €42: padrão +25 · cor +15 · fundo +0 · tam +8 · etiqueta +0 · autent. +0 · preço +0</div>
     <div class="evid"><b>padrão:</b> short branco liso, sem estampa.</div>
   </div>
 </div>
@@ -4066,7 +4067,7 @@ details.sub summary{padding:10px 14px;font-size:13px;font-weight:500}
     <div class="meta">100,00 € · L · </div>
     <div class="tags"><span class="tag tipo">tartaruga_pequena</span><span class="tag">Branco</span><span class="tag">tartarugas coloridas mistas</span><span class="tag mid">sem_foto_bolso</span></div>
     <div class="motivo">preço €105.70 acima da faixa (€42)</div>
-    <div class="bd">score <b>45</b> · teto €42: padrão +18 · cor +15 · tam +12 · etiqueta +0 · autent. +0 · preço +0</div>
+    <div class="bd">score <b>45</b> · teto €42: padrão +18 · cor +15 · fundo +0 · tam +12 · etiqueta +0 · autent. +0 · preço +0</div>
     <div class="evid"><b>padrão:</b> Short de banho com fundo branco e tartarugas coloridas em padrão repetido.</div>
   </div>
 </div>
@@ -4077,7 +4078,7 @@ details.sub summary{padding:10px 14px;font-size:13px;font-weight:500}
     <div class="meta">100,00 € · M · </div>
     <div class="tags"><span class="tag tipo">liso</span><span class="tag">Azul marinho</span><span class="tag ok">original</span><span class="tag ok">etiqueta</span></div>
     <div class="motivo">preço €105.70 acima da faixa (€42)</div>
-    <div class="bd">score <b>65</b> · teto €42: padrão +25 · cor +15 · tam +15 · etiqueta +5 · autent. +5 · preço +0</div>
+    <div class="bd">score <b>65</b> · teto €42: padrão +25 · cor +15 · fundo +0 · tam +15 · etiqueta +5 · autent. +5 · preço +0</div>
     <div class="evid"><b>padrão:</b> short azul escuro liso, sem estampa visível.</div>
   </div>
 </div>
@@ -4088,7 +4089,7 @@ details.sub summary{padding:10px 14px;font-size:13px;font-weight:500}
     <div class="meta">100,00 € · M · </div>
     <div class="tags"><span class="tag tipo">liso</span><span class="tag">Vermelho médio</span><span class="tag mid">sem_foto_bolso</span><span class="tag ok">etiqueta</span></div>
     <div class="motivo">preço €105.70 acima da faixa (€42)</div>
-    <div class="bd">score <b>60</b> · teto €42: padrão +25 · cor +15 · tam +15 · etiqueta +5 · autent. +0 · preço +0</div>
+    <div class="bd">score <b>60</b> · teto €42: padrão +25 · cor +15 · fundo +0 · tam +15 · etiqueta +5 · autent. +0 · preço +0</div>
     <div class="evid"><b>padrão:</b> short vermelho liso, sem estampa visível.</div>
   </div>
 </div>
@@ -4099,7 +4100,7 @@ details.sub summary{padding:10px 14px;font-size:13px;font-weight:500}
     <div class="meta">100,00 € · L · </div>
     <div class="tags"><span class="tag tipo">liso</span><span class="tag">vermelho médio</span><span class="tag mid">indefinido</span></div>
     <div class="motivo">preço €105.70 acima da faixa (€42)</div>
-    <div class="bd">score <b>52</b> · teto €42: padrão +25 · cor +15 · tam +12 · etiqueta +0 · autent. +0 · preço +0</div>
+    <div class="bd">score <b>52</b> · teto €42: padrão +25 · cor +15 · fundo +0 · tam +12 · etiqueta +0 · autent. +0 · preço +0</div>
     <div class="evid"><b>padrão:</b> short vermelho liso sem estampa.</div>
   </div>
 </div>
@@ -4110,7 +4111,7 @@ details.sub summary{padding:10px 14px;font-size:13px;font-weight:500}
     <div class="meta">100,00 € · M · </div>
     <div class="tags"><span class="tag tipo">liso</span><span class="tag">Preto</span><span class="tag mid">sem_foto_bolso</span></div>
     <div class="motivo">preço €105.70 acima da faixa (€42)</div>
-    <div class="bd">score <b>55</b> · teto €42: padrão +25 · cor +15 · tam +15 · etiqueta +0 · autent. +0 · preço +0</div>
+    <div class="bd">score <b>55</b> · teto €42: padrão +25 · cor +15 · fundo +0 · tam +15 · etiqueta +0 · autent. +0 · preço +0</div>
     <div class="evid"><b>padrão:</b> short preto liso sem estampa visível.</div>
   </div>
 </div></div></details><details class="sub"><summary><span class="cnt-sub">7</span> <code>preço €63.70 acima da faixa (€42)</code> <span class="leg">— —</span></summary><div class="lista"><div class="card">
@@ -4120,7 +4121,7 @@ details.sub summary{padding:10px 14px;font-size:13px;font-weight:500}
     <div class="meta">60,00 € · L · </div>
     <div class="tags"><span class="tag tipo">liso</span><span class="tag">Azul marinho</span><span class="tag mid">indefinido</span></div>
     <div class="motivo">preço €63.70 acima da faixa (€42)</div>
-    <div class="bd">score <b>52</b> · teto €42: padrão +25 · cor +15 · tam +12 · etiqueta +0 · autent. +0 · preço +0</div>
+    <div class="bd">score <b>52</b> · teto €42: padrão +25 · cor +15 · fundo +0 · tam +12 · etiqueta +0 · autent. +0 · preço +0</div>
     <div class="evid"><b>padrão:</b> short liso na cor navy, sem estampa visível.</div>
   </div>
 </div>
@@ -4131,7 +4132,7 @@ details.sub summary{padding:10px 14px;font-size:13px;font-weight:500}
     <div class="meta">60,00 € · XL · </div>
     <div class="tags"><span class="tag tipo">liso</span><span class="tag">Kaki escuro</span><span class="tag mid">indefinido</span></div>
     <div class="motivo">preço €63.70 acima da faixa (€42)</div>
-    <div class="bd">score <b>45</b> · teto €42: padrão +25 · cor +12 · tam +8 · etiqueta +0 · autent. +0 · preço +0</div>
+    <div class="bd">score <b>45</b> · teto €42: padrão +25 · cor +12 · fundo +0 · tam +8 · etiqueta +0 · autent. +0 · preço +0</div>
     <div class="evid"><b>padrão:</b> short liso de cor marrom, sem estampas visíveis.</div>
   </div>
 </div>
@@ -4142,7 +4143,7 @@ details.sub summary{padding:10px 14px;font-size:13px;font-weight:500}
     <div class="meta">60,00 € · XL · </div>
     <div class="tags"><span class="tag tipo">liso</span><span class="tag">Vermelho médio</span><span class="tag ok">original</span><span class="tag ok">etiqueta</span></div>
     <div class="motivo">preço €63.70 acima da faixa (€42)</div>
-    <div class="bd">score <b>58</b> · teto €42: padrão +25 · cor +15 · tam +8 · etiqueta +5 · autent. +5 · preço +0</div>
+    <div class="bd">score <b>58</b> · teto €42: padrão +25 · cor +15 · fundo +0 · tam +8 · etiqueta +5 · autent. +5 · preço +0</div>
     <div class="evid"><b>padrão:</b> short vermelho liso, sem estampas visíveis.</div>
   </div>
 </div>
@@ -4153,7 +4154,7 @@ details.sub summary{padding:10px 14px;font-size:13px;font-weight:500}
     <div class="meta">60,00 € · L · </div>
     <div class="tags"><span class="tag tipo">tartaruga_pequena</span><span class="tag">Preto</span><span class="tag">tartarugas coloridas mistas</span><span class="tag ok">original</span></div>
     <div class="motivo">preço €63.70 acima da faixa (€42)</div>
-    <div class="bd">score <b>50</b> · teto €42: padrão +18 · cor +15 · tam +12 · etiqueta +0 · autent. +5 · preço +0</div>
+    <div class="bd">score <b>50</b> · teto €42: padrão +18 · cor +15 · fundo +0 · tam +12 · etiqueta +0 · autent. +5 · preço +0</div>
     <div class="evid"><b>padrão:</b> As tartarugas são pequenas e o fundo é de uma cor sólida.</div>
   </div>
 </div>
@@ -4164,7 +4165,7 @@ details.sub summary{padding:10px 14px;font-size:13px;font-weight:500}
     <div class="meta">60,00 € · M · </div>
     <div class="tags"><span class="tag tipo">liso</span><span class="tag">vermelho médio</span><span class="tag mid">indefinido</span><span class="tag ok">etiqueta</span></div>
     <div class="motivo">preço €63.70 acima da faixa (€42)</div>
-    <div class="bd">score <b>60</b> · teto €42: padrão +25 · cor +15 · tam +15 · etiqueta +5 · autent. +0 · preço +0</div>
+    <div class="bd">score <b>60</b> · teto €42: padrão +25 · cor +15 · fundo +0 · tam +15 · etiqueta +5 · autent. +0 · preço +0</div>
     <div class="evid"><b>padrão:</b> Short sem estampa, cor sólida vermelha.</div>
   </div>
 </div>
@@ -4175,7 +4176,7 @@ details.sub summary{padding:10px 14px;font-size:13px;font-weight:500}
     <div class="meta">60,00 € · L · </div>
     <div class="tags"><span class="tag tipo">tartaruga_pequena</span><span class="tag">azul claro</span><span class="tag">tartarugas pretas</span><span class="tag ok">original</span></div>
     <div class="motivo">preço €63.70 acima da faixa (€42)</div>
-    <div class="bd">score <b>41</b> · teto €42: padrão +18 · cor +6 · tam +12 · etiqueta +0 · autent. +5 · preço +0</div>
+    <div class="bd">score <b>41</b> · teto €42: padrão +18 · cor +6 · fundo +0 · tam +12 · etiqueta +0 · autent. +5 · preço +0</div>
     <div class="evid"><b>padrão:</b> O fundo é de uma única cor azul com tartarugas pretas, sem variações significativas.</div>
   </div>
 </div>
@@ -4186,7 +4187,7 @@ details.sub summary{padding:10px 14px;font-size:13px;font-weight:500}
     <div class="meta">60,00 € · S · </div>
     <div class="tags"><span class="tag tipo">liso</span><span class="tag">Vermelho médio</span><span class="tag mid">indefinido</span></div>
     <div class="motivo">preço €63.70 acima da faixa (€42)</div>
-    <div class="bd">score <b>48</b> · teto €42: padrão +25 · cor +15 · tam +8 · etiqueta +0 · autent. +0 · preço +0</div>
+    <div class="bd">score <b>48</b> · teto €42: padrão +25 · cor +15 · fundo +0 · tam +8 · etiqueta +0 · autent. +0 · preço +0</div>
     <div class="evid"><b>padrão:</b> Short sem estampa, cor sólida vermelha.</div>
   </div>
 </div></div></details><details class="sub"><summary><span class="cnt-sub">7</span> <code>preço €47.95 acima da faixa (€42)</code> <span class="leg">— —</span></summary><div class="lista"><div class="card">
@@ -4196,7 +4197,7 @@ details.sub summary{padding:10px 14px;font-size:13px;font-weight:500}
     <div class="meta">45,00 € · M · </div>
     <div class="tags"><span class="tag tipo">liso</span><span class="tag">Azul marinho</span><span class="tag mid">indefinido</span></div>
     <div class="motivo">preço €47.95 acima da faixa (€42)</div>
-    <div class="bd">score <b>55</b> · teto €42: padrão +25 · cor +15 · tam +15 · etiqueta +0 · autent. +0 · preço +0</div>
+    <div class="bd">score <b>55</b> · teto €42: padrão +25 · cor +15 · fundo +0 · tam +15 · etiqueta +0 · autent. +0 · preço +0</div>
     <div class="evid"><b>padrão:</b> short navy liso sem estampa visível.</div>
   </div>
 </div>
@@ -4207,7 +4208,7 @@ details.sub summary{padding:10px 14px;font-size:13px;font-weight:500}
     <div class="meta">45,00 € · L · </div>
     <div class="tags"><span class="tag tipo">liso</span><span class="tag">Kaki escuro</span><span class="tag ok">original</span></div>
     <div class="motivo">preço €47.95 acima da faixa (€42)</div>
-    <div class="bd">score <b>54</b> · teto €42: padrão +25 · cor +12 · tam +12 · etiqueta +0 · autent. +5 · preço +0</div>
+    <div class="bd">score <b>54</b> · teto €42: padrão +25 · cor +12 · fundo +0 · tam +12 · etiqueta +0 · autent. +5 · preço +0</div>
     <div class="evid"><b>padrão:</b> short liso de cor verde, sem estampa.</div>
   </div>
 </div>
@@ -4218,7 +4219,7 @@ details.sub summary{padding:10px 14px;font-size:13px;font-weight:500}
     <div class="meta">45,00 € · XL · </div>
     <div class="tags"><span class="tag tipo">liso</span><span class="tag">Azul marinho</span><span class="tag ok">original</span></div>
     <div class="motivo">preço €47.95 acima da faixa (€42)</div>
-    <div class="bd">score <b>53</b> · teto €42: padrão +25 · cor +15 · tam +8 · etiqueta +0 · autent. +5 · preço +0</div>
+    <div class="bd">score <b>53</b> · teto €42: padrão +25 · cor +15 · fundo +0 · tam +8 · etiqueta +0 · autent. +5 · preço +0</div>
     <div class="evid"><b>padrão:</b> Short de bain Vilebrequin em cor navy sólida, sem estampa repetida.</div>
   </div>
 </div>
@@ -4229,7 +4230,7 @@ details.sub summary{padding:10px 14px;font-size:13px;font-weight:500}
     <div class="meta">45,00 € · M · </div>
     <div class="tags"><span class="tag tipo">liso</span><span class="tag">vermelho médio</span><span class="tag mid">sem_foto_bolso</span></div>
     <div class="motivo">preço €47.95 acima da faixa (€42)</div>
-    <div class="bd">score <b>55</b> · teto €42: padrão +25 · cor +15 · tam +15 · etiqueta +0 · autent. +0 · preço +0</div>
+    <div class="bd">score <b>55</b> · teto €42: padrão +25 · cor +15 · fundo +0 · tam +15 · etiqueta +0 · autent. +0 · preço +0</div>
     <div class="evid"><b>padrão:</b> short vermelho liso sem estampa.</div>
   </div>
 </div>
@@ -4240,7 +4241,7 @@ details.sub summary{padding:10px 14px;font-size:13px;font-weight:500}
     <div class="meta">45,00 € · M · </div>
     <div class="tags"><span class="tag tipo">liso</span><span class="tag">Azul marinho</span><span class="tag mid">sem_foto_bolso</span></div>
     <div class="motivo">preço €47.95 acima da faixa (€42)</div>
-    <div class="bd">score <b>55</b> · teto €42: padrão +25 · cor +15 · tam +15 · etiqueta +0 · autent. +0 · preço +0</div>
+    <div class="bd">score <b>55</b> · teto €42: padrão +25 · cor +15 · fundo +0 · tam +15 · etiqueta +0 · autent. +0 · preço +0</div>
     <div class="evid"><b>padrão:</b> Short sem estampa, cor sólida navy.</div>
   </div>
 </div>
@@ -4251,7 +4252,7 @@ details.sub summary{padding:10px 14px;font-size:13px;font-weight:500}
     <div class="meta">45,00 € · L · </div>
     <div class="tags"><span class="tag tipo">liso</span><span class="tag">Branco</span><span class="tag mid">indefinido</span></div>
     <div class="motivo">preço €47.95 acima da faixa (€42)</div>
-    <div class="bd">score <b>52</b> · teto €42: padrão +25 · cor +15 · tam +12 · etiqueta +0 · autent. +0 · preço +0</div>
+    <div class="bd">score <b>52</b> · teto €42: padrão +25 · cor +15 · fundo +0 · tam +12 · etiqueta +0 · autent. +0 · preço +0</div>
     <div class="evid"><b>padrão:</b> Short sem estampa, em cor sólida.</div>
   </div>
 </div>
@@ -4262,7 +4263,7 @@ details.sub summary{padding:10px 14px;font-size:13px;font-weight:500}
     <div class="meta">45,00 € · M · </div>
     <div class="tags"><span class="tag tipo">liso</span><span class="tag">Azul marinho</span><span class="tag ok">original</span></div>
     <div class="motivo">preço €47.95 acima da faixa (€42)</div>
-    <div class="bd">score <b>60</b> · teto €42: padrão +25 · cor +15 · tam +15 · etiqueta +0 · autent. +5 · preço +0</div>
+    <div class="bd">score <b>60</b> · teto €42: padrão +25 · cor +15 · fundo +0 · tam +15 · etiqueta +0 · autent. +5 · preço +0</div>
     <div class="evid"><b>padrão:</b> Short sem estampa, em cor sólida navy.</div>
   </div>
 </div></div></details><details class="sub"><summary><span class="cnt-sub">6</span> <code>preço €84.70 acima da faixa (€42)</code> <span class="leg">— —</span></summary><div class="lista"><div class="card">
@@ -4272,7 +4273,7 @@ details.sub summary{padding:10px 14px;font-size:13px;font-weight:500}
     <div class="meta">80,00 € · M · </div>
     <div class="tags"><span class="tag tipo">liso</span><span class="tag">Azul marinho</span><span class="tag mid">sem_foto_bolso</span><span class="tag ok">etiqueta</span></div>
     <div class="motivo">preço €84.70 acima da faixa (€42)</div>
-    <div class="bd">score <b>60</b> · teto €42: padrão +25 · cor +15 · tam +15 · etiqueta +5 · autent. +0 · preço +0</div>
+    <div class="bd">score <b>60</b> · teto €42: padrão +25 · cor +15 · fundo +0 · tam +15 · etiqueta +5 · autent. +0 · preço +0</div>
     <div class="evid"><b>padrão:</b> short liso na cor navy com bordado discreto.</div>
   </div>
 </div>
@@ -4283,7 +4284,7 @@ details.sub summary{padding:10px 14px;font-size:13px;font-weight:500}
     <div class="meta">80,00 € · M · </div>
     <div class="tags"><span class="tag tipo">liso</span><span class="tag">Azul marinho</span><span class="tag mid">indefinido</span></div>
     <div class="motivo">preço €84.70 acima da faixa (€42)</div>
-    <div class="bd">score <b>55</b> · teto €42: padrão +25 · cor +15 · tam +15 · etiqueta +0 · autent. +0 · preço +0</div>
+    <div class="bd">score <b>55</b> · teto €42: padrão +25 · cor +15 · fundo +0 · tam +15 · etiqueta +0 · autent. +0 · preço +0</div>
     <div class="evid"><b>padrão:</b> O short é de cor sólida sem estampa visível.</div>
   </div>
 </div>
@@ -4294,7 +4295,7 @@ details.sub summary{padding:10px 14px;font-size:13px;font-weight:500}
     <div class="meta">80,00 € · M · </div>
     <div class="tags"><span class="tag tipo">tartaruga_pequena</span><span class="tag">verde médio</span><span class="tag">tartarugas coloridas mistas</span><span class="tag ok">original</span></div>
     <div class="motivo">preço €84.70 acima da faixa (€42)</div>
-    <div class="bd">score <b>44</b> · teto €42: padrão +18 · cor +6 · tam +15 · etiqueta +0 · autent. +5 · preço +0</div>
+    <div class="bd">score <b>44</b> · teto €42: padrão +18 · cor +6 · fundo +0 · tam +15 · etiqueta +0 · autent. +5 · preço +0</div>
     <div class="evid"><b>padrão:</b> Short com tartarugas pequenas em fundo verde uniforme.</div>
   </div>
 </div>
@@ -4305,7 +4306,7 @@ details.sub summary{padding:10px 14px;font-size:13px;font-weight:500}
     <div class="meta">80,00 € · L · </div>
     <div class="tags"><span class="tag tipo">liso</span><span class="tag">Azul marinho</span><span class="tag mid">sem_foto_bolso</span></div>
     <div class="motivo">preço €84.70 acima da faixa (€42)</div>
-    <div class="bd">score <b>52</b> · teto €42: padrão +25 · cor +15 · tam +12 · etiqueta +0 · autent. +0 · preço +0</div>
+    <div class="bd">score <b>52</b> · teto €42: padrão +25 · cor +15 · fundo +0 · tam +12 · etiqueta +0 · autent. +0 · preço +0</div>
     <div class="evid"><b>padrão:</b> Short liso na cor navy, sem estampa visível.</div>
   </div>
 </div>
@@ -4316,7 +4317,7 @@ details.sub summary{padding:10px 14px;font-size:13px;font-weight:500}
     <div class="meta">80,00 € · XL · </div>
     <div class="tags"><span class="tag tipo">tartaruga_pequena</span><span class="tag">Azul claro</span><span class="tag">tartarugas azuis e amarelas</span><span class="tag mid">sem_foto_bolso</span></div>
     <div class="motivo">preço €84.70 acima da faixa (€42)</div>
-    <div class="bd">score <b>32</b> · teto €42: padrão +18 · cor +6 · tam +8 · etiqueta +0 · autent. +0 · preço +0</div>
+    <div class="bd">score <b>32</b> · teto €42: padrão +18 · cor +6 · fundo +0 · tam +8 · etiqueta +0 · autent. +0 · preço +0</div>
     <div class="evid"><b>padrão:</b> short com tartarugas pequenas em fundo azul claro, sem variações de cor significativas.</div>
   </div>
 </div>
@@ -4327,7 +4328,7 @@ details.sub summary{padding:10px 14px;font-size:13px;font-weight:500}
     <div class="meta">80,00 € · M · </div>
     <div class="tags"><span class="tag tipo">liso</span><span class="tag">Azul marinho</span><span class="tag ok">original</span></div>
     <div class="motivo">preço €84.70 acima da faixa (€42)</div>
-    <div class="bd">score <b>60</b> · teto €42: padrão +25 · cor +15 · tam +15 · etiqueta +0 · autent. +5 · preço +0</div>
+    <div class="bd">score <b>60</b> · teto €42: padrão +25 · cor +15 · fundo +0 · tam +15 · etiqueta +0 · autent. +5 · preço +0</div>
     <div class="evid"><b>padrão:</b> short preto liso com detalhes em vermelho na cintura e bordado de tartaruga.</div>
   </div>
 </div></div></details><details class="sub"><summary><span class="cnt-sub">6</span> <code>preço €89.95 acima da faixa (€42)</code> <span class="leg">— —</span></summary><div class="lista"><div class="card">
@@ -4337,7 +4338,7 @@ details.sub summary{padding:10px 14px;font-size:13px;font-weight:500}
     <div class="meta">85,00 € · M · </div>
     <div class="tags"><span class="tag tipo">liso</span><span class="tag">Preto</span><span class="tag mid">indefinido</span><span class="tag ok">etiqueta</span></div>
     <div class="motivo">preço €89.95 acima da faixa (€42)</div>
-    <div class="bd">score <b>60</b> · teto €42: padrão +25 · cor +15 · tam +15 · etiqueta +5 · autent. +0 · preço +0</div>
+    <div class="bd">score <b>60</b> · teto €42: padrão +25 · cor +15 · fundo +0 · tam +15 · etiqueta +5 · autent. +0 · preço +0</div>
     <div class="evid"><b>padrão:</b> short preto liso, sem estampa visível.</div>
   </div>
 </div>
@@ -4348,7 +4349,7 @@ details.sub summary{padding:10px 14px;font-size:13px;font-weight:500}
     <div class="meta">85,00 € · L · </div>
     <div class="tags"><span class="tag tipo">tartaruga_pequena</span><span class="tag">Laranja</span><span class="tag">tartarugas vermelhas</span><span class="tag ok">original</span></div>
     <div class="motivo">preço €89.95 acima da faixa (€42)</div>
-    <div class="bd">score <b>41</b> · teto €42: padrão +18 · cor +6 · tam +12 · etiqueta +0 · autent. +5 · preço +0</div>
+    <div class="bd">score <b>41</b> · teto €42: padrão +18 · cor +6 · fundo +0 · tam +12 · etiqueta +0 · autent. +5 · preço +0</div>
     <div class="evid"><b>padrão:</b> short laranja com tartarugas vermelhas pequenas formando um padrão repetido.</div>
   </div>
 </div>
@@ -4359,7 +4360,7 @@ details.sub summary{padding:10px 14px;font-size:13px;font-weight:500}
     <div class="meta">85,00 € · L · </div>
     <div class="tags"><span class="tag tipo">liso</span><span class="tag">vermelho médio</span><span class="tag mid">sem_foto_bolso</span></div>
     <div class="motivo">preço €89.95 acima da faixa (€42)</div>
-    <div class="bd">score <b>52</b> · teto €42: padrão +25 · cor +15 · tam +12 · etiqueta +0 · autent. +0 · preço +0</div>
+    <div class="bd">score <b>52</b> · teto €42: padrão +25 · cor +15 · fundo +0 · tam +12 · etiqueta +0 · autent. +0 · preço +0</div>
     <div class="evid"><b>padrão:</b> short vermelho liso sem estampa.</div>
   </div>
 </div>
@@ -4370,7 +4371,7 @@ details.sub summary{padding:10px 14px;font-size:13px;font-weight:500}
     <div class="meta">85,00 € · L · </div>
     <div class="tags"><span class="tag tipo">tartaruga_pequena</span><span class="tag">Rosa</span><span class="tag">tartarugas brancas</span><span class="tag ok">original</span></div>
     <div class="motivo">preço €89.95 acima da faixa (€42)</div>
-    <div class="bd">score <b>41</b> · teto €42: padrão +18 · cor +6 · tam +12 · etiqueta +0 · autent. +5 · preço +0</div>
+    <div class="bd">score <b>41</b> · teto €42: padrão +18 · cor +6 · fundo +0 · tam +12 · etiqueta +0 · autent. +5 · preço +0</div>
     <div class="evid"><b>padrão:</b> Short rosa com tartarugas brancas pequenas formando um padrão repetido.</div>
   </div>
 </div>
@@ -4381,7 +4382,7 @@ details.sub summary{padding:10px 14px;font-size:13px;font-weight:500}
     <div class="meta">85,00 € · S · </div>
     <div class="tags"><span class="tag tipo">tartaruga_pequena</span><span class="tag">Azul claro</span><span class="tag">tartarugas azuis</span><span class="tag ok">original</span></div>
     <div class="motivo">preço €89.95 acima da faixa (€42)</div>
-    <div class="bd">score <b>37</b> · teto €42: padrão +18 · cor +6 · tam +8 · etiqueta +0 · autent. +5 · preço +0</div>
+    <div class="bd">score <b>37</b> · teto €42: padrão +18 · cor +6 · fundo +0 · tam +8 · etiqueta +0 · autent. +5 · preço +0</div>
     <div class="evid"><b>padrão:</b> Short com fundo verde uniforme e tartarugas azuis pequenas formando um padrão repetido.</div>
   </div>
 </div>
@@ -4392,7 +4393,7 @@ details.sub summary{padding:10px 14px;font-size:13px;font-weight:500}
     <div class="meta">85,00 € · M · </div>
     <div class="tags"><span class="tag tipo">tartaruga_pequena</span><span class="tag">rosa</span><span class="tag">tartarugas azuis</span><span class="tag ok">original</span></div>
     <div class="motivo">preço €89.95 acima da faixa (€42)</div>
-    <div class="bd">score <b>44</b> · teto €42: padrão +18 · cor +6 · tam +15 · etiqueta +0 · autent. +5 · preço +0</div>
+    <div class="bd">score <b>44</b> · teto €42: padrão +18 · cor +6 · fundo +0 · tam +15 · etiqueta +0 · autent. +5 · preço +0</div>
     <div class="evid"><b>padrão:</b> As tartarugas são pequenas e o fundo é predominantemente rosa.</div>
   </div>
 </div></div></details><details class="sub"><summary><span class="cnt-sub">6</span> <code>tamanho_invalido</code> <span class="leg">— Tamanho fora de S/M/L/XL (XS, XXL, numérico, talla única).</span></summary><div class="lista"><div class="card">
@@ -4467,7 +4468,7 @@ details.sub summary{padding:10px 14px;font-size:13px;font-weight:500}
     <div class="meta">70,00 € · S · </div>
     <div class="tags"><span class="tag tipo">liso</span><span class="tag">Branco</span><span class="tag mid">indefinido</span><span class="tag ok">etiqueta</span></div>
     <div class="motivo">preço €74.20 acima da faixa (€42)</div>
-    <div class="bd">score <b>53</b> · teto €42: padrão +25 · cor +15 · tam +8 · etiqueta +5 · autent. +0 · preço +0</div>
+    <div class="bd">score <b>53</b> · teto €42: padrão +25 · cor +15 · fundo +0 · tam +8 · etiqueta +5 · autent. +0 · preço +0</div>
     <div class="evid"><b>padrão:</b> short branco liso sem estampa.</div>
   </div>
 </div>
@@ -4478,7 +4479,7 @@ details.sub summary{padding:10px 14px;font-size:13px;font-weight:500}
     <div class="meta">70,00 € · XL · </div>
     <div class="tags"><span class="tag tipo">tartaruga_pequena</span><span class="tag">Verde médio</span><span class="tag">tartarugas amarelas e pretas</span><span class="tag mid">sem_foto_bolso</span></div>
     <div class="motivo">preço €74.20 acima da faixa (€42)</div>
-    <div class="bd">score <b>32</b> · teto €42: padrão +18 · cor +6 · tam +8 · etiqueta +0 · autent. +0 · preço +0</div>
+    <div class="bd">score <b>32</b> · teto €42: padrão +18 · cor +6 · fundo +0 · tam +8 · etiqueta +0 · autent. +0 · preço +0</div>
     <div class="evid"><b>padrão:</b> Short com fundo verde uniforme e tartarugas pequenas em várias cores.</div>
   </div>
 </div>
@@ -4489,7 +4490,7 @@ details.sub summary{padding:10px 14px;font-size:13px;font-weight:500}
     <div class="meta">70,00 € · L · </div>
     <div class="tags"><span class="tag tipo">liso</span><span class="tag">Preto</span><span class="tag mid">indefinido</span></div>
     <div class="motivo">preço €74.20 acima da faixa (€42)</div>
-    <div class="bd">score <b>52</b> · teto €42: padrão +25 · cor +15 · tam +12 · etiqueta +0 · autent. +0 · preço +0</div>
+    <div class="bd">score <b>52</b> · teto €42: padrão +25 · cor +15 · fundo +0 · tam +12 · etiqueta +0 · autent. +0 · preço +0</div>
     <div class="evid"><b>padrão:</b> Short sem estampa, em cor sólida.</div>
   </div>
 </div>
@@ -4500,7 +4501,7 @@ details.sub summary{padding:10px 14px;font-size:13px;font-weight:500}
     <div class="meta">70,00 € · M · </div>
     <div class="tags"><span class="tag tipo">liso</span><span class="tag">vermelho médio</span><span class="tag mid">sem_foto_bolso</span></div>
     <div class="motivo">preço €74.20 acima da faixa (€42)</div>
-    <div class="bd">score <b>55</b> · teto €42: padrão +25 · cor +15 · tam +15 · etiqueta +0 · autent. +0 · preço +0</div>
+    <div class="bd">score <b>55</b> · teto €42: padrão +25 · cor +15 · fundo +0 · tam +15 · etiqueta +0 · autent. +0 · preço +0</div>
     <div class="evid"><b>padrão:</b> Short sem estampa, cor sólida vermelha.</div>
   </div>
 </div></div></details><details class="sub"><summary><span class="cnt-sub">3</span> <code>preço €79.45 acima da faixa (€42)</code> <span class="leg">— —</span></summary><div class="lista"><div class="card">
@@ -4510,7 +4511,7 @@ details.sub summary{padding:10px 14px;font-size:13px;font-weight:500}
     <div class="meta">75,00 € · XL · </div>
     <div class="tags"><span class="tag tipo">liso</span><span class="tag">Vermelho médio</span><span class="tag mid">sem_foto_bolso</span></div>
     <div class="motivo">preço €79.45 acima da faixa (€42)</div>
-    <div class="bd">score <b>48</b> · teto €42: padrão +25 · cor +15 · tam +8 · etiqueta +0 · autent. +0 · preço +0</div>
+    <div class="bd">score <b>48</b> · teto €42: padrão +25 · cor +15 · fundo +0 · tam +8 · etiqueta +0 · autent. +0 · preço +0</div>
     <div class="evid"><b>padrão:</b> short liso na cor vermelha, sem estampa.</div>
   </div>
 </div>
@@ -4521,7 +4522,7 @@ details.sub summary{padding:10px 14px;font-size:13px;font-weight:500}
     <div class="meta">75,00 € · XL · </div>
     <div class="tags"><span class="tag tipo">liso</span><span class="tag">Azul marinho</span><span class="tag mid">sem_foto_bolso</span></div>
     <div class="motivo">preço €79.45 acima da faixa (€42)</div>
-    <div class="bd">score <b>48</b> · teto €42: padrão +25 · cor +15 · tam +8 · etiqueta +0 · autent. +0 · preço +0</div>
+    <div class="bd">score <b>48</b> · teto €42: padrão +25 · cor +15 · fundo +0 · tam +8 · etiqueta +0 · autent. +0 · preço +0</div>
     <div class="evid"><b>padrão:</b> short cinza liso, sem estampa visível.</div>
   </div>
 </div>
@@ -4532,7 +4533,7 @@ details.sub summary{padding:10px 14px;font-size:13px;font-weight:500}
     <div class="meta">75,00 € · M · </div>
     <div class="tags"><span class="tag tipo">tartaruga_pequena</span><span class="tag">Verde escuro</span><span class="tag">tartarugas verdes e pretas</span><span class="tag mid">suspeito</span></div>
     <div class="motivo">preço €79.45 acima da faixa (€42)</div>
-    <div class="bd">score <b>44</b> · teto €42: padrão +18 · cor +6 · tam +15 · etiqueta +5 · autent. +0 · preço +0</div>
+    <div class="bd">score <b>44</b> · teto €42: padrão +18 · cor +6 · fundo +0 · tam +15 · etiqueta +5 · autent. +0 · preço +0</div>
     <div class="evid"><b>padrão:</b> As tartarugas são pequenas e o fundo é de uma cor sólida.</div>
   </div>
 </div></div></details><details class="sub"><summary><span class="cnt-sub">3</span> <code>preço €100.45 acima da faixa (€42)</code> <span class="leg">— —</span></summary><div class="lista"><div class="card">
@@ -4542,7 +4543,7 @@ details.sub summary{padding:10px 14px;font-size:13px;font-weight:500}
     <div class="meta">95,00 € · L · </div>
     <div class="tags"><span class="tag tipo">liso</span><span class="tag">vermelho médio</span><span class="tag mid">indefinido</span><span class="tag ok">etiqueta</span></div>
     <div class="motivo">preço €100.45 acima da faixa (€42)</div>
-    <div class="bd">score <b>57</b> · teto €42: padrão +25 · cor +15 · tam +12 · etiqueta +5 · autent. +0 · preço +0</div>
+    <div class="bd">score <b>57</b> · teto €42: padrão +25 · cor +15 · fundo +0 · tam +12 · etiqueta +5 · autent. +0 · preço +0</div>
     <div class="evid"><b>padrão:</b> short vermelho liso, sem estampa visível.</div>
   </div>
 </div>
@@ -4553,7 +4554,7 @@ details.sub summary{padding:10px 14px;font-size:13px;font-weight:500}
     <div class="meta">95,00 € · L · </div>
     <div class="tags"><span class="tag tipo">tartaruga_pequena</span><span class="tag">Amarelo</span><span class="tag">tartarugas azuis</span><span class="tag mid">sem_foto_bolso</span></div>
     <div class="motivo">preço €100.45 acima da faixa (€42)</div>
-    <div class="bd">score <b>36</b> · teto €42: padrão +18 · cor +6 · tam +12 · etiqueta +0 · autent. +0 · preço +0</div>
+    <div class="bd">score <b>36</b> · teto €42: padrão +18 · cor +6 · fundo +0 · tam +12 · etiqueta +0 · autent. +0 · preço +0</div>
     <div class="evid"><b>padrão:</b> Short amarelo com tartarugas azuis pequenas em padrão repetido.</div>
   </div>
 </div>
@@ -4564,7 +4565,7 @@ details.sub summary{padding:10px 14px;font-size:13px;font-weight:500}
     <div class="meta">95,00 € · M · </div>
     <div class="tags"><span class="tag tipo">liso</span><span class="tag">Vermelho médio</span><span class="tag mid">indefinido</span></div>
     <div class="motivo">preço €100.45 acima da faixa (€42)</div>
-    <div class="bd">score <b>55</b> · teto €42: padrão +25 · cor +15 · tam +15 · etiqueta +0 · autent. +0 · preço +0</div>
+    <div class="bd">score <b>55</b> · teto €42: padrão +25 · cor +15 · fundo +0 · tam +15 · etiqueta +0 · autent. +0 · preço +0</div>
     <div class="evid"><b>padrão:</b> O short é de cor sólida vermelha com bordado discreto.</div>
   </div>
 </div></div></details><details class="sub"><summary><span class="cnt-sub">2</span> <code>preço €95.20 acima da faixa (€42)</code> <span class="leg">— —</span></summary><div class="lista"><div class="card">
@@ -4574,7 +4575,7 @@ details.sub summary{padding:10px 14px;font-size:13px;font-weight:500}
     <div class="meta">90,00 € · L · </div>
     <div class="tags"><span class="tag tipo">tartaruga_pequena</span><span class="tag">Turquesa</span><span class="tag">tartarugas coloridas mistas</span><span class="tag ok">original</span></div>
     <div class="motivo">preço €95.20 acima da faixa (€42)</div>
-    <div class="bd">score <b>41</b> · teto €42: padrão +18 · cor +6 · tam +12 · etiqueta +0 · autent. +5 · preço +0</div>
+    <div class="bd">score <b>41</b> · teto €42: padrão +18 · cor +6 · fundo +0 · tam +12 · etiqueta +0 · autent. +5 · preço +0</div>
     <div class="evid"><b>padrão:</b> short turquesa com tartarugas coloridas em padrão repetido.</div>
   </div>
 </div>
@@ -4585,7 +4586,7 @@ details.sub summary{padding:10px 14px;font-size:13px;font-weight:500}
     <div class="meta">90,00 € · L · </div>
     <div class="tags"><span class="tag tipo">liso</span><span class="tag">Preto</span><span class="tag mid">sem_foto_bolso</span></div>
     <div class="motivo">preço €95.20 acima da faixa (€42)</div>
-    <div class="bd">score <b>52</b> · teto €42: padrão +25 · cor +15 · tam +12 · etiqueta +0 · autent. +0 · preço +0</div>
+    <div class="bd">score <b>52</b> · teto €42: padrão +25 · cor +15 · fundo +0 · tam +12 · etiqueta +0 · autent. +0 · preço +0</div>
     <div class="evid"><b>padrão:</b> short preto liso sem estampa.</div>
   </div>
 </div></div></details><details class="sub"><summary><span class="cnt-sub">2</span> <code>preço €62.65 acima da faixa (€42)</code> <span class="leg">— —</span></summary><div class="lista"><div class="card">
@@ -4595,7 +4596,7 @@ details.sub summary{padding:10px 14px;font-size:13px;font-weight:500}
     <div class="meta">59,00 € · XL · </div>
     <div class="tags"><span class="tag tipo">tartaruga_pequena</span><span class="tag">Amarelo</span><span class="tag">tartarugas pretas</span><span class="tag mid">suspeito</span></div>
     <div class="motivo">preço €62.65 acima da faixa (€42)</div>
-    <div class="bd">score <b>32</b> · teto €42: padrão +18 · cor +6 · tam +8 · etiqueta +0 · autent. +0 · preço +0</div>
+    <div class="bd">score <b>32</b> · teto €42: padrão +18 · cor +6 · fundo +0 · tam +8 · etiqueta +0 · autent. +0 · preço +0</div>
     <div class="evid"><b>padrão:</b> short amarelo com tartarugas pretas pequenas formando um padrão repetido.</div>
   </div>
 </div>
@@ -4606,7 +4607,7 @@ details.sub summary{padding:10px 14px;font-size:13px;font-weight:500}
     <div class="meta">59,00 € · XL · </div>
     <div class="tags"><span class="tag tipo">liso</span><span class="tag">vermelho médio</span><span class="tag mid">indefinido</span></div>
     <div class="motivo">preço €62.65 acima da faixa (€42)</div>
-    <div class="bd">score <b>48</b> · teto €42: padrão +25 · cor +15 · tam +8 · etiqueta +0 · autent. +0 · preço +0</div>
+    <div class="bd">score <b>48</b> · teto €42: padrão +25 · cor +15 · fundo +0 · tam +8 · etiqueta +0 · autent. +0 · preço +0</div>
     <div class="evid"><b>padrão:</b> short vermelho liso sem estampa.</div>
   </div>
 </div></div></details><details class="sub"><summary><span class="cnt-sub">2</span> <code>desbotado</code> <span class="leg">— Tecido com aparência lavada/envelhecida.</span></summary><div class="lista"><div class="card">
@@ -4637,7 +4638,7 @@ details.sub summary{padding:10px 14px;font-size:13px;font-weight:500}
     <div class="meta">99,00 € · XL · </div>
     <div class="tags"><span class="tag tipo">tartaruga_grande</span><span class="tag">azul claro</span><span class="tag">tartarugas pretas</span><span class="tag mid">sem_foto_bolso</span></div>
     <div class="motivo">preço €104.65 acima da faixa (€100)</div>
-    <div class="bd">score <b>54</b> · teto €80: padrão +40 · cor +6 · tam +8 · etiqueta +0 · autent. +0 · preço +0</div>
+    <div class="bd">score <b>54</b> · teto €80: padrão +40 · cor +6 · fundo +0 · tam +8 · etiqueta +0 · autent. +0 · preço +0</div>
     <div class="evid"><b>padrão:</b> Short com tartarugas pretas sobre fundo branco uniforme.</div>
   </div>
 </div>
@@ -4648,7 +4649,7 @@ details.sub summary{padding:10px 14px;font-size:13px;font-weight:500}
     <div class="meta">99,00 € · M · </div>
     <div class="tags"><span class="tag tipo">tartaruga_grande</span><span class="tag">coral</span><span class="tag">tartarugas coloridas mistas</span><span class="tag ok">original</span></div>
     <div class="motivo">preço €104.65 acima da faixa (€100)</div>
-    <div class="bd">score <b>66</b> · teto €80: padrão +40 · cor +6 · tam +15 · etiqueta +0 · autent. +5 · preço +0</div>
+    <div class="bd">score <b>66</b> · teto €80: padrão +40 · cor +6 · fundo +0 · tam +15 · etiqueta +0 · autent. +5 · preço +0</div>
     <div class="evid"><b>padrão:</b> short vermelho com tartarugas grandes e coloridas visíveis.</div>
   </div>
 </div></div></details><details class="sub"><summary><span class="cnt-sub">2</span> <code>preço €58.45 acima da faixa (€42)</code> <span class="leg">— —</span></summary><div class="lista"><div class="card">
@@ -4658,7 +4659,7 @@ details.sub summary{padding:10px 14px;font-size:13px;font-weight:500}
     <div class="meta">55,00 € · S · </div>
     <div class="tags"><span class="tag tipo">liso</span><span class="tag">Azul marinho</span><span class="tag mid">sem_foto_bolso</span></div>
     <div class="motivo">preço €58.45 acima da faixa (€42)</div>
-    <div class="bd">score <b>48</b> · teto €42: padrão +25 · cor +15 · tam +8 · etiqueta +0 · autent. +0 · preço +0</div>
+    <div class="bd">score <b>48</b> · teto €42: padrão +25 · cor +15 · fundo +0 · tam +8 · etiqueta +0 · autent. +0 · preço +0</div>
     <div class="evid"><b>padrão:</b> short liso na cor preta, sem estampas visíveis.</div>
   </div>
 </div>
@@ -4669,7 +4670,7 @@ details.sub summary{padding:10px 14px;font-size:13px;font-weight:500}
     <div class="meta">55,00 € · S · </div>
     <div class="tags"><span class="tag tipo">liso</span><span class="tag">vermelho médio</span><span class="tag mid">sem_foto_bolso</span></div>
     <div class="motivo">preço €58.45 acima da faixa (€42)</div>
-    <div class="bd">score <b>53</b> · teto €42: padrão +25 · cor +15 · tam +8 · etiqueta +5 · autent. +0 · preço +0</div>
+    <div class="bd">score <b>53</b> · teto €42: padrão +25 · cor +15 · fundo +0 · tam +8 · etiqueta +5 · autent. +0 · preço +0</div>
     <div class="evid"><b>padrão:</b> Short sem estampa, em cor sólida vermelha.</div>
   </div>
 </div></div></details><details class="sub"><summary><span class="cnt-sub">2</span> <code>preço €42.70 acima da faixa (€42)</code> <span class="leg">— —</span></summary><div class="lista"><div class="card">
@@ -4679,7 +4680,7 @@ details.sub summary{padding:10px 14px;font-size:13px;font-weight:500}
     <div class="meta">40,00 € · M · </div>
     <div class="tags"><span class="tag tipo">tartaruga_pequena</span><span class="tag">marrom</span><span class="tag">tartarugas coloridas mistas</span><span class="tag mid">sem_foto_bolso</span></div>
     <div class="motivo">preço €42.70 acima da faixa (€42)</div>
-    <div class="bd">score <b>39</b> · teto €42: padrão +18 · cor +6 · tam +15 · etiqueta +0 · autent. +0 · preço +0</div>
+    <div class="bd">score <b>39</b> · teto €42: padrão +18 · cor +6 · fundo +0 · tam +15 · etiqueta +0 · autent. +0 · preço +0</div>
     <div class="evid"><b>padrão:</b> As tartarugas são pequenas e o fundo é predominantemente preto.</div>
   </div>
 </div>
@@ -4690,7 +4691,7 @@ details.sub summary{padding:10px 14px;font-size:13px;font-weight:500}
     <div class="meta">40,00 € · XL · </div>
     <div class="tags"><span class="tag tipo">tartaruga_pequena</span><span class="tag">Azul claro</span><span class="tag">tartarugas brancas</span><span class="tag ok">original</span></div>
     <div class="motivo">preço €42.70 acima da faixa (€42)</div>
-    <div class="bd">score <b>37</b> · teto €42: padrão +18 · cor +6 · tam +8 · etiqueta +0 · autent. +5 · preço +0</div>
+    <div class="bd">score <b>37</b> · teto €42: padrão +18 · cor +6 · fundo +0 · tam +8 · etiqueta +0 · autent. +5 · preço +0</div>
     <div class="evid"><b>padrão:</b> As tartarugas são pequenas e o fundo é de uma cor azul uniforme.</div>
   </div>
 </div></div></details><details class="sub"><summary><span class="cnt-sub">1</span> <code>preço €67.90 acima da faixa (€42)</code> <span class="leg">— —</span></summary><div class="lista"><div class="card">
@@ -4700,7 +4701,7 @@ details.sub summary{padding:10px 14px;font-size:13px;font-weight:500}
     <div class="meta">64,00 € · L · </div>
     <div class="tags"><span class="tag tipo">liso</span><span class="tag">Preto</span><span class="tag mid">sem_foto_bolso</span><span class="tag ok">etiqueta</span></div>
     <div class="motivo">preço €67.90 acima da faixa (€42)</div>
-    <div class="bd">score <b>57</b> · teto €42: padrão +25 · cor +15 · tam +12 · etiqueta +5 · autent. +0 · preço +0</div>
+    <div class="bd">score <b>57</b> · teto €42: padrão +25 · cor +15 · fundo +0 · tam +12 · etiqueta +5 · autent. +0 · preço +0</div>
     <div class="evid"><b>padrão:</b> short preto liso, sem estampa visível.</div>
   </div>
 </div></div></details><details class="sub"><summary><span class="cnt-sub">1</span> <code>preço €78.40 acima da faixa (€42)</code> <span class="leg">— —</span></summary><div class="lista"><div class="card">
@@ -4710,7 +4711,7 @@ details.sub summary{padding:10px 14px;font-size:13px;font-weight:500}
     <div class="meta">74,00 € · M · </div>
     <div class="tags"><span class="tag tipo">tartaruga_pequena</span><span class="tag">Azul marinho</span><span class="tag">tartarugas azuis e verdes</span><span class="tag mid">sem_foto_bolso</span></div>
     <div class="motivo">preço €78.40 acima da faixa (€42)</div>
-    <div class="bd">score <b>48</b> · teto €42: padrão +18 · cor +15 · tam +15 · etiqueta +0 · autent. +0 · preço +0</div>
+    <div class="bd">score <b>48</b> · teto €42: padrão +18 · cor +15 · fundo +0 · tam +15 · etiqueta +0 · autent. +0 · preço +0</div>
     <div class="evid"><b>padrão:</b> short navy com tartarugas pequenas em tons de azul e verde, fundo uniforme.</div>
   </div>
 </div></div></details><details class="sub"><summary><span class="cnt-sub">1</span> <code>preço €52.15 acima da faixa (€42)</code> <span class="leg">— —</span></summary><div class="lista"><div class="card">
@@ -4720,7 +4721,7 @@ details.sub summary{padding:10px 14px;font-size:13px;font-weight:500}
     <div class="meta">49,00 € · M · </div>
     <div class="tags"><span class="tag tipo">liso</span><span class="tag">vermelho médio</span><span class="tag mid">indefinido</span></div>
     <div class="motivo">preço €52.15 acima da faixa (€42)</div>
-    <div class="bd">score <b>55</b> · teto €42: padrão +25 · cor +15 · tam +15 · etiqueta +0 · autent. +0 · preço +0</div>
+    <div class="bd">score <b>55</b> · teto €42: padrão +25 · cor +15 · fundo +0 · tam +15 · etiqueta +0 · autent. +0 · preço +0</div>
     <div class="evid"><b>padrão:</b> short vermelho liso sem estampa.</div>
   </div>
 </div></div></details><details class="sub"><summary><span class="cnt-sub">1</span> <code>preço €51.63 acima da faixa (€42)</code> <span class="leg">— —</span></summary><div class="lista"><div class="card">
@@ -4730,7 +4731,7 @@ details.sub summary{padding:10px 14px;font-size:13px;font-weight:500}
     <div class="meta">48,50 € · S · </div>
     <div class="tags"><span class="tag tipo">liso</span><span class="tag">vermelho médio</span><span class="tag mid">indefinido</span></div>
     <div class="motivo">preço €51.63 acima da faixa (€42)</div>
-    <div class="bd">score <b>48</b> · teto €42: padrão +25 · cor +15 · tam +8 · etiqueta +0 · autent. +0 · preço +0</div>
+    <div class="bd">score <b>48</b> · teto €42: padrão +25 · cor +15 · fundo +0 · tam +8 · etiqueta +0 · autent. +0 · preço +0</div>
     <div class="evid"><b>padrão:</b> short vermelho liso sem estampa.</div>
   </div>
 </div></div></details><details class="sub"><summary><span class="cnt-sub">1</span> <code>preço €83.65 acima da faixa (€42)</code> <span class="leg">— —</span></summary><div class="lista"><div class="card">
@@ -4740,7 +4741,7 @@ details.sub summary{padding:10px 14px;font-size:13px;font-weight:500}
     <div class="meta">79,00 € · S · </div>
     <div class="tags"><span class="tag tipo">liso</span><span class="tag">Preto</span><span class="tag mid">indefinido</span></div>
     <div class="motivo">preço €83.65 acima da faixa (€42)</div>
-    <div class="bd">score <b>48</b> · teto €42: padrão +25 · cor +15 · tam +8 · etiqueta +0 · autent. +0 · preço +0</div>
+    <div class="bd">score <b>48</b> · teto €42: padrão +25 · cor +15 · fundo +0 · tam +8 · etiqueta +0 · autent. +0 · preço +0</div>
     <div class="evid"><b>padrão:</b> short preto liso, sem estampa visível.</div>
   </div>
 </div></div></details><details class="sub"><summary><span class="cnt-sub">1</span> <code>preço €51.10 acima da faixa (€42)</code> <span class="leg">— —</span></summary><div class="lista"><div class="card">
@@ -4750,7 +4751,7 @@ details.sub summary{padding:10px 14px;font-size:13px;font-weight:500}
     <div class="meta">48,00 € · L · </div>
     <div class="tags"><span class="tag tipo">liso</span><span class="tag">Azul marinho</span><span class="tag mid">indefinido</span></div>
     <div class="motivo">preço €51.10 acima da faixa (€42)</div>
-    <div class="bd">score <b>52</b> · teto €42: padrão +25 · cor +15 · tam +12 · etiqueta +0 · autent. +0 · preço +0</div>
+    <div class="bd">score <b>52</b> · teto €42: padrão +25 · cor +15 · fundo +0 · tam +12 · etiqueta +0 · autent. +0 · preço +0</div>
     <div class="evid"><b>padrão:</b> short liso na cor navy, sem estampa visível.</div>
   </div>
 </div></div></details><details class="sub"><summary><span class="cnt-sub">1</span> <code>preço €104.65 acima da faixa (€42)</code> <span class="leg">— —</span></summary><div class="lista"><div class="card">
@@ -4760,7 +4761,7 @@ details.sub summary{padding:10px 14px;font-size:13px;font-weight:500}
     <div class="meta">99,00 € · L · </div>
     <div class="tags"><span class="tag tipo">tartaruga_pequena</span><span class="tag">Azul marinho</span><span class="tag">tartarugas brancas</span><span class="tag ok">original</span></div>
     <div class="motivo">preço €104.65 acima da faixa (€42)</div>
-    <div class="bd">score <b>50</b> · teto €42: padrão +18 · cor +15 · tam +12 · etiqueta +0 · autent. +5 · preço +0</div>
+    <div class="bd">score <b>50</b> · teto €42: padrão +18 · cor +15 · fundo +0 · tam +12 · etiqueta +0 · autent. +5 · preço +0</div>
     <div class="evid"><b>padrão:</b> Short navy com padrão de tartarugas brancas pequenas repetidas.</div>
   </div>
 </div></div></details></div></details>
