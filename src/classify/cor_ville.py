@@ -10,7 +10,8 @@ Regras do cliente (manual + WhatsApp):
   - NEON/FLUO/METÁLICO: só BAIXAM a nota, nunca excluem (≠ Sundek).
 
 No LISO, porém, o cliente só compra um conjunto fechado de cores
-(preto, branco, navy, cinza, musgo, vermelho não-alaranjado). O resto descarta.
+(preto, branco, navy, cinza, musgo). Vermelho é ótimo na tartaruga mas NÃO
+é comprado no liso. O resto descarta.
 
 Mapeia a `cor_principal` (texto livre que a IA já devolveu) para um "bucket".
 """
@@ -104,6 +105,14 @@ def _cor_principal_do_item(item: dict) -> str | None:
 
 
 def cor_aceita_em_liso(nome: str | None) -> bool:
-    """No liso o cliente só compra: preto, branco, navy, cinza, musgo,
-    vermelho não-alaranjado. Qualquer outra cor → descarta."""
+    """No liso o cliente só compra: preto, branco, navy, cinza, musgo.
+
+    ATENÇÃO: vermelho é 'preferida' pra TARTARUGA (libera faixas €60-100), mas
+    o cliente NÃO compra short LISO vermelho — por isso é barrado aqui mesmo
+    sendo preferida. Qualquer outra cor → descarta.
+    """
+    n = _norm(nome)
+    # Vermelho não-alaranjado: ótimo na tartaruga, mas fora do whitelist do liso.
+    if _VERMELHO_RE.search(n) and not _ALARANJADO_RE.search(n):
+        return False
     return bucket_cor(nome) in ("preferida", "neutra")

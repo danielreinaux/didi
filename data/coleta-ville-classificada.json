@@ -73,14 +73,14 @@
       "breakdown": {
         "padrao": 25,
         "cor": 15,
-        "fundo": 0,
         "tamanho": 12,
         "etiqueta": 5,
         "autenticidade": 0,
         "preco": 0,
         "ratio_preco_teto": 1.62,
         "cor_bucket": "preferida",
-        "fundo_problema": false
+        "fundo_problema": false,
+        "colecao_antiga": false
       }
     }
   },
@@ -2625,14 +2625,14 @@
       "breakdown": {
         "padrao": 18,
         "cor": 6,
-        "fundo": 0,
         "tamanho": 15,
         "etiqueta": 0,
         "autenticidade": 5,
         "preco": 0,
         "ratio_preco_teto": 1.27,
         "cor_bucket": "aceitavel",
-        "fundo_problema": false
+        "fundo_problema": false,
+        "colecao_antiga": false
       }
     }
   },
@@ -3134,14 +3134,14 @@
       "breakdown": {
         "padrao": 25,
         "cor": 15,
-        "fundo": 0,
         "tamanho": 15,
         "etiqueta": 5,
         "autenticidade": 0,
         "preco": 0,
         "ratio_preco_teto": 2.02,
         "cor_bucket": "preferida",
-        "fundo_problema": false
+        "fundo_problema": false,
+        "colecao_antiga": false
       }
     }
   },
@@ -4798,14 +4798,14 @@
       "breakdown": {
         "padrao": 25,
         "cor": 15,
-        "fundo": 0,
         "tamanho": 8,
         "etiqueta": 5,
         "autenticidade": 0,
         "preco": 0,
         "ratio_preco_teto": 1.77,
         "cor_bucket": "preferida",
-        "fundo_problema": false
+        "fundo_problema": false,
+        "colecao_antiga": false
       }
     }
   },
@@ -4955,14 +4955,14 @@
       "breakdown": {
         "padrao": 18,
         "cor": 6,
-        "fundo": 0,
         "tamanho": 12,
         "etiqueta": 0,
         "autenticidade": 5,
         "preco": 0,
         "ratio_preco_teto": 2.27,
         "cor_bucket": "aceitavel",
-        "fundo_problema": false
+        "fundo_problema": false,
+        "colecao_antiga": false
       }
     }
   },
@@ -6227,14 +6227,14 @@
       "breakdown": {
         "padrao": 18,
         "cor": 15,
-        "fundo": 0,
         "tamanho": 15,
         "etiqueta": 0,
         "autenticidade": 0,
         "preco": 0,
         "ratio_preco_teto": 1.87,
         "cor_bucket": "preferida",
-        "fundo_problema": false
+        "fundo_problema": false,
+        "colecao_antiga": false
       }
     }
   },
@@ -7139,14 +7139,14 @@
       "breakdown": {
         "padrao": 25,
         "cor": 15,
-        "fundo": 0,
         "tamanho": 8,
         "etiqueta": 0,
         "autenticidade": 0,
         "preco": 0,
         "ratio_preco_teto": 2.52,
         "cor_bucket": "preferida",
-        "fundo_problema": false
+        "fundo_problema": false,
+        "colecao_antiga": false
       }
     }
   },
@@ -7714,14 +7714,14 @@
       "breakdown": {
         "padrao": 25,
         "cor": 15,
-        "fundo": 0,
         "tamanho": 12,
         "etiqueta": 0,
         "autenticidade": 0,
         "preco": 0,
         "ratio_preco_teto": 1.52,
         "cor_bucket": "preferida",
-        "fundo_problema": false
+        "fundo_problema": false,
+        "colecao_antiga": false
       }
     }
   },
@@ -8003,24 +8003,11 @@
       "autenticidade": "sem_foto_bolso"
     },
     "score": {
-      "score": 48,
-      "teto": 42,
-      "preco_num": 79.45,
+      "score": 0,
+      "teto": 0,
       "decisao": "descartado",
-      "motivo": "preço €79.45 acima da faixa (€42)",
-      "flags": [],
-      "breakdown": {
-        "padrao": 25,
-        "cor": 15,
-        "fundo": 0,
-        "tamanho": 8,
-        "etiqueta": 0,
-        "autenticidade": 0,
-        "preco": 0,
-        "ratio_preco_teto": 1.89,
-        "cor_bucket": "preferida",
-        "fundo_problema": false
-      }
+      "motivo_exclusao": "cor_liso_fora_whitelist",
+      "breakdown": {}
     }
   },
   {
@@ -9725,15 +9712,19 @@
       "breakdown": {
         "padrao": 40,
         "cor": 15,
-        "fundo": 0,
         "tamanho": 12,
         "etiqueta": 5,
         "autenticidade": 0,
         "preco": 10,
         "ratio_preco_teto": 0.8,
         "cor_bucket": "preferida",
-        "fundo_problema": false
+        "fundo_problema": false,
+        "colecao_antiga": false
       }
+    },
+    "autenticidade": {
+      "autenticidade": "sem_foto_bolso",
+      "evidencia": "As fotos fornecidas não mostram o bolso traseiro do short para análise."
     }
   },
   {
@@ -10301,24 +10292,11 @@
       "autenticidade": "indefinido"
     },
     "score": {
-      "score": 55,
-      "teto": 42,
-      "preco_num": 52.15,
+      "score": 0,
+      "teto": 0,
       "decisao": "descartado",
-      "motivo": "preço €52.15 acima da faixa (€42)",
-      "flags": [],
-      "breakdown": {
-        "padrao": 25,
-        "cor": 15,
-        "fundo": 0,
-        "tamanho": 15,
-        "etiqueta": 0,
-        "autenticidade": 0,
-        "preco": 0,
-        "ratio_preco_teto": 1.24,
-        "cor_bucket": "preferida",
-        "fundo_problema": false
-      }
+      "motivo_exclusao": "cor_liso_fora_whitelist",
+      "breakdown": {}
     }
   },
   {
@@ -10798,14 +10776,14 @@
       "breakdown": {
         "padrao": 25,
         "cor": 15,
-        "fundo": 0,
         "tamanho": 8,
         "etiqueta": 0,
         "autenticidade": 5,
         "preco": 0,
         "ratio_preco_teto": 1.27,
         "cor_bucket": "preferida",
-        "fundo_problema": false
+        "fundo_problema": false,
+        "colecao_antiga": false
       }
     }
   },
@@ -10883,14 +10861,14 @@
       "breakdown": {
         "padrao": 25,
         "cor": 15,
-        "fundo": 0,
         "tamanho": 15,
         "etiqueta": 5,
         "autenticidade": 0,
         "preco": 0,
         "ratio_preco_teto": 2.14,
         "cor_bucket": "preferida",
-        "fundo_problema": false
+        "fundo_problema": false,
+        "colecao_antiga": false
       }
     }
   },
@@ -11668,14 +11646,14 @@
       "breakdown": {
         "padrao": 25,
         "cor": 15,
-        "fundo": 0,
         "tamanho": 8,
         "etiqueta": 0,
         "autenticidade": 5,
         "preco": 0,
         "ratio_preco_teto": 1.27,
         "cor_bucket": "preferida",
-        "fundo_problema": false
+        "fundo_problema": false,
+        "colecao_antiga": false
       }
     }
   },
@@ -12115,14 +12093,14 @@
       "breakdown": {
         "padrao": 18,
         "cor": 6,
-        "fundo": 0,
         "tamanho": 8,
         "etiqueta": 0,
         "autenticidade": 0,
         "preco": 0,
         "ratio_preco_teto": 1.49,
         "cor_bucket": "aceitavel",
-        "fundo_problema": false
+        "fundo_problema": false,
+        "colecao_antiga": false
       }
     }
   },
@@ -13065,14 +13043,14 @@
       "breakdown": {
         "padrao": 25,
         "cor": 15,
-        "fundo": 0,
         "tamanho": 8,
         "etiqueta": 0,
         "autenticidade": 0,
         "preco": 0,
         "ratio_preco_teto": 2.52,
         "cor_bucket": "preferida",
-        "fundo_problema": false
+        "fundo_problema": false,
+        "colecao_antiga": false
       }
     }
   },
@@ -13347,14 +13325,14 @@
       "breakdown": {
         "padrao": 18,
         "cor": 15,
-        "fundo": 0,
         "tamanho": 12,
         "etiqueta": 0,
         "autenticidade": 0,
         "preco": 0,
         "ratio_preco_teto": 2.52,
         "cor_bucket": "preferida",
-        "fundo_problema": false
+        "fundo_problema": false,
+        "colecao_antiga": false
       }
     }
   },
@@ -13496,14 +13474,14 @@
       "breakdown": {
         "padrao": 18,
         "cor": 6,
-        "fundo": 0,
         "tamanho": 12,
         "etiqueta": 0,
         "autenticidade": 5,
         "preco": 0,
         "ratio_preco_teto": 2.14,
         "cor_bucket": "aceitavel",
-        "fundo_problema": false
+        "fundo_problema": false,
+        "colecao_antiga": false
       }
     }
   },
@@ -15173,14 +15151,14 @@
       "breakdown": {
         "padrao": 25,
         "cor": 15,
-        "fundo": 0,
         "tamanho": 8,
         "etiqueta": 0,
         "autenticidade": 0,
         "preco": 0,
         "ratio_preco_teto": 1.89,
         "cor_bucket": "preferida",
-        "fundo_problema": false
+        "fundo_problema": false,
+        "colecao_antiga": false
       }
     }
   },
@@ -15259,14 +15237,14 @@
       "breakdown": {
         "padrao": 40,
         "cor": 15,
-        "fundo": 0,
         "tamanho": 15,
         "etiqueta": 0,
         "autenticidade": 0,
         "preco": 10,
         "ratio_preco_teto": 0.8,
         "cor_bucket": "preferida",
-        "fundo_problema": false
+        "fundo_problema": false,
+        "colecao_antiga": false
       }
     },
     "autenticidade": {
@@ -15612,14 +15590,14 @@
       "breakdown": {
         "padrao": 25,
         "cor": 15,
-        "fundo": 0,
         "tamanho": 15,
         "etiqueta": 0,
         "autenticidade": 0,
         "preco": 0,
         "ratio_preco_teto": 2.02,
         "cor_bucket": "preferida",
-        "fundo_problema": false
+        "fundo_problema": false,
+        "colecao_antiga": false
       }
     }
   },
@@ -16220,24 +16198,11 @@
       "autenticidade": "indefinido"
     },
     "score": {
-      "score": 48,
-      "teto": 42,
-      "preco_num": 51.63,
+      "score": 0,
+      "teto": 0,
       "decisao": "descartado",
-      "motivo": "preço €51.63 acima da faixa (€42)",
-      "flags": [],
-      "breakdown": {
-        "padrao": 25,
-        "cor": 15,
-        "fundo": 0,
-        "tamanho": 8,
-        "etiqueta": 0,
-        "autenticidade": 0,
-        "preco": 0,
-        "ratio_preco_teto": 1.23,
-        "cor_bucket": "preferida",
-        "fundo_problema": false
-      }
+      "motivo_exclusao": "cor_liso_fora_whitelist",
+      "breakdown": {}
     }
   },
   {
@@ -16370,7 +16335,8 @@
     "classificacao": {
       "tipo": "indefinido",
       "motivo": "Imagem não mostra o produto, apenas palmeiras.",
-      "confianca": 0
+      "confianca": 0,
+      "autenticidade": "indefinido"
     },
     "score": {
       "score": 18,
@@ -16385,15 +16351,19 @@
       "breakdown": {
         "padrao": 0,
         "cor": 6,
-        "fundo": 0,
         "tamanho": 12,
         "etiqueta": 0,
         "autenticidade": 0,
         "preco": 0,
         "ratio_preco_teto": 1.55,
         "cor_bucket": "aceitavel",
-        "fundo_problema": false
+        "fundo_problema": false,
+        "colecao_antiga": false
       }
+    },
+    "autenticidade": {
+      "autenticidade": "indefinido",
+      "evidencia": "liso/indefinido — sem padrão de referência"
     }
   },
   {
@@ -16468,14 +16438,14 @@
       "breakdown": {
         "padrao": 25,
         "cor": 15,
-        "fundo": 0,
         "tamanho": 12,
         "etiqueta": 0,
         "autenticidade": 0,
         "preco": 0,
         "ratio_preco_teto": 2.27,
         "cor_bucket": "preferida",
-        "fundo_problema": false
+        "fundo_problema": false,
+        "colecao_antiga": false
       }
     }
   },
@@ -16671,14 +16641,14 @@
       "breakdown": {
         "padrao": 18,
         "cor": 6,
-        "fundo": 0,
         "tamanho": 15,
         "etiqueta": 0,
         "autenticidade": 5,
         "preco": 0,
         "ratio_preco_teto": 2.02,
         "cor_bucket": "aceitavel",
-        "fundo_problema": false
+        "fundo_problema": false,
+        "colecao_antiga": false
       }
     }
   },
@@ -17304,14 +17274,14 @@
       "breakdown": {
         "padrao": 25,
         "cor": 15,
-        "fundo": 0,
         "tamanho": 15,
         "etiqueta": 0,
         "autenticidade": 0,
         "preco": 0,
         "ratio_preco_teto": 1.27,
         "cor_bucket": "preferida",
-        "fundo_problema": false
+        "fundo_problema": false,
+        "colecao_antiga": false
       }
     }
   },
@@ -17671,14 +17641,14 @@
       "breakdown": {
         "padrao": 25,
         "cor": 15,
-        "fundo": 0,
         "tamanho": 8,
         "etiqueta": 0,
         "autenticidade": 0,
         "preco": 0,
         "ratio_preco_teto": 1.99,
         "cor_bucket": "preferida",
-        "fundo_problema": false
+        "fundo_problema": false,
+        "colecao_antiga": false
       }
     }
   },
@@ -18929,14 +18899,14 @@
       "breakdown": {
         "padrao": 18,
         "cor": 15,
-        "fundo": 0,
         "tamanho": 15,
         "etiqueta": 0,
         "autenticidade": 5,
         "preco": 0,
         "ratio_preco_teto": 1.27,
         "cor_bucket": "preferida",
-        "fundo_problema": false
+        "fundo_problema": false,
+        "colecao_antiga": false
       }
     }
   },
@@ -19227,14 +19197,14 @@
       "breakdown": {
         "padrao": 25,
         "cor": 15,
-        "fundo": 0,
         "tamanho": 15,
         "etiqueta": 5,
         "autenticidade": 5,
         "preco": 0,
         "ratio_preco_teto": 2.52,
         "cor_bucket": "preferida",
-        "fundo_problema": false
+        "fundo_problema": false,
+        "colecao_antiga": false
       }
     }
   },
@@ -19667,15 +19637,19 @@
       "breakdown": {
         "padrao": 40,
         "cor": 15,
-        "fundo": 0,
         "tamanho": 12,
         "etiqueta": 0,
         "autenticidade": 0,
         "preco": 0,
         "ratio_preco_teto": 1.06,
         "cor_bucket": "preferida",
-        "fundo_problema": false
+        "fundo_problema": false,
+        "colecao_antiga": false
       }
+    },
+    "autenticidade": {
+      "autenticidade": "sem_foto_bolso",
+      "evidencia": "As fotos não mostram o bolso traseiro do short."
     }
   },
   {
@@ -20267,24 +20241,11 @@
       "autenticidade": "indefinido"
     },
     "score": {
-      "score": 57,
-      "teto": 42,
-      "preco_num": 100.45,
+      "score": 0,
+      "teto": 0,
       "decisao": "descartado",
-      "motivo": "preço €100.45 acima da faixa (€42)",
-      "flags": [],
-      "breakdown": {
-        "padrao": 25,
-        "cor": 15,
-        "fundo": 0,
-        "tamanho": 12,
-        "etiqueta": 5,
-        "autenticidade": 0,
-        "preco": 0,
-        "ratio_preco_teto": 2.39,
-        "cor_bucket": "preferida",
-        "fundo_problema": false
-      }
+      "motivo_exclusao": "cor_liso_fora_whitelist",
+      "breakdown": {}
     }
   },
   {
@@ -22009,14 +21970,14 @@
       "breakdown": {
         "padrao": 25,
         "cor": 15,
-        "fundo": 0,
         "tamanho": 12,
         "etiqueta": 0,
         "autenticidade": 0,
         "preco": 0,
         "ratio_preco_teto": 2.02,
         "cor_bucket": "preferida",
-        "fundo_problema": false
+        "fundo_problema": false,
+        "colecao_antiga": false
       }
     }
   },
@@ -23001,24 +22962,11 @@
       "autenticidade": "sem_foto_bolso"
     },
     "score": {
-      "score": 60,
-      "teto": 42,
-      "preco_num": 105.7,
+      "score": 0,
+      "teto": 0,
       "decisao": "descartado",
-      "motivo": "preço €105.70 acima da faixa (€42)",
-      "flags": [],
-      "breakdown": {
-        "padrao": 25,
-        "cor": 15,
-        "fundo": 0,
-        "tamanho": 15,
-        "etiqueta": 5,
-        "autenticidade": 0,
-        "preco": 0,
-        "ratio_preco_teto": 2.52,
-        "cor_bucket": "preferida",
-        "fundo_problema": false
-      }
+      "motivo_exclusao": "cor_liso_fora_whitelist",
+      "breakdown": {}
     }
   },
   {
@@ -23628,24 +23576,11 @@
       "autenticidade": "indefinido"
     },
     "score": {
-      "score": 48,
-      "teto": 42,
-      "preco_num": 53.2,
+      "score": 0,
+      "teto": 0,
       "decisao": "descartado",
-      "motivo": "preço €53.20 acima da faixa (€42)",
-      "flags": [],
-      "breakdown": {
-        "padrao": 25,
-        "cor": 15,
-        "fundo": 0,
-        "tamanho": 8,
-        "etiqueta": 0,
-        "autenticidade": 0,
-        "preco": 0,
-        "ratio_preco_teto": 1.27,
-        "cor_bucket": "preferida",
-        "fundo_problema": false
-      }
+      "motivo_exclusao": "cor_liso_fora_whitelist",
+      "breakdown": {}
     }
   },
   {
@@ -23988,7 +23923,7 @@
     },
     "autenticidade": {
       "autenticidade": "falso",
-      "evidencia": "O tecido do bolso é o mesmo do corpo, mas o padrão está claramente quebrado. As tartarugas no bolso não se alinham com as do corpo, começando do zero dentro do bolso. Isso é semelhante ao REF 1 e REF 2."
+      "evidencia": "O tecido do bolso é o mesmo do corpo, mas o padrão está claramente quebrado. A tartaruga na borda do bolso está cortada e não alinha com o desenho do corpo, semelhante aos exemplos REF 1 e REF 2."
     }
   },
   {
@@ -24061,7 +23996,7 @@
     },
     "autenticidade": {
       "autenticidade": "falso",
-      "evidencia": "O tecido do bolso é o mesmo do corpo, mas o padrão está claramente quebrado. As tartarugas e outros motivos não têm continuidade visual entre o corpo e o bolso, semelhante aos exemplos REF 1 e REF 2."
+      "evidencia": "O bolso traseiro tem o mesmo tecido estampado do corpo, mas o padrão está claramente quebrado. As tartarugas e outros elementos não têm continuidade entre o corpo e o bolso, semelhante aos exemplos REF 1 e REF 2."
     }
   },
   {
@@ -24978,14 +24913,14 @@
       "breakdown": {
         "padrao": 40,
         "cor": 6,
-        "fundo": 0,
         "tamanho": 8,
         "etiqueta": 0,
         "autenticidade": 0,
         "preco": 0,
         "ratio_preco_teto": 1.31,
         "cor_bucket": "aceitavel",
-        "fundo_problema": false
+        "fundo_problema": false,
+        "colecao_antiga": false
       }
     }
   },
@@ -25450,19 +25385,19 @@
       "breakdown": {
         "padrao": 40,
         "cor": 6,
-        "fundo": 0,
         "tamanho": 8,
         "etiqueta": 0,
         "autenticidade": 0,
         "preco": 20,
         "ratio_preco_teto": 0.57,
         "cor_bucket": "aceitavel",
-        "fundo_problema": false
+        "fundo_problema": false,
+        "colecao_antiga": false
       }
     },
     "autenticidade": {
       "autenticidade": "sem_foto_bolso",
-      "evidencia": "As fotos fornecidas não mostram o bolso traseiro do short, impossibilitando a análise do tecido e do encaixe da estampa."
+      "evidencia": "As fotos fornecidas não mostram o bolso traseiro do short para análise."
     }
   },
   {
@@ -26612,24 +26547,11 @@
       "autenticidade": "indefinido"
     },
     "score": {
-      "score": 60,
-      "teto": 42,
-      "preco_num": 53.2,
+      "score": 0,
+      "teto": 0,
       "decisao": "descartado",
-      "motivo": "preço €53.20 acima da faixa (€42)",
-      "flags": [],
-      "breakdown": {
-        "padrao": 25,
-        "cor": 15,
-        "fundo": 0,
-        "tamanho": 15,
-        "etiqueta": 5,
-        "autenticidade": 0,
-        "preco": 0,
-        "ratio_preco_teto": 1.27,
-        "cor_bucket": "preferida",
-        "fundo_problema": false
-      }
+      "motivo_exclusao": "cor_liso_fora_whitelist",
+      "breakdown": {}
     }
   },
   {
@@ -26917,14 +26839,14 @@
       "breakdown": {
         "padrao": 25,
         "cor": 15,
-        "fundo": 0,
         "tamanho": 15,
         "etiqueta": 0,
         "autenticidade": 0,
         "preco": 0,
         "ratio_preco_teto": 1.14,
         "cor_bucket": "preferida",
-        "fundo_problema": false
+        "fundo_problema": false,
+        "colecao_antiga": false
       }
     }
   },
@@ -27353,18 +27275,33 @@
     },
     "classificacao": {
       "tipo": "tartaruga_grande",
-      "autenticidade": "falso"
+      "autenticidade": "sem_foto_bolso"
     },
     "score": {
-      "score": 0,
-      "teto": 0,
-      "decisao": "descartado",
-      "motivo_exclusao": "autenticidade_falsa",
-      "breakdown": {}
+      "score": 77,
+      "teto": 80,
+      "preco_num": 63.7,
+      "decisao": "compravel",
+      "motivo": "",
+      "flags": [
+        "verificar_autenticidade"
+      ],
+      "breakdown": {
+        "padrao": 40,
+        "cor": 15,
+        "tamanho": 12,
+        "etiqueta": 0,
+        "autenticidade": 0,
+        "preco": 10,
+        "ratio_preco_teto": 0.8,
+        "cor_bucket": "preferida",
+        "fundo_problema": false,
+        "colecao_antiga": false
+      }
     },
     "autenticidade": {
-      "autenticidade": "falso",
-      "evidencia": "O bolso traseiro tem o mesmo tecido estampado do corpo, mas o padrão está claramente quebrado. As tartarugas dentro do bolso não se alinham com as de fora, semelhante aos exemplos REF 1 e REF 2."
+      "autenticidade": "sem_foto_bolso",
+      "evidencia": "As fotos não mostram o bolso traseiro de forma clara para análise."
     }
   },
   {
@@ -27612,14 +27549,14 @@
       "breakdown": {
         "padrao": 40,
         "cor": 6,
-        "fundo": 0,
         "tamanho": 15,
         "etiqueta": 0,
         "autenticidade": 5,
         "preco": 0,
         "ratio_preco_teto": 1.31,
         "cor_bucket": "aceitavel",
-        "fundo_problema": false
+        "fundo_problema": false,
+        "colecao_antiga": false
       }
     }
   },
@@ -27907,14 +27844,14 @@
       "breakdown": {
         "padrao": 18,
         "cor": 6,
-        "fundo": 0,
         "tamanho": 8,
         "etiqueta": 0,
         "autenticidade": 0,
         "preco": 0,
         "ratio_preco_teto": 1.77,
         "cor_bucket": "aceitavel",
-        "fundo_problema": false
+        "fundo_problema": false,
+        "colecao_antiga": false
       }
     }
   },
@@ -28044,14 +27981,14 @@
       "breakdown": {
         "padrao": 25,
         "cor": 15,
-        "fundo": 0,
         "tamanho": 12,
         "etiqueta": 0,
         "autenticidade": 0,
         "preco": 0,
         "ratio_preco_teto": 1.27,
         "cor_bucket": "preferida",
-        "fundo_problema": false
+        "fundo_problema": false,
+        "colecao_antiga": false
       }
     }
   },
@@ -28883,14 +28820,14 @@
       "breakdown": {
         "padrao": 25,
         "cor": 15,
-        "fundo": 0,
         "tamanho": 12,
         "etiqueta": 0,
         "autenticidade": 0,
         "preco": 0,
         "ratio_preco_teto": 1.22,
         "cor_bucket": "preferida",
-        "fundo_problema": false
+        "fundo_problema": false,
+        "colecao_antiga": false
       }
     }
   },
@@ -29096,15 +29033,19 @@
       "breakdown": {
         "padrao": 40,
         "cor": 15,
-        "fundo": 0,
         "tamanho": 15,
         "etiqueta": 5,
         "autenticidade": 0,
         "preco": 10,
         "ratio_preco_teto": 0.8,
         "cor_bucket": "preferida",
-        "fundo_problema": false
+        "fundo_problema": false,
+        "colecao_antiga": false
       }
+    },
+    "autenticidade": {
+      "autenticidade": "sem_foto_bolso",
+      "evidencia": "As fotos fornecidas não mostram o bolso traseiro do short para análise."
     }
   },
   {
@@ -29866,24 +29807,11 @@
       "autenticidade": "indefinido"
     },
     "score": {
-      "score": 52,
-      "teto": 42,
-      "preco_num": 105.7,
+      "score": 0,
+      "teto": 0,
       "decisao": "descartado",
-      "motivo": "preço €105.70 acima da faixa (€42)",
-      "flags": [],
-      "breakdown": {
-        "padrao": 25,
-        "cor": 15,
-        "fundo": 0,
-        "tamanho": 12,
-        "etiqueta": 0,
-        "autenticidade": 0,
-        "preco": 0,
-        "ratio_preco_teto": 2.52,
-        "cor_bucket": "preferida",
-        "fundo_problema": false
-      }
+      "motivo_exclusao": "cor_liso_fora_whitelist",
+      "breakdown": {}
     }
   },
   {
@@ -30892,14 +30820,14 @@
       "breakdown": {
         "padrao": 18,
         "cor": 6,
-        "fundo": 0,
         "tamanho": 8,
         "etiqueta": 0,
         "autenticidade": 0,
         "preco": 0,
         "ratio_preco_teto": 2.02,
         "cor_bucket": "aceitavel",
-        "fundo_problema": false
+        "fundo_problema": false,
+        "colecao_antiga": false
       }
     }
   },
@@ -32270,14 +32198,14 @@
       "breakdown": {
         "padrao": 25,
         "cor": 15,
-        "fundo": 0,
         "tamanho": 15,
         "etiqueta": 0,
         "autenticidade": 0,
         "preco": 0,
         "ratio_preco_teto": 2.52,
         "cor_bucket": "preferida",
-        "fundo_problema": false
+        "fundo_problema": false,
+        "colecao_antiga": false
       }
     }
   },
@@ -33038,24 +32966,11 @@
       "autenticidade": "sem_foto_bolso"
     },
     "score": {
-      "score": 52,
-      "teto": 42,
-      "preco_num": 89.95,
+      "score": 0,
+      "teto": 0,
       "decisao": "descartado",
-      "motivo": "preço €89.95 acima da faixa (€42)",
-      "flags": [],
-      "breakdown": {
-        "padrao": 25,
-        "cor": 15,
-        "fundo": 0,
-        "tamanho": 12,
-        "etiqueta": 0,
-        "autenticidade": 0,
-        "preco": 0,
-        "ratio_preco_teto": 2.14,
-        "cor_bucket": "preferida",
-        "fundo_problema": false
-      }
+      "motivo_exclusao": "cor_liso_fora_whitelist",
+      "breakdown": {}
     }
   },
   {
@@ -33363,14 +33278,14 @@
       "breakdown": {
         "padrao": 18,
         "cor": 6,
-        "fundo": 0,
         "tamanho": 12,
         "etiqueta": 0,
         "autenticidade": 5,
         "preco": 0,
         "ratio_preco_teto": 2.14,
         "cor_bucket": "aceitavel",
-        "fundo_problema": false
+        "fundo_problema": false,
+        "colecao_antiga": false
       }
     }
   },
@@ -34767,14 +34682,14 @@
       "breakdown": {
         "padrao": 25,
         "cor": 12,
-        "fundo": 0,
         "tamanho": 12,
         "etiqueta": 0,
         "autenticidade": 5,
         "preco": 0,
         "ratio_preco_teto": 1.14,
         "cor_bucket": "neutra",
-        "fundo_problema": false
+        "fundo_problema": false,
+        "colecao_antiga": false
       }
     }
   },
@@ -34850,14 +34765,14 @@
       "breakdown": {
         "padrao": 25,
         "cor": 12,
-        "fundo": 0,
         "tamanho": 8,
         "etiqueta": 0,
         "autenticidade": 0,
         "preco": 0,
         "ratio_preco_teto": 1.52,
         "cor_bucket": "neutra",
-        "fundo_problema": false
+        "fundo_problema": false,
+        "colecao_antiga": false
       }
     }
   },
@@ -35975,14 +35890,14 @@
       "breakdown": {
         "padrao": 25,
         "cor": 15,
-        "fundo": 0,
         "tamanho": 8,
         "etiqueta": 0,
         "autenticidade": 5,
         "preco": 0,
         "ratio_preco_teto": 1.14,
         "cor_bucket": "preferida",
-        "fundo_problema": false
+        "fundo_problema": false,
+        "colecao_antiga": false
       }
     }
   },
@@ -36104,14 +36019,14 @@
       "breakdown": {
         "padrao": 25,
         "cor": 15,
-        "fundo": 0,
         "tamanho": 8,
         "etiqueta": 0,
         "autenticidade": 0,
         "preco": 0,
         "ratio_preco_teto": 1.39,
         "cor_bucket": "preferida",
-        "fundo_problema": false
+        "fundo_problema": false,
+        "colecao_antiga": false
       }
     }
   },
@@ -36829,7 +36744,7 @@
     },
     "autenticidade": {
       "autenticidade": "falso",
-      "evidencia": "O tecido do bolso é o mesmo do corpo, mas o padrão está claramente quebrado nas bordas do bolso. As tartarugas não se alinham de forma contínua com o corpo do short, semelhante aos exemplos REF 1 e REF 2."
+      "evidencia": "O tecido do bolso é o mesmo do corpo, mas o padrão está claramente quebrado. As tartarugas no bolso não se alinham com as do corpo, começando do zero dentro do bolso. Isso é semelhante aos exemplos REF 1 e REF 2."
     }
   },
   {
@@ -37976,14 +37891,14 @@
       "breakdown": {
         "padrao": 18,
         "cor": 15,
-        "fundo": 0,
         "tamanho": 12,
         "etiqueta": 0,
         "autenticidade": 5,
         "preco": 0,
         "ratio_preco_teto": 2.49,
         "cor_bucket": "preferida",
-        "fundo_problema": false
+        "fundo_problema": false,
+        "colecao_antiga": false
       }
     }
   },
@@ -38250,14 +38165,14 @@
       "breakdown": {
         "padrao": 18,
         "cor": 6,
-        "fundo": 0,
         "tamanho": 8,
         "etiqueta": 0,
         "autenticidade": 5,
         "preco": 0,
         "ratio_preco_teto": 2.14,
         "cor_bucket": "aceitavel",
-        "fundo_problema": false
+        "fundo_problema": false,
+        "colecao_antiga": false
       }
     }
   },
@@ -38667,24 +38582,11 @@
       "autenticidade": "indefinido"
     },
     "score": {
-      "score": 48,
-      "teto": 42,
-      "preco_num": 62.65,
+      "score": 0,
+      "teto": 0,
       "decisao": "descartado",
-      "motivo": "preço €62.65 acima da faixa (€42)",
-      "flags": [],
-      "breakdown": {
-        "padrao": 25,
-        "cor": 15,
-        "fundo": 0,
-        "tamanho": 8,
-        "etiqueta": 0,
-        "autenticidade": 0,
-        "preco": 0,
-        "ratio_preco_teto": 1.49,
-        "cor_bucket": "preferida",
-        "fundo_problema": false
-      }
+      "motivo_exclusao": "cor_liso_fora_whitelist",
+      "breakdown": {}
     }
   },
   {
@@ -38883,7 +38785,7 @@
     },
     "autenticidade": {
       "autenticidade": "falso",
-      "evidencia": "O bolso traseiro tem o mesmo tecido estampado do corpo, mas o padrão está claramente quebrado. As tartarugas dentro do bolso não se alinham com as de fora, semelhante ao REF 2."
+      "evidencia": "O bolso traseiro tem o mesmo tecido estampado do corpo, mas o padrão está claramente quebrado. As tartarugas e outros motivos dentro do bolso não têm continuidade com os de fora, semelhante ao REF 2."
     }
   },
   {
@@ -38962,19 +38864,19 @@
       "breakdown": {
         "padrao": 40,
         "cor": 6,
-        "fundo": 0,
         "tamanho": 8,
         "etiqueta": 0,
         "autenticidade": 0,
         "preco": 20,
         "ratio_preco_teto": 0.67,
         "cor_bucket": "aceitavel",
-        "fundo_problema": false
+        "fundo_problema": false,
+        "colecao_antiga": false
       }
     },
     "autenticidade": {
       "autenticidade": "sem_foto_bolso",
-      "evidencia": "As fotos fornecidas não mostram o bolso traseiro do short para análise."
+      "evidencia": "As fotos fornecidas não mostram o bolso traseiro do short, impossibilitando a análise do tecido e do encaixe da estampa."
     }
   },
   {
@@ -39195,14 +39097,14 @@
       "breakdown": {
         "padrao": 18,
         "cor": 6,
-        "fundo": 0,
         "tamanho": 12,
         "etiqueta": 0,
         "autenticidade": 0,
         "preco": 0,
         "ratio_preco_teto": 2.39,
         "cor_bucket": "aceitavel",
-        "fundo_problema": false
+        "fundo_problema": false,
+        "colecao_antiga": false
       }
     }
   },
@@ -39618,24 +39520,11 @@
       "autenticidade": "sem_foto_bolso"
     },
     "score": {
-      "score": 55,
-      "teto": 42,
-      "preco_num": 47.95,
+      "score": 0,
+      "teto": 0,
       "decisao": "descartado",
-      "motivo": "preço €47.95 acima da faixa (€42)",
-      "flags": [],
-      "breakdown": {
-        "padrao": 25,
-        "cor": 15,
-        "fundo": 0,
-        "tamanho": 15,
-        "etiqueta": 0,
-        "autenticidade": 0,
-        "preco": 0,
-        "ratio_preco_teto": 1.14,
-        "cor_bucket": "preferida",
-        "fundo_problema": false
-      }
+      "motivo_exclusao": "cor_liso_fora_whitelist",
+      "breakdown": {}
     }
   },
   {
@@ -41931,14 +41820,14 @@
       "breakdown": {
         "padrao": 25,
         "cor": 15,
-        "fundo": 0,
         "tamanho": 12,
         "etiqueta": 0,
         "autenticidade": 0,
         "preco": 0,
         "ratio_preco_teto": 1.27,
         "cor_bucket": "preferida",
-        "fundo_problema": false
+        "fundo_problema": false,
+        "colecao_antiga": false
       }
     }
   },
@@ -43235,14 +43124,14 @@
       "breakdown": {
         "padrao": 25,
         "cor": 15,
-        "fundo": 0,
         "tamanho": 15,
         "etiqueta": 0,
         "autenticidade": 5,
         "preco": 0,
         "ratio_preco_teto": 2.02,
         "cor_bucket": "preferida",
-        "fundo_problema": false
+        "fundo_problema": false,
+        "colecao_antiga": false
       }
     }
   },
@@ -44126,19 +44015,19 @@
       "breakdown": {
         "padrao": 40,
         "cor": 15,
-        "fundo": 0,
         "tamanho": 8,
         "etiqueta": 0,
         "autenticidade": 5,
         "preco": 5,
         "ratio_preco_teto": 0.86,
         "cor_bucket": "preferida",
-        "fundo_problema": false
+        "fundo_problema": false,
+        "colecao_antiga": false
       }
     },
     "autenticidade": {
       "autenticidade": "original",
-      "evidencia": "O tecido do bolso traseiro é o mesmo do corpo, com a estampa de tartarugas azuis. O padrão atravessa a borda do bolso de forma contínua, com as tartarugas alinhadas entre o corpo e o bolso, semelhante à REF 3."
+      "evidencia": "O tecido do bolso é o mesmo do corpo, com a estampa de tartarugas azuis. O padrão atravessa a borda do bolso de forma contínua, com as tartarugas alinhando perfeitamente entre o corpo e o bolso, semelhante à REF 3."
     }
   },
   {
@@ -44893,14 +44782,14 @@
       "breakdown": {
         "padrao": 18,
         "cor": 6,
-        "fundo": 0,
         "tamanho": 15,
         "etiqueta": 0,
         "autenticidade": 5,
         "preco": 0,
         "ratio_preco_teto": 2.14,
         "cor_bucket": "aceitavel",
-        "fundo_problema": false
+        "fundo_problema": false,
+        "colecao_antiga": false
       }
     }
   },
@@ -45767,24 +45656,11 @@
       "autenticidade": "original"
     },
     "score": {
-      "score": 58,
-      "teto": 42,
-      "preco_num": 63.7,
+      "score": 0,
+      "teto": 0,
       "decisao": "descartado",
-      "motivo": "preço €63.70 acima da faixa (€42)",
-      "flags": [],
-      "breakdown": {
-        "padrao": 25,
-        "cor": 15,
-        "fundo": 0,
-        "tamanho": 8,
-        "etiqueta": 5,
-        "autenticidade": 5,
-        "preco": 0,
-        "ratio_preco_teto": 1.52,
-        "cor_bucket": "preferida",
-        "fundo_problema": false
-      }
+      "motivo_exclusao": "cor_liso_fora_whitelist",
+      "breakdown": {}
     }
   },
   {
@@ -48484,14 +48360,14 @@
       "breakdown": {
         "padrao": 18,
         "cor": 6,
-        "fundo": 0,
         "tamanho": 15,
         "etiqueta": 0,
         "autenticidade": 0,
         "preco": 0,
         "ratio_preco_teto": 1.02,
         "cor_bucket": "aceitavel",
-        "fundo_problema": false
+        "fundo_problema": false,
+        "colecao_antiga": false
       }
     }
   },
@@ -49956,14 +49832,14 @@
       "breakdown": {
         "padrao": 18,
         "cor": 15,
-        "fundo": 0,
         "tamanho": 12,
         "etiqueta": 0,
         "autenticidade": 5,
         "preco": 0,
         "ratio_preco_teto": 1.52,
         "cor_bucket": "preferida",
-        "fundo_problema": false
+        "fundo_problema": false,
+        "colecao_antiga": false
       }
     }
   },
@@ -51121,14 +50997,14 @@
       "breakdown": {
         "padrao": 25,
         "cor": 15,
-        "fundo": 0,
         "tamanho": 12,
         "etiqueta": 0,
         "autenticidade": 0,
         "preco": 0,
         "ratio_preco_teto": 1.77,
         "cor_bucket": "preferida",
-        "fundo_problema": false
+        "fundo_problema": false,
+        "colecao_antiga": false
       }
     }
   },
@@ -51556,14 +51432,14 @@
       "breakdown": {
         "padrao": 18,
         "cor": 6,
-        "fundo": 0,
         "tamanho": 15,
         "etiqueta": 5,
         "autenticidade": 0,
         "preco": 0,
         "ratio_preco_teto": 1.89,
         "cor_bucket": "aceitavel",
-        "fundo_problema": false
+        "fundo_problema": false,
+        "colecao_antiga": false
       }
     }
   },
@@ -51869,14 +51745,14 @@
       "breakdown": {
         "padrao": 18,
         "cor": 6,
-        "fundo": 0,
         "tamanho": 8,
         "etiqueta": 0,
         "autenticidade": 5,
         "preco": 0,
         "ratio_preco_teto": 1.02,
         "cor_bucket": "aceitavel",
-        "fundo_problema": false
+        "fundo_problema": false,
+        "colecao_antiga": false
       }
     }
   },
@@ -52556,24 +52432,11 @@
       "autenticidade": "sem_foto_bolso"
     },
     "score": {
-      "score": 55,
-      "teto": 42,
-      "preco_num": 74.2,
+      "score": 0,
+      "teto": 0,
       "decisao": "descartado",
-      "motivo": "preço €74.20 acima da faixa (€42)",
-      "flags": [],
-      "breakdown": {
-        "padrao": 25,
-        "cor": 15,
-        "fundo": 0,
-        "tamanho": 15,
-        "etiqueta": 0,
-        "autenticidade": 0,
-        "preco": 0,
-        "ratio_preco_teto": 1.77,
-        "cor_bucket": "preferida",
-        "fundo_problema": false
-      }
+      "motivo_exclusao": "cor_liso_fora_whitelist",
+      "breakdown": {}
     }
   },
   {
@@ -52650,19 +52513,19 @@
       "breakdown": {
         "padrao": 40,
         "cor": 6,
-        "fundo": 0,
         "tamanho": 15,
         "etiqueta": 0,
         "autenticidade": 5,
         "preco": 20,
         "ratio_preco_teto": 0.6,
         "cor_bucket": "aceitavel",
-        "fundo_problema": false
+        "fundo_problema": false,
+        "colecao_antiga": false
       }
     },
     "autenticidade": {
       "autenticidade": "original",
-      "evidencia": "O tecido do bolso traseiro é o mesmo do corpo, e o padrão atravessa a borda do bolso de forma contínua, com motivos inteiros nas bordas. Isso é consistente com o REF 3."
+      "evidencia": "O tecido do bolso traseiro é o mesmo do corpo, e o padrão atravessa a borda do bolso de forma contínua, com motivos inteiros nas bordas, semelhante à REF 3."
     }
   },
   {
@@ -52801,24 +52664,11 @@
       "autenticidade": "indefinido"
     },
     "score": {
-      "score": 60,
-      "teto": 42,
-      "preco_num": 63.7,
+      "score": 0,
+      "teto": 0,
       "decisao": "descartado",
-      "motivo": "preço €63.70 acima da faixa (€42)",
-      "flags": [],
-      "breakdown": {
-        "padrao": 25,
-        "cor": 15,
-        "fundo": 0,
-        "tamanho": 15,
-        "etiqueta": 5,
-        "autenticidade": 0,
-        "preco": 0,
-        "ratio_preco_teto": 1.52,
-        "cor_bucket": "preferida",
-        "fundo_problema": false
-      }
+      "motivo_exclusao": "cor_liso_fora_whitelist",
+      "breakdown": {}
     }
   },
   {
@@ -53206,12 +53056,13 @@
         "preco": 5,
         "ratio_preco_teto": 0.86,
         "cor_bucket": "penalizada",
-        "fundo_problema": true
+        "fundo_problema": true,
+        "colecao_antiga": false
       }
     },
     "autenticidade": {
       "autenticidade": "original",
-      "evidencia": "O bolso traseiro tem o mesmo tecido estampado do corpo. O padrão atravessa a borda do bolso de forma contínua, com as tartarugas alinhando perfeitamente entre o corpo e o bolso. A costura dupla está presente, mas não interrompe o padrão. Isso é consistente com a REF 4."
+      "evidencia": "O tecido do bolso é o mesmo do corpo, com continuidade do padrão. As tartarugas e o gradiente de cores atravessam a borda do bolso de forma contínua, semelhante à REF 4, onde a costura dupla não interrompe o padrão."
     }
   },
   {
@@ -53339,14 +53190,14 @@
       "breakdown": {
         "padrao": 18,
         "cor": 6,
-        "fundo": 0,
         "tamanho": 12,
         "etiqueta": 0,
         "autenticidade": 5,
         "preco": 0,
         "ratio_preco_teto": 1.52,
         "cor_bucket": "aceitavel",
-        "fundo_problema": false
+        "fundo_problema": false,
+        "colecao_antiga": false
       }
     }
   },
@@ -53602,14 +53453,14 @@
       "breakdown": {
         "padrao": 25,
         "cor": 15,
-        "fundo": 0,
         "tamanho": 12,
         "etiqueta": 0,
         "autenticidade": 0,
         "preco": 0,
         "ratio_preco_teto": 1.27,
         "cor_bucket": "preferida",
-        "fundo_problema": false
+        "fundo_problema": false,
+        "colecao_antiga": false
       }
     }
   },
@@ -54131,14 +53982,14 @@
       "breakdown": {
         "padrao": 25,
         "cor": 15,
-        "fundo": 0,
         "tamanho": 8,
         "etiqueta": 0,
         "autenticidade": 0,
         "preco": 0,
         "ratio_preco_teto": 1.27,
         "cor_bucket": "preferida",
-        "fundo_problema": false
+        "fundo_problema": false,
+        "colecao_antiga": false
       }
     }
   },
@@ -54216,14 +54067,14 @@
       "breakdown": {
         "padrao": 25,
         "cor": 15,
-        "fundo": 0,
         "tamanho": 15,
         "etiqueta": 0,
         "autenticidade": 0,
         "preco": 0,
         "ratio_preco_teto": 1.14,
         "cor_bucket": "preferida",
-        "fundo_problema": false
+        "fundo_problema": false,
+        "colecao_antiga": false
       }
     }
   },
@@ -55935,14 +55786,14 @@
       "breakdown": {
         "padrao": 25,
         "cor": 15,
-        "fundo": 0,
         "tamanho": 12,
         "etiqueta": 0,
         "autenticidade": 0,
         "preco": 0,
         "ratio_preco_teto": 1.14,
         "cor_bucket": "preferida",
-        "fundo_problema": false
+        "fundo_problema": false,
+        "colecao_antiga": false
       }
     }
   },
@@ -56235,24 +56086,11 @@
       "autenticidade": "sem_foto_bolso"
     },
     "score": {
-      "score": 53,
-      "teto": 42,
-      "preco_num": 58.45,
+      "score": 0,
+      "teto": 0,
       "decisao": "descartado",
-      "motivo": "preço €58.45 acima da faixa (€42)",
-      "flags": [],
-      "breakdown": {
-        "padrao": 25,
-        "cor": 15,
-        "fundo": 0,
-        "tamanho": 8,
-        "etiqueta": 5,
-        "autenticidade": 0,
-        "preco": 0,
-        "ratio_preco_teto": 1.39,
-        "cor_bucket": "preferida",
-        "fundo_problema": false
-      }
+      "motivo_exclusao": "cor_liso_fora_whitelist",
+      "breakdown": {}
     }
   },
   {
@@ -56613,14 +56451,14 @@
       "breakdown": {
         "padrao": 25,
         "cor": 15,
-        "fundo": 0,
         "tamanho": 15,
         "etiqueta": 0,
         "autenticidade": 5,
         "preco": 0,
         "ratio_preco_teto": 1.14,
         "cor_bucket": "preferida",
-        "fundo_problema": false
+        "fundo_problema": false,
+        "colecao_antiga": false
       }
     }
   },
@@ -57046,24 +56884,11 @@
       "autenticidade": "indefinido"
     },
     "score": {
-      "score": 48,
-      "teto": 42,
-      "preco_num": 63.7,
+      "score": 0,
+      "teto": 0,
       "decisao": "descartado",
-      "motivo": "preço €63.70 acima da faixa (€42)",
-      "flags": [],
-      "breakdown": {
-        "padrao": 25,
-        "cor": 15,
-        "fundo": 0,
-        "tamanho": 8,
-        "etiqueta": 0,
-        "autenticidade": 0,
-        "preco": 0,
-        "ratio_preco_teto": 1.52,
-        "cor_bucket": "preferida",
-        "fundo_problema": false
-      }
+      "motivo_exclusao": "cor_liso_fora_whitelist",
+      "breakdown": {}
     }
   },
   {
@@ -57131,24 +56956,11 @@
       "autenticidade": "indefinido"
     },
     "score": {
-      "score": 55,
-      "teto": 42,
-      "preco_num": 100.45,
+      "score": 0,
+      "teto": 0,
       "decisao": "descartado",
-      "motivo": "preço €100.45 acima da faixa (€42)",
-      "flags": [],
-      "breakdown": {
-        "padrao": 25,
-        "cor": 15,
-        "fundo": 0,
-        "tamanho": 15,
-        "etiqueta": 0,
-        "autenticidade": 0,
-        "preco": 0,
-        "ratio_preco_teto": 2.39,
-        "cor_bucket": "preferida",
-        "fundo_problema": false
-      }
+      "motivo_exclusao": "cor_liso_fora_whitelist",
+      "breakdown": {}
     }
   },
   {
@@ -57358,24 +57170,11 @@
       "autenticidade": "indefinido"
     },
     "score": {
-      "score": 52,
-      "teto": 42,
-      "preco_num": 53.2,
+      "score": 0,
+      "teto": 0,
       "decisao": "descartado",
-      "motivo": "preço €53.20 acima da faixa (€42)",
-      "flags": [],
-      "breakdown": {
-        "padrao": 25,
-        "cor": 15,
-        "fundo": 0,
-        "tamanho": 12,
-        "etiqueta": 0,
-        "autenticidade": 0,
-        "preco": 0,
-        "ratio_preco_teto": 1.27,
-        "cor_bucket": "preferida",
-        "fundo_problema": false
-      }
+      "motivo_exclusao": "cor_liso_fora_whitelist",
+      "breakdown": {}
     }
   },
   {
@@ -57825,14 +57624,14 @@
       "breakdown": {
         "padrao": 25,
         "cor": 15,
-        "fundo": 0,
         "tamanho": 15,
         "etiqueta": 5,
         "autenticidade": 5,
         "preco": 0,
         "ratio_preco_teto": 1.27,
         "cor_bucket": "preferida",
-        "fundo_problema": false
+        "fundo_problema": false,
+        "colecao_antiga": false
       }
     }
   }

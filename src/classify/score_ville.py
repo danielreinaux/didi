@@ -10,7 +10,7 @@ Faixas do cliente (WhatsApp + manual):
     €60-80           → comprável se cor preferida, senão médio
     €80-100          → comprável só se cor preferida OU etiqueta, senão médio
   TARTARUGA PEQUENA / LISO (mesma faixa, €25 ótimo, até €40/42):
-    liso só vale com cor da whitelist (preto/branco/navy/cinza/musgo/vermelho)
+    liso só vale com cor da whitelist (preto/branco/navy/cinza/musgo — vermelho NÃO)
     ≤ €25            → comprável
     €25-42           → comprável se cor preferida, senão médio
     > €42            → descartado
