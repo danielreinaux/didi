@@ -1496,19 +1496,17 @@
     "marca_check": {
       "e_vilebrequin": "sim",
       "e_short": "sim",
-      "autenticidade": "original",
-      "bolso_ok": true,
-      "evidencia": "Etiqueta interna e externa com 'VILEBREQUIN' visível. O padrão da estampa continua dentro do bolso traseiro.",
-      "confianca": 0.95
+      "evidencia": "Etiqueta interna e externa com 'VILEBREQUIN' visível, estampa de tartarugas característica, cordão na cintura.",
+      "confianca": 1.0
     },
     "tartaruga": {
       "tipo": "tartaruga_grande",
       "cor_principal": "rosa",
       "fundo_padrao": "uniforme",
-      "tartaruga_variedade": "tartarugas pretas e vermelhas",
+      "tartaruga_variedade": "tartarugas pretas",
       "padrao_identificado": null,
       "aparencia": "ok",
-      "justificativa": "Short com fundo rosa uniforme e estampas de tartarugas grandes em preto e vermelho.",
+      "justificativa": "Short rosa com tartarugas grandes pretas e padrão uniforme.",
       "confianca": 0.95
     },
     "etiqueta": {
@@ -1517,31 +1515,18 @@
     },
     "classificacao": {
       "tipo": "tartaruga_grande",
-      "autenticidade": "original"
+      "autenticidade": "falso"
     },
     "score": {
-      "score": 66,
-      "teto": 80,
-      "preco_num": 84.7,
-      "decisao": "medio",
-      "motivo": "€80-100: só com cor preferida ou etiqueta",
-      "flags": [],
-      "breakdown": {
-        "padrao": 40,
-        "cor": 6,
-        "tamanho": 15,
-        "etiqueta": 0,
-        "autenticidade": 5,
-        "preco": 0,
-        "ratio_preco_teto": 1.06,
-        "cor_bucket": "aceitavel",
-        "fundo_problema": false,
-        "colecao_antiga": false
-      }
+      "score": 0,
+      "teto": 0,
+      "decisao": "descartado",
+      "motivo_exclusao": "autenticidade_falsa",
+      "breakdown": {}
     },
     "autenticidade": {
-      "autenticidade": "original",
-      "evidencia": "O tecido do bolso é o mesmo do corpo, com a estampa atravessando a borda do bolso de forma contínua. As tartarugas e flores estão alinhadas, sem cortes visíveis, semelhante à REF 3."
+      "autenticidade": "falso",
+      "evidencia": "O tecido do bolso é o mesmo do corpo, mas o padrão está claramente quebrado. A tartaruga vermelha na borda do bolso está cortada, sem continuidade com o corpo do short, semelhante ao REF 1 e REF 2."
     },
     "cordao": {
       "cordao_cor": "colorido",
@@ -4970,19 +4955,17 @@
     "marca_check": {
       "e_vilebrequin": "sim",
       "e_short": "sim",
-      "autenticidade": "original",
-      "bolso_ok": true,
-      "evidencia": "Etiqueta interna e externa com 'VILEBREQUIN' visível. Padrão de estampa continua dentro do bolso traseiro.",
-      "confianca": 0.95
+      "evidencia": "Etiqueta interna com 'VILEBREQUIN' visível e estampa de tartarugas característica. Short de banho masculino com cordão na cintura.",
+      "confianca": 1.0
     },
     "tartaruga": {
       "tipo": "tartaruga_grande",
-      "cor_principal": "verde piscina",
+      "cor_principal": "turquesa",
       "fundo_padrao": "uniforme",
-      "tartaruga_variedade": "tartarugas coloridas mistas",
+      "tartaruga_variedade": "tartarugas multicoloridas",
       "padrao_identificado": null,
       "aparencia": "ok",
-      "justificativa": "Short verde piscina com tartarugas grandes e coloridas.",
+      "justificativa": "Short turquesa com tartarugas grandes multicoloridas.",
       "confianca": 0.95
     },
     "etiqueta": {
@@ -5015,7 +4998,7 @@
     },
     "autenticidade": {
       "autenticidade": "original",
-      "evidencia": "O bolso traseiro tem o mesmo tecido estampado do corpo. O padrão de tartarugas atravessa a borda do bolso de forma contínua, com alinhamento perfeito entre as partes de fora e de dentro do bolso, semelhante à REF 3."
+      "evidencia": "O bolso traseiro tem o mesmo tecido estampado do corpo. O padrão de tartarugas atravessa a borda do bolso de forma contínua, com alinhamento perfeito entre o desenho de fora e dentro do bolso, semelhante ao REF 3."
     },
     "cordao": {
       "cordao_cor": "colorido",
@@ -9609,19 +9592,17 @@
     "marca_check": {
       "e_vilebrequin": "sim",
       "e_short": "sim",
-      "autenticidade": "sem_foto_bolso",
-      "bolso_ok": null,
-      "evidencia": "Etiqueta interna e externa com 'VILEBREQUIN' visível. Estampa característica de tartarugas.",
-      "confianca": 0.8
+      "evidencia": "Etiqueta interna e externa com 'VILEBREQUIN' visível, estampa característica de tartarugas, cordão na cintura.",
+      "confianca": 1.0
     },
     "tartaruga": {
-      "tipo": "tartaruga_grande",
+      "tipo": "outro",
       "cor_principal": "branco",
       "fundo_padrao": "uniforme",
-      "tartaruga_variedade": "tartarugas azul claro",
-      "padrao_identificado": null,
+      "tartaruga_variedade": null,
+      "padrao_identificado": "corais e estrelas do mar",
       "aparencia": "ok",
-      "justificativa": "Short branco com estampas de tartarugas grandes em azul claro, fundo uniforme.",
+      "justificativa": "Short com padrão de corais e estrelas do mar em azul sobre fundo branco.",
       "confianca": 0.95
     },
     "etiqueta": {
@@ -9629,30 +9610,15 @@
       "evidencia": "Não há hang tag visível pendente nas fotos, apenas etiquetas costuradas internamente."
     },
     "classificacao": {
-      "tipo": "tartaruga_grande",
+      "tipo": "outro",
       "autenticidade": "sem_foto_bolso"
     },
     "score": {
-      "score": 74,
-      "teto": 80,
-      "preco_num": 47.95,
-      "decisao": "compravel",
-      "motivo": "",
-      "flags": [
-        "verificar_autenticidade"
-      ],
-      "breakdown": {
-        "padrao": 40,
-        "cor": 6,
-        "tamanho": 8,
-        "etiqueta": 0,
-        "autenticidade": 0,
-        "preco": 20,
-        "ratio_preco_teto": 0.6,
-        "cor_bucket": "aceitavel",
-        "fundo_problema": false,
-        "colecao_antiga": false
-      }
+      "score": 0,
+      "teto": 0,
+      "decisao": "descartado",
+      "motivo_exclusao": "padrao_outro_nao_compra",
+      "breakdown": {}
     },
     "autenticidade": {
       "autenticidade": "sem_foto_bolso",
@@ -9758,10 +9724,8 @@
     "marca_check": {
       "e_vilebrequin": "sim",
       "e_short": "sim",
-      "autenticidade": "sem_foto_bolso",
-      "bolso_ok": null,
-      "evidencia": "Etiqueta interna e tag com 'Vilebrequin' visíveis. Estampa de tartarugas característica.",
-      "confianca": 0.9
+      "evidencia": "Etiqueta interna e tag de papel com 'Vilebrequin' visíveis. Short de banho masculino com estampa de tartarugas e cordão na cintura.",
+      "confianca": 1.0
     },
     "tartaruga": {
       "tipo": "tartaruga_grande",
@@ -9770,7 +9734,7 @@
       "tartaruga_variedade": "tartarugas coloridas mistas",
       "padrao_identificado": null,
       "aparencia": "ok",
-      "justificativa": "Short navy com tartarugas grandes e coloridas.",
+      "justificativa": "Short com fundo navy uniforme e estampas de tartarugas grandes coloridas.",
       "confianca": 0.95
     },
     "etiqueta": {
@@ -9805,7 +9769,7 @@
     },
     "autenticidade": {
       "autenticidade": "sem_foto_bolso",
-      "evidencia": "As fotos fornecidas não mostram o bolso traseiro do short, impossibilitando a análise do tecido e do encaixe da estampa."
+      "evidencia": "As fotos fornecidas não mostram o bolso traseiro do short para análise."
     },
     "cordao": {
       "cordao_cor": "colorido",
@@ -14252,19 +14216,17 @@
     "marca_check": {
       "e_vilebrequin": "sim",
       "e_short": "sim",
-      "autenticidade": "sem_foto_bolso",
-      "bolso_ok": null,
-      "evidencia": "Etiqueta interna com 'VILEBREQUIN' visível. Estampa de tartaruga característica.",
-      "confianca": 0.8
+      "evidencia": "Etiqueta interna com 'VILEBREQUIN' visível e design característico de tartaruga. Short de banho masculino com cordão/elástico na cintura.",
+      "confianca": 1.0
     },
     "tartaruga": {
-      "tipo": "tartaruga_grande",
+      "tipo": "outro",
       "cor_principal": "amarelo",
       "fundo_padrao": "uniforme",
-      "tartaruga_variedade": "tartarugas azul escuro",
-      "padrao_identificado": null,
+      "tartaruga_variedade": null,
+      "padrao_identificado": "coração",
       "aparencia": "ok",
-      "justificativa": "Short amarelo com tartaruga grande azul escuro.",
+      "justificativa": "Short amarelo com padrão de coração azul.",
       "confianca": 0.95
     },
     "etiqueta": {
@@ -14272,30 +14234,15 @@
       "evidencia": "Não há hang tag visível pendente nas fotos, apenas etiquetas costuradas internamente."
     },
     "classificacao": {
-      "tipo": "tartaruga_grande",
+      "tipo": "outro",
       "autenticidade": "sem_foto_bolso"
     },
     "score": {
-      "score": 78,
-      "teto": 80,
-      "preco_num": 53.2,
-      "decisao": "compravel",
-      "motivo": "",
-      "flags": [
-        "verificar_autenticidade"
-      ],
-      "breakdown": {
-        "padrao": 40,
-        "cor": 6,
-        "tamanho": 12,
-        "etiqueta": 0,
-        "autenticidade": 0,
-        "preco": 20,
-        "ratio_preco_teto": 0.67,
-        "cor_bucket": "aceitavel",
-        "fundo_problema": false,
-        "colecao_antiga": false
-      }
+      "score": 0,
+      "teto": 0,
+      "decisao": "descartado",
+      "motivo_exclusao": "padrao_outro_nao_compra",
+      "breakdown": {}
     },
     "autenticidade": {
       "autenticidade": "sem_foto_bolso",
@@ -19723,10 +19670,8 @@
     "marca_check": {
       "e_vilebrequin": "sim",
       "e_short": "sim",
-      "autenticidade": "sem_foto_bolso",
-      "bolso_ok": null,
-      "evidencia": "Etiqueta interna com 'VILEBREQUIN' visível. Estampa de tartarugas característica.",
-      "confianca": 0.8
+      "evidencia": "Etiqueta interna com 'VILEBREQUIN' visível e estampa de tartarugas característica. Short de banho masculino com cordão/elástico na cintura.",
+      "confianca": 1.0
     },
     "tartaruga": {
       "tipo": "tartaruga_grande",
@@ -19735,7 +19680,7 @@
       "tartaruga_variedade": "tartarugas azuis",
       "padrao_identificado": null,
       "aparencia": "ok",
-      "justificativa": "Short branco com tartarugas azuis grandes e visíveis.",
+      "justificativa": "Short branco com tartarugas grandes azuis, fundo uniforme.",
       "confianca": 0.95
     },
     "etiqueta": {
@@ -19770,11 +19715,11 @@
     },
     "autenticidade": {
       "autenticidade": "sem_foto_bolso",
-      "evidencia": "As fotos fornecidas não mostram o bolso traseiro do short, impossibilitando a análise do tecido e do encaixe da estampa."
+      "evidencia": "As fotos não mostram o bolso traseiro do short."
     },
     "cordao": {
       "cordao_cor": "indefinido",
-      "evidencia": "O cordão não está claramente visível em nenhuma das fotos.",
+      "evidencia": "Não há fotos que mostram claramente a frente do cós onde o cordão fica pendurado.",
       "confianca": 0.9
     }
   },
@@ -25479,10 +25424,8 @@
     "marca_check": {
       "e_vilebrequin": "sim",
       "e_short": "sim",
-      "autenticidade": "original",
-      "bolso_ok": true,
-      "evidencia": "Etiqueta interna com 'VILEBREQUIN' visível e o padrão de estampa continua dentro do bolso traseiro.",
-      "confianca": 0.95
+      "evidencia": "Etiqueta interna com 'VILEBREQUIN' visível e design característico de tartarugas. Short de banho masculino com cordão na cintura.",
+      "confianca": 1.0
     },
     "tartaruga": {
       "tipo": "tartaruga_grande",
@@ -25500,21 +25443,23 @@
     },
     "classificacao": {
       "tipo": "tartaruga_grande",
-      "autenticidade": "original"
+      "autenticidade": "sem_foto_bolso"
     },
     "score": {
-      "score": 71,
+      "score": 66,
       "teto": 80,
       "preco_num": 45.85,
       "decisao": "compravel",
       "motivo": "",
-      "flags": [],
+      "flags": [
+        "verificar_autenticidade"
+      ],
       "breakdown": {
         "padrao": 40,
         "cor": 6,
         "tamanho": 8,
         "etiqueta": 0,
-        "autenticidade": 5,
+        "autenticidade": 0,
         "colecao_antiga": true,
         "preco": 20,
         "ratio_preco_teto": 0.57,
@@ -25523,8 +25468,8 @@
       }
     },
     "autenticidade": {
-      "autenticidade": "original",
-      "evidencia": "O bolso traseiro tem o mesmo tecido estampado do corpo. O padrão das tartarugas atravessa a borda do bolso de forma contínua, com alinhamento perfeito, semelhante ao REF 3."
+      "autenticidade": "sem_foto_bolso",
+      "evidencia": "As fotos fornecidas não mostram o bolso traseiro do short para análise."
     },
     "cordao": {
       "cordao_cor": "cinza",
@@ -27399,10 +27344,8 @@
     "marca_check": {
       "e_vilebrequin": "sim",
       "e_short": "sim",
-      "autenticidade": "original",
-      "bolso_ok": true,
-      "evidencia": "Etiqueta interna com 'VILEBREQUIN' visível e padrão de estampa continua no bolso traseiro.",
-      "confianca": 0.95
+      "evidencia": "Etiqueta interna e tag com 'VILEBREQUIN' visíveis, estampa de tartarugas característica, e formato de short de banho masculino.",
+      "confianca": 1.0
     },
     "tartaruga": {
       "tipo": "tartaruga_grande",
@@ -27411,7 +27354,7 @@
       "tartaruga_variedade": "tartarugas coloridas mistas",
       "padrao_identificado": null,
       "aparencia": "ok",
-      "justificativa": "Short navy com tartarugas grandes coloridas.",
+      "justificativa": "Short navy com tartarugas grandes coloridas mistas.",
       "confianca": 0.95
     },
     "etiqueta": {
@@ -29135,10 +29078,8 @@
     "marca_check": {
       "e_vilebrequin": "sim",
       "e_short": "sim",
-      "autenticidade": "sem_foto_bolso",
-      "bolso_ok": null,
-      "evidencia": "Etiqueta interna e tags com 'VILEBREQUIN' visíveis. Estampa de tartarugas característica.",
-      "confianca": 0.9
+      "evidencia": "Etiqueta interna e tag de papel com 'Vilebrequin' visíveis. Short de banho masculino com cordão e estampa de tartarugas.",
+      "confianca": 1.0
     },
     "tartaruga": {
       "tipo": "tartaruga_grande",
@@ -29147,7 +29088,7 @@
       "tartaruga_variedade": "tartarugas coloridas mistas",
       "padrao_identificado": null,
       "aparencia": "ok",
-      "justificativa": "Short preto com tartarugas grandes coloridas em padrão uniforme.",
+      "justificativa": "Short preto com tartarugas grandes coloridas mistas.",
       "confianca": 0.95
     },
     "etiqueta": {
@@ -30929,19 +30870,17 @@
     "marca_check": {
       "e_vilebrequin": "sim",
       "e_short": "sim",
-      "autenticidade": "sem_foto_bolso",
-      "bolso_ok": null,
-      "evidencia": "Texto 'VILEBREQUIN' visível nas pontas do cordão. Estampa de tartarugas característica.",
-      "confianca": 0.8
+      "evidencia": "Cordão com 'VILEBREQUIN' gravado e etiqueta interna com design característico de Vilebrequin.",
+      "confianca": 1.0
     },
     "tartaruga": {
       "tipo": "tartaruga_grande",
       "cor_principal": "verde piscina",
       "fundo_padrao": "uniforme",
-      "tartaruga_variedade": "tartarugas azul escuro e amarelas",
+      "tartaruga_variedade": "tartarugas azul escuro",
       "padrao_identificado": null,
       "aparencia": "ok",
-      "justificativa": "Short com fundo verde piscina uniforme e estampas de tartarugas grandes em azul escuro e amarelo.",
+      "justificativa": "Short com fundo verde piscina uniforme e tartarugas grandes azul escuro.",
       "confianca": 0.95
     },
     "etiqueta": {
@@ -30976,11 +30915,11 @@
     },
     "autenticidade": {
       "autenticidade": "sem_foto_bolso",
-      "evidencia": "As fotos fornecidas não mostram o bolso traseiro do short para análise."
+      "evidencia": "As fotos fornecidas não mostram o bolso traseiro do short, impossibilitando a análise do tecido e do encaixe da estampa."
     },
     "cordao": {
       "cordao_cor": "colorido",
-      "evidencia": "O cordão é visível na segunda e terceira fotos, e é de cor azul clara.",
+      "evidencia": "O cordão é visível na segunda e terceira fotos, e é de cor azul claro.",
       "confianca": 1.0
     }
   },
@@ -37616,10 +37555,8 @@
     "marca_check": {
       "e_vilebrequin": "sim",
       "e_short": "sim",
-      "autenticidade": "original",
-      "bolso_ok": true,
-      "evidencia": "Etiqueta interna e externa com 'VILEBREQUIN' visível. O padrão da estampa continua dentro do bolso traseiro.",
-      "confianca": 0.95
+      "evidencia": "Etiqueta interna e externa com 'VILEBREQUIN' visível, short de banho masculino com cordão e elástico na cintura.",
+      "confianca": 1.0
     },
     "tartaruga": {
       "tipo": "tartaruga_grande",
@@ -37628,7 +37565,7 @@
       "tartaruga_variedade": "tartarugas bege",
       "padrao_identificado": null,
       "aparencia": "ok",
-      "justificativa": "Short azul com tartarugas grandes e flores em bege, fundo uniforme.",
+      "justificativa": "Short azul com tartarugas grandes e flores em bege.",
       "confianca": 0.95
     },
     "etiqueta": {
@@ -37637,21 +37574,23 @@
     },
     "classificacao": {
       "tipo": "tartaruga_grande",
-      "autenticidade": "original"
+      "autenticidade": "sem_foto_bolso"
     },
     "score": {
-      "score": 63,
+      "score": 58,
       "teto": 80,
       "preco_num": 68.95,
       "decisao": "medio",
       "motivo": "€60-80: depende da cor",
-      "flags": [],
+      "flags": [
+        "verificar_autenticidade"
+      ],
       "breakdown": {
         "padrao": 40,
         "cor": 6,
         "tamanho": 15,
         "etiqueta": 0,
-        "autenticidade": 5,
+        "autenticidade": 0,
         "colecao_antiga": true,
         "preco": 5,
         "ratio_preco_teto": 0.86,
@@ -37660,12 +37599,12 @@
       }
     },
     "autenticidade": {
-      "autenticidade": "original",
-      "evidencia": "O bolso traseiro tem o mesmo tecido estampado do corpo. O padrão atravessa a borda do bolso de forma contínua, com motivos inteiros nas bordas. A costura dupla está presente, mas não interrompe o padrão. Isso se alinha com a REF 3."
+      "autenticidade": "sem_foto_bolso",
+      "evidencia": "As fotos fornecidas não mostram o bolso traseiro do short para análise."
     },
     "cordao": {
       "cordao_cor": "cinza",
-      "evidencia": "O cordão é visível na segunda foto, pendurado na frente do cós, e apresenta uma cor cinza.",
+      "evidencia": "O cordão é visível na segunda foto, pendurado na frente do cós, e apresenta um tom de cinza.",
       "confianca": 0.9
     }
   },
@@ -39004,10 +38943,8 @@
     "marca_check": {
       "e_vilebrequin": "sim",
       "e_short": "sim",
-      "autenticidade": "original",
-      "bolso_ok": true,
-      "evidencia": "Etiqueta interna com 'VILEBREQUIN' visível e o padrão de estampa continua dentro do bolso traseiro.",
-      "confianca": 0.95
+      "evidencia": "Etiqueta interna com 'VILEBREQUIN' visível e design de tartarugas característico. Short de banho masculino com cordão na cintura.",
+      "confianca": 1.0
     },
     "tartaruga": {
       "tipo": "tartaruga_grande",
@@ -39016,7 +38953,7 @@
       "tartaruga_variedade": "tartarugas coloridas mistas",
       "padrao_identificado": null,
       "aparencia": "ok",
-      "justificativa": "Short azul com tartarugas grandes de várias cores.",
+      "justificativa": "Short azul com tartarugas grandes coloridas em bom estado.",
       "confianca": 0.95
     },
     "etiqueta": {
@@ -48524,19 +48461,17 @@
     "marca_check": {
       "e_vilebrequin": "indefinido",
       "e_short": "sim",
-      "autenticidade": "sem_foto_bolso",
-      "bolso_ok": null,
-      "evidencia": "Estampa de tartarugas visível, mas sem etiqueta ou tag da marca visível. Não há foto do bolso traseiro.",
+      "evidencia": "Short de banho masculino visível com estampa de tartarugas, mas sem etiqueta ou logo visível da marca Vilebrequin.",
       "confianca": 0.5
     },
     "tartaruga": {
       "tipo": "tartaruga_grande",
-      "cor_principal": "marrom",
+      "cor_principal": "preto",
       "fundo_padrao": "uniforme",
       "tartaruga_variedade": "tartarugas coloridas mistas",
       "padrao_identificado": null,
       "aparencia": "ok",
-      "justificativa": "Short marrom com tartarugas grandes coloridas mistas.",
+      "justificativa": "Short preto com tartarugas grandes coloridas mistas.",
       "confianca": 0.95
     },
     "etiqueta": {
@@ -52653,10 +52588,8 @@
     "marca_check": {
       "e_vilebrequin": "sim",
       "e_short": "sim",
-      "autenticidade": "original",
-      "bolso_ok": true,
-      "evidencia": "Etiqueta interna e externa com 'VILEBREQUIN' visível. O padrão de tartarugas continua dentro do bolso traseiro.",
-      "confianca": 0.95
+      "evidencia": "Etiqueta interna com 'VILEBREQUIN' visível e design característico de tartarugas. Short de banho masculino com cordão na cintura.",
+      "confianca": 1.0
     },
     "tartaruga": {
       "tipo": "tartaruga_grande",
@@ -52698,11 +52631,11 @@
     },
     "autenticidade": {
       "autenticidade": "original",
-      "evidencia": "O tecido do bolso traseiro é o mesmo do corpo, e o padrão atravessa a borda do bolso de forma contínua, com motivos inteiros nas bordas. Isso é consistente com o REF 3."
+      "evidencia": "O bolso traseiro tem o mesmo tecido estampado do corpo. O padrão atravessa a borda do bolso de forma contínua, com as tartarugas alinhadas perfeitamente, semelhante à REF 3."
     },
     "cordao": {
       "cordao_cor": "colorido",
-      "evidencia": "Na segunda foto, o cordão é visível e é de cor azul.",
+      "evidencia": "Na segunda foto, o cordão é azul e está pendurado na frente do cós.",
       "confianca": 1.0
     }
   },
@@ -53192,10 +53125,8 @@
     "marca_check": {
       "e_vilebrequin": "sim",
       "e_short": "sim",
-      "autenticidade": "original",
-      "bolso_ok": true,
-      "evidencia": "Etiqueta interna com 'VILEBREQUIN', estampa de tartarugas característica, bolso traseiro com continuidade do padrão.",
-      "confianca": 0.95
+      "evidencia": "Etiqueta interna e externa com 'VILEBREQUIN' visível. Short de banho masculino com cordão na cintura.",
+      "confianca": 1.0
     },
     "tartaruga": {
       "tipo": "tartaruga_grande",
@@ -53204,8 +53135,8 @@
       "tartaruga_variedade": "tartarugas coloridas mistas",
       "padrao_identificado": null,
       "aparencia": "ok",
-      "justificativa": "Short com tartarugas grandes e fundo gradiente azul, branco e laranja.",
-      "confianca": 1.0
+      "justificativa": "Short com tartarugas grandes sobre fundo gradiente azul, laranja e branco.",
+      "confianca": 0.95
     },
     "etiqueta": {
       "tem_etiqueta": false,
@@ -53240,11 +53171,11 @@
     },
     "autenticidade": {
       "autenticidade": "original",
-      "evidencia": "O tecido do bolso é o mesmo do corpo, com padrão contínuo. As tartarugas e o gradiente de cores atravessam a borda do bolso de forma alinhada, semelhante à REF 4. A costura dupla está presente, mas não interrompe o padrão."
+      "evidencia": "O tecido do bolso é o mesmo do corpo e o padrão atravessa a borda do bolso de forma contínua. As tartarugas e o gradiente de cores estão alinhados, similar ao REF 4, onde a costura dupla não interrompe o padrão."
     },
     "cordao": {
       "cordao_cor": "colorido",
-      "evidencia": "Na terceira foto, o cordão é azul.",
+      "evidencia": "Na terceira foto, o cordão é azul e está pendurado na frente do cós.",
       "confianca": 1.0
     }
   },
