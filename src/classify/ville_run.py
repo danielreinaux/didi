@@ -62,6 +62,21 @@ _SHORT_HINT = re.compile(
 )
 
 
+def marca_sem_evidencia(marca: dict) -> bool:
+    """True quando a IA não viu nem marca nem formato nas fotos (ex.: paisagem/palmeira).
+
+    Duas regras cobrem o caso:
+      (1) marca indefinida com confianca ZERO (IA sinalizou "não vi nada");
+      (2) AMBOS marca e formato indefinidos com confianca baixa (<0.4).
+    """
+    e_vb = marca.get("e_vilebrequin")
+    e_sh = marca.get("e_short")
+    conf = marca.get("confianca") or 0
+    return (e_vb == "indefinido" and conf == 0) or (
+        e_vb == "indefinido" and e_sh == "indefinido" and conf < 0.4
+    )
+
+
 def _parece_ville(item: dict) -> tuple[bool, str, str]:
     """Prefilter de título (regex, sem IA). Retorna (ok, tipo, motivo).
 
@@ -145,19 +160,9 @@ def _processar(item: dict, idx: str, total: int) -> tuple[dict, int, int]:
     # Sem evidência do produto: a IA não conseguiu ver nem marca nem formato
     # (ex.: única foto é de paisagem/palmeira). Descarta antes de gastar tartaruga/
     # autenticidade/cor/etiqueta — economiza ~4 chamadas de visão por item lixo.
-    # Duas regras cobrem o caso:
-    #   (1) marca indefinida com confianca ZERO (legado — IA sinalizou "não vi nada")
-    #   (2) AMBOS marca e formato indefinidos com confianca baixa (<0.4) — pega
-    #       o caso onde a IA não cravou 0 mas também não viu nem marca nem short.
-    e_vb = marca.get("e_vilebrequin")
-    e_sh = marca.get("e_short")
-    conf = marca.get("confianca") or 0
-    sem_ev = (e_vb == "indefinido" and conf == 0) or (
-        e_vb == "indefinido" and e_sh == "indefinido" and conf < 0.4
-    )
-    if sem_ev:
+    if marca_sem_evidencia(marca):
         _log(f"{prefix} → × SEM-EVIDENCIA [{marca.get('evidencia','')[:60]}]")
-        return {**item, "marca_check": marca, "classificacao": {"tipo": "sem_evidencia", "motivo": marca.get("evidencia") or "sem evidência visual do produto", "confianca": conf}}, in_tok, out_tok
+        return {**item, "marca_check": marca, "classificacao": {"tipo": "sem_evidencia", "motivo": marca.get("evidencia") or "sem evidência visual do produto", "confianca": marca.get("confianca") or 0}}, in_tok, out_tok
 
     # 3. Tartaruga (padrão de estampa)
     try:

@@ -14,9 +14,11 @@ Uso:
   python -m src.classify.reclassify_ville --etapa marca   # refaz verifica_ville (marca + é-short + sem_evidencia)
   python -m src.classify.reclassify_ville --id 8940219584 # só um item (todas as etapas de IA)
 
-Etapas: score (default) | prefilter | cor | tartaruga | autenticidade | cordao | marca
+Etapas: score (default) | prefilter | sem_evidencia | cor | tartaruga | autenticidade | cordao | marca
   prefilter = sem IA: aplica o prefilter de título novo (infantil/não-short) e
               unifica nao_vilebrequin→nao_ville (P2/P3) nos dados já coletados.
+  sem_evidencia = sem IA: re-aplica a regra de "foto não mostra o produto"
+              (paisagem/palmeira) sobre o marca_check já salvo → vira descartado.
 
 Filtros (combinam com --etapa):
   --so-original  Atalho: equivale a --autenticidade original
@@ -110,7 +112,11 @@ def _refazer_etapa(item: dict, etapa: str) -> dict:
         return item
 
     # Só faz sentido rodar IA em itens que chegaram à classificação de padrão.
-    if tipo in (None, "erro", "nao_ville", "nao_vilebrequin", "nao_short"):
+    # infantil/sem_evidencia são exclusões terminais (título / sem produto na foto):
+    # re-rodar tartaruga aqui SOBRESCREVERIA o tipo e poderia ressuscitar um short
+    # infantil como tartaruga. Pula sempre.
+    if tipo in (None, "erro", "nao_ville", "nao_vilebrequin", "nao_short",
+                "infantil", "sem_evidencia"):
         return item
 
     if etapa == "tartaruga":
@@ -217,8 +223,27 @@ def main() -> None:
         _resumo(itens)
         return
 
+    if etapa == "sem_evidencia":
+        # Sem IA: re-aplica a regra sem_evidencia sobre o marca_check já salvo.
+        # Pega itens antigos (classificados antes da regra) que viraram 'indefinido'
+        # quando deviam ser 'sem_evidencia' (ex.: foto só de paisagem/palmeira).
+        from .ville_run import marca_sem_evidencia
+        n = 0
+        for it in alvos:
+            cl = it.get("classificacao") or {}
+            mc = it.get("marca_check") or {}
+            if cl.get("tipo") != "sem_evidencia" and marca_sem_evidencia(mc):
+                it["classificacao"] = {**cl, "tipo": "sem_evidencia",
+                                       "motivo": mc.get("evidencia") or "sem evidência visual do produto"}
+                n += 1
+            it["score"] = calcular_score(it)
+        PATH.write_text(json.dumps(itens, indent=2, ensure_ascii=False), encoding="utf-8")
+        print(f"sem_evidencia re-aplicado: {n} itens re-tagueados (sem custo de IA).")
+        _resumo(itens)
+        return
+
     if etapa not in ("cor", "tartaruga", "autenticidade", "cordao", "marca"):
-        print(f"Etapa inválida: {etapa}. Use: score | prefilter | cor | tartaruga | autenticidade | cordao | marca")
+        print(f"Etapa inválida: {etapa}. Use: score | prefilter | sem_evidencia | cor | tartaruga | autenticidade | cordao | marca")
         sys.exit(1)
 
     print(f"=== Reclassify Ville · etapa={etapa} · {len(alvos)} itens · {workers} workers ===\n")

@@ -38,7 +38,10 @@ def classificar_tartaruga(item: dict) -> dict:
     conteudo += [{"type": "image_url", "image_url": {"url": u, "detail": "low"}} for u in fotos]
 
     resp = _get_client().chat.completions.create(
-        model=IA["model"],  # gpt-4o-mini — tartaruga grande é fácil de ver
+        # gpt-4o (não mini): a distinção tartaruga × animais parecidos (camaleão,
+        # lagarto) exige visão fina — o mini erra mesmo em detail=high. Em detail=low
+        # o 4o já acerta (ver teste), então fica barato (~$0.001-0.002/item).
+        model=IA["model_detalhes"],
         messages=[
             {"role": "system", "content": prompt.SISTEMA},
             {"role": "user", "content": conteudo},

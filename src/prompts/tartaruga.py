@@ -30,16 +30,18 @@ def _ref_data_url(nome: str) -> str:
 
 
 def referencias_few_shot() -> list[dict]:
-    """2 exemplos pra calibrar fundo_padrao:
-    - 1 POSITIVO (gradiente azul→laranja → multicolor/gradiente)
-    - 1 CONTRA-EXEMPLO (azul ciano amassado → uniforme, NÃO multicolor)
+    """3 exemplos de calibração:
+    - REF 1 POSITIVO fundo (gradiente azul→laranja → multicolor/gradiente)
+    - REF 2 CONTRA-EXEMPLO fundo (azul ciano amassado → uniforme, NÃO multicolor)
+    - REF 3 CONTRA-EXEMPLO animal (camaleões coloridos → tipo "outro", NÃO tartaruga)
     """
     return [
         {
             "type": "text",
             "text": (
                 "════════ EXEMPLOS DE CALIBRAÇÃO (NÃO são o item a classificar) ════════\n"
-                "Você verá 2 fotos de REFERÊNCIA para entender o campo fundo_padrao. "
+                "Você verá 3 fotos de REFERÊNCIA: as 2 primeiras calibram o campo "
+                "fundo_padrao, a 3ª calibra a detecção de ANIMAL (tartaruga × parecidos). "
                 "ATENÇÃO: estas fotos NÃO são o item que você vai classificar. NUNCA "
                 "descreva estas imagens no campo justificativa — a justificativa deve "
                 "descrever APENAS o ITEM real que vem DEPOIS das referências."
@@ -84,6 +86,27 @@ def referencias_few_shot() -> list[dict]:
         {
             "type": "text",
             "text": (
+                "[REF 3 — CONTRA-EXEMPLO de ANIMAL: tipo = \"outro\", NÃO tartaruga] "
+                "Esta foto mostra um short com CAMALEÕES coloridos (laranja/vermelho/azul) "
+                "sobre fundo navy. NÃO são tartarugas, apesar de coloridos e parecidos à "
+                "primeira vista. Repare nos sinais de que NÃO é tartaruga: cada animal tem "
+                "uma CAUDA ENROLADA EM ESPIRAL, uma CRISTA/chifres na cabeça e no dorso, e "
+                "um CORPO ALONGADO de lagarto (não um casco redondo). Tartaruga de verdade "
+                "tem CASCO OVAL/REDONDO liso, cabeça pequena, 4 patas curtas e cauda CURTA "
+                "ou invisível — nunca cauda em espiral nem crista. Um short assim deve ser "
+                "tipo=\"outro\" com padrao_identificado=\"camaleões\"."
+            ),
+        },
+        {
+            "type": "image_url",
+            "image_url": {
+                "url": _ref_data_url("outro_camaleao_nao_tartaruga.webp"),
+                "detail": "low",
+            },
+        },
+        {
+            "type": "text",
+            "text": (
                 "════════ FIM DAS REFERÊNCIAS — agora vem o ITEM a classificar ════════"
             ),
         },
@@ -100,11 +123,14 @@ CATEGORIAS:
 
 TARTARUGA_GRANDE: tartarugas com tamanho GRANDE e visível dominando o tecido.
   O que define "grande": cada tartaruga ocupa uma área equivalente a pelo menos
-  1/4 da largura da perna do short. As tartarugas são claramente identificáveis
-  com detalhes visíveis (carapaça, patas, cabeça). É o padrão característico
-  e mais valorizado do Vilebrequin.
-  Inclui: tartarugas de uma cor só, de várias cores diferentes ("mistas"), com
-  detalhes holográficos, degrade, prateadas, douradas — desde que o tamanho seja grande.
+  1/4 da largura da perna do short. É o padrão característico e mais valorizado.
+  ANTES de marcar tartaruga, CONFIRME a anatomia de TARTARUGA (todas abaixo):
+    • CASCO oval/redondo (carapaça) ocupando o centro do corpo;
+    • cabeça PEQUENA saindo de um lado do casco;
+    • 4 patas CURTAS/nadadeiras saindo das laterais do casco;
+    • cauda CURTA ou invisível — NUNCA cauda longa/enrolada.
+  Inclui: tartarugas de uma cor só, de várias cores ("mistas"), holográficas,
+  degrade, prateadas, douradas — desde que tenham o CASCO e o tamanho grande.
 
 TARTARUGA_PEQUENA: tartarugas com tamanho PEQUENO ou MINI formando um padrão repetido
   mais denso no tecido. As tartarugas são reconhecíveis mas pequenas — o tecido
@@ -117,10 +143,25 @@ LISO: short sem estampa, em cor sólida. Pode ter:
   O corpo do tecido não tem padrão repetido.
 
 OUTRO: qualquer outro padrão que não seja tartaruga nem liso. Exemplos:
-  - peixes, estrelas do mar, âncoras, flores, plantas, corais
+  - OUTROS ANIMAIS parecidos com tartaruga mas que NÃO são: camaleões, lagartos,
+    dragões, iguanas, salamandras, dinossauros, sapos, caranguejos, polvos
+  - peixes, estrelas do mar, cavalos-marinhos, âncoras, flores, plantas, corais
   - listras, xadrez, geométrico
   - personagens, mapas, fogos de artifício
   Incluir o nome do padrão identificado no campo "padrao_identificado".
+
+⚠️  CUIDADO — ANIMAIS PARECIDOS COM TARTARUGA (erro comum):
+  Estampas coloridas de OUTROS animais são facilmente confundidas com tartaruga,
+  ainda mais quando o corpo é colorido/texturizado. NÃO marque tartaruga só
+  porque há "um animal colorido repetido". Procure a anatomia da tartaruga
+  (CASCO oval + cabeça pequena + 4 patas curtas + SEM cauda longa).
+  Sinais de que é OUTRO animal (→ tipo "outro", não tartaruga):
+    • CAUDA LONGA ou ENROLADA EM ESPIRAL (camaleão, lagarto, cavalo-marinho)
+    • CRISTA, chifres, espinhos ou escamas no dorso/cabeça (camaleão, dragão)
+    • CORPO ALONGADO de réptil/lagarto, sem casco oval definido
+    • patas longas com dedos de agarrar, asas, barbatanas, tentáculos
+  Veja a REF 3 (camaleões) como gabarito do que NÃO é tartaruga.
+  Na dúvida real entre tartaruga e outro animal, prefira "outro".
 
 INDEFINIDO: fotos insuficientes para classificar (muito borradas, ângulo ruim).
 
