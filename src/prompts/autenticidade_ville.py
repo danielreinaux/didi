@@ -6,7 +6,7 @@ Critério (manual do cliente seção 2.4 + refino visual):
   tecido liso/diferente OU com a estampa "quebrada" / cortada / começando
   do zero dentro do retângulo do bolso (sem alinhar com o que está fora).
 
-Few-shot visual: 2 falsos + 1 original em refs/ville_autenticidade/.
+Few-shot visual: 3 falsos + 2 originais em refs/ville_autenticidade/.
 """
 from __future__ import annotations
 
@@ -41,7 +41,7 @@ def _ref_data_url(nome: str) -> str:
 
 
 def referencias_few_shot() -> list[dict]:
-    """Retorna blocos de conteúdo (texto + imagens) com os 3 exemplos de referência.
+    """Retorna blocos de conteúdo (texto + imagens) com os 5 exemplos de referência.
 
     Usado pelo classify pra injetar antes das fotos do item analisado.
     """
@@ -50,7 +50,7 @@ def referencias_few_shot() -> list[dict]:
             "type": "text",
             "text": (
                 "=== EXEMPLOS DE REFERÊNCIA (memorize antes de analisar o item) ===\n"
-                "Vou mostrar 3 shorts Vilebrequin pra você calibrar o critério de "
+                "Vou mostrar 5 shorts Vilebrequin pra você calibrar o critério de "
                 "encaixe da estampa no bolso traseiro:"
             ),
         },
@@ -125,6 +125,25 @@ def referencias_few_shot() -> list[dict]:
         },
         {
             "type": "text",
+            "text": (
+                "[REF 5 — FALSO] Short azul-marinho com estrelas-do-mar e tartarugas "
+                "brancas/creme. Olhe o BOLSO TRASEIRO: as tartarugas GRANDES que caem na "
+                "emenda do bolso estão CORTADAS — o corpo não continua do outro lado da "
+                "costura. Mesmo a que mais se aproxima de encaixar segue visivelmente "
+                "truncada. Como as GRANDES não atravessam, é FALSO — NÃO se deixe enganar "
+                "pelo tecido do bolso ser o mesmo do corpo nem pelas estrelas/tartaruguinhas. "
+                "(Caso real onde o modelo ERROU marcando como original.)"
+            ),
+        },
+        {
+            "type": "image_url",
+            "image_url": {
+                "url": _ref_data_url("falso_navy_estrelas.jpg"),
+                "detail": "high",
+            },
+        },
+        {
+            "type": "text",
             "text": "=== FIM DAS REFERÊNCIAS — agora analise o item abaixo ===",
         },
     ]
@@ -169,21 +188,30 @@ NÍVEL 2 — ENCAIXE / ALINHAMENTO DA ESTAMPA (refino):
   falsificador imprime a estampa no bolso, ele NÃO consegue alinhar o
   desenho com o corpo do short.
 
-  ORIGINAL: o padrão do corpo ATRAVESSA a borda do bolso de forma contínua.
-    - Motivos (tartaruga, peixe, flor etc.) que ficam na linha da costura
-      do bolso aparecem INTEIROS, com a metade de fora alinhando com a
-      metade de dentro do bolso.
-    - É como se o bolso fosse transparente — você não nota a costura
-      atrapalhando o desenho.
-    - O fundo (ondas, círculos, hachuras) também tem continuidade.
+  ⭐ QUEM MANDA É A TARTARUGA GRANDE (regra de prioridade):
+    1. Ache as MAIORES tartarugas que caem EM CIMA da costura do bolso e
+       julgue ELAS primeiro.
+    2. GRANDES atravessam/completam o bolso (o corpo continua dos dois lados da
+       emenda, alinhado) → ORIGINAL — MESMO que tartarugas pequenas ou motivos
+       secundários (estrelas-do-mar, tartaruguinhas) NÃO encaixem perfeitamente.
+       Pequeno motivo desalinhado é NORMAL no original, NÃO marque falso por isso.
+    3. GRANDES cortadas/truncadas na emenda (o corpo não continua do outro lado)
+       → FALSO. Vale mesmo quando UMA quase completa mas segue visivelmente
+       cortada (não deixe o "quase" te enganar).
+    ⚠️ EXCEÇÃO — só tartarugas PEQUENAS: se NÃO há tartaruga grande na emenda
+       pra julgar (short só de motivos pequenos), aí as PEQUENAS PRECISAM encaixar
+       também — avalie a continuidade delas normalmente, sem a tolerância acima.
 
-  FALSO: o padrão dentro do bolso NÃO conversa com o de fora.
-    - Motivos cortados pela borda do bolso (meia tartaruga de um lado,
-      nada do outro), OU motivos começando "do zero" dentro do bolso.
-    - Tartaruga reduzida a só uma BORDA/fatia fina na emenda do bolso, com o
-      RESTO DO CORPO sumindo (sem continuar do outro lado da costura). "Só a
-      borda/contorno da tartaruga aparecendo" na emenda é sinal de corte REAL,
-      não de detalhe — a estampa original faria o corpo continuar.
+  ORIGINAL: o padrão das tartarugas GRANDES atravessa a borda do bolso de forma
+    contínua — grandes inteiras na linha da costura, metade de fora alinhando com
+    a metade de dentro. É como se o bolso fosse transparente. (Fundo — ondas,
+    círculos, hachuras — também costuma ter continuidade.)
+
+  FALSO: as tartarugas grandes que mandam estão cortadas; o desenho de dentro do
+    bolso NÃO conversa com o de fora.
+    - Tartaruga GRANDE cortada pela borda (meia de um lado, nada do outro), OU
+      reduzida a só uma BORDA/fatia fina na emenda com o corpo sumindo (sem
+      continuar do outro lado), OU começando "do zero" dentro do bolso.
     - O bolso parece um retângulo colado por cima, com desenho próprio.
     - Densidade/orientação dos motivos diferente do corpo.
 
@@ -276,13 +304,17 @@ def usuario(titulo: str) -> str:
         f"pela CINTURA (lado SEM cordão/fly) — não chute sem_foto_bolso só porque "
         f"frente e costas parecem iguais. Se houver bolso, aplique o teste em 2 níveis: (1) tecido do bolso "
         f"é o mesmo do corpo? (2) o padrão atravessa a borda do bolso de forma "
-        f"contínua, ou está quebrado/cortado? Compare com os 4 exemplos de "
+        f"contínua, ou está quebrado/cortado? Compare com os 5 exemplos de "
         f"referência. ATENÇÃO: COSTURA DUPLA da Vilebrequin (linhas paralelas no "
         f"bolso) NÃO é quebra de padrão — é fio por cima do tecido. Se o que "
         f"parece corte é só a linha da costura, é ORIGINAL (ver REF 4). Só marque "
         f"FALSO quando o motivo está claramente CORTADO ou COMEÇA DO ZERO no "
-        f"bolso sem qualquer alinhamento. Tartaruga reduzida a só a BORDA na emenda, "
-        f"sem o corpo continuar do outro lado, é corte real (falso) — NÃO desculpe "
-        f"como dobra/elástico se a continuação não aparece. Desalinhamento sutil → "
-        f"indefinido. Short todo liso → indefinido. Sem foto do bolso → sem_foto_bolso."
+        f"bolso sem qualquer alinhamento. PRIORIDADE: julgue pelas tartarugas GRANDES "
+        f"na emenda — se as grandes completam, é original MESMO que as pequenas/estrelas "
+        f"não encaixem (pequeno desalinhado é normal); se as grandes estão cortadas, é "
+        f"falso. Só quando NÃO há grande na emenda (short só de motivos pequenos) é que "
+        f"as PEQUENAS precisam encaixar também. Tartaruga grande reduzida a só a BORDA, "
+        f"sem o corpo continuar do outro lado, é corte real (falso) — NÃO desculpe como "
+        f"dobra/elástico se a continuação não aparece. Desalinhamento sutil → indefinido. "
+        f"Short todo liso → indefinido. Sem foto do bolso → sem_foto_bolso."
     )
