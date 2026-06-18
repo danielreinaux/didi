@@ -41,6 +41,7 @@ def _destaques(it: dict) -> list[str]:
     tart = it.get("tartaruga") if isinstance(it.get("tartaruga"), dict) else {}
     auth = it.get("autenticidade") if isinstance(it.get("autenticidade"), dict) else {}
     cor = it.get("cor") if isinstance(it.get("cor"), dict) else {}
+    flags = (it.get("score") or {}).get("flags") or []
     d = []
     tipo = cl.get("tipo")
     if tipo == "tartaruga_grande":
@@ -54,10 +55,18 @@ def _destaques(it: dict) -> list[str]:
     if cor.get("cor_principal"):
         d.append(f"cor {cor.get('cor_principal')}")
     autvalor = (auth.get("autenticidade") if isinstance(auth, dict) else None) or cl.get("autenticidade")
-    if autvalor == "original":
+    # Estampado sem foto do bolso: ação clara (pedir foto traseira) tem prioridade
+    # sobre o genérico "conferir autenticidade" — é o que o dono pediu (17/06).
+    if "pedir_foto_traseira" in flags:
+        d.append("📷 pedir foto traseira")
+    elif autvalor == "original":
         d.append("autêntico (bolso)")
     elif autvalor in ("sem_foto_bolso", "indefinido"):
         d.append("⚠ conferir autenticidade")
+    if "colecao_antiga" in flags:
+        d.append("🕰 coleção antiga")
+    if "fundo_multicolor" in flags:
+        d.append("🎨 fundo multicolor")
     if (it.get("etiqueta") or {}).get("tem_etiqueta") is True:
         d.append("etiqueta")
     return d

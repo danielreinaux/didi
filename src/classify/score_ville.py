@@ -43,7 +43,9 @@ PTS_PADRAO = {
     "indefinido": 0,
 }
 PTS_COR = {"preferida": 15, "neutra": 12, "aceitavel": 6, "penalizada": -12}
-PTS_TAMANHO = {"M": 15, "L": 12, "S": 8, "XL": 8}
+# XL nerfado de 8→3 a pedido do dono (17/06): "estou pensando em nerfar um pouco
+# o XL". É PROVISÓRIO — confirmar o valor final com o Marcos (ele não fechou número).
+PTS_TAMANHO = {"M": 15, "L": 12, "S": 8, "XL": 3}
 PTS_ETIQUETA = 5
 PTS_AUTH_ORIGINAL = 5
 # Coleção antiga (cordão cinza) — penaliza, NÃO exclui.
@@ -158,6 +160,9 @@ def calcular_score(item: dict) -> dict:
     preco = _preco_efetivo(item)
     tem_etiqueta = _tem_etiqueta(item)
     aparencia = (item.get("tartaruga") or {}).get("aparencia") if isinstance(item.get("tartaruga"), dict) else None
+    fundo_padrao = (item.get("tartaruga") or {}).get("fundo_padrao") if isinstance(item.get("tartaruga"), dict) else None
+    fecho = item.get("fecho") if isinstance(item.get("fecho"), dict) else {}
+    tipo_fecho = fecho.get("tipo_fechamento")
 
     # ── Exclusões diretas (score 0 / descartado) ─────────────────────────
     exclusoes = []
@@ -171,6 +176,16 @@ def calcular_score(item: dict) -> dict:
         exclusoes.append("tamanho_invalido")
     if tipo == "liso" and not cor_aceita_em_liso(cor_nome):
         exclusoes.append("cor_liso_fora_whitelist")
+    # Degradê: descarte direto (dono 17/06 — "o padrão degradê pode cortar, não
+    # precisa nem nerfar"). O fundo MULTICOLOR (manchas/blocos, sem transição)
+    # continua só nerfando (teto em médio) até o Marcos confirmar se também corta.
+    if fundo_padrao == "gradiente":
+        exclusoes.append("fundo_gradiente")
+    # Fecho: o cliente só compra cordão (e elástico). Fivela/botão/velcro →
+    # descarte, independente de preço e cor (dono 17/06). Conservador: só exclui
+    # quando o detector tem CERTEZA — "indefinido" NÃO exclui (prioriza recall).
+    if tipo_fecho in ("botao", "fivela", "velcro"):
+        exclusoes.append(f"fecho_{tipo_fecho}")
 
     if exclusoes:
         return {"score": 0, "teto": 0, "decisao": "descartado",
@@ -249,8 +264,23 @@ def calcular_score(item: dict) -> dict:
     if autenticidade == "suspeito" and decisao == "compravel":
         decisao = "medio"
         motivo = "autenticidade suspeita — analisar antes de comprar"
+    # Estampado sem foto do bolso: não dá pra confirmar original (e o estampado
+    # SEMPRE tem bolso — dono 17/06). Em vez de subir como comprável, o caminho
+    # mais barato é PEDIR a foto traseira ao vendedor → rebaixa pra médio com
+    # ação clara. (Estampado que comprovadamente NÃO tem bolso já vira "falso"
+    # na etapa de autenticidade e cai nas exclusões acima.)
+    estampado = tipo in ("tartaruga_grande", "tartaruga_pequena")
+    if estampado and autenticidade == "sem_foto_bolso":
+        flags.append("pedir_foto_traseira")
+        if decisao == "compravel":
+            decisao = "medio"
+            motivo = "estampado sem foto do bolso — pedir foto traseira ao vendedor"
     if autenticidade in ("indefinido", "sem_foto_bolso") and decisao in ("compravel", "medio"):
         flags.append("verificar_autenticidade")
+    # Coleção antiga (cordão cinza) já penaliza o score; expõe também como flag
+    # pra aparecer na votação e o dono decidir caso a caso pelo preço (17/06).
+    if colecao_antiga:
+        flags.append("colecao_antiga")
 
     # ── Teto em medio pra fundo multicolor (Opção B) ─────────────────────
     # Multicolor/gradiente nunca vira compravel automático — força revisão humana.

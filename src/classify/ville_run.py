@@ -9,6 +9,8 @@ Pipeline por item:
   3. Classifica tartaruga: grande / pequena / liso / outro (vision, gpt-4o-mini)
   4. Cor tier (vision — reutiliza classify_color)
   5. Etiqueta (vision — reutiliza classify_etiqueta)
+  6. Cordão: cor do drawstring → coleção antiga (cinza) no score (gpt-4o-mini)
+  7. Fecho: cordão/elástico OK; botão/fivela/velcro → descarte (vision, gpt-4o)
 
 Uso: python -m src.classify_ville_run [--workers N]   (padrão: 4)
 """
@@ -35,6 +37,7 @@ from .tartaruga import classificar_tartaruga
 from .autenticidade_ville import verificar_autenticidade
 from .cor import classificar_cor
 from .cordao_ville import verificar_cordao
+from .fecho_ville import verificar_fecho
 from .etiqueta import verificar_etiqueta
 from .score_ville import calcular_score
 # Reusa as exclusões de título do Sundek (infantil, não-short) — P2.
@@ -250,6 +253,21 @@ def _processar(item: dict, idx: str, total: int) -> tuple[dict, int, int]:
     except Exception as e:
         cordao = {"cordao_cor": "indefinido", "erro": str(e)}
 
+    # 7. Fecho (cordão/elástico = OK; botão/fivela/velcro → descarte no score).
+    fecho = None
+    try:
+        fecho = verificar_fecho(item)
+        u = fecho.pop("_usage", {})
+        in_tok += u.get("prompt_tokens", 0)
+        out_tok += u.get("completion_tokens", 0)
+        tf = fecho.get("tipo_fechamento")
+        if tf in ("botao", "fivela", "velcro"):
+            linha += f" | fecho={tf}✗"
+        elif tf and tf != "indefinido":
+            linha += f" | fecho={tf}"
+    except Exception as e:
+        fecho = {"tipo_fechamento": "indefinido", "erro": str(e)}
+
     resultado = {
         **item,
         "marca_check": marca,
@@ -258,6 +276,7 @@ def _processar(item: dict, idx: str, total: int) -> tuple[dict, int, int]:
         "cor": cor,
         "etiqueta": etiqueta,
         "cordao": cordao,
+        "fecho": fecho,
         "classificacao": {"tipo": tipo_tart, "autenticidade": auth_val},
     }
     resultado["score"] = calcular_score(resultado)

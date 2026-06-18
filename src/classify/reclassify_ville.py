@@ -11,10 +11,11 @@ Uso:
   python -m src.classify.reclassify_ville --etapa autenticidade
   python -m src.classify.reclassify_ville --etapa autenticidade --so-original --limite 30
   python -m src.classify.reclassify_ville --etapa cordao  # refaz cor do cordão + score
+  python -m src.classify.reclassify_ville --etapa fecho   # detecta fecho (cordão/elástico/botão/fivela) + score
   python -m src.classify.reclassify_ville --etapa marca   # refaz verifica_ville (marca + é-short + sem_evidencia)
   python -m src.classify.reclassify_ville --id 8940219584 # só um item (todas as etapas de IA)
 
-Etapas: score (default) | prefilter | sem_evidencia | cor | tartaruga | autenticidade | cordao | marca
+Etapas: score (default) | prefilter | sem_evidencia | cor | tartaruga | autenticidade | cordao | fecho | marca
   prefilter = sem IA: aplica o prefilter de título novo (infantil/não-short) e
               unifica nao_vilebrequin→nao_ville (P2/P3) nos dados já coletados.
   sem_evidencia = sem IA: re-aplica a regra de "foto não mostra o produto"
@@ -60,6 +61,7 @@ from .tartaruga import classificar_tartaruga
 from .autenticidade_ville import verificar_autenticidade
 from .cor import classificar_cor
 from .cordao_ville import verificar_cordao
+from .fecho_ville import verificar_fecho
 from .ville_brand import verificar_ville
 from .score_ville import calcular_score
 
@@ -143,6 +145,10 @@ def _refazer_etapa(item: dict, etapa: str) -> dict:
         cd = verificar_cordao(item)
         cd.pop("_usage", None)
         item["cordao"] = cd
+    elif etapa == "fecho":
+        f = verificar_fecho(item)
+        f.pop("_usage", None)
+        item["fecho"] = f
     return item
 
 
@@ -242,8 +248,8 @@ def main() -> None:
         _resumo(itens)
         return
 
-    if etapa not in ("cor", "tartaruga", "autenticidade", "cordao", "marca"):
-        print(f"Etapa inválida: {etapa}. Use: score | prefilter | sem_evidencia | cor | tartaruga | autenticidade | cordao | marca")
+    if etapa not in ("cor", "tartaruga", "autenticidade", "cordao", "fecho", "marca"):
+        print(f"Etapa inválida: {etapa}. Use: score | prefilter | sem_evidencia | cor | tartaruga | autenticidade | cordao | fecho | marca")
         sys.exit(1)
 
     print(f"=== Reclassify Ville · etapa={etapa} · {len(alvos)} itens · {workers} workers ===\n")

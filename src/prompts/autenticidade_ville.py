@@ -139,6 +139,26 @@ encaixa perfeitamente com o corpo (= original) ou foi quebrada (= falso).
 CRITÉRIO DE AUTENTICIDADE — TESTE EM 2 NÍVEIS:
 ═══════════════════════════════════════════════════════════════════════
 
+NÍVEL 0 — EXISTÊNCIA DO BOLSO (eliminatório, vale pra ESTAMPADO):
+  Todo Vilebrequin ESTAMPADO (tartarugas/desenho no corpo) TEM bolso traseiro.
+  • Dá pra ver as COSTAS do short E não há NENHUM bolso traseiro (traseira lisa,
+    sem retângulo costurado, sem patch) → FALSO. Estampado sem bolso é sempre
+    falso.
+  • NÃO dá pra ver as costas em nenhuma foto → "sem_foto_bolso" (não invente;
+    o melhor é pedir a foto traseira ao vendedor).
+  • Há bolso traseiro visível → siga pro Nível 1.
+  ⚠️ ARMADILHA DA ESTAMPA IGUAL DOS DOIS LADOS: em estampado all-over a frente e
+  as costas parecem IDÊNTICAS, então é fácil "não reconhecer" qual foto é a
+  traseira e marcar sem_foto_bolso por engano. NÃO faça isso. Diferencie os
+  lados pela CINTURA, não pela estampa:
+    • FRENTE = lado com a ABERTURA/FLY central + o CORDÃO (laço/pontas penduradas).
+    • COSTAS = lado SEM cordão/fly, cintura limpa — é nesse lado que mora o bolso.
+  Se ALGUMA foto mostra o short pelas costas (ou aberto/esticado de forma que a
+  traseira apareça) e NÃO há bolso → FALSO. Só use "sem_foto_bolso" quando
+  NENHUMA foto mostra o lado de trás / a cintura traseira de jeito nenhum.
+  ⚠️ Ter bolso NÃO garante original — só a continuidade da estampa (Níveis 1 e 2)
+  confirma. "Tem bolso" é condição necessária, não suficiente.
+
 NÍVEL 1 — TECIDO DO BOLSO (eliminatório):
   • Bolso traseiro tem tecido LISO ou de COR DIFERENTE do corpo estampado?
     → FALSO (o padrão nem chegou no bolso).
@@ -222,7 +242,9 @@ autenticidade = "indefinido"
     muito sutil que pode ser ângulo/amassado OU fotos pouco nítidas
 
 autenticidade = "sem_foto_bolso"
-  → as fotos NÃO mostram o bolso traseiro de jeito nenhum
+  → as fotos NÃO mostram a traseira/bolso de jeito nenhum (não dá pra dizer se
+    tem bolso). NÃO use quando dá pra ver a traseira LISA sem bolso num estampado
+    — nesse caso é "falso" (Nível 0).
 
 Responda APENAS com JSON válido (sem cercas, sem texto extra):
 
@@ -232,7 +254,11 @@ Responda APENAS com JSON válido (sem cercas, sem texto extra):
 def usuario(titulo: str) -> str:
     return (
         f'Short Vilebrequin a analisar. Título do anúncio: "{titulo}". '
-        f"Olhe o BOLSO TRASEIRO. Aplique o teste em 2 níveis: (1) tecido do bolso "
+        f"PRIMEIRO confirme se o short TEM bolso traseiro (Nível 0): estampado com "
+        f"a traseira visível e SEM bolso = falso; traseira não visível = "
+        f"sem_foto_bolso. Se a estampa for IGUAL nos dois lados, ache a traseira "
+        f"pela CINTURA (lado SEM cordão/fly) — não chute sem_foto_bolso só porque "
+        f"frente e costas parecem iguais. Se houver bolso, aplique o teste em 2 níveis: (1) tecido do bolso "
         f"é o mesmo do corpo? (2) o padrão atravessa a borda do bolso de forma "
         f"contínua, ou está quebrado/cortado? Compare com os 4 exemplos de "
         f"referência. ATENÇÃO: COSTURA DUPLA da Vilebrequin (linhas paralelas no "

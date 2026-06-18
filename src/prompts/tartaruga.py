@@ -30,10 +30,14 @@ def _ref_data_url(nome: str) -> str:
 
 
 def referencias_few_shot() -> list[dict]:
-    """3 exemplos de calibração:
+    """5 exemplos de calibração:
     - REF 1 POSITIVO fundo (gradiente azul→laranja → multicolor/gradiente)
     - REF 2 CONTRA-EXEMPLO fundo (azul ciano amassado → uniforme, NÃO multicolor)
     - REF 3 CONTRA-EXEMPLO animal (camaleões coloridos → tipo "outro", NÃO tartaruga)
+    - REF 4 EXCEÇÃO dominância (tartaruga entre flores → tartaruga_grande, compra)
+    - REF 5 EXCEÇÃO dominância (tartaruga + estrela-do-mar → tartaruga_grande, compra)
+    TODO(Marcos 17/06): falta a foto LIMPA de "flores dominam = outro" (negativo)
+    — o Marcos vai mandar mais exemplos; adicionar como REF 6 quando chegar.
     """
     return [
         {
@@ -107,6 +111,41 @@ def referencias_few_shot() -> list[dict]:
         {
             "type": "text",
             "text": (
+                "[REF 4 — EXCEÇÃO: tipo = \"tartaruga_grande\", NÃO \"outro\"] Short "
+                "azul com FLORES (hibiscos) E tartarugas grandes. Apesar das flores, "
+                "as tartarugas ainda aparecem e o modelo é COMPRÁVEL. Quando a "
+                "tartaruga divide espaço com flores mas continua identificável/se "
+                "destaca, NÃO marque \"outro\" só por ter flor — é tartaruga_grande. "
+                "(Só vira \"outro\" quando as FLORES dominam e a tartaruga some.)"
+            ),
+        },
+        {
+            "type": "image_url",
+            "image_url": {
+                "url": _ref_data_url("excecao_tartaruga_nas_flores.jpg"),
+                "detail": "low",
+            },
+        },
+        {
+            "type": "text",
+            "text": (
+                "[REF 5 — EXCEÇÃO: tipo = \"tartaruga_grande\"] Short verde-água com "
+                "ESTRELAS DO MAR e tartarugas. As tartarugas se DESTACAM por contraste "
+                "de cor, então é COMPRÁVEL mesmo havendo estrelas-do-mar. A presença "
+                "de estrela-do-mar sozinha NÃO rebaixa pra \"outro\" se a tartaruga "
+                "domina pelo contraste."
+            ),
+        },
+        {
+            "type": "image_url",
+            "image_url": {
+                "url": _ref_data_url("excecao_estrela_do_mar.jpg"),
+                "detail": "low",
+            },
+        },
+        {
+            "type": "text",
+            "text": (
                 "════════ FIM DAS REFERÊNCIAS — agora vem o ITEM a classificar ════════"
             ),
         },
@@ -162,6 +201,20 @@ OUTRO: qualquer outro padrão que não seja tartaruga nem liso. Exemplos:
     • patas longas com dedos de agarrar, asas, barbatanas, tentáculos
   Veja a REF 3 (camaleões) como gabarito do que NÃO é tartaruga.
   Na dúvida real entre tartaruga e outro animal, prefira "outro".
+
+⚠️  DOMINÂNCIA — TARTARUGA × FLORES/ESTRELA-DO-MAR (regra do dono 17/06):
+  Alguns shorts misturam tartarugas GRANDES com FLORES (hibiscos) ou ESTRELAS
+  DO MAR. O que decide o tipo é QUEM DOMINA visualmente a estampa:
+    • Se a ÊNFASE é nas FLORES e a tartaruga fica secundária/camuflada (mesma
+      cor e escala das flores, "se perde" no meio do desenho) → tipo "outro"
+      (NÃO comprável), mesmo que existam tartarugas grandes.
+    • Se as TARTARUGAS continuam se DESTACANDO — por contraste de cor, tamanho
+      ou nitidez — mesmo havendo flores ou estrelas-do-mar no fundo →
+      tartaruga_grande (COMPRÁVEL). Ver REF 4 (tartaruga entre flores) e
+      REF 5 (tartaruga + estrela-do-mar): nas duas a tartaruga ainda salta aos
+      olhos, então são compráveis.
+  Regra prática: "bati o olho e o que salta é tartaruga?" → tartaruga_grande.
+  "o que salta são as flores e a tartaruga só aparece quando procuro?" → outro.
 
 INDEFINIDO: fotos insuficientes para classificar (muito borradas, ângulo ruim).
 
