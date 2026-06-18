@@ -180,6 +180,10 @@ NÍVEL 2 — ENCAIXE / ALINHAMENTO DA ESTAMPA (refino):
   FALSO: o padrão dentro do bolso NÃO conversa com o de fora.
     - Motivos cortados pela borda do bolso (meia tartaruga de um lado,
       nada do outro), OU motivos começando "do zero" dentro do bolso.
+    - Tartaruga reduzida a só uma BORDA/fatia fina na emenda do bolso, com o
+      RESTO DO CORPO sumindo (sem continuar do outro lado da costura). "Só a
+      borda/contorno da tartaruga aparecendo" na emenda é sinal de corte REAL,
+      não de detalhe — a estampa original faria o corpo continuar.
     - O bolso parece um retângulo colado por cima, com desenho próprio.
     - Densidade/orientação dos motivos diferente do corpo.
 
@@ -203,6 +207,16 @@ NÍVEL 3 — DÚVIDA SUTIL:
 
   • PEQUENO DESLOCAMENTO POR ELASTICIDADE: bolso pode esticar ligeiramente.
     Desalinhamento de poucos milímetros = INDEFINIDO, não falso.
+
+  ⚠️ MAS NÃO use "DOBRA" ou "ELÁSTICO" COMO DESCULPA pra um corte grosseiro:
+    dobra e elástico escondem no máximo um PEDACINHO, e o resto do motivo
+    REAPARECE logo ao lado. Se a tartaruga está claramente TRUNCADA (só a borda,
+    ou uma metade que não casa com nada) e o corpo NÃO reaparece em lugar nenhum
+    perto da costura, isso é QUEBRA REAL → FALSO, MESMO que seja perto do
+    elástico ou em tecido meio dobrado. Só aceite "dobra/elástico" quando dá pra
+    ver a CONTINUAÇÃO do motivo logo adiante. Se a continuação some e o corte é
+    grosseiro → falso; se é genuinamente ambíguo (pode estar escondido na dobra)
+    → indefinido. Vários motivos truncados pela emenda ao mesmo tempo = falso.
 
   REGRA PRÁTICA: para marcar FALSO, o motivo (tartaruga, peixe etc.) precisa
   estar visivelmente CORTADO ou COMEÇANDO DO ZERO dentro do bolso de forma
@@ -244,7 +258,9 @@ autenticidade = "indefinido"
 autenticidade = "sem_foto_bolso"
   → as fotos NÃO mostram a traseira/bolso de jeito nenhum (não dá pra dizer se
     tem bolso). NÃO use quando dá pra ver a traseira LISA sem bolso num estampado
-    — nesse caso é "falso" (Nível 0).
+    — nesse caso é "falso" (Nível 0). E NÃO use quando o bolso APARECE mas a
+    estampa nele está quebrada/confusa/dobrada — aí é Nível 2 (falso se o corte
+    é claro, indefinido se é ambíguo), nunca sem_foto_bolso.
 
 Responda APENAS com JSON válido (sem cercas, sem texto extra):
 
@@ -265,6 +281,8 @@ def usuario(titulo: str) -> str:
         f"bolso) NÃO é quebra de padrão — é fio por cima do tecido. Se o que "
         f"parece corte é só a linha da costura, é ORIGINAL (ver REF 4). Só marque "
         f"FALSO quando o motivo está claramente CORTADO ou COMEÇA DO ZERO no "
-        f"bolso sem qualquer alinhamento. Desalinhamento sutil → indefinido. "
-        f"Short todo liso → indefinido. Sem foto do bolso → sem_foto_bolso."
+        f"bolso sem qualquer alinhamento. Tartaruga reduzida a só a BORDA na emenda, "
+        f"sem o corpo continuar do outro lado, é corte real (falso) — NÃO desculpe "
+        f"como dobra/elástico se a continuação não aparece. Desalinhamento sutil → "
+        f"indefinido. Short todo liso → indefinido. Sem foto do bolso → sem_foto_bolso."
     )
