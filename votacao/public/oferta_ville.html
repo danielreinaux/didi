@@ -26,6 +26,11 @@ h1 { font-size:20px; margin-bottom:4px; }
 .meta { color:#b8b8c0; font-size:13px; } .meta b { color:#f5f5f7; }
 .chips { display:flex; flex-wrap:wrap; gap:6px; }
 .chip { background:rgba(167,139,250,.14); color:#c4b5fd; font-size:11px; padding:2px 8px; border-radius:99px; }
+.neg { font-size:13px; line-height:1.45; padding:8px 10px; border-radius:10px; border:1px solid; }
+.neg.fechar { background:rgba(0,255,136,.1); color:#5dffb0; border-color:rgba(0,255,136,.25); }
+.neg.negociar { background:rgba(255,170,0,.1); color:#ffcc66; border-color:rgba(255,170,0,.25); }
+.neg.urgente { background:rgba(255,77,109,.12); color:#ff9db0; border-color:rgba(255,77,109,.35); font-weight:600; }
+.neg.none { background:rgba(255,255,255,.04); color:#9a9aa6; border-color:rgba(255,255,255,.08); }
 .vote { display:grid; grid-template-columns:1fr 1fr 1fr; gap:6px; margin-top:2px; }
 .v { padding:9px 4px; border:1px solid rgba(255,255,255,.12); border-radius:10px; background:rgba(255,255,255,.04); color:#f5f5f7; font-size:12px; font-weight:600; cursor:pointer; }
 .v.sel.gostei { background:#00ff88; color:#07140a; border-color:#00ff88; }
@@ -46,6 +51,7 @@ h1 { font-size:20px; margin-bottom:4px; }
     <a class="t" href="https://www.vinted.es/items/8708248877-short-de-bain-vilebrequin-maillot-taille-m-tortue-orange" target="_blank" rel="noreferrer">short de bain vilebrequin maillot taille M tortue orange</a>
     <div class="meta">M · <b>47,95 €</b></div>
     <div class="chips"><span class="chip">🐢 tartaruga grande (tartarugas pretas)</span><span class="chip">cor coral</span><span class="chip">autêntico (bolso)</span></div>
+    <div class="neg fechar">💰 Oferecer €40 — &quot;por 40 aceita?&quot;. Se recusar, ainda vale o preço pedido.</div>
     <div class="vote">
       <button class="v gostei" data-r="gostei">👍 Gostei</button>
       <button class="v nao" data-r="nao_gostei">👎 Não</button>
@@ -61,6 +67,7 @@ h1 { font-size:20px; margin-bottom:4px; }
     <a class="t" href="https://www.vinted.es/items/8592275104-vilebrequin-short-maillot-bain-ronde-des-tortues-xl-44" target="_blank" rel="noreferrer">Vilebrequin - Short maillot bain ronde des tortues XL 44 🐢</a>
     <div class="meta">XL · <b>45,85 €</b></div>
     <div class="chips"><span class="chip">🐢 tartaruga grande (tartarugas pretas)</span><span class="chip">cor Laranja</span><span class="chip">autêntico (bolso)</span><span class="chip">🕰 coleção antiga</span></div>
+    <div class="neg fechar">💰 Oferecer €40 — &quot;por 40 aceita?&quot;. Se recusar, ainda vale o preço pedido.</div>
     <div class="vote">
       <button class="v gostei" data-r="gostei">👍 Gostei</button>
       <button class="v nao" data-r="nao_gostei">👎 Não</button>
@@ -76,6 +83,7 @@ h1 { font-size:20px; margin-bottom:4px; }
     <a class="t" href="https://www.vinted.es/items/8960287914-ensemble-vilebrequin-homme-t-shirt-short-de-bain-tortues" target="_blank" rel="noreferrer">Ensemble Vilebrequin Homme T-shirt + Short de bain Tortues</a>
     <div class="meta">M · <b>63,70 €</b></div>
     <div class="chips"><span class="chip">🐢 tartaruga grande (tartarugas coloridas mistas)</span><span class="chip">cor Preto</span><span class="chip">📷 pedir foto traseira</span><span class="chip">etiqueta</span></div>
+    <div class="neg fechar">💰 Oferecer €55 — &quot;por 55 aceita?&quot;. Se recusar, ainda vale o preço pedido.</div>
     <div class="vote">
       <button class="v gostei" data-r="gostei">👍 Gostei</button>
       <button class="v nao" data-r="nao_gostei">👎 Não</button>
@@ -91,6 +99,7 @@ h1 { font-size:20px; margin-bottom:4px; }
     <a class="t" href="https://www.vinted.es/items/8960256349-ensemble-vilebrequin-homme-t-shirt-logo-short-de-bain-tortues-glow-in-the-dark" target="_blank" rel="noreferrer">Ensemble Vilebrequin Homme T-shirt Logo + Short de bain Tortues Glow i</a>
     <div class="meta">L · <b>63,70 €</b></div>
     <div class="chips"><span class="chip">🐢 tartaruga grande (tartarugas coloridas mistas)</span><span class="chip">cor azul escuro</span><span class="chip">📷 pedir foto traseira</span><span class="chip">etiqueta</span></div>
+    <div class="neg fechar">💰 Oferecer €55 — &quot;por 55 aceita?&quot;. Se recusar, ainda vale o preço pedido.</div>
     <div class="vote">
       <button class="v gostei" data-r="gostei">👍 Gostei</button>
       <button class="v nao" data-r="nao_gostei">👎 Não</button>
@@ -106,6 +115,7 @@ h1 { font-size:20px; margin-bottom:4px; }
     <a class="t" href="https://www.vinted.es/items/8737977513-maillot-vilebrequin-modele-tortue" target="_blank" rel="noreferrer">Maillot Vilebrequin modèle Tortue</a>
     <div class="meta">M · <b>42,70 €</b></div>
     <div class="chips"><span class="chip">🐢 tartaruga grande (tartarugas coloridas mistas)</span><span class="chip">cor marrom</span><span class="chip">📷 pedir foto traseira</span></div>
+    <div class="neg fechar">💰 Oferecer €35 — &quot;por 35 aceita?&quot;. Se recusar, ainda vale o preço pedido.</div>
     <div class="vote">
       <button class="v gostei" data-r="gostei">👍 Gostei</button>
       <button class="v nao" data-r="nao_gostei">👎 Não</button>
@@ -121,6 +131,7 @@ h1 { font-size:20px; margin-bottom:4px; }
     <a class="t" href="https://www.vinted.es/items/8845737182-short-de-bain-vilebrequin" target="_blank" rel="noreferrer">Short de bain Vilebrequin</a>
     <div class="meta">XL · <b>47,95 €</b></div>
     <div class="chips"><span class="chip">🐢 tartaruga grande (tartarugas azul claro)</span><span class="chip">cor azul claro</span><span class="chip">📷 pedir foto traseira</span></div>
+    <div class="neg fechar">💰 Oferecer €40 — &quot;por 40 aceita?&quot;. Se recusar, ainda vale o preço pedido.</div>
     <div class="vote">
       <button class="v gostei" data-r="gostei">👍 Gostei</button>
       <button class="v nao" data-r="nao_gostei">👎 Não</button>
@@ -136,6 +147,7 @@ h1 { font-size:20px; margin-bottom:4px; }
     <a class="t" href="https://www.vinted.es/items/6964042678-costume-da-bagno-vilebrequin-in-vivace-tessuto-turchese-con-stampa-iconica-di-tartarughe-multicolor" target="_blank" rel="noreferrer">Costume da bagno Vilebrequin in vivace tessuto turchese con stampa ico</a>
     <div class="meta">L · <b>95,20 €</b></div>
     <div class="chips"><span class="chip">🐢 tartaruga grande (tartarugas coloridas mistas)</span><span class="chip">cor Turquesa</span><span class="chip">autêntico (bolso)</span></div>
+    <div class="neg negociar">🗨️ Pedir desconto: &quot;What&#x27;s your best price?&quot; — alvo ≤ €80.</div>
     <div class="vote">
       <button class="v gostei" data-r="gostei">👍 Gostei</button>
       <button class="v nao" data-r="nao_gostei">👎 Não</button>
@@ -151,6 +163,7 @@ h1 { font-size:20px; margin-bottom:4px; }
     <a class="t" href="https://www.vinted.es/items/6859166830-costume-vilebrequin" target="_blank" rel="noreferrer">Costume vilebrequin</a>
     <div class="meta">M · <b>68,95 €</b></div>
     <div class="chips"><span class="chip">🐢 tartaruga grande (tartarugas bege)</span><span class="chip">cor Azul claro</span><span class="chip">autêntico (bolso)</span><span class="chip">🕰 coleção antiga</span></div>
+    <div class="neg fechar">💰 Oferecer €60 — &quot;por 60 aceita?&quot;. Se recusar, ainda vale o preço pedido.</div>
     <div class="vote">
       <button class="v gostei" data-r="gostei">👍 Gostei</button>
       <button class="v nao" data-r="nao_gostei">👎 Não</button>
@@ -166,6 +179,7 @@ h1 { font-size:20px; margin-bottom:4px; }
     <a class="t" href="https://www.vinted.es/items/8364444257-short-de-bain-vilebrequin" target="_blank" rel="noreferrer">short de bain vilebrequin</a>
     <div class="meta">XL · <b>74,20 €</b></div>
     <div class="chips"><span class="chip">🐢 tartaruga grande (tartarugas coloridas mistas)</span><span class="chip">cor Verde médio</span><span class="chip">📷 pedir foto traseira</span></div>
+    <div class="neg fechar">💰 Oferecer €65 — &quot;por 65 aceita?&quot;. Se recusar, ainda vale o preço pedido.</div>
     <div class="vote">
       <button class="v gostei" data-r="gostei">👍 Gostei</button>
       <button class="v nao" data-r="nao_gostei">👎 Não</button>
@@ -181,6 +195,7 @@ h1 { font-size:20px; margin-bottom:4px; }
     <a class="t" href="https://www.vinted.es/items/8962585749-costume-vilebrequin-uomo-tg-xl" target="_blank" rel="noreferrer">Costume Vilebrequin Uomo tg. XL</a>
     <div class="meta">XL · <b>84,70 €</b></div>
     <div class="chips"><span class="chip">🐢 tartaruga grande (tartarugas azul escuro)</span><span class="chip">cor Azul claro</span><span class="chip">📷 pedir foto traseira</span></div>
+    <div class="neg negociar">🗨️ Pedir desconto: &quot;What&#x27;s your best price?&quot; — alvo ≤ €80.</div>
     <div class="vote">
       <button class="v gostei" data-r="gostei">👍 Gostei</button>
       <button class="v nao" data-r="nao_gostei">👎 Não</button>

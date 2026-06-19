@@ -24,6 +24,7 @@ Desbotado → descartado. Tamanho fora de S/M/L/XL → descartado.
 
 Resultado: >=70 comprável · 45-69 médio · <45 descartado (com overrides de faixa).
 """
+import math
 import re
 
 from .cor_ville import bucket_cor, bucket_cor_item, e_cor_bonita, e_fundo_problematico, cor_aceita_em_liso
@@ -86,6 +87,57 @@ def _preco_efetivo(item: dict) -> float | None:
             return total
         return base
     return total if base is None else base
+
+
+def _oferta_redonda(base: float) -> int:
+    """Oferta 'psicológica': maior múltiplo de 5 abaixo do preço-base, com piso de
+    80% do base (não ofender em item barato). Ex: 64 → 60 · 58 → 55 · 35 → 30."""
+    alvo5 = math.floor((base - 0.01) / 5) * 5
+    piso = round(base * 0.80)
+    return max(int(alvo5), int(piso), 1)
+
+
+def _negociacao_ville(base: float | None, teto: float, ratio: float | None,
+                      cor_bonita: bool, decisao: str) -> dict:
+    """Como abordar o vendedor (a 'fazer oferta' do Vinted é sobre o preço BASE).
+
+    Três modos:
+      - urgente: peça comprável + cor bonita + muito barata (ratio ≤ 0,75) →
+        dispara o pedido de desconto MAS já chama pra comprar. É a filosofia do
+        dono (áudio 18/06): "manda a oferta, monitora uns ~5 min; se o vendedor
+        não responder, compra já pra não perder". A decisão final (esperar x
+        comprar) é dele — por isso a flag `comprar_ja`.
+      - fechar: preço dentro do teto → oferta redonda um pouco abaixo.
+      - negociar: preço acima do teto → pedir 'best price', alvo = teto.
+    """
+    if not base:
+        return {}
+    # Caso especial do dono: ótima + barata → "não perca".
+    if decisao == "compravel" and cor_bonita and ratio is not None and ratio <= 0.75:
+        oferta = _oferta_redonda(base)
+        return {
+            "modo": "fechar",
+            "oferta": oferta,
+            "comprar_ja": True,
+            "msg": (f"⚡ Ótima e barata — peça desconto (oferta €{oferta} / best price) e "
+                    f"monitore ~5 min. Se não responder, COMPRE JÁ pra não perder."),
+        }
+    # Preço já dentro do teto → fechar com oferta redonda.
+    if ratio is not None and ratio <= 1.0:
+        oferta = _oferta_redonda(base)
+        return {
+            "modo": "fechar",
+            "oferta": oferta,
+            "msg": f"💰 Oferecer €{oferta} — \"por {oferta} aceita?\". Se recusar, ainda vale o preço pedido.",
+        }
+    # Preço acima do teto → negociar pra baixo, alvo = teto da faixa.
+    alvo = int(round(teto)) if teto else None
+    return {
+        "modo": "negociar",
+        "oferta": alvo,
+        "msg": (f"🗨️ Pedir desconto: \"What's your best price?\" — alvo ≤ €{alvo}."
+                if alvo else "🗨️ Pedir: \"What's your best price?\""),
+    }
 
 
 def _tamanho_key(tamanho: str | None, titulo: str | None = None) -> str | None:
@@ -293,6 +345,14 @@ def calcular_score(item: dict) -> dict:
     if decisao == "descartado" and not motivo:
         motivo = "fora das faixas de compra"
 
+    # ── Sugestão de negociação (preço a oferecer) — só pra candidatos ─────
+    # Usa o preço-base (não o efetivo): a oferta do Vinted é sobre o pedido.
+    negociacao = {}
+    if decisao in ("compravel", "medio"):
+        negociacao = _negociacao_ville(
+            _parse_preco(item.get("preco")), teto, ratio, cor_bonita, decisao
+        )
+
     return {
         "score": score,
         "teto": teto,
@@ -300,6 +360,7 @@ def calcular_score(item: dict) -> dict:
         "decisao": decisao,
         "motivo": motivo,
         "flags": flags,
+        "negociacao": negociacao,
         "breakdown": {
             "padrao": pts_padrao,
             "cor": pts_cor,

@@ -85,6 +85,19 @@ def _card(it: dict) -> str:
     badge_cls = "comp" if compravel else "barg"
     dest = "".join(f'<span class="chip">{escape(x)}</span>' for x in _destaques(it))
 
+    # Caixa de sugestão de negociação (preço a oferecer / "não perca").
+    neg = s.get("negociacao") or {}
+    if neg.get("msg"):
+        if neg.get("comprar_ja"):
+            neg_cls = "urgente"
+        elif neg.get("modo") == "fechar":
+            neg_cls = "fechar"
+        else:
+            neg_cls = "negociar"
+        neg_html = f'<div class="neg {neg_cls}">{escape(neg["msg"])}</div>'
+    else:
+        neg_html = '<div class="neg none">Sem sugestão de negociação — avaliar pelo preço pedido.</div>'
+
     imgs = "".join(f'<img src="{escape(u)}" loading="lazy"{"" if i == 0 else " hidden"}>'
                    for i, u in enumerate(fotos))
     setas = ('<button class="nav prev">‹</button><button class="nav next">›</button>'
@@ -96,6 +109,7 @@ def _card(it: dict) -> str:
     <a class="t" href="{url}" target="_blank" rel="noreferrer">{titulo}</a>
     <div class="meta">{tam} · <b>{preco}</b></div>
     <div class="chips">{dest}</div>
+    {neg_html}
     <div class="vote">
       <button class="v gostei" data-r="gostei">👍 Gostei</button>
       <button class="v nao" data-r="nao_gostei">👎 Não</button>
@@ -140,6 +154,11 @@ h1 {{ font-size:20px; margin-bottom:4px; }}
 .meta {{ color:#b8b8c0; font-size:13px; }} .meta b {{ color:#f5f5f7; }}
 .chips {{ display:flex; flex-wrap:wrap; gap:6px; }}
 .chip {{ background:rgba(167,139,250,.14); color:#c4b5fd; font-size:11px; padding:2px 8px; border-radius:99px; }}
+.neg {{ font-size:13px; line-height:1.45; padding:8px 10px; border-radius:10px; border:1px solid; }}
+.neg.fechar {{ background:rgba(0,255,136,.1); color:#5dffb0; border-color:rgba(0,255,136,.25); }}
+.neg.negociar {{ background:rgba(255,170,0,.1); color:#ffcc66; border-color:rgba(255,170,0,.25); }}
+.neg.urgente {{ background:rgba(255,77,109,.12); color:#ff9db0; border-color:rgba(255,77,109,.35); font-weight:600; }}
+.neg.none {{ background:rgba(255,255,255,.04); color:#9a9aa6; border-color:rgba(255,255,255,.08); }}
 .vote {{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:6px; margin-top:2px; }}
 .v {{ padding:9px 4px; border:1px solid rgba(255,255,255,.12); border-radius:10px; background:rgba(255,255,255,.04); color:#f5f5f7; font-size:12px; font-weight:600; cursor:pointer; }}
 .v.sel.gostei {{ background:#00ff88; color:#07140a; border-color:#00ff88; }}
