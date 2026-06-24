@@ -1,4 +1,4 @@
-name: Scrape + Classify (3x/dia)
+name: Scrape + Classify (Sundek 3x/dia + Ville 1x/dia)
 
 # Horários em UTC. Brasil = UTC-3.
 #   08:00 UTC = 05:00 BRT
@@ -92,5 +92,82 @@ jobs:
           echo "::error::não consegui empurrar os dados após 3 tentativas"
           exit 1
 
-  # Vilebrequin desabilitado por enquanto — pipeline ainda em desenvolvimento.
-  # Quando voltar, reativar com `needs: sundek` (rodar depois pra não competir cota).
+  # Vilebrequin: 1x/dia. Roda DEPOIS do Sundek (needs: sundek) pra não competir
+  # cota de OpenAI, e só no gatilho das 08:00 UTC (05:00 BRT) — nos crons das 13h
+  # e 19h30 o job é pulado pelo `if`. No dispatch manual sempre roda.
+  ville:
+    needs: sundek
+    if: github.event.schedule == '0 8 * * *' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    concurrency:
+      group: scrape-ville
+      cancel-in-progress: false
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Setup Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+
+      - name: Install deps
+        run: |
+          pip install -r requirements.txt
+          playwright install --with-deps chromium
+
+      - name: Scrape Ville
+        env:
+          HEADLESS: 'true'
+        run: python -m src.scrape.ville
+
+      - name: Classify Ville
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: python -m src.classify.ville_run --workers 2
+
+      # analise_ville = página de auditoria (sem IA, barato) — fica só no repo.
+      # oferta_ville  = página de votação do Marcos (votacao/public/oferta_ville.html).
+      # votacao_items = items.json dos cards Next.js; JÁ junta Sundek + Ville numa só.
+      - name: Build analise-ville + oferta_ville + items de votação
+        if: always()
+        run: |
+          python -m src.build.analise_ville
+          python -m src.build.oferta_ville
+          python -m src.build.votacao_items
+
+      # Como o job roda depois do Sundek (que já commitou+deployou), o checkout já
+      # traz o analise.html fresco. Aqui só republicamos com items.json + oferta_ville
+      # atualizados com os dados novos da Ville.
+      - name: Deploy no Vercel
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_KEY }}
+        run: |
+          cd votacao
+          npx vercel --prod --token="$VERCEL_TOKEN" --yes
+          # ↑ a env var ainda é VERCEL_TOKEN porque é o nome que a CLI espera;
+          # o valor vem do secret VERCEL_KEY que você cadastrou.
+
+      # if: always() → persiste o checkpoint do classify mesmo se um passo anterior
+      # falhar ou o job estourar o timeout (senão o progresso se perde).
+      - name: Commit dados de volta no repo
+        if: always()
+        run: |
+          git config user.name "Didi Bot"
+          git config user.email "bot@didi.local"
+          git add data/coleta-ville.json data/coleta-ville-classificada.json data/analise-ville.html votacao/public/items.json votacao/public/oferta_ville.html
+          git diff --cached --quiet && echo "nada a commitar" && exit 0
+          git commit -m "data: cron ville $(date -u +'%Y-%m-%d %H:%M UTC')"
+          # Sundek pode ter empurrado pro main nesse meio-tempo.
+          # Rebase antes do push e tenta de novo (evita 'rejected: fetch first').
+          for i in 1 2 3; do
+            git pull --rebase origin main && git push && exit 0
+            echo "push falhou (tentativa $i/3) — refazendo rebase em 5s..."
+            sleep 5
+          done
+          echo "::error::não consegui empurrar os dados após 3 tentativas"
+          exit 1
