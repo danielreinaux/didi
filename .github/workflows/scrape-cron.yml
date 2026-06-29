@@ -60,23 +60,11 @@ jobs:
         if: always()
         run: |
           python -m src.build.analise
-          python -m src.build.votacao_items   # gera votacao/public/items.json (só compráveis+barganha)
-
-      - name: Deploy analise.html no Vercel
-        env:
-          VERCEL_TOKEN: ${{ secrets.VERCEL_KEY }}
-          # IDs do projeto Vercel "votacao" (publicado em votacao-two.vercel.app).
-          # OBRIGATÓRIOS no CI: a pasta .vercel/ é gitignored e NÃO vem no checkout do
-          # Actions, então sem esses IDs o `vercel --prod --yes` não sabe pra qual
-          # projeto publicar (criaria um projeto novo). Não são segredos, são só IDs.
-          VERCEL_ORG_ID: team_m72m6r8zJFJfCmPq0cUZrGbt
-          VERCEL_PROJECT_ID: prj_FljhhdpJqaicpJ6ywAOfurCawmkQ
-        run: |
+          # Copia o analise.html fresco pra pasta publicada (antes isso era feito
+          # dentro do passo de deploy, que foi removido — o deploy agora é único, no
+          # job 'deploy' do fim, e publica o que estiver commitado em votacao/public/).
           cp data/analise.html votacao/public/analise.html
-          cd votacao
-          npx vercel --prod --token="$VERCEL_TOKEN" --yes
-          # ↑ a env var ainda é VERCEL_TOKEN porque é o nome que a CLI espera;
-          # o valor vem do secret VERCEL_KEY que você cadastrou.
+          python -m src.build.votacao_items   # gera votacao/public/items.json (só compráveis+barganha)
 
       # Detecta ofertas novas (compráveis/barganha/urgentes) no items.json recém-gerado
       # e dispara um email-resumo. O ledger data/notificados.json deduplica entre rodadas;
@@ -156,22 +144,6 @@ jobs:
           python -m src.build.oferta_ville
           python -m src.build.votacao_items
 
-      # Como o job roda depois do Sundek (que já commitou+deployou), o checkout já
-      # traz o analise.html fresco. Aqui só republicamos com items.json + oferta_ville
-      # atualizados com os dados novos da Ville.
-      - name: Deploy no Vercel
-        env:
-          VERCEL_TOKEN: ${{ secrets.VERCEL_KEY }}
-          # Mesmos IDs do projeto "votacao" (ver job sundek) — sem eles o deploy no
-          # CI não cai no projeto certo (votacao-two.vercel.app).
-          VERCEL_ORG_ID: team_m72m6r8zJFJfCmPq0cUZrGbt
-          VERCEL_PROJECT_ID: prj_FljhhdpJqaicpJ6ywAOfurCawmkQ
-        run: |
-          cd votacao
-          npx vercel --prod --token="$VERCEL_TOKEN" --yes
-          # ↑ a env var ainda é VERCEL_TOKEN porque é o nome que a CLI espera;
-          # o valor vem do secret VERCEL_KEY que você cadastrou.
-
       - name: Notificar por email (Ville)
         if: always()
         env:
@@ -199,3 +171,40 @@ jobs:
           done
           echo "::error::não consegui empurrar os dados após 3 tentativas"
           exit 1
+
+  # Deploy ÚNICO no fim. Antes cada job (sundek e ville) rodava `vercel --prod` e os
+  # dois davam alias no mesmo domínio (votacao-two), então o último a terminar vencia.
+  # Pior: o ville fazia checkout do github.sha (commit que disparou o run), NÃO do
+  # commit fresco que o sundek tinha acabado de empurrar — então deployava analise.html
+  # velho e um items.json montado em cima de coleta-classificada DESATUALIZADA (com 0
+  # compráveis virava []), sobrescrevendo o deploy bom do sundek. Resultado: repo com
+  # dado, site vazio. Aqui consolidamos: 1 deploy só, depois dos dois jobs, partindo do
+  # main JÁ atualizado (ref: main puxa o tip com os commits dos dois). Publica exatamente
+  # o que está commitado em votacao/public/ (items.json combinado + analise.html + oferta_ville).
+  deploy:
+    needs: [sundek, ville]
+    if: always()           # publica o último estado commitado mesmo se um job falhar
+    runs-on: ubuntu-latest
+    concurrency:
+      group: deploy-votacao
+      cancel-in-progress: false
+    steps:
+      - name: Checkout main atualizado
+        uses: actions/checkout@v4
+        with:
+          ref: main        # tip atual do main (com os commits desta rodada), não o github.sha
+          fetch-depth: 1
+
+      - name: Deploy no Vercel
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_KEY }}
+          # IDs do projeto Vercel "votacao" (publicado em votacao-two.vercel.app).
+          # OBRIGATÓRIOS no CI: a pasta .vercel/ é gitignored e NÃO vem no checkout,
+          # então sem eles o `vercel --prod` não sabe pra qual projeto publicar.
+          VERCEL_ORG_ID: team_m72m6r8zJFJfCmPq0cUZrGbt
+          VERCEL_PROJECT_ID: prj_FljhhdpJqaicpJ6ywAOfurCawmkQ
+        run: |
+          cd votacao
+          npx vercel --prod --token="$VERCEL_TOKEN" --yes
+          # ↑ a env var ainda é VERCEL_TOKEN porque é o nome que a CLI espera;
+          # o valor vem do secret VERCEL_KEY que você cadastrou.
