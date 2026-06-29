@@ -1,14 +1,14 @@
-name: Scrape + Classify (Sundek 3x/dia + Ville 1x/dia)
+name: Scrape + Classify (Sundek + Ville, 3x/dia)
 
 # Horários em UTC. Brasil = UTC-3.
-#   08:00 UTC = 05:00 BRT
-#   16:00 UTC = 13:00 BRT
-#   22:30 UTC = 19:30 BRT
+#   11:00 UTC = 08:00 BRT
+#   15:00 UTC = 12:00 BRT
+#   20:00 UTC = 17:00 BRT
 on:
   schedule:
-    - cron: '0 8 * * *'    # 05:00 BRT
-    - cron: '0 16 * * *'   # 13:00 BRT
-    - cron: '30 22 * * *'  # 19:30 BRT
+    - cron: '0 11 * * *'   # 08:00 BRT
+    - cron: '0 15 * * *'   # 12:00 BRT
+    - cron: '0 20 * * *'   # 17:00 BRT
   workflow_dispatch:        # permite disparar manual também
 
 permissions:
@@ -92,12 +92,11 @@ jobs:
           echo "::error::não consegui empurrar os dados após 3 tentativas"
           exit 1
 
-  # Vilebrequin: 1x/dia. Roda DEPOIS do Sundek (needs: sundek) pra não competir
-  # cota de OpenAI, e só no gatilho das 08:00 UTC (05:00 BRT) — nos crons das 13h
-  # e 19h30 o job é pulado pelo `if`. No dispatch manual sempre roda.
+  # Vilebrequin: 3x/dia (igual Sundek). Roda DEPOIS do Sundek (needs: sundek) pra
+  # não competir cota de OpenAI — em cada gatilho o Ville só começa quando o Sundek
+  # daquele horário termina. No dispatch manual também roda.
   ville:
     needs: sundek
-    if: github.event.schedule == '0 8 * * *' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     timeout-minutes: 180
     concurrency:
