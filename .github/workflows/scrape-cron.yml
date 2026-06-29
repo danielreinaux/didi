@@ -65,6 +65,12 @@ jobs:
       - name: Deploy analise.html no Vercel
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_KEY }}
+          # IDs do projeto Vercel "votacao" (publicado em votacao-two.vercel.app).
+          # OBRIGATÓRIOS no CI: a pasta .vercel/ é gitignored e NÃO vem no checkout do
+          # Actions, então sem esses IDs o `vercel --prod --yes` não sabe pra qual
+          # projeto publicar (criaria um projeto novo). Não são segredos, são só IDs.
+          VERCEL_ORG_ID: team_m72m6r8zJFJfCmPq0cUZrGbt
+          VERCEL_PROJECT_ID: prj_FljhhdpJqaicpJ6ywAOfurCawmkQ
         run: |
           cp data/analise.html votacao/public/analise.html
           cd votacao
@@ -145,6 +151,10 @@ jobs:
       - name: Deploy no Vercel
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_KEY }}
+          # Mesmos IDs do projeto "votacao" (ver job sundek) — sem eles o deploy no
+          # CI não cai no projeto certo (votacao-two.vercel.app).
+          VERCEL_ORG_ID: team_m72m6r8zJFJfCmPq0cUZrGbt
+          VERCEL_PROJECT_ID: prj_FljhhdpJqaicpJ6ywAOfurCawmkQ
         run: |
           cd votacao
           npx vercel --prod --token="$VERCEL_TOKEN" --yes
