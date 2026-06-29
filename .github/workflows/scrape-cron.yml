@@ -78,6 +78,17 @@ jobs:
           # ↑ a env var ainda é VERCEL_TOKEN porque é o nome que a CLI espera;
           # o valor vem do secret VERCEL_KEY que você cadastrou.
 
+      # Detecta ofertas novas (compráveis/barganha/urgentes) no items.json recém-gerado
+      # e dispara um email-resumo. O ledger data/notificados.json deduplica entre rodadas;
+      # a 1ª rodada por marca entra em modo seed automático (marca sem enviar) pra não floodar.
+      - name: Notificar por email (Sundek)
+        if: always()
+        env:
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS }}
+          NOTIFY_TO: ${{ secrets.NOTIFY_TO }}
+        run: python -m src.notify.run --marca sundek
+
       # if: always() → persiste o checkpoint do classify mesmo se um passo anterior
       # falhar ou o job estourar o timeout (senão o progresso de ~1-3h se perde).
       - name: Commit dados de volta no repo
@@ -85,7 +96,7 @@ jobs:
         run: |
           git config user.name "Didi Bot"
           git config user.email "bot@didi.local"
-          git add data/coleta.json data/coleta-classificada.json data/historico.json data/custo_por_etapa.json data/analise.html votacao/public/analise.html votacao/public/items.json
+          git add data/coleta.json data/coleta-classificada.json data/historico.json data/custo_por_etapa.json data/notificados.json data/analise.html votacao/public/analise.html votacao/public/items.json
           git diff --cached --quiet && echo "nada a commitar" && exit 0
           git commit -m "data: cron sundek $(date -u +'%Y-%m-%d %H:%M UTC')"
           # O job dura 1-3h; outro run pode ter empurrado pro main nesse meio-tempo.
@@ -161,6 +172,14 @@ jobs:
           # ↑ a env var ainda é VERCEL_TOKEN porque é o nome que a CLI espera;
           # o valor vem do secret VERCEL_KEY que você cadastrou.
 
+      - name: Notificar por email (Ville)
+        if: always()
+        env:
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS }}
+          NOTIFY_TO: ${{ secrets.NOTIFY_TO }}
+        run: python -m src.notify.run --marca vilebrequin
+
       # if: always() → persiste o checkpoint do classify mesmo se um passo anterior
       # falhar ou o job estourar o timeout (senão o progresso se perde).
       - name: Commit dados de volta no repo
@@ -168,7 +187,7 @@ jobs:
         run: |
           git config user.name "Didi Bot"
           git config user.email "bot@didi.local"
-          git add data/coleta-ville.json data/coleta-ville-classificada.json data/analise-ville.html votacao/public/items.json votacao/public/oferta_ville.html
+          git add data/coleta-ville.json data/coleta-ville-classificada.json data/notificados.json data/analise-ville.html votacao/public/items.json votacao/public/oferta_ville.html
           git diff --cached --quiet && echo "nada a commitar" && exit 0
           git commit -m "data: cron ville $(date -u +'%Y-%m-%d %H:%M UTC')"
           # Sundek pode ter empurrado pro main nesse meio-tempo.
