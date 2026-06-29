@@ -66,16 +66,8 @@ jobs:
           cp data/analise.html votacao/public/analise.html
           python -m src.build.votacao_items   # gera votacao/public/items.json (só compráveis+barganha)
 
-      # Detecta ofertas novas (compráveis/barganha/urgentes) no items.json recém-gerado
-      # e dispara um email-resumo. O ledger data/notificados.json deduplica entre rodadas;
-      # a 1ª rodada por marca entra em modo seed automático (marca sem enviar) pra não floodar.
-      - name: Notificar por email (Sundek)
-        if: always()
-        env:
-          SMTP_USER: ${{ secrets.SMTP_USER }}
-          SMTP_PASS: ${{ secrets.SMTP_PASS }}
-          NOTIFY_TO: ${{ secrets.NOTIFY_TO }}
-        run: python -m src.notify.run --marca sundek
+      # A notificação por email saiu daqui: agora é UM email consolidado (Sundek + Ville)
+      # no job 'deploy' do fim, depois que o items.json combinado já está commitado.
 
       # if: always() → persiste o checkpoint do classify mesmo se um passo anterior
       # falhar ou o job estourar o timeout (senão o progresso de ~1-3h se perde).
@@ -84,7 +76,7 @@ jobs:
         run: |
           git config user.name "Didi Bot"
           git config user.email "bot@didi.local"
-          git add data/coleta.json data/coleta-classificada.json data/historico.json data/custo_por_etapa.json data/notificados.json data/analise.html votacao/public/analise.html votacao/public/items.json
+          git add data/coleta.json data/coleta-classificada.json data/historico.json data/custo_por_etapa.json data/analise.html votacao/public/analise.html votacao/public/items.json
           git diff --cached --quiet && echo "nada a commitar" && exit 0
           git commit -m "data: cron sundek $(date -u +'%Y-%m-%d %H:%M UTC')"
           # O job dura 1-3h; outro run pode ter empurrado pro main nesse meio-tempo.
@@ -144,13 +136,7 @@ jobs:
           python -m src.build.oferta_ville
           python -m src.build.votacao_items
 
-      - name: Notificar por email (Ville)
-        if: always()
-        env:
-          SMTP_USER: ${{ secrets.SMTP_USER }}
-          SMTP_PASS: ${{ secrets.SMTP_PASS }}
-          NOTIFY_TO: ${{ secrets.NOTIFY_TO }}
-        run: python -m src.notify.run --marca vilebrequin
+      # (notificação consolidada Sundek+Ville movida pro job 'deploy' do fim)
 
       # if: always() → persiste o checkpoint do classify mesmo se um passo anterior
       # falhar ou o job estourar o timeout (senão o progresso se perde).
@@ -159,7 +145,7 @@ jobs:
         run: |
           git config user.name "Didi Bot"
           git config user.email "bot@didi.local"
-          git add data/coleta-ville.json data/coleta-ville-classificada.json data/notificados.json data/analise-ville.html votacao/public/items.json votacao/public/oferta_ville.html
+          git add data/coleta-ville.json data/coleta-ville-classificada.json data/analise-ville.html votacao/public/items.json votacao/public/oferta_ville.html
           git diff --cached --quiet && echo "nada a commitar" && exit 0
           git commit -m "data: cron ville $(date -u +'%Y-%m-%d %H:%M UTC')"
           # Sundek pode ter empurrado pro main nesse meio-tempo.
@@ -181,6 +167,10 @@ jobs:
   # dado, site vazio. Aqui consolidamos: 1 deploy só, depois dos dois jobs, partindo do
   # main JÁ atualizado (ref: main puxa o tip com os commits dos dois). Publica exatamente
   # o que está commitado em votacao/public/ (items.json combinado + analise.html + oferta_ville).
+  #
+  # Também manda UM email consolidado (Sundek + Ville). Antes cada job notificava sua
+  # marca → 2 emails; aqui o `notify.run` SEM --marca lê o items.json combinado e manda
+  # um resumo único, depois grava+commita o ledger data/notificados.json.
   deploy:
     needs: [sundek, ville]
     if: always()           # publica o último estado commitado mesmo se um job falhar
@@ -208,3 +198,37 @@ jobs:
           npx vercel --prod --token="$VERCEL_TOKEN" --yes
           # ↑ a env var ainda é VERCEL_TOKEN porque é o nome que a CLI espera;
           # o valor vem do secret VERCEL_KEY que você cadastrou.
+
+      # notify é stdlib puro (smtplib/json), não precisa de pip install — só do Python.
+      - name: Setup Python 3.12
+        if: always()
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      # UM email só, com as duas marcas. Sem --marca, o run.py lê o items.json combinado
+      # e manda um resumo único (assunto "Sundek+Ville"). Seed pelo ledger global.
+      - name: Notificar por email (Sundek + Ville)
+        if: always()
+        env:
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS }}
+          NOTIFY_TO: ${{ secrets.NOTIFY_TO }}
+        run: python -m src.notify.run
+
+      # O notify gravou o ledger atualizado; commita de volta pra deduplicar na próxima.
+      - name: Commit do ledger de notificações
+        if: always()
+        run: |
+          git config user.name "Didi Bot"
+          git config user.email "bot@didi.local"
+          git add data/notificados.json
+          git diff --cached --quiet && echo "nada a commitar" && exit 0
+          git commit -m "data: notificados $(date -u +'%Y-%m-%d %H:%M UTC')"
+          for i in 1 2 3; do
+            git pull --rebase origin main && git push && exit 0
+            echo "push falhou (tentativa $i/3) — refazendo rebase em 5s..."
+            sleep 5
+          done
+          echo "::error::não consegui empurrar o ledger após 3 tentativas"
+          exit 1
