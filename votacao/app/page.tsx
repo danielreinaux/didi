@@ -30,13 +30,30 @@ export default function Home() {
   const [verArquivados, setVerArquivados] = useState(false);
   // Enquanto o items.json não resolve, mostramos o loading (antes ficava "vazio").
   const [carregando, setCarregando] = useState(true);
+  // Falha ao carregar as ofertas — distingue "deu erro" de "lista vazia".
+  const [erroCarregar, setErroCarregar] = useState(false);
+
+  // Faz o fetch das ofertas. Os setState ficam em callbacks async (não disparam no corpo do effect).
+  function carregarItens() {
+    fetch("/items.json")
+      .then((r) => {
+        if (!r.ok) throw new Error("falha");
+        return r.json();
+      })
+      .then(setItems)
+      .catch(() => setErroCarregar(true))
+      .finally(() => setCarregando(false));
+  }
+
+  // Reaproveitado pelo botão "Recarregar": reseta os estados e refaz o fetch.
+  function recarregar() {
+    setCarregando(true);
+    setErroCarregar(false);
+    carregarItens();
+  }
 
   useEffect(() => {
-    fetch("/items.json")
-      .then((r) => r.json())
-      .then(setItems)
-      .catch(() => {})
-      .finally(() => setCarregando(false));
+    carregarItens();
   }, []);
 
   useEffect(() => {
@@ -197,6 +214,16 @@ export default function Home() {
             <span className="w-6 h-6 rounded-full border-2 border-[rgba(255,255,255,0.15)] border-t-[#00d9ff] animate-spin" />
             Carregando ofertas…
           </div>
+        ) : erroCarregar ? (
+          <div className={`flex flex-col items-center gap-3 mt-24 text-sm ${TEXT_TERTIARY}`}>
+            Não consegui carregar as ofertas.
+            <button
+              onClick={recarregar}
+              className={`px-3 py-1.5 rounded-lg text-xs ${PILL_NEUTRAL}`}
+            >
+              Recarregar
+            </button>
+          </div>
         ) : filtrados.length === 0 ? (
           <p className={`text-center mt-20 text-sm ${TEXT_TERTIARY}`}>
             {verArquivados ? "Nenhum item arquivado aqui." : "Nenhum item aqui."}
@@ -217,8 +244,15 @@ export default function Home() {
           </div>
         )}
 
-        <footer className={`text-center text-xs ${TEXT_TERTIARY} mt-8 pb-8`}>
-          {REACTIONS.map((r) => `${r.emoji} ${r.label}`).join("   ·   ")}
+        <footer className={`flex flex-wrap items-center justify-center gap-x-5 gap-y-1 text-xs ${TEXT_TERTIARY} mt-8 pb-8`}>
+          {REACTIONS.map((r) => {
+            const Icon = r.icon;
+            return (
+              <span key={r.key} className="inline-flex items-center gap-1.5">
+                <Icon size={14} strokeWidth={1.5} aria-hidden /> {r.label}
+              </span>
+            );
+          })}
         </footer>
       </main>
     </div>

@@ -28,20 +28,29 @@ export default function VotingCard({ item, reacaoInicial, obsInicial, onReacao, 
   // Confirmação inline de 2 toques: o link vira "Confirmar?" por ~3s antes de arquivar.
   const [confirmando, setConfirmando] = useState(false);
   const confirmTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // Erro de escrita (voto/arquivar) mostrado inline no card — nada mais de falha silenciosa.
+  const [erro, setErro] = useState<string | null>(null);
+  // Status do salvamento da observação: idle | salvando | salvo | erro.
+  const [obsStatus, setObsStatus] = useState<"idle" | "salvando" | "salvo" | "erro">("idle");
+  // Última observação efetivamente persistida — evita salvar/avisar quando nada mudou.
+  const ultimaObs = useRef(obsInicial ?? "");
 
   async function arquivar() {
     const novo = !arquivado; // arquivar (true) ou desarquivar (false)
     if (confirmTimer.current) clearTimeout(confirmTimer.current);
     setConfirmando(false);
+    setErro(null);
     try {
-      await fetch("/api/archive", {
+      const res = await fetch("/api/archive", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id: item.id, archived: novo }),
       });
+      if (!res.ok) throw new Error("falha");
       onArquivar?.(item.id, novo);
     } catch {
-      /* silencioso — mesmo padrão das reações */
+      // Avisa o usuário em vez de engolir o erro: a lista não mudou, dá pra tentar de novo.
+      setErro(novo ? "Não consegui arquivar. Tente de novo." : "Não consegui desarquivar. Tente de novo.");
     }
   }
 
@@ -58,25 +67,40 @@ export default function VotingCard({ item, reacaoInicial, obsInicial, onReacao, 
     if (loading) return;
     const nova: Reaction | null = reacao === r ? null : r; // clicar de novo → remove
     setLoading(true);
+    setErro(null);
     try {
-      await fetch("/api/reactions", {
+      const res = await fetch("/api/reactions", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id: item.id, reaction: nova }),
       });
+      if (!res.ok) throw new Error("falha");
+      // Só confirma o voto na UI depois que a API aceitou.
       setReacao(nova);
       onReacao?.(item.id, nova);
+    } catch {
+      // O voto não foi gravado: mantém o estado anterior e avisa em vez de fingir sucesso.
+      setErro("Não consegui salvar seu voto. Tente de novo.");
     } finally {
       setLoading(false);
     }
   }
 
-  function salvarObs() {
-    fetch("/api/reactions", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id: item.id, observacao: obs }),
-    }).catch(() => {});
+  async function salvarObs() {
+    if (obs === ultimaObs.current) return; // nada mudou desde o último salvamento
+    setObsStatus("salvando");
+    try {
+      const res = await fetch("/api/reactions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: item.id, observacao: obs }),
+      });
+      if (!res.ok) throw new Error("falha");
+      ultimaObs.current = obs;
+      setObsStatus("salvo");
+    } catch {
+      setObsStatus("erro");
+    }
   }
 
   const nFotos = item.fotos.length;
@@ -233,32 +257,59 @@ export default function VotingCard({ item, reacaoInicial, obsInicial, onReacao, 
           </details>
         )}
 
-        {/* Botões de reação */}
+        {/* Botões de reação — ícone vetorial (lucide), alvo de 44px, estado sem deslocar layout */}
         <div className="mt-auto grid grid-cols-3 gap-1.5 pt-2">
-          {REACTIONS.map((r) => (
-            <button
-              key={r.key}
-              onClick={() => reagir(r.key)}
-              disabled={loading}
-              className={`py-2 rounded-xl text-xs transition-all ${
-                reacao === r.key ? r.selected : r.base
-              } ${loading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
-            >
-              <span className="block text-base leading-none">{r.emoji}</span>
-              {r.label}
-            </button>
-          ))}
+          {REACTIONS.map((r) => {
+            const Icon = r.icon;
+            return (
+              <button
+                key={r.key}
+                onClick={() => reagir(r.key)}
+                disabled={loading}
+                className={`min-h-11 flex flex-col items-center justify-center gap-1 rounded-xl text-xs transition-colors ${
+                  reacao === r.key ? r.selected : r.base
+                } ${loading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
+              >
+                <Icon size={20} strokeWidth={1.5} aria-hidden />
+                {r.label}
+              </button>
+            );
+          })}
         </div>
+
+        {/* Erro de escrita (voto/arquivar) — feedback inline em vez de falha silenciosa */}
+        {erro && (
+          <p className="text-[11px] text-[#ff7a7a] bg-[rgba(255,90,90,0.1)] rounded-lg px-2 py-1 leading-snug">
+            {erro}
+          </p>
+        )}
 
         {/* Observação */}
         <textarea
           value={obs}
-          onChange={(e) => setObs(e.target.value)}
+          onChange={(e) => {
+            setObs(e.target.value);
+            if (obsStatus !== "idle") setObsStatus("idle"); // volta ao neutro ao editar
+          }}
           onBlur={salvarObs}
           placeholder="Observação (opcional)…"
           className="w-full text-xs text-[#f5f5f7] bg-[rgba(255,255,255,0.03)] border border-[rgba(255,255,255,0.07)] rounded-lg px-2 py-1.5 resize-none focus:outline-none focus:ring-2 focus:ring-[rgba(0,217,255,0.4)] placeholder:text-[#6b6b78]"
           rows={2}
         />
+        {/* Confirmação de que a observação foi gravada (ou não) */}
+        {obsStatus !== "idle" && (
+          <span
+            className={`self-end text-[10px] ${
+              obsStatus === "erro" ? "text-[#ff7a7a]" : "text-[#6b6b78]"
+            }`}
+          >
+            {obsStatus === "salvando"
+              ? "salvando…"
+              : obsStatus === "salvo"
+                ? "salvo ✓"
+                : "erro ao salvar — edite e saia do campo pra tentar de novo"}
+          </span>
+        )}
 
         {/* Arquivar / Desarquivar — link discreto no rodapé. Arquivar pede confirmação inline. */}
         <button

@@ -24,38 +24,42 @@ export interface Item {
 
 export type Reaction = "gostei" | "nao_gostei" | "discordo";
 
+import type { LucideIcon } from "lucide-react";
+import { ThumbsUp, ThumbsDown, TriangleAlert } from "lucide-react";
+
+// Ícones vetoriais (lucide) no lugar dos emojis — escaláveis, temáveis e consistentes.
 export const REACTIONS: {
   key: Reaction;
   label: string;
-  emoji: string;
+  icon: LucideIcon;
   base: string;
   selected: string;
 }[] = [
   {
     key: "gostei",
     label: "Gostei",
-    emoji: "👍",
-    base: "bg-[rgba(0,255,136,0.12)] text-[#7cffba] hover:bg-[rgba(0,255,136,0.2)]",
-    selected: "bg-[#00ff88] text-[#07140a]",
+    icon: ThumbsUp,
+    base: "bg-[rgba(0,255,136,0.14)] text-[#8fffc4] hover:bg-[rgba(0,255,136,0.22)]",
+    selected: "bg-[#00ff88] text-[#063b22]",
   },
   {
     key: "nao_gostei",
     label: "Não gostei",
-    emoji: "👎",
-    base: "bg-[rgba(255,170,0,0.12)] text-[#ffcc66] hover:bg-[rgba(255,170,0,0.2)]",
+    icon: ThumbsDown,
+    base: "bg-[rgba(255,170,0,0.14)] text-[#ffd27a] hover:bg-[rgba(255,170,0,0.22)]",
     selected: "bg-[#ffaa00] text-[#1c1100]",
   },
   {
     key: "discordo",
     label: "Discordo",
-    emoji: "⚠️",
-    base: "bg-[rgba(255,255,255,0.05)] text-[#b8b8c0] hover:bg-[rgba(255,255,255,0.1)]",
-    selected: "bg-[#6b6b78] text-[#0a0a0c]",
+    icon: TriangleAlert,
+    base: "bg-[rgba(255,255,255,0.07)] text-[#cfcfd8] hover:bg-[rgba(255,255,255,0.12)]",
+    selected: "bg-[#7c7c8a] text-[#0a0a0c]",
   },
 ];
 
 export const REACTION_LABELS: Record<Reaction, string> = {
-  gostei: "👍 Gostei",
-  nao_gostei: "👎 Não gostei",
-  discordo: "⚠️ Discordo",
+  gostei: "Gostei",
+  nao_gostei: "Não gostei",
+  discordo: "Discordo",
 };

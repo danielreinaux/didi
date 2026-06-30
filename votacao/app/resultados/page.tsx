@@ -12,31 +12,43 @@ interface Reacao {
 
 const ORDER: Reaction[] = ["gostei", "nao_gostei", "discordo"];
 
+type Loja = "sundek" | "ville";
+const LOJAS: { key: Loja; label: string }[] = [
+  { key: "sundek", label: "Sundek" },
+  { key: "ville", label: "Ville" },
+];
+
 export default function Resultados() {
   const [items, setItems] = useState<Item[]>([]);
   const [reacoes, setReacoes] = useState<Record<string, Reacao>>({});
   const [filtro, setFiltro] = useState<Reaction | "todos">("todos");
+  const [loja, setLoja] = useState<Loja>("sundek");
+  // Enquanto os dois fetches não resolvem, mostramos loading (antes caía em "Nenhum voto ainda").
+  const [carregando, setCarregando] = useState(true);
 
   useEffect(() => {
-    fetch("/items.json").then((r) => r.json()).then(setItems).catch(() => {});
-    fetch("/api/reactions")
-      .then((r) => r.json())
-      .then((data) => setReacoes(data || {}))
-      .catch(() => {});
+    Promise.allSettled([
+      fetch("/items.json").then((r) => r.json()).then(setItems),
+      fetch("/api/reactions").then((r) => r.json()).then((data) => setReacoes(data || {})),
+    ]).finally(() => setCarregando(false));
   }, []);
 
   const itensMapa = Object.fromEntries(items.map((i) => [i.id, i]));
 
-  const contagem = ORDER.reduce((acc, r) => {
-    acc[r] = Object.values(reacoes).filter((v) => v.reaction === r).length;
-    return acc;
-  }, {} as Record<Reaction, number>);
-  const totalVotos = ORDER.reduce((s, r) => s + contagem[r], 0);
+  // A loja "ville" no front corresponde à marca "vilebrequin" no items.json (igual à Home).
+  const marcaDaLoja = loja === "ville" ? "vilebrequin" : "sundek";
 
   const votados = Object.entries(reacoes)
     .map(([id, v]) => ({ id, ...v, item: itensMapa[id] }))
-    .filter((v) => v.item && v.reaction)
+    .filter((v) => v.item && v.reaction && v.item.marca === marcaDaLoja)
     .sort((a, b) => ORDER.indexOf(a.reaction!) - ORDER.indexOf(b.reaction!));
+
+  // Contagens por loja, pra os chips e o "N votos" baterem com a loja selecionada.
+  const contagem = ORDER.reduce((acc, r) => {
+    acc[r] = votados.filter((v) => v.reaction === r).length;
+    return acc;
+  }, {} as Record<Reaction, number>);
+  const totalVotos = votados.length;
 
   const filtrados = filtro === "todos" ? votados : votados.filter((v) => v.reaction === filtro);
 
@@ -45,7 +57,23 @@ export default function Resultados() {
       <header className={`sticky top-0 z-20 ${HEADER_BG}`}>
         <div className="max-w-7xl mx-auto px-4 py-3 flex flex-col gap-3">
           <div className="flex items-center justify-between flex-wrap gap-2">
-            <h1 className="text-2xl text-[#f5f5f7] leading-tight">Resultados</h1>
+            <div className="flex items-center gap-3 flex-wrap">
+              <h1 className="text-2xl text-[#f5f5f7] leading-tight">Resultados</h1>
+              {/* Seletor de loja — mesmo controle da Home, pra os votos baterem por loja */}
+              <div className="inline-flex p-1 rounded-xl bg-[rgba(255,255,255,0.04)] border border-[rgba(255,255,255,0.07)]">
+                {LOJAS.map((l) => (
+                  <button
+                    key={l.key}
+                    onClick={() => setLoja(l.key)}
+                    className={`px-4 py-1 rounded-lg text-xs transition-all ${
+                      loja === l.key ? ACTIVE_GRADIENT : `${TEXT_SECONDARY} hover:text-[#f5f5f7]`
+                    }`}
+                  >
+                    {l.label}
+                  </button>
+                ))}
+              </div>
+            </div>
             <div className="flex items-center gap-3">
               <span className={`text-xs ${TEXT_TERTIARY}`}>{totalVotos} votos</span>
               <a href="/" className="text-xs text-[#00d9ff] hover:underline">Voltar</a>
@@ -76,12 +104,18 @@ export default function Resultados() {
       </header>
 
       <main className="max-w-7xl mx-auto px-4 py-6">
-        {filtrados.length === 0 ? (
+        {carregando ? (
+          <div className={`flex flex-col items-center gap-3 mt-24 text-sm ${TEXT_TERTIARY}`}>
+            <span className="w-6 h-6 rounded-full border-2 border-[rgba(255,255,255,0.15)] border-t-[#00d9ff] animate-spin" />
+            Carregando resultados…
+          </div>
+        ) : filtrados.length === 0 ? (
           <p className={`text-center mt-20 text-sm ${TEXT_TERTIARY}`}>Nenhum voto ainda.</p>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {filtrados.map(({ id, item, reaction, observacao }) => {
               const meta = REACTIONS.find((x) => x.key === reaction)!;
+              const Icon = meta.icon;
               const foto = item.fotos[0];
               return (
                 <div key={id} className={`${CARD} overflow-hidden flex flex-col`}>
@@ -91,8 +125,8 @@ export default function Resultados() {
                     ) : (
                       <div className="flex items-center justify-center h-full text-[#6b6b78] text-sm">Sem foto</div>
                     )}
-                    <span className={`absolute top-2 left-2 text-xs px-2 py-0.5 rounded-full ${meta.selected}`}>
-                      {meta.emoji} {meta.label}
+                    <span className={`absolute top-2 left-2 inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full ${meta.selected}`}>
+                      <Icon size={14} strokeWidth={1.5} aria-hidden /> {meta.label}
                     </span>
                   </div>
                   <div className="p-3 flex flex-col gap-1.5">
