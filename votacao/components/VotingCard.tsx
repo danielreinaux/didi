@@ -10,6 +10,8 @@ interface Props {
   reacaoInicial?: Reaction;
   obsInicial?: string;
   onReacao?: (id: string, r: Reaction | null) => void;
+  arquivado?: boolean; // se true, o card está na visão de arquivados (botão vira "Desarquivar")
+  onArquivar?: (id: string, arquivar: boolean) => void;
 }
 
 // Rótulos amigáveis pras flags de aviso vindas do score (Ville).
@@ -18,11 +20,39 @@ const FLAG_LABELS: Record<string, string> = {
   rever_fotos: "rever fotos (padrão indefinido)",
 };
 
-export default function VotingCard({ item, reacaoInicial, obsInicial, onReacao }: Props) {
+export default function VotingCard({ item, reacaoInicial, obsInicial, onReacao, arquivado, onArquivar }: Props) {
   const [reacao, setReacao] = useState<Reaction | null>(reacaoInicial ?? null);
   const [obs, setObs] = useState(obsInicial ?? "");
   const [loading, setLoading] = useState(false);
   const [fotoIdx, setFotoIdx] = useState(0);
+  // Confirmação inline de 2 toques: o link vira "Confirmar?" por ~3s antes de arquivar.
+  const [confirmando, setConfirmando] = useState(false);
+  const confirmTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  async function arquivar() {
+    const novo = !arquivado; // arquivar (true) ou desarquivar (false)
+    if (confirmTimer.current) clearTimeout(confirmTimer.current);
+    setConfirmando(false);
+    try {
+      await fetch("/api/archive", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: item.id, archived: novo }),
+      });
+      onArquivar?.(item.id, novo);
+    } catch {
+      /* silencioso — mesmo padrão das reações */
+    }
+  }
+
+  function onClickArquivar() {
+    // Desarquivar é reversível e barato → vai direto. Arquivar pede confirmação.
+    if (arquivado) return arquivar();
+    if (confirmando) return arquivar();
+    setConfirmando(true);
+    if (confirmTimer.current) clearTimeout(confirmTimer.current);
+    confirmTimer.current = setTimeout(() => setConfirmando(false), 3000);
+  }
 
   async function reagir(r: Reaction) {
     if (loading) return;
@@ -229,6 +259,18 @@ export default function VotingCard({ item, reacaoInicial, obsInicial, onReacao }
           className="w-full text-xs text-[#f5f5f7] bg-[rgba(255,255,255,0.03)] border border-[rgba(255,255,255,0.07)] rounded-lg px-2 py-1.5 resize-none focus:outline-none focus:ring-2 focus:ring-[rgba(0,217,255,0.4)] placeholder:text-[#6b6b78]"
           rows={2}
         />
+
+        {/* Arquivar / Desarquivar — link discreto no rodapé. Arquivar pede confirmação inline. */}
+        <button
+          onClick={onClickArquivar}
+          className={`self-end text-[11px] transition-colors ${
+            confirmando
+              ? "text-[#ffaa00] hover:text-[#ffcc66]"
+              : "text-[#6b6b78] hover:text-[#b8b8c0]"
+          }`}
+        >
+          {arquivado ? "↩ Desarquivar" : confirmando ? "Confirmar arquivar?" : "Arquivar"}
+        </button>
       </div>
     </div>
   );

@@ -25,10 +25,29 @@ export default function Home() {
   const [obs, setObs] = useState<Record<string, string>>({});
   const [filtro, setFiltro] = useState<Filtro>("todos");
   const [loja, setLoja] = useState<Loja>("sundek");
+  // Ids arquivados (global, vindos do Redis) e se estamos na visão de arquivados.
+  const [arquivados, setArquivados] = useState<Set<string>>(new Set());
+  const [verArquivados, setVerArquivados] = useState(false);
 
   useEffect(() => {
     fetch("/items.json").then((r) => r.json()).then(setItems).catch(() => {});
   }, []);
+
+  useEffect(() => {
+    fetch("/api/archive")
+      .then((r) => r.json())
+      .then((ids: string[]) => setArquivados(new Set(ids)))
+      .catch(() => {});
+  }, []);
+
+  function onArquivar(id: string, arquivar: boolean) {
+    setArquivados((prev) => {
+      const next = new Set(prev);
+      if (arquivar) next.add(id);
+      else next.delete(id);
+      return next;
+    });
+  }
 
   useEffect(() => {
     fetch("/api/reactions")
@@ -57,7 +76,15 @@ export default function Home() {
 
   // A loja "ville" no front corresponde à marca "vilebrequin" no items.json.
   const marcaDaLoja = loja === "ville" ? "vilebrequin" : "sundek";
-  const itensLoja = items.filter((i) => i.marca === marcaDaLoja);
+  const itensDaMarca = items.filter((i) => i.marca === marcaDaLoja);
+
+  // Quantos arquivados existem nessa loja (pro badge do botão "Ver arquivados").
+  const nArquivados = itensDaMarca.filter((i) => arquivados.has(i.id)).length;
+
+  // Tela base = só não-arquivados; visão de arquivados = só os arquivados.
+  const itensLoja = itensDaMarca.filter((i) =>
+    verArquivados ? arquivados.has(i.id) : !arquivados.has(i.id)
+  );
 
   const compraveis = itensLoja.filter((i) => i.decisao === "compravel").length;
   const barganhas = itensLoja.filter((i) => i.decisao === "medio").length;
@@ -107,6 +134,16 @@ export default function Home() {
               <span className={`text-xs ${TEXT_TERTIARY}`}>
                 {votados}/{itensLoja.length} avaliados
               </span>
+              <button
+                onClick={() => setVerArquivados((v) => !v)}
+                className={`text-xs hover:underline ${
+                  verArquivados ? "text-[#00d9ff]" : TEXT_TERTIARY
+                }`}
+              >
+                {verArquivados
+                  ? "← Voltar"
+                  : `Ver arquivados${nArquivados ? ` (${nArquivados})` : ""}`}
+              </button>
               <a
                 href="/resultados"
                 className="text-xs text-[#00d9ff] hover:underline"
@@ -119,12 +156,19 @@ export default function Home() {
           {/* Linha 2: título + contexto (mesmo layout pras duas lojas) */}
           <h1 className="text-2xl text-[#f5f5f7] leading-tight">
             {loja === "ville" ? "Ville" : "Sundek"}
+            {verArquivados && <span className={TEXT_TERTIARY}> · Arquivados</span>}
           </h1>
           <p className={`text-xs ${TEXT_SECONDARY}`}>
-            Só os{" "}
-            <b className="font-medium text-[#00ff88]">{compraveis} compráveis</b> e{" "}
-            <b className="font-medium text-[#ffaa00]">{barganhas} barganhas</b> — vote
-            👍 / 👎 / ⚠️ em cada um.
+            {verArquivados ? (
+              <>Itens arquivados — use “↩ Desarquivar” pra trazer de volta pra tela base.</>
+            ) : (
+              <>
+                Só os{" "}
+                <b className="font-medium text-[#00ff88]">{compraveis} compráveis</b> e{" "}
+                <b className="font-medium text-[#ffaa00]">{barganhas} barganhas</b> — vote
+                👍 / 👎 / ⚠️ em cada um.
+              </>
+            )}
           </p>
           <div className="w-full h-1.5 bg-[rgba(255,255,255,0.04)] rounded-full overflow-hidden">
             <div
@@ -143,7 +187,9 @@ export default function Home() {
 
       <main className="max-w-7xl mx-auto px-4 py-6">
         {filtrados.length === 0 ? (
-          <p className={`text-center mt-20 text-sm ${TEXT_TERTIARY}`}>Nenhum item aqui.</p>
+          <p className={`text-center mt-20 text-sm ${TEXT_TERTIARY}`}>
+            {verArquivados ? "Nenhum item arquivado aqui." : "Nenhum item aqui."}
+          </p>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {filtrados.map((item) => (
@@ -153,6 +199,8 @@ export default function Home() {
                 reacaoInicial={reacoes[item.id]}
                 obsInicial={obs[item.id]}
                 onReacao={onReacao}
+                arquivado={verArquivados}
+                onArquivar={onArquivar}
               />
             ))}
           </div>
