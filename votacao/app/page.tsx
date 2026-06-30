@@ -28,9 +28,15 @@ export default function Home() {
   // Ids arquivados (global, vindos do Redis) e se estamos na visão de arquivados.
   const [arquivados, setArquivados] = useState<Set<string>>(new Set());
   const [verArquivados, setVerArquivados] = useState(false);
+  // Enquanto o items.json não resolve, mostramos o loading (antes ficava "vazio").
+  const [carregando, setCarregando] = useState(true);
 
   useEffect(() => {
-    fetch("/items.json").then((r) => r.json()).then(setItems).catch(() => {});
+    fetch("/items.json")
+      .then((r) => r.json())
+      .then(setItems)
+      .catch(() => {})
+      .finally(() => setCarregando(false));
   }, []);
 
   useEffect(() => {
@@ -186,7 +192,12 @@ export default function Home() {
       </header>
 
       <main className="max-w-7xl mx-auto px-4 py-6">
-        {filtrados.length === 0 ? (
+        {carregando ? (
+          <div className={`flex flex-col items-center gap-3 mt-24 text-sm ${TEXT_TERTIARY}`}>
+            <span className="w-6 h-6 rounded-full border-2 border-[rgba(255,255,255,0.15)] border-t-[#00d9ff] animate-spin" />
+            Carregando ofertas…
+          </div>
+        ) : filtrados.length === 0 ? (
           <p className={`text-center mt-20 text-sm ${TEXT_TERTIARY}`}>
             {verArquivados ? "Nenhum item arquivado aqui." : "Nenhum item aqui."}
           </p>
