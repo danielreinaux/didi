@@ -296,32 +296,38 @@ export default function VotingCard({ item, reacaoInicial, obsInicial, onReacao, 
           className="w-full text-xs text-[#f5f5f7] bg-[rgba(255,255,255,0.03)] border border-[rgba(255,255,255,0.07)] rounded-lg px-2 py-1.5 resize-none focus:outline-none focus:ring-2 focus:ring-[rgba(0,217,255,0.4)] placeholder:text-[#6b6b78]"
           rows={2}
         />
-        {/* Confirmação de que a observação foi gravada (ou não) */}
-        {obsStatus !== "idle" && (
-          <span
-            className={`self-end text-[10px] ${
-              obsStatus === "erro" ? "text-[#ff7a7a]" : "text-[#6b6b78]"
+        {/* Rodapé: status da observação à esquerda, Arquivar à direita — na mesma linha */}
+        <div className="flex items-center gap-2">
+          {obsStatus !== "idle" && (
+            <span
+              title={
+                obsStatus === "erro"
+                  ? "Edite e saia do campo pra tentar de novo"
+                  : undefined
+              }
+              className={`text-[10px] ${
+                obsStatus === "erro" ? "text-[#ff7a7a]" : "text-[#6b6b78]"
+              }`}
+            >
+              {obsStatus === "salvando"
+                ? "salvando…"
+                : obsStatus === "salvo"
+                  ? "salvo ✓"
+                  : "erro ao salvar"}
+            </span>
+          )}
+          {/* Arquivar / Desarquivar — fixo à direita (ml-auto). Arquivar pede confirmação inline. */}
+          <button
+            onClick={onClickArquivar}
+            className={`ml-auto text-[11px] transition-colors ${
+              confirmando
+                ? "text-[#ffaa00] hover:text-[#ffcc66]"
+                : "text-[#6b6b78] hover:text-[#b8b8c0]"
             }`}
           >
-            {obsStatus === "salvando"
-              ? "salvando…"
-              : obsStatus === "salvo"
-                ? "salvo ✓"
-                : "erro ao salvar — edite e saia do campo pra tentar de novo"}
-          </span>
-        )}
-
-        {/* Arquivar / Desarquivar — link discreto no rodapé. Arquivar pede confirmação inline. */}
-        <button
-          onClick={onClickArquivar}
-          className={`self-end text-[11px] transition-colors ${
-            confirmando
-              ? "text-[#ffaa00] hover:text-[#ffcc66]"
-              : "text-[#6b6b78] hover:text-[#b8b8c0]"
-          }`}
-        >
-          {arquivado ? "↩ Desarquivar" : confirmando ? "Confirmar arquivar?" : "Arquivar"}
-        </button>
+            {arquivado ? "↩ Desarquivar" : confirmando ? "Confirmar arquivar?" : "Arquivar"}
+          </button>
+        </div>
       </div>
     </div>
   );
