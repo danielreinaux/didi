@@ -19,7 +19,10 @@ export async function OPTIONS() {
 // GET /api/archive → string[] com os ids arquivados
 export async function GET() {
   const ids = await redis.smembers(ARCHIVE_KEY);
-  return NextResponse.json(ids ?? [], { headers: CORS });
+  // O Upstash desserializa ids numéricos como number na leitura; o front compara
+  // com item.id (string), então um Set de numbers nunca casa via .has(string).
+  // Forçamos string aqui pra honrar o contrato string[] e fazer o arquivado persistir.
+  return NextResponse.json((ids ?? []).map(String), { headers: CORS });
 }
 
 // POST /api/archive  body: { id, archived: boolean }
