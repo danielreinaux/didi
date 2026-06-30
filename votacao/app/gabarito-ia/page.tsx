@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   HEADER_BG,
   TEXT_SECONDARY,
@@ -60,7 +60,8 @@ function rotuloOpt(crit: Criterio, valor: string | null | undefined): string {
 }
 
 // Carrossel de fotos simples (mesma lógica do oferta_ville.html).
-function Carrossel({ fotos }: { fotos: string[] }) {
+// Clicar na foto abre o lightbox (onOpen) já no índice atual.
+function Carrossel({ fotos, onOpen }: { fotos: string[]; onOpen: (i: number) => void }) {
   const [i, setI] = useState(0);
   if (!fotos.length)
     return <div className="w-full aspect-square bg-[#0b0b0f] grid place-items-center text-xs text-[#6b6b78]">sem foto</div>;
@@ -68,12 +69,58 @@ function Carrossel({ fotos }: { fotos: string[] }) {
   return (
     <div className="relative w-full aspect-square bg-[#0b0b0f]">
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src={fotos[i]} alt="" className="w-full h-full object-cover" loading="lazy" />
+      <img
+        src={fotos[i]}
+        alt=""
+        onClick={() => onOpen(i)}
+        title="Clique para ampliar"
+        className="w-full h-full object-cover cursor-zoom-in"
+        loading="lazy"
+      />
       {n > 1 && (
         <>
           <button onClick={() => setI((i - 1 + n) % n)} className="absolute left-2 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-black/45 text-white text-xl">‹</button>
           <button onClick={() => setI((i + 1) % n)} className="absolute right-2 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-black/45 text-white text-xl">›</button>
           <span className="absolute top-2 right-2 text-[11px] bg-black/50 text-white px-2 py-0.5 rounded-full">{i + 1}/{n}</span>
+        </>
+      )}
+    </div>
+  );
+}
+
+// Lightbox: foto ampliada em modal, com navegação entre as fotos do MESMO
+// produto. Fecha no X, no fundo escuro ou Esc; setas ‹ › e teclas ←/→ andam.
+function Lightbox({ fotos, inicial, onClose }: { fotos: string[]; inicial: number; onClose: () => void }) {
+  const [i, setI] = useState(inicial);
+  const n = fotos.length;
+  const prev = useCallback(() => setI((x) => (x - 1 + n) % n), [n]);
+  const next = useCallback(() => setI((x) => (x + 1) % n), [n]);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+      else if (e.key === "ArrowLeft") prev();
+      else if (e.key === "ArrowRight") next();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [onClose, prev, next]);
+
+  return (
+    <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-sm flex items-center justify-center" onClick={onClose}>
+      <button onClick={onClose} title="Fechar (Esc)" className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/10 text-white text-2xl grid place-items-center hover:bg-white/20">×</button>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={fotos[i]}
+        alt=""
+        onClick={(e) => e.stopPropagation()}
+        className="max-w-[92vw] max-h-[88vh] object-contain rounded-lg shadow-2xl select-none"
+      />
+      {n > 1 && (
+        <>
+          <button onClick={(e) => { e.stopPropagation(); prev(); }} title="Anterior (←)" className="absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/10 text-white text-3xl grid place-items-center hover:bg-white/20">‹</button>
+          <button onClick={(e) => { e.stopPropagation(); next(); }} title="Próxima (→)" className="absolute right-3 sm:right-6 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/10 text-white text-3xl grid place-items-center hover:bg-white/20">›</button>
+          <span className="absolute bottom-5 left-1/2 -translate-x-1/2 text-sm bg-black/60 text-white px-3 py-1 rounded-full">{i + 1}/{n}</span>
         </>
       )}
     </div>
@@ -86,7 +133,11 @@ export default function GabaritoIA() {
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState(false);
   const [filtro, setFiltro] = useState<"todos" | "pendentes" | "completos">("todos");
-  const [salvando, setSalvando] = useState<Record<string, boolean>>({});
+  // Status de PERSISTÊNCIA por item — nunca falhar em silêncio (lição do bug dos
+  // arquivados): se o servidor não confirmar, o usuário tem que VER "não salvou".
+  const [status, setStatus] = useState<Record<string, "saving" | "saved" | "error">>({});
+  // Lightbox: fotos do produto clicado + índice inicial. null = fechado.
+  const [lightbox, setLightbox] = useState<{ fotos: string[]; i: number } | null>(null);
 
   useEffect(() => {
     Promise.all([
@@ -118,17 +169,17 @@ export default function GabaritoIA() {
       else delete next[id][criterio];
       return next;
     });
-    setSalvando((s) => ({ ...s, [id]: true }));
+    setStatus((s) => ({ ...s, [id]: "saving" }));
     try {
-      await fetch(API, {
+      const res = await fetch(API, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id, criterio, valor }),
       });
+      // Só marca "salvo" se o servidor confirmou de fato (res.ok = gravou no Redis).
+      setStatus((s) => ({ ...s, [id]: res.ok ? "saved" : "error" }));
     } catch {
-      /* mantém o otimista; a próxima carga reconcilia */
-    } finally {
-      setSalvando((s) => ({ ...s, [id]: false }));
+      setStatus((s) => ({ ...s, [id]: "error" }));
     }
   }
 
@@ -203,7 +254,7 @@ export default function GabaritoIA() {
                 <div key={item.id} className="rounded-xl bg-[rgba(255,255,255,0.025)] border border-[rgba(255,255,255,0.07)] overflow-hidden grid md:grid-cols-[300px_1fr]">
                   {/* Coluna foto + meta */}
                   <div className="flex flex-col">
-                    <Carrossel fotos={item.fotos} />
+                    <Carrossel fotos={item.fotos} onOpen={(idx) => setLightbox({ fotos: item.fotos, i: idx })} />
                     <div className="p-3 flex flex-col gap-1.5">
                       <a href={item.url} target="_blank" rel="noreferrer" className="text-sm text-[#f5f5f7] hover:underline leading-snug line-clamp-2">{item.titulo}</a>
                       <div className={`text-xs ${TEXT_SECONDARY}`}>{item.tamanho || "?"} · <b className="text-[#f5f5f7]">{item.preco || "?"}</b></div>
@@ -217,7 +268,17 @@ export default function GabaritoIA() {
                   {/* Coluna critérios */}
                   <div className="p-3 border-t md:border-t-0 md:border-l border-[rgba(255,255,255,0.07)]">
                     <div className="flex items-center justify-between mb-2">
-                      <span className={`text-xs ${TEXT_TERTIARY}`}>{salvando[item.id] ? "salvando…" : "respostas esperadas"}</span>
+                      <span className="text-xs">
+                        {status[item.id] === "saving" ? (
+                          <span className="text-[#6b6b78]">salvando…</span>
+                        ) : status[item.id] === "error" ? (
+                          <span className="text-[#ff4d6d] font-medium">⚠ não salvou — tente de novo</span>
+                        ) : status[item.id] === "saved" ? (
+                          <span className="text-[#00ff88]">salvo no servidor ✓</span>
+                        ) : (
+                          <span className={TEXT_TERTIARY}>respostas esperadas</span>
+                        )}
+                      </span>
                       <button onClick={() => tudoIgualIA(item)} className={`text-[11px] px-2.5 py-1 rounded-lg ${PILL_NEUTRAL}`}>✓ Tudo = IA</button>
                     </div>
                     <div className="grid sm:grid-cols-2 gap-x-4 gap-y-2">
@@ -257,6 +318,10 @@ export default function GabaritoIA() {
           </div>
         )}
       </main>
+
+      {lightbox && (
+        <Lightbox fotos={lightbox.fotos} inicial={lightbox.i} onClose={() => setLightbox(null)} />
+      )}
     </div>
   );
 }
