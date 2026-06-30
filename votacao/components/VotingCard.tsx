@@ -266,7 +266,7 @@ export default function VotingCard({ item, reacaoInicial, obsInicial, onReacao, 
                 key={r.key}
                 onClick={() => reagir(r.key)}
                 disabled={loading}
-                className={`min-h-11 flex flex-col items-center justify-center gap-1 rounded-xl text-xs transition-colors ${
+                className={`min-h-11 flex flex-col items-center justify-center gap-1 rounded-xl text-xs leading-none transition-colors ${
                   reacao === r.key ? r.selected : r.base
                 } ${loading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
               >
