@@ -1,6 +1,8 @@
-name: Scrape + Classify (Sundek + Ville, 10x/dia)
+name: Scrape + Classify (Sundek + Ville, 12x/dia)
 
-# Horários em UTC. Brasil = UTC-3. 10x/dia entre 8h e 20h BRT (passo de 80 min).
+# Horários em UTC. Brasil = UTC-3. 12x/dia entre 6h e 20h BRT.
+#   09:00 UTC = 06:00 BRT
+#   10:00 UTC = 07:00 BRT
 #   11:00 UTC = 08:00 BRT
 #   12:20 UTC = 09:20 BRT
 #   13:40 UTC = 10:40 BRT
@@ -13,6 +15,8 @@ name: Scrape + Classify (Sundek + Ville, 10x/dia)
 #   23:00 UTC = 20:00 BRT
 on:
   schedule:
+    - cron: '0 9 * * *'     # 06:00 BRT
+    - cron: '0 10 * * *'    # 07:00 BRT
     - cron: '0 11 * * *'    # 08:00 BRT
     - cron: '20 12 * * *'   # 09:20 BRT
     - cron: '40 13 * * *'   # 10:40 BRT
