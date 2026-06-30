@@ -45,7 +45,7 @@ VINTED = {
 # Quantos itens a coleta deve trazer por execução (por marca).
 # Override pontual via env MAX_ITEMS (ex: testar com 100 sem mexer no padrão).
 import os as _os
-MAX_ITEMS_POR_RODADA = int(_os.environ.get("MAX_ITEMS", "200"))
+MAX_ITEMS_POR_RODADA = int(_os.environ.get("MAX_ITEMS", "120"))
 
 # Modelo de IA pra classificação visual.
 IA = {
