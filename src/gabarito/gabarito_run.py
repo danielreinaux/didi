@@ -153,14 +153,15 @@ def _montar_inputs() -> list[dict]:
     for it in gab:
         iid = str(it["id"])
         raw = crus.get(iid, {})
-        fotos = [_foto_para_url(f) for f in it.get("fotos", [])]
+        # Guarda só os CAMINHOS das fotos (leve). O base64 é montado por item,
+        # na hora de classificar (lazy), pra não segurar as 50 na memória.
         inputs.append({
             "id": iid,
             "titulo": raw.get("titulo") or it.get("titulo"),
             "cor": raw.get("cor") if isinstance(raw.get("cor"), str) else None,
             "tamanho": raw.get("tamanho") or it.get("tamanho"),
             "estado": raw.get("estado") or it.get("estado"),
-            "fotos": fotos,
+            "fotos_local": it.get("fotos", []),
         })
     return inputs
 
@@ -170,6 +171,14 @@ def _processar(item: dict, rodar: set, base: dict | None) -> tuple[dict, int, in
     out = {c: (base.get(c) if base else None) for c in CRITERIOS}
     gate = (base or {}).get("_gate")
     in_tok = out_tok = 0
+
+    # Lazy: carrega as fotos em base64 SÓ agora (por item). Fica só na memória
+    # deste worker e é liberado ao fim — evita o MemoryError de segurar as 50.
+    fotos = [_foto_para_url(f) for f in item.get("fotos_local", [])]
+    item = {
+        "id": item.get("id"), "titulo": item.get("titulo"), "cor": item.get("cor"),
+        "tamanho": item.get("tamanho"), "estado": item.get("estado"), "fotos": fotos,
+    }
 
     def chamar(agente: str) -> dict:
         nonlocal in_tok, out_tok
@@ -292,7 +301,9 @@ def main() -> None:
         print("Use --label <nome> (ex: baseline, v2).")
         sys.exit(1)
     base_label = _arg("--base", "baseline")
-    workers = int(_arg("--workers", "4"))
+    # Default 2 (não 4): as fotos em base64 pesam na serialização; 4 em paralelo
+    # num PC carregado estourou a memória. Pode subir com --workers se sobrar RAM.
+    workers = int(_arg("--workers", "2"))
 
     if not GAB_JSON.exists():
         print("gabarito_ville.json não existe. Rode `python -m src.build.gabarito_ville`.")
@@ -306,15 +317,42 @@ def main() -> None:
 
     inputs = _montar_inputs()
     REG.mkdir(parents=True, exist_ok=True)
+    out_path = REG / f"rodada-{label}.json"
+
+    # RESUME: se já existe uma rodada com esse label (ex.: crashou no meio),
+    # reaproveita os itens já feitos e só processa os que faltam — não repaga o
+    # que já rodou. Use --reset pra começar do zero.
+    resultados: dict[str, dict] = {}
+    if "--reset" not in sys.argv:
+        anterior = _carregar_rodada(label)
+        if anterior and isinstance(anterior.get("itens"), dict):
+            resultados = dict(anterior["itens"])
+    pendentes = [it for it in inputs if it["id"] not in resultados]
+
     print(f"=== Rodada '{label}' · {len(inputs)} itens · agentes: {sorted(rodar)} · {workers} workers ===")
     copiados = [a for a in ORDEM if a not in rodar]
     if copiados:
         print(f"  (copiando do baseline '{base_label}': {copiados})")
+    if resultados:
+        print(f"  resume: {len(resultados)} já feitos · {len(pendentes)} pendentes.")
     print()
 
-    resultados: dict[str, dict] = {}
     in_tok = out_tok = 0
     t0 = time.time()
+
+    def _escrever() -> None:
+        custo = (in_tok / 1_000_000) * 0.15 + (out_tok / 1_000_000) * 0.60
+        out_path.write_text(json.dumps({
+            "label": label,
+            "gerado_em": datetime.now(timezone.utc).isoformat(),
+            "base": base_label if rodar != set(ORDEM) else None,
+            "agentes_rodados": sorted(rodar),
+            "prompt_hashes": hashes,
+            "tokens_in": in_tok,
+            "tokens_out": out_tok,
+            "custo_usd_aprox": round(custo, 4),
+            "itens": resultados,
+        }, indent=2, ensure_ascii=False), encoding="utf-8")
 
     def tarefa(item):
         base = (base_itens or {}).get(item["id"]) if base_itens else None
@@ -322,37 +360,33 @@ def main() -> None:
         return item["id"], crit, it_in, it_out
 
     with ThreadPoolExecutor(max_workers=workers) as pool:
-        futs = [pool.submit(tarefa, it) for it in inputs]
+        futs = [pool.submit(tarefa, it) for it in pendentes]
         feito = 0
         for fut in as_completed(futs):
-            iid, crit, it_in, it_out = fut.result()
-            resultados[iid] = crit
+            try:
+                iid, crit, it_in, it_out = fut.result()
+            except Exception as e:
+                # Item que falhou (rede/memória) NÃO é salvo → fica pendente pro
+                # próximo run. Não derruba a rodada inteira.
+                with _lock:
+                    print(f"  ! erro num item (fica pendente, rode de novo): {str(e)[:90]}")
+                continue
             with _lock:
+                resultados[iid] = crit
                 in_tok += it_in
                 out_tok += it_out
                 feito += 1
-                if feito % 10 == 0:
-                    print(f"  {feito}/{len(inputs)}")
+                _escrever()  # checkpoint a CADA item — crash não perde progresso
+                if feito % 5 == 0:
+                    print(f"  {feito}/{len(pendentes)}")
 
-    # Custo aproximado (mistura de modelos; usa a tabela do mini como base — os
-    # números servem de ordem de grandeza, não de fatura exata).
+    _escrever()
     custo = (in_tok / 1_000_000) * 0.15 + (out_tok / 1_000_000) * 0.60
-    doc = {
-        "label": label,
-        "gerado_em": datetime.now(timezone.utc).isoformat(),
-        "base": base_label if rodar != set(ORDEM) else None,
-        "agentes_rodados": sorted(rodar),
-        "prompt_hashes": hashes,
-        "tokens_in": in_tok,
-        "tokens_out": out_tok,
-        "custo_usd_aprox": round(custo, 4),
-        "itens": resultados,
-    }
-    out_path = REG / f"rodada-{label}.json"
-    out_path.write_text(json.dumps(doc, indent=2, ensure_ascii=False), encoding="utf-8")
     print(f"\nOK -> {out_path}")
-    print(f"  tokens in/out: {in_tok:,}/{out_tok:,} · custo aprox: ${custo:.4f} · {time.time()-t0:.1f}s")
-    print(f"  Agora compare:  python -m src.gabarito.gabarito_diff --de {base_label} --para {label}")
+    print(f"  {len(resultados)}/{len(inputs)} itens salvos · tokens in/out: {in_tok:,}/{out_tok:,} · custo aprox: ${custo:.4f} · {time.time()-t0:.1f}s")
+    if len(resultados) < len(inputs):
+        print(f"  ⚠ {len(inputs)-len(resultados)} pendentes — rode o MESMO comando de novo pra completar (resume automático).")
+    print(f"  Métrica desta rodada:  python -m src.gabarito.gabarito_aval --label {label}")
 
 
 if __name__ == "__main__":
