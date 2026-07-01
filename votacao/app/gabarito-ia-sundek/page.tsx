@@ -314,6 +314,25 @@ export default function GabaritoIASundek() {
                         );
                       })}
                     </div>
+                    {/* Observação livre — só pra humano ler, NÃO é critério nem
+                        alimenta a IA. Vai no mesmo hash do Redis sob "observacao". */}
+                    <div className="mt-3">
+                      <label htmlFor={`obs-${item.id}`} className="text-[11px] text-[#cfcfd8] flex items-center gap-1.5 mb-1">
+                        Observação
+                        <span className="text-[10px] text-[#6b6b78]">(só pra você ler — não afeta a IA)</span>
+                      </label>
+                      <textarea
+                        id={`obs-${item.id}`}
+                        defaultValue={r.observacao || ""}
+                        onBlur={(e) => {
+                          const novo = e.target.value.trim() ? e.target.value : "";
+                          if (novo !== (r.observacao || "")) salvar(item.id, "observacao", novo);
+                        }}
+                        rows={2}
+                        placeholder="Anotação livre…"
+                        className="w-full text-xs rounded-lg px-2 py-1.5 bg-[#17171d] border border-[rgba(255,255,255,0.12)] text-[#f5f5f7] outline-none focus:border-[#00d9ff] resize-y"
+                      />
+                    </div>
                   </div>
                 </div>
               );
