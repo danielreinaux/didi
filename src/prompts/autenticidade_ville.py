@@ -222,6 +222,16 @@ NÍVEL 3 — DÚVIDA SUTIL:
 
 ⚠️  O QUE NÃO É QUEBRA DE PADRÃO (não marcar falso por isso):
 
+  • TARTARUGA BISSECTADA PELA COSTURA que CONTINUA do outro lado: toda tartaruga
+    que cai na emenda do bolso fica "cortada" pela linha da costura — isso é
+    inevitável e NORMAL no original. O que decide NÃO é a costura cortar a
+    tartaruga, e sim se as DUAS METADES SE ALINHAM: se a metade de fora tem
+    continuação na de dentro (mesma cor, tamanho e linha) → ORIGINAL, mesmo
+    bissectada. Só marque quebra (falso) se a metade de dentro SOME, aparece
+    DESLOCADA/GIRADA, ou vira outra coisa que não casa. "Cortada pela costura"
+    por si só NUNCA prova falso — mas tartaruga grande que NÃO reaparece do outro
+    lado continua sendo FALSO (não afrouxe isso).
+
   • COSTURA DUPLA / PESPONTO DUPLO: Vilebrequin usa duas linhas paralelas
     de costura na borda do bolso. Isso é FIO costurado POR CIMA do tecido,
     não é o tecido em si. A linha reta da costura cobre uma fração de
