@@ -8,6 +8,7 @@ import {
   PILL_NEUTRAL,
   ACTIVE_GRADIENT,
 } from "@/lib/theme";
+import GabaritoNav from "@/components/GabaritoNav";
 
 // ── Critérios que a IA avalia na Ville (1 selectbox por critério) ────────────
 // Os tokens batem EXATAMENTE com a saída dos prompts (src/prompts/*ville*.py)
@@ -219,7 +220,10 @@ export default function GabaritoIA() {
         <div className="max-w-5xl mx-auto px-4 py-3 flex flex-col gap-3">
           <div className="flex items-center justify-between gap-3 flex-wrap">
             <h1 className="text-2xl text-[#f5f5f7] leading-tight">Gabarito da IA · Ville</h1>
-            <a href="/" className="text-xs text-[#00d9ff] hover:underline">← Votação</a>
+            <div className="flex items-center gap-3 flex-wrap">
+              <GabaritoNav atual="/gabarito-ia-ville" />
+              <a href="/" className="text-xs text-[#00d9ff] hover:underline">← Votação</a>
+            </div>
           </div>
           <p className={`text-xs ${TEXT_SECONDARY}`}>
             50 cenários da última coleta. Pra cada critério, escolha <b className="text-[#f5f5f7]">o que a IA deveria ter respondido</b>.
