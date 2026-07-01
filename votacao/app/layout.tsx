@@ -10,8 +10,8 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: "Sundek · Candidatos a compra",
-  description: "Vote nos candidatos a compra (gostei / não gostei / discordo)",
+  title: "Scrapping Didi",
+  description: "Radar Sundek/Vilebrequin — votação e gabarito da IA",
 };
 
 export const viewport: Viewport = {
