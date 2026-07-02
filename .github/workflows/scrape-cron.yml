@@ -163,7 +163,10 @@ jobs:
         run: |
           git config user.name "Didi Bot"
           git config user.email "bot@didi.local"
-          git add data/coleta-ville.json data/coleta-ville-classificada.json data/custo_ville.json data/analise-ville.html votacao/public/items.json votacao/public/oferta_ville.html
+          git add data/coleta-ville.json data/coleta-ville-classificada.json data/analise-ville.html votacao/public/items.json votacao/public/oferta_ville.html
+          # Custo é opcional: se o ville_run quebrou antes de gravar o custo_ville.json,
+          # NÃO deixa o git add abortar o step (senão perde o checkpoint dos dados).
+          git add data/custo_ville.json 2>/dev/null || true
           git diff --cached --quiet && echo "nada a commitar" && exit 0
           git commit -m "data: cron ville $(date -u +'%Y-%m-%d %H:%M UTC')"
           # Sundek pode ter empurrado pro main nesse meio-tempo.
