@@ -160,21 +160,31 @@ O PADRÃO MAIS VALORIZADO É A TARTARUGA GRANDE. Preste atenção na escala.
 
 CATEGORIAS:
 
-TARTARUGA_GRANDE: tartarugas com tamanho GRANDE e visível dominando o tecido.
-  O que define "grande": cada tartaruga ocupa uma área equivalente a pelo menos
-  1/4 da largura da perna do short. É o padrão característico e mais valorizado.
-  ANTES de marcar tartaruga, CONFIRME a anatomia de TARTARUGA (todas abaixo):
+TARTARUGA_GRANDE: o padrão CLÁSSICO da Vilebrequin ("Ronde des Tortues"), o mais
+  valorizado — e de LONGE o mais comum nos shorts de tartaruga.
+  O QUE DECIDE é a LEGIBILIDADE, não o tamanho absoluto: é tartaruga_grande
+  sempre que você CONSEGUE VER cada tartaruga como um motivo INDIVIDUAL e
+  reconhecível — dá pra distinguir casco, cabeça e patas de cada uma a olho nu.
+  Pode haver MUITAS tartarugas repetidas pelo tecido; o que importa é que cada
+  uma é um DESENHO DISTINTO e visível, não uma manchinha. Cobre tamanhos MÉDIO
+  a GRANDE.
+  ⚠️ NÃO exija que a tartaruga seja gigante nem que ocupe uma fração grande da
+  perna. Tartaruga de tamanho MÉDIO, claramente identificável e repetida, é
+  tartaruga_grande. (Erro comum: encolher tartarugas médias/nítidas pra "pequena".)
+  ANTES de marcar tartaruga (de qualquer tamanho), CONFIRME a anatomia:
     • CASCO oval/redondo (carapaça) ocupando o centro do corpo;
     • cabeça PEQUENA saindo de um lado do casco;
     • 4 patas CURTAS/nadadeiras saindo das laterais do casco;
     • cauda CURTA ou invisível — NUNCA cauda longa/enrolada.
   Inclui: tartarugas de uma cor só, de várias cores ("mistas"), holográficas,
-  degrade, prateadas, douradas — desde que tenham o CASCO e o tamanho grande.
+  degrade, prateadas, douradas — desde que dê pra RECONHECER cada tartaruga.
 
-TARTARUGA_PEQUENA: tartarugas com tamanho PEQUENO ou MINI formando um padrão repetido
-  mais denso no tecido. As tartarugas são reconhecíveis mas pequenas — o tecido
-  parece "salpicado" de tartarugas minúsculas. Menos comum e menos valorizado.
-  Se ficou em dúvida entre grande e pequena, prefira TARTARUGA_GRANDE.
+TARTARUGA_PEQUENA: SÓ o caso do MICRO-PRINT — tartarugas MINÚSCULAS e MUITO
+  densas, tão pequenas que o tecido lê como uma TEXTURA salpicada/pontilhada e
+  você MAL distingue uma tartaruga da outra a olho nu (à distância parece um
+  padrãozinho de pontinhos, não tartarugas). É um caso RARO e menos valorizado.
+  ⚠️ Se você consegue VER e CONTAR tartarugas individuais com clareza, NÃO é
+  pequena — é tartaruga_grande. Na MENOR dúvida entre grande e pequena → GRANDE.
 
 LISO: short sem estampa, em cor sólida. Pode ter:
   - bordado discreto (logo Vilebrequin, tartaruga bordada no bolso)
@@ -302,6 +312,10 @@ def usuario(titulo: str) -> str:
     return (
         f'AGORA é o ITEM REAL a classificar (as fotos abaixo). Título: "{titulo}". '
         f'Classifique o padrão de estampa deste item. '
+        f'TAMANHO da tartaruga: se dá pra ver e reconhecer cada tartaruga '
+        f'individualmente (mesmo médias/repetidas), é tartaruga_grande. Só marque '
+        f'tartaruga_pequena no MICRO-PRINT salpicado, onde as tartarugas viram '
+        f'pontinhos indistinguíveis. Na dúvida entre grande e pequena → grande. '
         f'ATENÇÃO ao campo "fundo_padrao": olhe apenas o FUNDO (corpo do tecido), '
         f'ignorando as tartarugas, amassados, sombras e reflexos de luz. Compare '
         f'com REF 1 (gradiente real = multicolor) e REF 2 (azul ciano amassado = '
