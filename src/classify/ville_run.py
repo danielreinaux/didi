@@ -361,6 +361,21 @@ def main() -> None:
     out_usd = (output_tokens / 1_000_000) * 0.60
     total_usd = in_usd + out_usd
 
+    # Persiste o custo deste run pra o relatório consolidado (src.build.relatorio_custo).
+    # Sem isso o custo do Ville só vive no log do Actions e some. ⚠️ custo_usd é PISO:
+    # preçamos tudo como mini, mas o Ville usa gpt-4o (17x mais caro) em vários passos.
+    try:
+        (DATA / "custo_ville.json").write_text(json.dumps({
+            "tok_in": input_tokens,
+            "tok_out": output_tokens,
+            "calls": 0,  # ville_run não conta chamadas isoladas (vários calls por item)
+            "custo_usd": round(total_usd, 6),
+            "itens_processados": len(pendentes),
+            "duracao_s": round(time.time() - t0, 1),
+        }, indent=2), encoding="utf-8")
+    except Exception:
+        pass
+
     print("\n=== Resumo ===")
     print(f"  ✓ Compráveis:      {dec('compravel')}")
     print(f"  ~ Médios:          {dec('medio')}")
