@@ -1,7 +1,7 @@
 {
-  "label": "v7",
+  "label": "ville-baseline",
   "dataset": "ville",
-  "gerado_em": "2026-07-02T00:28:02.520581+00:00",
+  "gerado_em": "2026-07-02T00:30:46.411456+00:00",
   "base": "baseline",
   "agentes_rodados": [
     "autenticidade",
@@ -17,37 +17,11 @@
     "cordao": "33e3855c66c1",
     "fecho": "62d1f2c79e13"
   },
-  "tokens_in": 0,
-  "tokens_out": 0,
-  "custo_usd_aprox": 0.0,
+  "tokens_in": 819030,
+  "tokens_out": 7235,
+  "custo_usd_aprox": 0.1272,
   "itens": {
-    "9254041230": {
-      "e_vilebrequin": "sim",
-      "e_short": "sim",
-      "tipo": "liso",
-      "fundo_padrao": "uniforme",
-      "aparencia": "ok",
-      "autenticidade": "indefinido",
-      "cor_bucket": "aceitavel",
-      "cordao_cor": "colorido",
-      "fecho": "cordao",
-      "etiqueta": "nao",
-      "_gate": null
-    },
     "9226696516": {
-      "e_vilebrequin": "sim",
-      "e_short": "sim",
-      "tipo": "liso",
-      "fundo_padrao": "uniforme",
-      "aparencia": "ok",
-      "autenticidade": "indefinido",
-      "cor_bucket": "preferida",
-      "cordao_cor": "colorido",
-      "fecho": "cordao",
-      "etiqueta": "nao",
-      "_gate": null
-    },
-    "9255653412": {
       "e_vilebrequin": "sim",
       "e_short": "sim",
       "tipo": "liso",
@@ -73,6 +47,32 @@
       "etiqueta": "nao",
       "_gate": null
     },
+    "9254041230": {
+      "e_vilebrequin": "sim",
+      "e_short": "sim",
+      "tipo": "liso",
+      "fundo_padrao": "uniforme",
+      "aparencia": "ok",
+      "autenticidade": "indefinido",
+      "cor_bucket": "aceitavel",
+      "cordao_cor": "colorido",
+      "fecho": "cordao",
+      "etiqueta": "nao",
+      "_gate": null
+    },
+    "9255653412": {
+      "e_vilebrequin": "sim",
+      "e_short": "sim",
+      "tipo": "liso",
+      "fundo_padrao": "uniforme",
+      "aparencia": "ok",
+      "autenticidade": "indefinido",
+      "cor_bucket": "preferida",
+      "cordao_cor": "colorido",
+      "fecho": "cordao",
+      "etiqueta": "nao",
+      "_gate": null
+    },
     "9267879473": {
       "e_vilebrequin": "sim",
       "e_short": "sim",
@@ -86,14 +86,14 @@
       "etiqueta": "nao",
       "_gate": null
     },
-    "9266721204": {
+    "9231852295": {
       "e_vilebrequin": "sim",
       "e_short": "sim",
-      "tipo": "liso",
+      "tipo": "tartaruga_grande",
       "fundo_padrao": "uniforme",
       "aparencia": "ok",
-      "autenticidade": "indefinido",
-      "cor_bucket": "aceitavel",
+      "autenticidade": "falso",
+      "cor_bucket": "preferida",
       "cordao_cor": "sem_cordao",
       "fecho": "botao",
       "etiqueta": "nao",
@@ -112,53 +112,14 @@
       "etiqueta": null,
       "_gate": "nao_ville"
     },
-    "9276854657": {
+    "9266721204": {
       "e_vilebrequin": "sim",
       "e_short": "sim",
-      "tipo": "outro",
-      "fundo_padrao": "uniforme",
-      "aparencia": "ok",
-      "autenticidade": "original",
-      "cor_bucket": "preferida",
-      "cordao_cor": "colorido",
-      "fecho": "cordao",
-      "etiqueta": "nao",
-      "_gate": null
-    },
-    "9282265514": {
-      "e_vilebrequin": "sim",
-      "e_short": "sim",
-      "tipo": "tartaruga_pequena",
-      "fundo_padrao": "uniforme",
-      "aparencia": "ok",
-      "autenticidade": "original",
-      "cor_bucket": "aceitavel",
-      "cordao_cor": "colorido",
-      "fecho": "cordao",
-      "etiqueta": "nao",
-      "_gate": null
-    },
-    "9266873964": {
-      "e_vilebrequin": null,
-      "e_short": "nao",
-      "tipo": null,
-      "fundo_padrao": null,
-      "aparencia": null,
-      "autenticidade": null,
-      "cor_bucket": null,
-      "cordao_cor": null,
-      "fecho": null,
-      "etiqueta": null,
-      "_gate": "nao_short"
-    },
-    "9231852295": {
-      "e_vilebrequin": "sim",
-      "e_short": "sim",
-      "tipo": "tartaruga_grande",
+      "tipo": "liso",
       "fundo_padrao": "uniforme",
       "aparencia": "ok",
       "autenticidade": "indefinido",
-      "cor_bucket": "preferida",
+      "cor_bucket": "aceitavel",
       "cordao_cor": "sem_cordao",
       "fecho": "botao",
       "etiqueta": "nao",
@@ -177,15 +138,28 @@
       "etiqueta": "nao",
       "_gate": null
     },
-    "9252530447": {
+    "9266873964": {
+      "e_vilebrequin": null,
+      "e_short": "nao",
+      "tipo": null,
+      "fundo_padrao": null,
+      "aparencia": null,
+      "autenticidade": null,
+      "cor_bucket": null,
+      "cordao_cor": null,
+      "fecho": null,
+      "etiqueta": null,
+      "_gate": "nao_short"
+    },
+    "9282265514": {
       "e_vilebrequin": "sim",
       "e_short": "sim",
-      "tipo": "liso",
+      "tipo": "tartaruga_pequena",
       "fundo_padrao": "uniforme",
       "aparencia": "ok",
-      "autenticidade": "indefinido",
+      "autenticidade": "original",
       "cor_bucket": "aceitavel",
-      "cordao_cor": "branco",
+      "cordao_cor": "colorido",
       "fecho": "cordao",
       "etiqueta": "nao",
       "_gate": null
@@ -203,13 +177,13 @@
       "etiqueta": "nao",
       "_gate": null
     },
-    "9283695540": {
+    "9276854657": {
       "e_vilebrequin": "sim",
       "e_short": "sim",
-      "tipo": "liso",
+      "tipo": "tartaruga_grande",
       "fundo_padrao": "uniforme",
       "aparencia": "ok",
-      "autenticidade": "indefinido",
+      "autenticidade": "original",
       "cor_bucket": "preferida",
       "cordao_cor": "colorido",
       "fecho": "cordao",
@@ -229,6 +203,32 @@
       "etiqueta": "nao",
       "_gate": null
     },
+    "9252530447": {
+      "e_vilebrequin": "sim",
+      "e_short": "sim",
+      "tipo": "liso",
+      "fundo_padrao": "uniforme",
+      "aparencia": "ok",
+      "autenticidade": "indefinido",
+      "cor_bucket": "aceitavel",
+      "cordao_cor": "branco",
+      "fecho": "cordao",
+      "etiqueta": "nao",
+      "_gate": null
+    },
+    "9267064435": {
+      "e_vilebrequin": "sim",
+      "e_short": "sim",
+      "tipo": "outro",
+      "fundo_padrao": "gradiente",
+      "aparencia": "ok",
+      "autenticidade": "sem_foto_bolso",
+      "cor_bucket": "aceitavel",
+      "cordao_cor": "sem_cordao",
+      "fecho": "indefinido",
+      "etiqueta": "nao",
+      "_gate": null
+    },
     "9116603249": {
       "e_vilebrequin": "nao",
       "e_short": null,
@@ -242,16 +242,16 @@
       "etiqueta": null,
       "_gate": "nao_ville"
     },
-    "9267064435": {
+    "9285441926": {
       "e_vilebrequin": "sim",
       "e_short": "sim",
-      "tipo": "outro",
-      "fundo_padrao": "gradiente",
+      "tipo": "tartaruga_pequena",
+      "fundo_padrao": "uniforme",
       "aparencia": "ok",
-      "autenticidade": "sem_foto_bolso",
+      "autenticidade": "original",
       "cor_bucket": "aceitavel",
-      "cordao_cor": "sem_cordao",
-      "fecho": "indefinido",
+      "cordao_cor": "colorido",
+      "fecho": "cordao",
       "etiqueta": "nao",
       "_gate": null
     },
@@ -268,7 +268,20 @@
       "etiqueta": null,
       "_gate": "nao_short"
     },
-    "9264563780": {
+    "9283695540": {
+      "e_vilebrequin": "sim",
+      "e_short": "sim",
+      "tipo": "liso",
+      "fundo_padrao": "uniforme",
+      "aparencia": "ok",
+      "autenticidade": "indefinido",
+      "cor_bucket": "preferida",
+      "cordao_cor": "colorido",
+      "fecho": "cordao",
+      "etiqueta": "nao",
+      "_gate": null
+    },
+    "9269765352": {
       "e_vilebrequin": "sim",
       "e_short": "sim",
       "tipo": "outro",
@@ -281,10 +294,10 @@
       "etiqueta": "nao",
       "_gate": null
     },
-    "9285441926": {
+    "9264563780": {
       "e_vilebrequin": "sim",
       "e_short": "sim",
-      "tipo": "tartaruga_pequena",
+      "tipo": "outro",
       "fundo_padrao": "uniforme",
       "aparencia": "ok",
       "autenticidade": "original",
@@ -307,26 +320,13 @@
       "etiqueta": "nao",
       "_gate": null
     },
-    "9269765352": {
+    "9230799224": {
       "e_vilebrequin": "sim",
       "e_short": "sim",
-      "tipo": "outro",
+      "tipo": "tartaruga_grande",
       "fundo_padrao": "uniforme",
       "aparencia": "ok",
       "autenticidade": "original",
-      "cor_bucket": "aceitavel",
-      "cordao_cor": "colorido",
-      "fecho": "cordao",
-      "etiqueta": "nao",
-      "_gate": null
-    },
-    "9270140476": {
-      "e_vilebrequin": "sim",
-      "e_short": "sim",
-      "tipo": "liso",
-      "fundo_padrao": "uniforme",
-      "aparencia": "ok",
-      "autenticidade": "indefinido",
       "cor_bucket": "preferida",
       "cordao_cor": "sem_cordao",
       "fecho": "cordao",
@@ -359,6 +359,32 @@
       "etiqueta": null,
       "_gate": "nao_short"
     },
+    "9225147020": {
+      "e_vilebrequin": "sim",
+      "e_short": "sim",
+      "tipo": "tartaruga_grande",
+      "fundo_padrao": "uniforme",
+      "aparencia": "ok",
+      "autenticidade": "original",
+      "cor_bucket": "aceitavel",
+      "cordao_cor": "colorido",
+      "fecho": "cordao",
+      "etiqueta": "nao",
+      "_gate": null
+    },
+    "9270140476": {
+      "e_vilebrequin": "sim",
+      "e_short": "sim",
+      "tipo": "liso",
+      "fundo_padrao": "uniforme",
+      "aparencia": "ok",
+      "autenticidade": "indefinido",
+      "cor_bucket": "preferida",
+      "cordao_cor": "sem_cordao",
+      "fecho": "cordao",
+      "etiqueta": "nao",
+      "_gate": null
+    },
     "9254763758": {
       "e_vilebrequin": "sim",
       "e_short": "sim",
@@ -367,45 +393,19 @@
       "aparencia": "ok",
       "autenticidade": "indefinido",
       "cor_bucket": "aceitavel",
-      "cordao_cor": "colorido",
+      "cordao_cor": "cinza",
       "fecho": "cordao",
       "etiqueta": "nao",
       "_gate": null
     },
-    "9230799224": {
+    "9268280293": {
       "e_vilebrequin": "sim",
       "e_short": "sim",
       "tipo": "tartaruga_pequena",
       "fundo_padrao": "uniforme",
       "aparencia": "ok",
-      "autenticidade": "original",
-      "cor_bucket": "preferida",
-      "cordao_cor": "sem_cordao",
-      "fecho": "cordao",
-      "etiqueta": "nao",
-      "_gate": null
-    },
-    "9277022244": {
-      "e_vilebrequin": "sim",
-      "e_short": "sim",
-      "tipo": "tartaruga_grande",
-      "fundo_padrao": "uniforme",
-      "aparencia": "ok",
       "autenticidade": "sem_foto_bolso",
-      "cor_bucket": "aceitavel",
-      "cordao_cor": "colorido",
-      "fecho": "cordao",
-      "etiqueta": "nao",
-      "_gate": null
-    },
-    "9245809324": {
-      "e_vilebrequin": "sim",
-      "e_short": "sim",
-      "tipo": "liso",
-      "fundo_padrao": "uniforme",
-      "aparencia": "ok",
-      "autenticidade": "indefinido",
-      "cor_bucket": "aceitavel",
+      "cor_bucket": "preferida",
       "cordao_cor": "colorido",
       "fecho": "cordao",
       "etiqueta": "nao",
@@ -437,27 +437,40 @@
       "etiqueta": null,
       "_gate": "nao_short"
     },
-    "9225147020": {
+    "9261816001": {
       "e_vilebrequin": "sim",
       "e_short": "sim",
-      "tipo": "tartaruga_pequena",
+      "tipo": "tartaruga_grande",
       "fundo_padrao": "uniforme",
       "aparencia": "ok",
-      "autenticidade": "original",
+      "autenticidade": "sem_foto_bolso",
+      "cor_bucket": "aceitavel",
+      "cordao_cor": "sem_cordao",
+      "fecho": "elastico",
+      "etiqueta": "nao",
+      "_gate": null
+    },
+    "9245809324": {
+      "e_vilebrequin": "sim",
+      "e_short": "sim",
+      "tipo": "liso",
+      "fundo_padrao": "uniforme",
+      "aparencia": "ok",
+      "autenticidade": "indefinido",
       "cor_bucket": "aceitavel",
       "cordao_cor": "colorido",
       "fecho": "cordao",
       "etiqueta": "nao",
       "_gate": null
     },
-    "9268280293": {
+    "9277022244": {
       "e_vilebrequin": "sim",
       "e_short": "sim",
-      "tipo": "tartaruga_pequena",
+      "tipo": "tartaruga_grande",
       "fundo_padrao": "uniforme",
       "aparencia": "ok",
       "autenticidade": "sem_foto_bolso",
-      "cor_bucket": "preferida",
+      "cor_bucket": "aceitavel",
       "cordao_cor": "colorido",
       "fecho": "cordao",
       "etiqueta": "nao",
@@ -474,19 +487,6 @@
       "cordao_cor": "colorido",
       "fecho": "cordao",
       "etiqueta": "sim",
-      "_gate": null
-    },
-    "9261816001": {
-      "e_vilebrequin": "sim",
-      "e_short": "sim",
-      "tipo": "tartaruga_grande",
-      "fundo_padrao": "uniforme",
-      "aparencia": "ok",
-      "autenticidade": "sem_foto_bolso",
-      "cor_bucket": "aceitavel",
-      "cordao_cor": "sem_cordao",
-      "fecho": "elastico",
-      "etiqueta": "nao",
       "_gate": null
     },
     "7555433483": {
@@ -515,6 +515,19 @@
       "etiqueta": null,
       "_gate": "nao_short"
     },
+    "9287586211": {
+      "e_vilebrequin": "sim",
+      "e_short": "sim",
+      "tipo": "tartaruga_grande",
+      "fundo_padrao": "uniforme",
+      "aparencia": "ok",
+      "autenticidade": "original",
+      "cor_bucket": "aceitavel",
+      "cordao_cor": "sem_cordao",
+      "fecho": "indefinido",
+      "etiqueta": "nao",
+      "_gate": null
+    },
     "9219982956": {
       "e_vilebrequin": "sim",
       "e_short": "sim",
@@ -525,32 +538,6 @@
       "cor_bucket": "aceitavel",
       "cordao_cor": "sem_cordao",
       "fecho": "indefinido",
-      "etiqueta": "nao",
-      "_gate": null
-    },
-    "9287586211": {
-      "e_vilebrequin": "sim",
-      "e_short": "sim",
-      "tipo": "tartaruga_grande",
-      "fundo_padrao": "uniforme",
-      "aparencia": "ok",
-      "autenticidade": "falso",
-      "cor_bucket": "aceitavel",
-      "cordao_cor": "sem_cordao",
-      "fecho": "indefinido",
-      "etiqueta": "nao",
-      "_gate": null
-    },
-    "9284740204": {
-      "e_vilebrequin": "sim",
-      "e_short": "sim",
-      "tipo": "liso",
-      "fundo_padrao": "uniforme",
-      "aparencia": "ok",
-      "autenticidade": "indefinido",
-      "cor_bucket": "aceitavel",
-      "cordao_cor": "colorido",
-      "fecho": "cordao",
       "etiqueta": "nao",
       "_gate": null
     },
@@ -567,6 +554,19 @@
       "etiqueta": "nao",
       "_gate": null
     },
+    "9256957502": {
+      "e_vilebrequin": "sim",
+      "e_short": "sim",
+      "tipo": "tartaruga_grande",
+      "fundo_padrao": "uniforme",
+      "aparencia": "ok",
+      "autenticidade": "original",
+      "cor_bucket": "preferida",
+      "cordao_cor": "colorido",
+      "fecho": "cordao",
+      "etiqueta": "nao",
+      "_gate": null
+    },
     "8940790845": {
       "e_vilebrequin": "nao",
       "e_short": null,
@@ -579,6 +579,19 @@
       "fecho": null,
       "etiqueta": null,
       "_gate": "nao_ville"
+    },
+    "9284740204": {
+      "e_vilebrequin": "sim",
+      "e_short": "sim",
+      "tipo": "liso",
+      "fundo_padrao": "uniforme",
+      "aparencia": "ok",
+      "autenticidade": "indefinido",
+      "cor_bucket": "aceitavel",
+      "cordao_cor": "colorido",
+      "fecho": "cordao",
+      "etiqueta": "nao",
+      "_gate": null
     },
     "9229791188": {
       "e_vilebrequin": "sim",
@@ -593,26 +606,13 @@
       "etiqueta": "nao",
       "_gate": null
     },
-    "9256957502": {
-      "e_vilebrequin": "sim",
-      "e_short": "sim",
-      "tipo": "tartaruga_grande",
-      "fundo_padrao": "uniforme",
-      "aparencia": "ok",
-      "autenticidade": "original",
-      "cor_bucket": "preferida",
-      "cordao_cor": "colorido",
-      "fecho": "cordao",
-      "etiqueta": "nao",
-      "_gate": null
-    },
     "9286458525": {
       "e_vilebrequin": "sim",
       "e_short": "sim",
       "tipo": "outro",
       "fundo_padrao": "multicolor",
       "aparencia": "ok",
-      "autenticidade": "original",
+      "autenticidade": "falso",
       "cor_bucket": "aceitavel",
       "cordao_cor": "cinza",
       "fecho": "cordao",
@@ -622,7 +622,7 @@
     "9239562637": {
       "e_vilebrequin": "sim",
       "e_short": "sim",
-      "tipo": "tartaruga_pequena",
+      "tipo": "tartaruga_grande",
       "fundo_padrao": "uniforme",
       "aparencia": "ok",
       "autenticidade": "original",
@@ -645,6 +645,19 @@
       "etiqueta": "nao",
       "_gate": null
     },
+    "9239479322": {
+      "e_vilebrequin": "sim",
+      "e_short": "sim",
+      "tipo": "tartaruga_grande",
+      "fundo_padrao": "uniforme",
+      "aparencia": "ok",
+      "autenticidade": "sem_foto_bolso",
+      "cor_bucket": "aceitavel",
+      "cordao_cor": "colorido",
+      "fecho": "cordao",
+      "etiqueta": "nao",
+      "_gate": null
+    },
     "9282792540": {
       "e_vilebrequin": "sim",
       "e_short": "sim",
@@ -654,19 +667,6 @@
       "autenticidade": "original",
       "cor_bucket": "preferida",
       "cordao_cor": "branco",
-      "fecho": "cordao",
-      "etiqueta": "nao",
-      "_gate": null
-    },
-    "9239479322": {
-      "e_vilebrequin": "sim",
-      "e_short": "sim",
-      "tipo": "tartaruga_grande",
-      "fundo_padrao": "uniforme",
-      "aparencia": "ok",
-      "autenticidade": "original",
-      "cor_bucket": "aceitavel",
-      "cordao_cor": "colorido",
       "fecho": "cordao",
       "etiqueta": "nao",
       "_gate": null

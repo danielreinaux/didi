@@ -25,8 +25,10 @@ Uso:
   python -m src.gabarito.gabarito_run --label v2 --base baseline
 """
 import base64
+import glob
 import hashlib
 import json
+import re
 import sys
 import threading
 import time
@@ -269,7 +271,7 @@ def _definir_rodar(label: str, base_label: str, dataset: str) -> tuple[set, dict
     """Decide quais agentes rodar e devolve (rodar, base_itens, hashes_atuais)."""
     hashes = _hashes_atuais()
 
-    if "--all" in sys.argv or label == "baseline":
+    if "--all" in sys.argv or label.endswith("baseline"):
         return set(ORDEM), None, hashes
 
     # A base só serve se for do MESMO dataset (não dá pra comparar hashes/itens
@@ -309,13 +311,40 @@ def _carregar_rodada(label: str) -> dict | None:
     return json.loads(p.read_text(encoding="utf-8"))
 
 
+def _versoes(dataset: str) -> list[tuple[int, str]]:
+    """(N, label) das rodadas versão rodada-{dataset}-v{N}.json, ordenadas por N."""
+    out = []
+    for f in glob.glob(str(REG / f"rodada-{dataset}-v*.json")):
+        m = re.search(rf"rodada-{re.escape(dataset)}-v(\d+)\.json$", f.replace("\\", "/"))
+        if m:
+            out.append((int(m.group(1)), f"{dataset}-v{m.group(1)}"))
+    return sorted(out)
+
+
+def _proxima_versao(dataset: str) -> str:
+    """Próximo label de versão pro dataset (v1, v2, ...) — auto-incremento."""
+    vs = _versoes(dataset)
+    return f"{dataset}-v{(vs[-1][0] + 1) if vs else 1}"
+
+
+def _ultima_rodada(dataset: str) -> str | None:
+    """Último run do dataset: a última versão, ou o baseline se não houver versão."""
+    vs = _versoes(dataset)
+    if vs:
+        return vs[-1][1]
+    if _carregar_rodada(f"{dataset}-baseline"):
+        return f"{dataset}-baseline"
+    return None
+
+
 def main() -> None:
+    dataset = _arg("--dataset", "ville")
     label = _arg("--label")
     if not label:
-        print("Use --label <nome> (ex: baseline, v2).")
-        sys.exit(1)
-    base_label = _arg("--base", "baseline")
-    dataset = _arg("--dataset", "ville")
+        # Auto-versão: 1º run do dataset vira o baseline; senão, próxima versão vN.
+        # Você não precisa mais inventar nome nem passar --base.
+        label = _proxima_versao(dataset) if _carregar_rodada(f"{dataset}-baseline") else f"{dataset}-baseline"
+    base_label = _arg("--base", f"{dataset}-baseline")
     # Default 2 (não 4): as fotos em base64 pesam na serialização; 4 em paralelo
     # num PC carregado estourou a memória. Pode subir com --workers se sobrar RAM.
     workers = int(_arg("--workers", "2"))
@@ -398,11 +427,15 @@ def main() -> None:
 
     _escrever()
     custo = (in_tok / 1_000_000) * 0.15 + (out_tok / 1_000_000) * 0.60
-    print(f"\nOK -> {out_path}")
+    print(f"\nOK -> {out_path}  (rodada '{label}', dataset '{dataset}')")
     print(f"  {len(resultados)}/{len(inputs)} itens salvos · tokens in/out: {in_tok:,}/{out_tok:,} · custo aprox: ${custo:.4f} · {time.time()-t0:.1f}s")
     if len(resultados) < len(inputs):
         print(f"  ⚠ {len(inputs)-len(resultados)} pendentes — rode o MESMO comando de novo pra completar (resume automático).")
-    print(f"  Métrica desta rodada:  python -m src.gabarito.gabarito_aval --label {label}")
+    if label.endswith("baseline"):
+        print(f"  → Baseline criado. Edite os prompts e rode:  python -m src.gabarito.gabarito_run --dataset {dataset}")
+    else:
+        print(f"  Compare:  python -m src.gabarito.gabarito_diff --dataset {dataset}")
+        print(f"  Métrica:  python -m src.gabarito.gabarito_aval --dataset {dataset}")
 
 
 if __name__ == "__main__":

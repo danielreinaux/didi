@@ -23,7 +23,15 @@ from .gabarito_diff import (
 
 
 def main() -> None:
-    label = _arg("--label", "baseline")
+    from .gabarito_run import _ultima_rodada
+    # Auto: sem --label, avalia a ÚLTIMA rodada do dataset (default ville).
+    label = _arg("--label")
+    if not label:
+        dataset_arg = _arg("--dataset", "ville")
+        label = _ultima_rodada(dataset_arg)
+        if not label:
+            print(f"Sem rodadas pro dataset '{dataset_arg}'. Rode gabarito_run primeiro.")
+            sys.exit(1)
 
     truth = _carregar(REG / "gabarito_respostas.json", "gabarito (rode gabarito_export)")["respostas"]
     rod = _carregar(REG / f"rodada-{label}.json", f"rodada {label}")

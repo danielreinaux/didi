@@ -88,8 +88,19 @@ def _item_100(ia_item: dict, truth_item: dict) -> bool | None:
 
 
 def main() -> None:
-    de = _arg("--de", "baseline")
-    para = _arg("--para", "v2")
+    from .gabarito_run import _ultima_rodada
+    dataset = _arg("--dataset", "ville")
+    # Auto: compara o baseline do dataset com a ÚLTIMA versão rodada. Você não
+    # precisa passar --de/--para (mas pode, se quiser comparar duas específicas).
+    de = _arg("--de") or f"{dataset}-baseline"
+    para = _arg("--para") or _ultima_rodada(dataset)
+    if not para:
+        print(f"Sem rodadas pro dataset '{dataset}'. Rode gabarito_run primeiro.")
+        sys.exit(0)
+    if para == de:
+        print(f"A última rodada de '{dataset}' É o baseline — não há versão nova pra "
+              f"comparar. Edite um prompt e rode: python -m src.gabarito.gabarito_run --dataset {dataset}")
+        sys.exit(0)
 
     truth = _carregar(REG / "gabarito_respostas.json", "gabarito (rode gabarito_export)")["respostas"]
     rodA = _carregar(REG / f"rodada-{de}.json", f"rodada {de}")
@@ -229,7 +240,7 @@ th{{color:#8a8a94;font-weight:500}} td:nth-child(n+2){{text-align:right}} th:nth
   {''.join(flips) if flips else '<div style="color:#8a8a94;font-size:13px">Nenhuma mudança de acerto entre as rodadas.</div>'}
 </div>
 </body></html>"""
-    out = REG / "comparativo.html"
+    out = REG / f"comparativo_{de}_{para}.html"
     out.write_text(html, encoding="utf-8")
     print(f"\nHTML -> {out}")
 
