@@ -92,11 +92,13 @@ jobs:
           echo "::error::não consegui empurrar os dados após 3 tentativas"
           exit 1
 
-  # Vilebrequin: mesma cadência do Sundek. Roda DEPOIS do Sundek (needs: sundek) pra
-  # não competir cota de OpenAI — em cada gatilho o Ville só começa quando o Sundek
-  # daquele horário termina. No dispatch manual também roda.
+  # Vilebrequin: mesma cadência do Sundek, agora EM PARALELO com ele (sem needs).
+  # Antes tinha `needs: sundek` pra não competir cota de OpenAI, mas a conta hoje está
+  # bem acima do Tier 1 (ver ratelimit.py: ~450K TPM, 5000 req/min) — os dois jobs
+  # juntos nem chegam perto do teto, então soltamos pra cortar ~metade do tempo total.
+  # Cada um commita arquivos diferentes (coleta.json vs coleta-ville.json) e o push tem
+  # rebase+retry, então rodar junto não conflita. O deploy segue needs:[sundek, ville].
   ville:
-    needs: sundek
     runs-on: ubuntu-latest
     timeout-minutes: 180
     concurrency:
