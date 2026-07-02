@@ -92,9 +92,11 @@ def main() -> None:
     para = _arg("--para", "v2")
 
     truth = _carregar(REG / "gabarito_respostas.json", "gabarito (rode gabarito_export)")["respostas"]
-    A = _carregar(REG / f"rodada-{de}.json", f"rodada {de}")["itens"]
-    B = _carregar(REG / f"rodada-{para}.json", f"rodada {para}")["itens"]
-    meta = {str(x["id"]): x for x in _carregar(PUBLIC / "gabarito_ville.json", "gabarito_ville")["itens"]}
+    rodA = _carregar(REG / f"rodada-{de}.json", f"rodada {de}")
+    rodB = _carregar(REG / f"rodada-{para}.json", f"rodada {para}")
+    A, B = rodA["itens"], rodB["itens"]
+    dataset = rodB.get("dataset", "ville")  # rodadas antigas = ville
+    meta = {str(x["id"]): x for x in _carregar(PUBLIC / f"gabarito_{dataset}.json", f"gabarito_{dataset}")["itens"]}
 
     # Escopa aos itens DESTA rodada (a marca em questão). O /api/gabarito é
     # compartilhado entre Ville e Sundek; sem isso, respostas de uma marca

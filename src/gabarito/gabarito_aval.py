@@ -26,8 +26,10 @@ def main() -> None:
     label = _arg("--label", "baseline")
 
     truth = _carregar(REG / "gabarito_respostas.json", "gabarito (rode gabarito_export)")["respostas"]
-    R = _carregar(REG / f"rodada-{label}.json", f"rodada {label}")["itens"]
-    meta = {str(x["id"]): x for x in _carregar(PUBLIC / "gabarito_ville.json", "gabarito_ville")["itens"]}
+    rod = _carregar(REG / f"rodada-{label}.json", f"rodada {label}")
+    R = rod["itens"]
+    dataset = rod.get("dataset", "ville")  # rodadas antigas = ville
+    meta = {str(x["id"]): x for x in _carregar(PUBLIC / f"gabarito_{dataset}.json", f"gabarito_{dataset}")["itens"]}
 
     # Escopa aos itens desta rodada que têm gabarito preenchido.
     ids = [i for i in R if i in truth and isinstance(truth[i], dict) and truth[i]]
@@ -58,7 +60,7 @@ def main() -> None:
     pct_full = (full / len(avaliaveis) * 100) if avaliaveis else 0
 
     # ── Console ──────────────────────────────────────────────────────
-    print(f"\n=== Desempenho da IA · rodada '{label}' · {len(ids)} itens com gabarito ===\n")
+    print(f"\n=== Desempenho da IA · dataset '{dataset}' · rodada '{label}' · {len(ids)} itens com gabarito ===\n")
     print(f"{'ÁREA':<18}{'acerto':>9}{'n':>5}")
     print("-" * 34)
     # ordena da pior pra melhor área (foco no que precisa melhorar)
@@ -80,10 +82,10 @@ def main() -> None:
         for iid in erros:
             print(f"  {iid}: IA={_norm(R.get(iid,{}).get(c))}  ≠  verdade={_norm(truth[iid].get(c))}")
 
-    _html(label, len(ids), areas, full, len(avaliaveis), pct_full, R, truth, meta)
+    _html(label, dataset, len(ids), areas, full, len(avaliaveis), pct_full, R, truth, meta)
 
 
-def _html(label, n_itens, areas, full, n_aval, pct_full, R, truth, meta) -> None:
+def _html(label, dataset, n_itens, areas, full, n_aval, pct_full, R, truth, meta) -> None:
     linhas = []
     for c, acc, ok, n, erros in sorted(
         [a for a in areas if a[1] is not None], key=lambda x: x[1]
@@ -125,7 +127,7 @@ table{{width:100%;border-collapse:collapse}} th,td{{text-align:left;padding:8px 
 th{{color:#8a8a94;font-weight:500}} td:nth-child(n+2),th:nth-child(n+2){{text-align:right}}
 .card{{background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.07);border-radius:14px;padding:16px 18px;margin-bottom:18px}}
 </style></head><body>
-<h1>Desempenho da IA · Ville</h1>
+<h1>Desempenho da IA · {escape(dataset)}</h1>
 <div class="sub">rodada <b>{escape(label)}</b> · {n_itens} itens com gabarito · acerto contra a verdade humana (áreas da pior pra melhor)</div>
 <div class="card">
   <table><tr><th>Área</th><th>acerto</th><th>n</th></tr>{''.join(linhas)}</table>

@@ -144,11 +144,22 @@ def _norm_etiqueta(val) -> str | None:
     return "indefinido"  # rodou e deu null/indefinido
 
 
-def _montar_inputs() -> list[dict]:
-    """Itens de entrada: campos crus do coleta + fotos LOCAIS em base64 (congeladas).
+def _dataset_json(dataset: str) -> Path:
+    """Caminho do JSON congelado do dataset (ex: gabarito_ville.json,
+    gabarito_compraveis_ville.json). Mesmo formato pros dois."""
+    return PUBLIC / f"gabarito_{dataset}.json"
+
+
+def _montar_inputs(dataset: str) -> list[dict]:
+    """Itens de entrada: campos crus + fotos LOCAIS em base64 (congeladas).
     Sem nenhum bloco de classificação antigo — os agentes rodam do zero."""
-    gab = json.loads(GAB_JSON.read_text(encoding="utf-8"))["itens"]
-    crus = {str(x.get("id")): x for x in json.loads(COLETA.read_text(encoding="utf-8"))}
+    gab = json.loads(_dataset_json(dataset).read_text(encoding="utf-8"))["itens"]
+    # Só o dataset "ville" (base) vem do coleta-ville-classificada, de onde
+    # puxamos titulo/cor crus. Outros (ex: compraveis fotografados à parte)
+    # já trazem os campos no próprio JSON.
+    crus = {}
+    if dataset == "ville" and COLETA.exists():
+        crus = {str(x.get("id")): x for x in json.loads(COLETA.read_text(encoding="utf-8"))}
     inputs = []
     for it in gab:
         iid = str(it["id"])
@@ -254,12 +265,18 @@ def _processar(item: dict, rodar: set, base: dict | None) -> tuple[dict, int, in
     return out, in_tok, out_tok
 
 
-def _definir_rodar(label: str, base_label: str) -> tuple[set, dict | None, dict]:
+def _definir_rodar(label: str, base_label: str, dataset: str) -> tuple[set, dict | None, dict]:
     """Decide quais agentes rodar e devolve (rodar, base_itens, hashes_atuais)."""
     hashes = _hashes_atuais()
 
     if "--all" in sys.argv or label == "baseline":
         return set(ORDEM), None, hashes
+
+    # A base só serve se for do MESMO dataset (não dá pra comparar hashes/itens
+    # de datasets diferentes). Se não existe ou é de outro dataset → roda tudo.
+    base = _carregar_rodada(base_label)
+    if base and base.get("dataset", "ville") != dataset:
+        base = None
 
     so = _arg("--so")
     if so:
@@ -271,15 +288,12 @@ def _definir_rodar(label: str, base_label: str) -> tuple[set, dict | None, dict]
         rodar = set(pedidos)
         for p in list(pedidos):
             rodar |= set(CASCATA.get(p, []))
-        base = _carregar_rodada(base_label)
         return rodar, (base or {}).get("itens"), hashes
 
     # Auto-detecção por hash vs base.
-    base = _carregar_rodada(base_label)
     if not base:
-        print(f"Rodada base '{base_label}' não existe. Rode primeiro: "
-              f"python -m src.gabarito.gabarito_run --label baseline")
-        sys.exit(1)
+        print(f"(sem rodada base '{base_label}' pra este dataset — rodando TODOS os agentes)")
+        return set(ORDEM), None, hashes
     antigos = base.get("prompt_hashes", {})
     mudados = {a for a in ORDEM if hashes.get(a) != antigos.get(a)}
     rodar = set(mudados)
@@ -301,21 +315,22 @@ def main() -> None:
         print("Use --label <nome> (ex: baseline, v2).")
         sys.exit(1)
     base_label = _arg("--base", "baseline")
+    dataset = _arg("--dataset", "ville")
     # Default 2 (não 4): as fotos em base64 pesam na serialização; 4 em paralelo
     # num PC carregado estourou a memória. Pode subir com --workers se sobrar RAM.
     workers = int(_arg("--workers", "2"))
 
-    if not GAB_JSON.exists():
-        print("gabarito_ville.json não existe. Rode `python -m src.build.gabarito_ville`.")
+    if not _dataset_json(dataset).exists():
+        print(f"gabarito_{dataset}.json não existe em votacao/public/.")
         sys.exit(1)
 
-    rodar, base_itens, hashes = _definir_rodar(label, base_label)
+    rodar, base_itens, hashes = _definir_rodar(label, base_label, dataset)
     if not rodar:
         print("Nenhum prompt mudou desde o baseline — nada pra re-rodar. ✓")
         print("(Use --all pra forçar, ou --so <area> pra escolher.)")
         return
 
-    inputs = _montar_inputs()
+    inputs = _montar_inputs(dataset)
     REG.mkdir(parents=True, exist_ok=True)
     out_path = REG / f"rodada-{label}.json"
 
@@ -344,6 +359,7 @@ def main() -> None:
         custo = (in_tok / 1_000_000) * 0.15 + (out_tok / 1_000_000) * 0.60
         out_path.write_text(json.dumps({
             "label": label,
+            "dataset": dataset,
             "gerado_em": datetime.now(timezone.utc).isoformat(),
             "base": base_label if rodar != set(ORDEM) else None,
             "agentes_rodados": sorted(rodar),
