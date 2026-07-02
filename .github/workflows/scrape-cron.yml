@@ -1,32 +1,17 @@
-name: Scrape + Classify (Sundek + Ville, 12x/dia)
+name: Scrape + Classify (Sundek + Ville)
 
-# Horários em UTC. Brasil = UTC-3. 12x/dia entre 6h e 20h BRT.
-#   09:00 UTC = 06:00 BRT
-#   10:00 UTC = 07:00 BRT
-#   11:00 UTC = 08:00 BRT
-#   12:20 UTC = 09:20 BRT
-#   13:40 UTC = 10:40 BRT
-#   15:00 UTC = 12:00 BRT
-#   16:20 UTC = 13:20 BRT
-#   17:40 UTC = 14:40 BRT
-#   19:00 UTC = 16:00 BRT
-#   20:20 UTC = 17:20 BRT
-#   21:40 UTC = 18:40 BRT
-#   23:00 UTC = 20:00 BRT
+# Horários em UTC. Brasil = UTC-3.
+# Cadência: 06h e 07h BRT avulsos, depois a cada 15 min das 08h às 20h BRT.
+#   09:00 UTC        = 06:00 BRT
+#   10:00 UTC        = 07:00 BRT
+#   */15 11-22 UTC   = 08:00 → 19:45 BRT (a cada 15 min; 11:00 UTC já é 08:00 BRT)
+#   23:00 UTC        = 20:00 BRT (fecha a janela)
 on:
   schedule:
-    - cron: '0 9 * * *'     # 06:00 BRT
-    - cron: '0 10 * * *'    # 07:00 BRT
-    - cron: '0 11 * * *'    # 08:00 BRT
-    - cron: '20 12 * * *'   # 09:20 BRT
-    - cron: '40 13 * * *'   # 10:40 BRT
-    - cron: '0 15 * * *'    # 12:00 BRT
-    - cron: '20 16 * * *'   # 13:20 BRT
-    - cron: '40 17 * * *'   # 14:40 BRT
-    - cron: '0 19 * * *'    # 16:00 BRT
-    - cron: '20 20 * * *'   # 17:20 BRT
-    - cron: '40 21 * * *'   # 18:40 BRT
-    - cron: '0 23 * * *'    # 20:00 BRT
+    - cron: '0 9 * * *'         # 06:00 BRT
+    - cron: '0 10 * * *'        # 07:00 BRT
+    - cron: '*/15 11-22 * * *'  # 08:00 → 19:45 BRT, a cada 15 min
+    - cron: '0 23 * * *'        # 20:00 BRT
   workflow_dispatch:        # permite disparar manual também
 
 permissions:
@@ -107,7 +92,7 @@ jobs:
           echo "::error::não consegui empurrar os dados após 3 tentativas"
           exit 1
 
-  # Vilebrequin: 3x/dia (igual Sundek). Roda DEPOIS do Sundek (needs: sundek) pra
+  # Vilebrequin: mesma cadência do Sundek. Roda DEPOIS do Sundek (needs: sundek) pra
   # não competir cota de OpenAI — em cada gatilho o Ville só começa quando o Sundek
   # daquele horário termina. No dispatch manual também roda.
   ville:
