@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import VotingCard from "@/components/VotingCard";
 import { Item, Reaction, REACTIONS } from "@/lib/types";
+import { Archive, History, ListChecks } from "lucide-react";
 import {
   ACTIVE_GRADIENT,
   PILL_NEUTRAL,
@@ -153,52 +154,66 @@ export default function Home() {
                 </button>
               ))}
             </div>
-            <div className="flex items-center gap-3">
-              <span className={`text-xs ${TEXT_TERTIARY}`}>
-                {votados}/{itensLoja.length} avaliados
-              </span>
+            {/* Ações — Arquivar/Histórico como ícones secundários; "Ver resultados"
+                em destaque (pill com o gradiente ativo). O contador foi pro cluster
+                da esquerda, junto da barra de progresso. */}
+            <div className="flex items-center gap-2">
               <button
                 onClick={() => setVerArquivados((v) => !v)}
-                className={`text-xs hover:underline ${
-                  verArquivados ? "text-[#00d9ff]" : TEXT_TERTIARY
+                aria-pressed={verArquivados}
+                aria-label={verArquivados ? "Voltar à lista" : "Ver arquivados"}
+                title={verArquivados ? "Voltar à lista" : `Ver arquivados${nArquivados ? ` (${nArquivados})` : ""}`}
+                className={`relative w-9 h-9 flex items-center justify-center rounded-lg border transition-colors ${
+                  verArquivados
+                    ? "bg-[rgba(0,217,255,0.15)] text-[#00d9ff] border-[rgba(0,217,255,0.3)]"
+                    : "bg-[rgba(255,255,255,0.04)] text-[#b8b8c0] border-[rgba(255,255,255,0.07)] hover:text-[#f5f5f7]"
                 }`}
               >
-                {verArquivados
-                  ? "← Voltar"
-                  : `Ver arquivados${nArquivados ? ` (${nArquivados})` : ""}`}
+                <Archive size={17} strokeWidth={1.5} aria-hidden />
+                {!verArquivados && nArquivados > 0 && (
+                  <span className="absolute -top-0.5 -right-0.5 min-w-[16px] h-4 px-1 flex items-center justify-center text-[10px] rounded-full bg-[#00d9ff] text-[#032630]">
+                    {nArquivados}
+                  </span>
+                )}
               </button>
               <a
                 href="/history"
-                className="text-xs text-[#00d9ff] hover:underline"
+                aria-label="Histórico"
+                title="Histórico"
+                className="w-9 h-9 flex items-center justify-center rounded-lg bg-[rgba(255,255,255,0.04)] border border-[rgba(255,255,255,0.07)] text-[#b8b8c0] hover:text-[#f5f5f7] transition-colors"
               >
-                Histórico
+                <History size={17} strokeWidth={1.5} aria-hidden />
               </a>
               <a
                 href="/resultados"
-                className="text-xs text-[#00d9ff] hover:underline"
+                className={`h-9 px-3.5 flex items-center gap-1.5 rounded-lg text-xs ${ACTIVE_GRADIENT}`}
               >
+                <ListChecks size={16} strokeWidth={1.5} aria-hidden />
                 Ver resultados
               </a>
             </div>
           </div>
 
-          {/* Linha 2: título + contexto (mesmo layout pras duas lojas) */}
-          <h1 className="text-2xl text-[#f5f5f7] leading-tight">
-            {loja === "ville" ? "Ville" : "Sundek"}
-            {verArquivados && <span className={TEXT_TERTIARY}> · Arquivados</span>}
+          {/* Linha 2: contexto. O segmented acima já nomeia a loja — o h1 fica só
+              pra leitor de tela / route announcer; a leitura visual são os chips. */}
+          <h1 className="sr-only">
+            {loja === "ville" ? "Ville" : "Sundek"}{verArquivados ? " · Arquivados" : ""}
           </h1>
-          <p className={`text-xs ${TEXT_SECONDARY}`}>
-            {verArquivados ? (
-              <>Itens arquivados — use “↩ Desarquivar” pra trazer de volta pra tela base.</>
-            ) : (
-              <>
-                Só os{" "}
-                <b className="font-medium text-[#00ff88]">{compraveis} compráveis</b> e{" "}
-                <b className="font-medium text-[#ffaa00]">{barganhas} barganhas</b> — vote
-                👍 / 👎 / ⚠️ em cada um.
-              </>
-            )}
-          </p>
+          {verArquivados ? (
+            <p className={`text-xs ${TEXT_SECONDARY}`}>
+              Itens arquivados — use “↩ Desarquivar” pra trazer de volta pra tela base.
+            </p>
+          ) : (
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="text-xs px-2.5 py-1 rounded-full bg-[rgba(0,255,136,0.12)] text-[#00ff88]">
+                {compraveis} compráveis
+              </span>
+              <span className="text-xs px-2.5 py-1 rounded-full bg-[rgba(255,170,0,0.12)] text-[#ffaa00]">
+                {barganhas} barganhas
+              </span>
+              <span className={`text-xs ${TEXT_TERTIARY}`}>{votados}/{itensLoja.length} avaliados</span>
+            </div>
+          )}
           <div className="w-full h-1.5 bg-[rgba(255,255,255,0.04)] rounded-full overflow-hidden">
             <div
               className="h-full rounded-full bg-[#00d9ff] transition-all"
