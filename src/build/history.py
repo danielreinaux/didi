@@ -60,8 +60,11 @@ MAX_FOTOS = 4
 # "Novo nesta rodada" = primeiro_visto dentro dessa janela antes do horário da rodada
 # (cadência do cron é 40 min; margem folgada pra não perder itens da rodada).
 JANELA_NOVOS_MIN = 55
-# Quantas rodadas o index.json guarda (as mais recentes).
-MAX_RUNS_INDEX = 40
+# Teto de rodadas no index.json (as mais recentes). É uma JANELA DESLIZANTE: o modo
+# snapshot (cron) mantém as N mais novas e poda os arquivos excedentes. 200 segura o
+# backfill completo (~97 rodadas hoje) + vários dias de cron antes de começar a podar.
+# Dá pra sobrescrever por rodada com --max-runs.
+MAX_RUNS_INDEX = 200
 
 SUNDEK_CLASSIF = "data/coleta-classificada.json"
 VILLE_CLASSIF = "data/coleta-ville-classificada.json"
@@ -379,8 +382,8 @@ def _escrever_snapshot(snap: dict) -> None:
     )
 
 
-def _reescrever_index(resumos: list[dict]) -> None:
-    """Ordena por data desc, deduplica por run_id, corta em MAX_RUNS_INDEX."""
+def _reescrever_index(resumos: list[dict], max_runs: int = MAX_RUNS_INDEX) -> list[dict]:
+    """Ordena por data desc, deduplica por run_id, corta em max_runs."""
     vistos: set[str] = set()
     limpos: list[dict] = []
     for r in sorted(resumos, key=lambda x: x.get("quando", ""), reverse=True):
@@ -389,7 +392,7 @@ def _reescrever_index(resumos: list[dict]) -> None:
             continue
         vistos.add(rid)
         limpos.append(r)
-    limpos = limpos[:MAX_RUNS_INDEX]
+    limpos = limpos[:max_runs]
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     (OUT_DIR / "index.json").write_text(
         json.dumps(limpos, ensure_ascii=False, indent=1), encoding="utf-8"
@@ -419,7 +422,7 @@ def _prune_orfaos(ids_validos: set[str]) -> None:
 # ─────────────────────────────────────────────────────────────────────────────
 # Modos
 # ─────────────────────────────────────────────────────────────────────────────
-def snapshot() -> None:
+def snapshot(max_runs: int = MAX_RUNS_INDEX) -> None:
     """Snapshot da rodada ATUAL a partir do working-tree (modo do cron)."""
     run_id = os.environ.get("GITHUB_RUN_ID") or f"local-{datetime.now(BRT).strftime('%Y%m%d-%H%M')}"
     run_dt = datetime.now(BRT)
@@ -438,7 +441,7 @@ def snapshot() -> None:
 
     resumos = [r for r in _index_atual() if r.get("run_id") != run_id]
     resumos.append(_resumo_index(snap))
-    index = _reescrever_index(resumos)
+    index = _reescrever_index(resumos, max_runs)
     _prune_orfaos({r["run_id"] for r in index})
 
     t = snap["metricas"]["total"]
@@ -447,8 +450,13 @@ def snapshot() -> None:
           f"${t['custo_usd']:.4f}. Index com {len(index)} rodadas.")
 
 
-def backfill(n: int, clean: bool) -> None:
-    """Reconstrói as últimas n rodadas varrendo o histórico do git (rodar local)."""
+def backfill(n: int, clean: bool, max_runs: int | None = None) -> None:
+    """Reconstrói as últimas n rodadas varrendo o histórico do git (rodar local).
+
+    O teto do index vira max(MAX_RUNS_INDEX, n) por padrão pra NÃO truncar um backfill
+    grande — pode sobrescrever com --max-runs.
+    """
+    cap = max_runs if max_runs is not None else max(MAX_RUNS_INDEX, n)
     if clean and OUT_DIR.exists():
         for f in OUT_DIR.glob("*.json"):
             f.unlink()
@@ -491,7 +499,7 @@ def backfill(n: int, clean: bool) -> None:
         print(f"  {dt_s.strftime('%d/%m %H:%M')}  {run_id}  "
               f"{t['candidatos']} cand · {t['descartados']} desc · ${t['custo_usd']:.4f}")
 
-    index = _reescrever_index(resumos)
+    index = _reescrever_index(resumos, cap)
     _prune_orfaos({r["run_id"] for r in index})
     print(f"\nhistory/backfill OK -> {len(index)} rodadas em {OUT_DIR}")
 
@@ -499,14 +507,16 @@ def backfill(n: int, clean: bool) -> None:
 def main() -> None:
     ap = argparse.ArgumentParser(description="Gera o histórico de rodadas (/history).")
     ap.add_argument("--backfill", nargs="?", type=int, const=25, default=None,
-                    metavar="N", help="reconstrói as últimas N rodadas do git (default 25)")
+                    metavar="N", help="reconstrói as últimas N rodadas do git (default 25; use um número alto, ex. 500, pra pegar todas)")
     ap.add_argument("--clean", action="store_true", help="limpa a pasta history antes (só com --backfill)")
+    ap.add_argument("--max-runs", type=int, default=None,
+                    metavar="N", help="teto de rodadas no index (default 200)")
     args = ap.parse_args()
 
     if args.backfill is not None:
-        backfill(args.backfill, args.clean)
+        backfill(args.backfill, args.clean, args.max_runs)
     else:
-        snapshot()
+        snapshot(args.max_runs if args.max_runs is not None else MAX_RUNS_INDEX)
 
 
 if __name__ == "__main__":
