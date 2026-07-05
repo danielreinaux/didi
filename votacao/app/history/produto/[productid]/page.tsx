@@ -1,36 +1,37 @@
 "use client";
 
-// Rota /history/[historyid]/[productid] — detalhe de um produto NA VISÃO DA RODADA.
-// Carrega o snapshot da rodada e delega o layout pro componente compartilhado.
+// Rota /history/produto/[productid] — detalhe de um produto vindo da BUSCA GLOBAL.
+// Lê o índice /history/produtos.json (acervo inteiro, estado mais recente do item) e
+// delega o layout pro mesmo componente da visão por rodada.
 
 import { use, useEffect, useMemo, useState } from "react";
-import { Rodada, Produto, fmtDataHora } from "@/lib/history";
+import { Produto } from "@/lib/history";
 import HistoryProdutoDetalhe, { CentroHistory } from "@/components/HistoryProdutoDetalhe";
 
-export default function ProdutoDetalheRodada({
+export default function ProdutoDetalheBusca({
   params,
 }: {
-  params: Promise<{ historyid: string; productid: string }>;
+  params: Promise<{ productid: string }>;
 }) {
-  const { historyid, productid } = use(params);
-  const [rodada, setRodada] = useState<Rodada | null>(null);
+  const { productid } = use(params);
+  const [produtos, setProdutos] = useState<Produto[] | null>(null);
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState(false);
 
   useEffect(() => {
-    fetch(`/history/${historyid}.json`)
+    fetch(`/history/produtos.json`)
       .then((r) => {
         if (!r.ok) throw new Error("falha");
         return r.json();
       })
-      .then((d: Rodada) => setRodada(d))
+      .then((d: Produto[]) => setProdutos(Array.isArray(d) ? d : []))
       .catch(() => setErro(true))
       .finally(() => setCarregando(false));
-  }, [historyid]);
+  }, []);
 
   const produto: Produto | null = useMemo(
-    () => rodada?.produtos.find((p) => p.id === productid) ?? null,
-    [rodada, productid]
+    () => produtos?.find((p) => p.id === productid) ?? null,
+    [produtos, productid]
   );
 
   if (carregando) {
@@ -41,11 +42,11 @@ export default function ProdutoDetalheRodada({
       </CentroHistory>
     );
   }
-  if (erro || !rodada || !produto) {
+  if (erro || !produto) {
     return (
       <CentroHistory>
-        <span>Não encontrei esse produto nesta rodada.</span>
-        <a href={`/history/${historyid}`} className="text-xs text-[#00d9ff] hover:underline">← Voltar à rodada</a>
+        <span>Não encontrei esse produto no acervo.</span>
+        <a href="/history" className="text-xs text-[#00d9ff] hover:underline">← Voltar ao histórico</a>
       </CentroHistory>
     );
   }
@@ -55,11 +56,11 @@ export default function ProdutoDetalheRodada({
       produto={produto}
       crumbs={[
         { label: "Histórico", href: "/history" },
-        { label: fmtDataHora(rodada.quando), href: `/history/${historyid}` },
+        { label: "busca" },
         { label: "produto" },
       ]}
-      voltarHref={`/history/${historyid}`}
-      voltarLabel="← Rodada"
+      voltarHref="/history"
+      voltarLabel="← Histórico"
     />
   );
 }

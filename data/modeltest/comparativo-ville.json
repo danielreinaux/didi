@@ -1,0 +1,443 @@
+{
+ "dataset": "ville",
+ "n_itens": 50,
+ "linhas": [
+  {
+   "spec": "atual",
+   "erros": 0,
+   "disponivel": true,
+   "custo_por_modelo": {
+    "gpt-4o": {
+     "in": 421519,
+     "out": 9997,
+     "calls": 142
+    },
+    "gpt-4o-mini": {
+     "in": 1366428,
+     "out": 4337,
+     "calls": 117
+    }
+   },
+   "custo_usd": 1.3613338999999998,
+   "tok_in": 1787947,
+   "tok_out": 14334,
+   "calls": 259,
+   "duracao_s": 261.9,
+   "score": {
+    "por_criterio": {
+     "e_vilebrequin": {
+      "ok": 46,
+      "n": 50,
+      "acc": 92.0
+     },
+     "e_short": {
+      "ok": 45,
+      "n": 50,
+      "acc": 90.0
+     },
+     "tipo": {
+      "ok": 45,
+      "n": 50,
+      "acc": 90.0
+     },
+     "fundo_padrao": {
+      "ok": 49,
+      "n": 50,
+      "acc": 98.0
+     },
+     "aparencia": {
+      "ok": 49,
+      "n": 50,
+      "acc": 98.0
+     },
+     "autenticidade": {
+      "ok": 40,
+      "n": 50,
+      "acc": 80.0
+     },
+     "cor_bucket": {
+      "ok": 43,
+      "n": 50,
+      "acc": 86.0
+     },
+     "cordao_cor": {
+      "ok": 38,
+      "n": 50,
+      "acc": 76.0
+     },
+     "fecho": {
+      "ok": 40,
+      "n": 50,
+      "acc": 80.0
+     },
+     "etiqueta": {
+      "ok": 49,
+      "n": 50,
+      "acc": 98.0
+     }
+    },
+    "itens_100": 15,
+    "itens_avaliaveis": 50,
+    "pct_100": 30.0
+   }
+  },
+  {
+   "spec": "gpt-4o-mini",
+   "erros": 0,
+   "disponivel": true,
+   "custo_por_modelo": {
+    "gpt-4o-mini": {
+     "in": 6468498,
+     "out": 14175,
+     "calls": 253
+    }
+   },
+   "custo_usd": 0.9787797,
+   "tok_in": 6468498,
+   "tok_out": 14175,
+   "calls": 253,
+   "duracao_s": 257.1,
+   "score": {
+    "por_criterio": {
+     "e_vilebrequin": {
+      "ok": 45,
+      "n": 50,
+      "acc": 90.0
+     },
+     "e_short": {
+      "ok": 45,
+      "n": 50,
+      "acc": 90.0
+     },
+     "tipo": {
+      "ok": 43,
+      "n": 50,
+      "acc": 86.0
+     },
+     "fundo_padrao": {
+      "ok": 42,
+      "n": 50,
+      "acc": 84.0
+     },
+     "aparencia": {
+      "ok": 48,
+      "n": 50,
+      "acc": 96.0
+     },
+     "autenticidade": {
+      "ok": 30,
+      "n": 50,
+      "acc": 60.0
+     },
+     "cor_bucket": {
+      "ok": 42,
+      "n": 50,
+      "acc": 84.0
+     },
+     "cordao_cor": {
+      "ok": 37,
+      "n": 50,
+      "acc": 74.0
+     },
+     "fecho": {
+      "ok": 37,
+      "n": 50,
+      "acc": 74.0
+     },
+     "etiqueta": {
+      "ok": 48,
+      "n": 50,
+      "acc": 96.0
+     }
+    },
+    "itens_100": 14,
+    "itens_avaliaveis": 50,
+    "pct_100": 28.000000000000004
+   }
+  },
+  {
+   "spec": "gpt-4.1-nano",
+   "erros": 0,
+   "disponivel": true,
+   "custo_por_modelo": {
+    "gpt-4.1-nano": {
+     "in": 2352369,
+     "out": 19691,
+     "calls": 274
+    }
+   },
+   "custo_usd": 0.2431133,
+   "tok_in": 2352369,
+   "tok_out": 19691,
+   "calls": 274,
+   "duracao_s": 321.5,
+   "score": {
+    "por_criterio": {
+     "e_vilebrequin": {
+      "ok": 46,
+      "n": 50,
+      "acc": 92.0
+     },
+     "e_short": {
+      "ok": 45,
+      "n": 50,
+      "acc": 90.0
+     },
+     "tipo": {
+      "ok": 18,
+      "n": 50,
+      "acc": 36.0
+     },
+     "fundo_padrao": {
+      "ok": 38,
+      "n": 50,
+      "acc": 76.0
+     },
+     "aparencia": {
+      "ok": 49,
+      "n": 50,
+      "acc": 98.0
+     },
+     "autenticidade": {
+      "ok": 27,
+      "n": 50,
+      "acc": 54.0
+     },
+     "cor_bucket": {
+      "ok": 43,
+      "n": 50,
+      "acc": 86.0
+     },
+     "cordao_cor": {
+      "ok": 24,
+      "n": 50,
+      "acc": 48.0
+     },
+     "fecho": {
+      "ok": 37,
+      "n": 50,
+      "acc": 74.0
+     },
+     "etiqueta": {
+      "ok": 50,
+      "n": 50,
+      "acc": 100.0
+     }
+    },
+    "itens_100": 7,
+    "itens_avaliaveis": 50,
+    "pct_100": 14.000000000000002
+   }
+  },
+  {
+   "spec": "gpt-5.4-nano",
+   "erros": 40,
+   "disponivel": true,
+   "custo_por_modelo": {},
+   "custo_usd": 0.0,
+   "tok_in": 0,
+   "tok_out": 0,
+   "calls": 0,
+   "duracao_s": 5.1,
+   "score": {
+    "por_criterio": {
+     "e_vilebrequin": {
+      "ok": 6,
+      "n": 50,
+      "acc": 12.0
+     },
+     "e_short": {
+      "ok": 5,
+      "n": 50,
+      "acc": 10.0
+     },
+     "tipo": {
+      "ok": 11,
+      "n": 50,
+      "acc": 22.0
+     },
+     "fundo_padrao": {
+      "ok": 11,
+      "n": 50,
+      "acc": 22.0
+     },
+     "aparencia": {
+      "ok": 11,
+      "n": 50,
+      "acc": 22.0
+     },
+     "autenticidade": {
+      "ok": 11,
+      "n": 50,
+      "acc": 22.0
+     },
+     "cor_bucket": {
+      "ok": 12,
+      "n": 50,
+      "acc": 24.0
+     },
+     "cordao_cor": {
+      "ok": 11,
+      "n": 50,
+      "acc": 22.0
+     },
+     "fecho": {
+      "ok": 11,
+      "n": 50,
+      "acc": 22.0
+     },
+     "etiqueta": {
+      "ok": 11,
+      "n": 50,
+      "acc": 22.0
+     }
+    },
+    "itens_100": 5,
+    "itens_avaliaveis": 50,
+    "pct_100": 10.0
+   }
+  },
+  {
+   "spec": "gpt-4.1-mini",
+   "erros": 0,
+   "disponivel": true,
+   "custo_por_modelo": {
+    "gpt-4.1-mini": {
+     "in": 1548054,
+     "out": 18647,
+     "calls": 260
+    }
+   },
+   "custo_usd": 0.6490568,
+   "tok_in": 1548054,
+   "tok_out": 18647,
+   "calls": 260,
+   "duracao_s": 272.0,
+   "score": {
+    "por_criterio": {
+     "e_vilebrequin": {
+      "ok": 46,
+      "n": 50,
+      "acc": 92.0
+     },
+     "e_short": {
+      "ok": 45,
+      "n": 50,
+      "acc": 90.0
+     },
+     "tipo": {
+      "ok": 40,
+      "n": 50,
+      "acc": 80.0
+     },
+     "fundo_padrao": {
+      "ok": 46,
+      "n": 50,
+      "acc": 92.0
+     },
+     "aparencia": {
+      "ok": 49,
+      "n": 50,
+      "acc": 98.0
+     },
+     "autenticidade": {
+      "ok": 40,
+      "n": 50,
+      "acc": 80.0
+     },
+     "cor_bucket": {
+      "ok": 44,
+      "n": 50,
+      "acc": 88.0
+     },
+     "cordao_cor": {
+      "ok": 44,
+      "n": 50,
+      "acc": 88.0
+     },
+     "fecho": {
+      "ok": 43,
+      "n": 50,
+      "acc": 86.0
+     },
+     "etiqueta": {
+      "ok": 49,
+      "n": 50,
+      "acc": 98.0
+     }
+    },
+    "itens_100": 18,
+    "itens_avaliaveis": 50,
+    "pct_100": 36.0
+   }
+  },
+  {
+   "spec": "gpt-5.4-mini",
+   "erros": 40,
+   "disponivel": true,
+   "custo_por_modelo": {},
+   "custo_usd": 0.0,
+   "tok_in": 0,
+   "tok_out": 0,
+   "calls": 0,
+   "duracao_s": 5.7,
+   "score": {
+    "por_criterio": {
+     "e_vilebrequin": {
+      "ok": 6,
+      "n": 50,
+      "acc": 12.0
+     },
+     "e_short": {
+      "ok": 5,
+      "n": 50,
+      "acc": 10.0
+     },
+     "tipo": {
+      "ok": 11,
+      "n": 50,
+      "acc": 22.0
+     },
+     "fundo_padrao": {
+      "ok": 11,
+      "n": 50,
+      "acc": 22.0
+     },
+     "aparencia": {
+      "ok": 11,
+      "n": 50,
+      "acc": 22.0
+     },
+     "autenticidade": {
+      "ok": 11,
+      "n": 50,
+      "acc": 22.0
+     },
+     "cor_bucket": {
+      "ok": 12,
+      "n": 50,
+      "acc": 24.0
+     },
+     "cordao_cor": {
+      "ok": 11,
+      "n": 50,
+      "acc": 22.0
+     },
+     "fecho": {
+      "ok": 11,
+      "n": 50,
+      "acc": 22.0
+     },
+     "etiqueta": {
+      "ok": 11,
+      "n": 50,
+      "acc": 22.0
+     }
+    },
+    "itens_100": 5,
+    "itens_avaliaveis": 50,
+    "pct_100": 10.0
+   }
+  }
+ ]
+}

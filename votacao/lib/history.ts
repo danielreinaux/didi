@@ -75,6 +75,9 @@ export interface Produto {
   flags: string[];
   negociacao: { modo?: string; oferta?: number; msg?: string; comprar_ja?: boolean };
   criterios: Record<string, Record<string, unknown>>;
+  // Só no índice global de busca (produtos.json): descrição do anúncio + blob de busca.
+  resumo?: string;
+  busca?: string;
 }
 
 export interface Rodada {

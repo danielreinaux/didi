@@ -382,6 +382,47 @@ def _escrever_snapshot(snap: dict) -> None:
     )
 
 
+def _build_produtos() -> int:
+    """Índice global de busca: TODOS os produtos do acervo ATUAL (working-tree), com
+    detalhe completo, pra busca cross-rodada em /history. Reescreve produtos.json.
+
+    Diferente dos snapshots por rodada (que só amostram os descartados), aqui entra o
+    acervo inteiro — pra você achar QUALQUER anúncio por título, descrição ou link e
+    ver o motivo direto, sem entrar rodada por rodada. É o estado mais recente do item.
+    """
+    now = datetime.now(BRT)
+    entries: list[dict] = []
+    vistos: set[str] = set()
+    for path, marca in ((SUNDEK_CLASSIF, "sundek"), (VILLE_CLASSIF, "vilebrequin")):
+        itens = _read_working(path)
+        if not isinstance(itens, list):
+            continue
+        for it in itens:
+            id_ = str(it.get("id") or "")
+            if not id_ or id_ in vistos:
+                continue
+            vistos.add(id_)
+            e = _slim_produto(it, marca, now)
+            resumo = (it.get("resumo") or "").strip()
+            e["resumo"] = resumo[:280]
+            # Campo único e minúsculo pra busca client-side (título + descrição + link).
+            e["busca"] = " ".join(x for x in (e["titulo"], resumo, e["url"]) if x).lower()
+            entries.append(e)
+
+    # Candidatos primeiro, depois por score desc (resultado de busca já sai ranqueado).
+    def _ordem(x: dict):
+        d = x["decisao"]
+        rank = 0 if d == "compravel" else 1 if d == "medio" else 2 if d == "descartado" else 3
+        return (rank, -(x.get("score") or 0))
+    entries.sort(key=_ordem)
+
+    OUT_DIR.mkdir(parents=True, exist_ok=True)
+    (OUT_DIR / "produtos.json").write_text(
+        json.dumps(entries, ensure_ascii=False, indent=1), encoding="utf-8"
+    )
+    return len(entries)
+
+
 def _reescrever_index(resumos: list[dict], max_runs: int = MAX_RUNS_INDEX) -> list[dict]:
     """Ordena por data desc, deduplica por run_id, corta em max_runs."""
     vistos: set[str] = set()
@@ -443,11 +484,13 @@ def snapshot(max_runs: int = MAX_RUNS_INDEX) -> None:
     resumos.append(_resumo_index(snap))
     index = _reescrever_index(resumos, max_runs)
     _prune_orfaos({r["run_id"] for r in index})
+    n_prod = _build_produtos()
 
     t = snap["metricas"]["total"]
     print(f"history OK -> rodada {run_id} ({', '.join(snap['marcas'])}): "
           f"{t['candidatos']} candidatos, {len(snap['produtos'])} produtos no arquivo, "
-          f"${t['custo_usd']:.4f}. Index com {len(index)} rodadas.")
+          f"${t['custo_usd']:.4f}. Index com {len(index)} rodadas. "
+          f"Busca global: {n_prod} produtos.")
 
 
 def backfill(n: int, clean: bool, max_runs: int | None = None) -> None:
@@ -501,7 +544,9 @@ def backfill(n: int, clean: bool, max_runs: int | None = None) -> None:
 
     index = _reescrever_index(resumos, cap)
     _prune_orfaos({r["run_id"] for r in index})
+    n_prod = _build_produtos()
     print(f"\nhistory/backfill OK -> {len(index)} rodadas em {OUT_DIR}")
+    print(f"busca global -> {n_prod} produtos em produtos.json")
 
 
 def main() -> None:
