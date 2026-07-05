@@ -360,20 +360,7 @@ def main() -> None:
     ap.add_argument("--models", default=None, help="lista separada por vírgula (default: set embutido)")
     ap.add_argument("--workers", type=int, default=6, help="threads por modelo (default 6)")
     ap.add_argument("--limit", type=int, default=None, help="roda só os N primeiros itens (teste barato)")
-    # O gargalo real é o pacer global (ratelimit.py): gpt-4o 1 chamada/4s, mini 1/1,5s.
-    # Estes knobs AFROUXAM o pacer SÓ neste processo de teste (a produção no disco não
-    # muda). A conta tem folga (450K TPM / 5000 rpm no 4o); o client já re-tenta 429.
-    ap.add_argument("--pace4o", type=float, default=None, metavar="S",
-                    help="intervalo min entre chamadas gpt-4o em segundos (default 4.0). Ex: 1.5")
-    ap.add_argument("--pacemini", type=float, default=None, metavar="S",
-                    help="intervalo min entre chamadas mini em segundos (default 1.5). Ex: 0.4")
     args = ap.parse_args()
-
-    from ..utils import ratelimit
-    if args.pace4o is not None:
-        ratelimit.INTERVALO_GPT4O = args.pace4o
-    if args.pacemini is not None:
-        ratelimit.INTERVALO_MINI = args.pacemini
 
     if not TRUTH_PATH.exists():
         print(f"Falta a verdade em {TRUTH_PATH}. Rode antes: python -m src.gabarito.gabarito_export")
@@ -391,9 +378,7 @@ def main() -> None:
     print(f"Dataset '{args.dataset}': {len(inputs)} itens rodados, {len(ids)} com verdade humana.")
 
     modelos = [m.strip() for m in args.models.split(",")] if args.models else MODELOS_PADRAO
-    print(f"Modelos: {', '.join(modelos)}")
-    print(f"Paralelismo: {args.workers} workers · pacer gpt-4o={ratelimit.INTERVALO_GPT4O}s · "
-          f"mini={ratelimit.INTERVALO_MINI}s (afrouxe com --pace4o/--pacemini pra acelerar)\n")
+    print(f"Modelos: {', '.join(modelos)}\n")
 
     _instalar_patch_parametros()
     _wrap_agentes()
