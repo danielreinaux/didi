@@ -220,7 +220,7 @@ export default function GabaritoIASundek() {
   return (
     <div className="h-full overflow-y-auto">
       <header className={`sticky top-0 z-20 ${HEADER_BG}`}>
-        <div className="max-w-5xl mx-auto px-4 py-3 flex flex-col gap-3">
+        <div className="app-wrap py-3 flex flex-col gap-3">
           <div className="flex items-center justify-between gap-3 flex-wrap">
             <h1 className="text-2xl text-[#f5f5f7] leading-tight">Gabarito da IA · Sundek</h1>
             <div className="flex items-center gap-3 flex-wrap">
@@ -244,7 +244,7 @@ export default function GabaritoIASundek() {
         </div>
       </header>
 
-      <main className="max-w-5xl mx-auto px-4 py-6">
+      <main className="app-wrap py-6">
         {carregando ? (
           <div className={`flex flex-col items-center gap-3 mt-24 text-sm ${TEXT_TERTIARY}`}>
             <span className="w-6 h-6 rounded-full border-2 border-[rgba(255,255,255,0.15)] border-t-[#00d9ff] animate-spin" />

@@ -193,6 +193,41 @@ jobs:
           ref: main        # tip atual do main (com os commits desta rodada), não o github.sha
           fetch-depth: 1
 
+      # Python já montado aqui pra servir o snapshot do histórico E a notificação
+      # (ambos são stdlib puro — não precisam de pip install).
+      - name: Setup Python 3.12
+        if: always()
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      # Gera o snapshot DESTA rodada pro /history ANTES do deploy, pra o Vercel já
+      # publicar o histórico atualizado. run_id = $GITHUB_RUN_ID (1 arquivo por run;
+      # o index guarda as últimas N e o builder poda os órfãos). Modo working-tree:
+      # lê os JSONs que os jobs sundek/ville acabaram de commitar.
+      - name: Snapshot do histórico da rodada (/history)
+        if: always()
+        run: python -m src.build.history
+
+      # Commita o snapshot pra ele persistir no repo (dev local + próxima rodada leem
+      # o index de lá). O deploy abaixo publica o working-tree, então mesmo sem commit
+      # o Vercel já subiria; o commit é pra durar.
+      - name: Commit do snapshot do histórico
+        if: always()
+        run: |
+          git config user.name "Didi Bot"
+          git config user.email "bot@didi.local"
+          git add -A votacao/public/history
+          git diff --cached --quiet && echo "nada a commitar" && exit 0
+          git commit -m "data: history $(date -u +'%Y-%m-%d %H:%M UTC')"
+          for i in 1 2 3; do
+            git pull --rebase origin main && git push && exit 0
+            echo "push falhou (tentativa $i/3) — refazendo rebase em 5s..."
+            sleep 5
+          done
+          echo "::error::não consegui empurrar o histórico após 3 tentativas"
+          exit 1
+
       - name: Deploy no Vercel
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_KEY }}
@@ -207,13 +242,7 @@ jobs:
           # ↑ a env var ainda é VERCEL_TOKEN porque é o nome que a CLI espera;
           # o valor vem do secret VERCEL_KEY que você cadastrou.
 
-      # notify é stdlib puro (smtplib/json), não precisa de pip install — só do Python.
-      - name: Setup Python 3.12
-        if: always()
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-
+      # (Python já foi montado no começo do job, antes do snapshot do histórico.)
       # UM email só, com as duas marcas. Sem --marca, o run.py lê o items.json combinado
       # e manda um resumo único (assunto "Sundek+Ville"). Seed pelo ledger global.
       - name: Notificar por email (Sundek + Ville)

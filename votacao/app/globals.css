@@ -39,6 +39,22 @@ body {
   font-family: var(--font-poppins), "Poppins", system-ui, sans-serif;
 }
 
+/* Container padrão de TODAS as rotas: largura única e responsiva. Preenche a tela
+   (com respiro nas laterais) e cresce o teto em telas grandes, pra não sobrar
+   espaço morto no notebook. Trocou os antigos max-w-5xl/6xl/7xl espalhados. */
+.app-wrap {
+  width: 100%;
+  margin-inline: auto;
+  padding-inline: 1rem; /* px-4 */
+  max-width: 1600px;
+}
+@media (min-width: 640px) {
+  .app-wrap { padding-inline: 1.5rem; } /* sm:px-6 */
+}
+@media (min-width: 1536px) {
+  .app-wrap { max-width: 1800px; } /* telas grandes usam mais largura */
+}
+
 /* Ícones de lixeira: sempre âmbar de alerta */
 .trash-icon,
 [data-icon="trash"],
