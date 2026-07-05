@@ -44,20 +44,23 @@ export default function HistoryProdutoDetalhe({
   return (
     <div className="h-full overflow-y-auto">
       <header className={`sticky top-0 z-20 ${HEADER_BG}`}>
-        <div className="app-wrap py-3 flex items-center justify-between gap-3">
-          <nav className={`text-[11px] ${TEXT_TERTIARY} truncate`}>
-            {crumbs.map((c, i) => (
-              <span key={i}>
-                {i > 0 && " / "}
-                {c.href ? (
-                  <a href={c.href} className="hover:underline">{c.label}</a>
-                ) : (
-                  <span className="text-[#b8b8c0]">{c.label}</span>
-                )}
-              </span>
-            ))}
-          </nav>
-          <a href={voltarHref} className="text-xs text-[#00d9ff] hover:underline shrink-0">{voltarLabel}</a>
+        <div className="app-wrap py-3 flex flex-col gap-2">
+          <div className="flex items-center justify-between gap-3">
+            <nav className={`text-[11px] ${TEXT_TERTIARY} truncate`}>
+              {crumbs.map((c, i) => (
+                <span key={i}>
+                  {i > 0 && " / "}
+                  {c.href ? (
+                    <a href={c.href} className="hover:underline">{c.label}</a>
+                  ) : (
+                    <span className="text-[#b8b8c0]">{c.label}</span>
+                  )}
+                </span>
+              ))}
+            </nav>
+            <a href={voltarHref} className="text-xs text-[#00d9ff] hover:underline shrink-0">{voltarLabel}</a>
+          </div>
+          <h1 className="text-2xl text-[#f5f5f7] leading-tight line-clamp-1">{p.titulo}</h1>
         </div>
       </header>
 
@@ -86,6 +89,7 @@ export default function HistoryProdutoDetalhe({
                   <button
                     key={i}
                     onClick={() => setFotoAtiva(i)}
+                    aria-label={`Ver foto ${i + 1}`}
                     className={`w-14 h-14 rounded-lg overflow-hidden border ${
                       i === fotoAtiva ? "border-[#00d9ff]" : "border-[rgba(255,255,255,0.08)]"
                     }`}
@@ -105,7 +109,6 @@ export default function HistoryProdutoDetalhe({
               <span className="text-[10px] px-2 py-0.5 rounded-full bg-[rgba(255,255,255,0.05)] text-[#b8b8c0]">{p.status}</span>
               {p.novo && <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#00d9ff] text-[#032630] font-semibold">NOVO</span>}
             </div>
-            <h1 className="text-xl text-[#f5f5f7] leading-snug">{p.titulo}</h1>
             <div className={`text-sm ${TEXT_SECONDARY} flex flex-wrap gap-x-4 gap-y-1`}>
               <span><b className="text-[#f5f5f7] font-medium">{p.preco_total || p.preco || "—"}</b> preço</span>
               <span>tam <b className="text-[#f5f5f7] font-medium">{p.tamanho}</b></span>
@@ -117,18 +120,18 @@ export default function HistoryProdutoDetalhe({
             <div className="flex items-stretch gap-3 mt-1">
               <div className={`${CARD} px-4 py-3 flex flex-col items-center justify-center min-w-[92px]`}>
                 <span className="text-3xl font-bold" style={{ color: meta.cor }}>{p.score}</span>
-                <span className="text-[11px] text-[#8a8a94]">pontos</span>
+                <span className="text-[11px] text-[#b8b8c0]">pontos</span>
               </div>
               {p.teto != null && (
                 <div className={`${CARD} px-4 py-3 flex flex-col items-center justify-center min-w-[92px]`}>
                   <span className="text-2xl font-semibold text-[#f5f5f7]">€{p.teto}</span>
-                  <span className="text-[11px] text-[#8a8a94]">teto de compra</span>
+                  <span className="text-[11px] text-[#b8b8c0]">teto de compra</span>
                 </div>
               )}
               {ratio != null && typeof ratio === "number" && (
                 <div className={`${CARD} px-4 py-3 flex flex-col items-center justify-center min-w-[92px]`}>
                   <span className="text-2xl font-semibold text-[#f5f5f7]">{Math.round(ratio * 100)}%</span>
-                  <span className="text-[11px] text-[#8a8a94]">preço ÷ teto</span>
+                  <span className="text-[11px] text-[#b8b8c0]">preço ÷ teto</span>
                 </div>
               )}
             </div>
@@ -230,7 +233,7 @@ export default function HistoryProdutoDetalhe({
 // Estado central de loading/erro reaproveitado pelas páginas do histórico.
 export function CentroHistory({ children }: { children: React.ReactNode }) {
   return (
-    <div className="h-full flex flex-col items-center justify-center gap-3 text-sm text-[#6b6b78]">{children}</div>
+    <div className="h-full flex flex-col items-center justify-center gap-3 text-sm text-[#b8b8c0]">{children}</div>
   );
 }
 
@@ -282,9 +285,9 @@ function CriterioCard({ chave, obj }: { chave: string; obj: Record<string, unkno
   return (
     <div className={`${CARD} p-3.5 flex flex-col gap-2`}>
       <div className="flex items-center justify-between gap-2">
-        <span className="text-xs uppercase tracking-wide text-[#8a8a94]">{info.label}</span>
+        <span className="text-xs uppercase tracking-wide text-[#b8b8c0]">{info.label}</span>
         {confianca != null && (
-          <span className="text-[10px] px-2 py-0.5 rounded-full bg-[rgba(255,255,255,0.05)] text-[#8a8a94]">
+          <span className="text-[10px] px-2 py-0.5 rounded-full bg-[rgba(255,255,255,0.05)] text-[#b8b8c0]">
             {Math.round(confianca * 100)}% conf.
           </span>
         )}
@@ -294,7 +297,7 @@ function CriterioCard({ chave, obj }: { chave: string; obj: Record<string, unkno
       {outros.length > 0 && (
         <div className="flex flex-wrap gap-x-4 gap-y-1 mt-0.5">
           {outros.map(([k, v]) => (
-            <span key={k} className="text-[11px] text-[#8a8a94]">
+            <span key={k} className="text-[11px] text-[#b8b8c0]">
               {k.replace(/_/g, " ")}: <b className="text-[#b8b8c0] font-medium">{fmtValor(chave, k, v)}</b>
             </span>
           ))}

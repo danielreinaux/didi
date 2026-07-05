@@ -9,6 +9,8 @@ import {
   HEADER_BG,
   TEXT_SECONDARY,
   TEXT_TERTIARY,
+  SEGMENTED_BTN,
+  SEGMENTED_INACTIVE,
 } from "@/lib/theme";
 
 type Filtro = "todos" | "compravel" | "medio" | "nao_votados";
@@ -143,10 +145,8 @@ export default function Home() {
                 <button
                   key={l.key}
                   onClick={() => setLoja(l.key)}
-                  className={`px-5 py-1.5 rounded-lg text-xs transition-all ${
-                    loja === l.key
-                      ? ACTIVE_GRADIENT
-                      : `${TEXT_SECONDARY} hover:text-[#f5f5f7]`
+                  className={`${SEGMENTED_BTN} ${
+                    loja === l.key ? ACTIVE_GRADIENT : SEGMENTED_INACTIVE
                   }`}
                 >
                   {l.label}

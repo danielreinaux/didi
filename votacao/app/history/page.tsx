@@ -18,10 +18,11 @@ import {
 import {
   CARD,
   HEADER_BG,
-  TEXT_SECONDARY,
   TEXT_TERTIARY,
   PILL_NEUTRAL,
   ACTIVE_GRADIENT,
+  SEGMENTED_BTN,
+  SEGMENTED_INACTIVE,
 } from "@/lib/theme";
 
 // Período: atalhos rápidos ou um mês específico "YYYY-MM".
@@ -140,6 +141,7 @@ export default function HistoryLista() {
             <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#6b6b78] text-sm">⌕</span>
             <input
               type="search"
+              aria-label="Buscar produto"
               value={busca}
               onFocus={garantirProdutos}
               onChange={(e) => { garantirProdutos(); setBusca(e.target.value); }}
@@ -171,8 +173,8 @@ export default function HistoryLista() {
                   <button
                     key={p}
                     onClick={() => setPeriodo(p)}
-                    className={`px-4 py-1 rounded-lg text-xs transition-all ${
-                      periodo === p ? ACTIVE_GRADIENT : `${TEXT_SECONDARY} hover:text-[#f5f5f7]`
+                    className={`${SEGMENTED_BTN} ${
+                      periodo === p ? ACTIVE_GRADIENT : SEGMENTED_INACTIVE
                     }`}
                   >
                     {label}
@@ -181,6 +183,7 @@ export default function HistoryLista() {
               </div>
               {mesesDisponiveis.length > 0 && (
                 <select
+                  aria-label="Filtrar por mês"
                   value={["mes", "ano", "tudo"].includes(periodo) ? "" : periodo}
                   onChange={(e) => setPeriodo(e.target.value || "tudo")}
                   className={`px-3 py-1.5 rounded-lg text-xs cursor-pointer outline-none ${PILL_NEUTRAL} [&>option]:bg-[#141418] [&>option]:text-[#f5f5f7]`}
@@ -300,7 +303,7 @@ function ResultadoCard({ p }: { p: Produto }) {
       </div>
       <div className="p-2.5 flex flex-col gap-1">
         <span className="text-xs text-[#f5f5f7] line-clamp-2 leading-snug">{p.titulo}</span>
-        <div className="flex items-center justify-between text-[11px] text-[#8a8a94]">
+        <div className="flex items-center justify-between text-[11px] text-[#b8b8c0]">
           <span>{MARCA_LABEL[p.marca]} · {p.preco_total || p.preco || "—"}</span>
           <span className="font-semibold" style={{ color: meta.cor }}>{p.score}pts</span>
         </div>
@@ -313,7 +316,7 @@ function StatCard({ v, l, cor, destaque }: { v: string; l: string; cor?: string;
   return (
     <div className={`${CARD} p-4 ${destaque ? "border-[rgba(0,217,255,0.25)]" : ""}`}>
       <div className="text-2xl font-semibold" style={{ color: cor || "#f5f5f7" }}>{v}</div>
-      <div className="text-[11px] text-[#8a8a94] mt-1">{l}</div>
+      <div className="text-[11px] text-[#b8b8c0] mt-1">{l}</div>
     </div>
   );
 }
@@ -369,7 +372,7 @@ function Chip({ valor, label, cor, muted }: { valor: number; label: string; cor:
       style={{ background: muted ? "rgba(255,255,255,0.03)" : `${cor}1f` }}
     >
       <b className="font-semibold" style={{ color: muted ? "#b8b8c0" : cor }}>{valor}</b>
-      <span className="text-[#8a8a94]">{label}</span>
+      <span className="text-[#b8b8c0]">{label}</span>
     </span>
   );
 }

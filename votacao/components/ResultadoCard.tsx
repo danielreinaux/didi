@@ -78,7 +78,7 @@ export default function ResultadoCard({ item, reaction, observacao, onCancelado 
 
         {/* Rodapé: erro à esquerda, "Cancelar voto" à direita — confirmação inline de 2 toques */}
         <div className="flex items-center gap-2 pt-1">
-          {erro && <span className="text-[10px] text-[#ff7a7a]">{erro}</span>}
+          {erro && <span className="text-[10px] text-[#ffaa00]">{erro}</span>}
           <button
             onClick={onClickCancelar}
             disabled={loading}

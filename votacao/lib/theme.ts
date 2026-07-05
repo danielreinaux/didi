@@ -25,6 +25,11 @@ export const PILL_NEUTRAL =
 export const ACTIVE_GRADIENT =
   "bg-gradient-to-r from-[rgba(0,217,255,0.5)] to-[rgba(0,255,170,0.3)] text-[#f5f5f7] shadow-[0_1px_3px_rgba(0,0,0,0.4)]";
 
+// Botão de um segmented control (o grupo inline-flex p-1 rounded-xl). Mesmo
+// padding em todas as telas — combine com ACTIVE_GRADIENT (ativo) ou SEGMENTED_INACTIVE.
+export const SEGMENTED_BTN = "px-5 py-1.5 rounded-lg text-xs transition-all";
+export const SEGMENTED_INACTIVE = "text-[#b8b8c0] hover:text-[#f5f5f7]";
+
 // Header sticky (vidro escuro)
 export const HEADER_BG =
   "backdrop-blur-[40px] bg-[rgba(10,10,12,0.8)] border-b border-[rgba(255,255,255,0.07)]";

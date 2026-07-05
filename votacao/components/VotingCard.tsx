@@ -279,7 +279,7 @@ export default function VotingCard({ item, reacaoInicial, obsInicial, onReacao, 
 
         {/* Erro de escrita (voto/arquivar) — feedback inline em vez de falha silenciosa */}
         {erro && (
-          <p className="text-[11px] text-[#ff7a7a] bg-[rgba(255,90,90,0.1)] rounded-lg px-2 py-1 leading-snug">
+          <p className="text-[11px] text-[#ffaa00] bg-[rgba(255,170,0,0.1)] rounded-lg px-2 py-1 leading-snug">
             {erro}
           </p>
         )}
@@ -292,6 +292,7 @@ export default function VotingCard({ item, reacaoInicial, obsInicial, onReacao, 
             if (obsStatus !== "idle") setObsStatus("idle"); // volta ao neutro ao editar
           }}
           onBlur={salvarObs}
+          aria-label="Observação do item"
           placeholder="Observação (opcional)…"
           className="w-full text-xs text-[#f5f5f7] bg-[rgba(255,255,255,0.03)] border border-[rgba(255,255,255,0.07)] rounded-lg px-2 py-1.5 resize-none focus:outline-none focus:ring-2 focus:ring-[rgba(0,217,255,0.4)] placeholder:text-[#6b6b78]"
           rows={2}
@@ -306,7 +307,7 @@ export default function VotingCard({ item, reacaoInicial, obsInicial, onReacao, 
                   : undefined
               }
               className={`text-[10px] ${
-                obsStatus === "erro" ? "text-[#ff7a7a]" : "text-[#6b6b78]"
+                obsStatus === "erro" ? "text-[#ffaa00]" : "text-[#6b6b78]"
               }`}
             >
               {obsStatus === "salvando"

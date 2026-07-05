@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import ResultadoCard from "@/components/ResultadoCard";
 import { Item, Reaction, REACTION_LABELS } from "@/lib/types";
-import { ACTIVE_GRADIENT, PILL_NEUTRAL, HEADER_BG, TEXT_SECONDARY, TEXT_TERTIARY } from "@/lib/theme";
+import { ACTIVE_GRADIENT, PILL_NEUTRAL, HEADER_BG, TEXT_TERTIARY, SEGMENTED_BTN, SEGMENTED_INACTIVE } from "@/lib/theme";
 
 interface Reacao {
   reaction?: Reaction;
@@ -74,8 +74,8 @@ export default function Resultados() {
                   <button
                     key={l.key}
                     onClick={() => setLoja(l.key)}
-                    className={`px-4 py-1 rounded-lg text-xs transition-all ${
-                      loja === l.key ? ACTIVE_GRADIENT : `${TEXT_SECONDARY} hover:text-[#f5f5f7]`
+                    className={`${SEGMENTED_BTN} ${
+                      loja === l.key ? ACTIVE_GRADIENT : SEGMENTED_INACTIVE
                     }`}
                   >
                     {l.label}

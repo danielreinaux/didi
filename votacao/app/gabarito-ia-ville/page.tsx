@@ -1,7 +1,8 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
+  CARD,
   HEADER_BG,
   TEXT_SECONDARY,
   TEXT_TERTIARY,
@@ -65,14 +66,14 @@ function rotuloOpt(crit: Criterio, valor: string | null | undefined): string {
 function Carrossel({ fotos, onOpen }: { fotos: string[]; onOpen: (i: number) => void }) {
   const [i, setI] = useState(0);
   if (!fotos.length)
-    return <div className="w-full aspect-square bg-[#0b0b0f] grid place-items-center text-xs text-[#6b6b78]">sem foto</div>;
+    return <div className="w-full aspect-square bg-[rgba(255,255,255,0.03)] grid place-items-center text-xs text-[#6b6b78]">sem foto</div>;
   const n = fotos.length;
   return (
-    <div className="relative w-full aspect-square bg-[#0b0b0f]">
+    <div className="relative w-full aspect-square bg-[rgba(255,255,255,0.03)]">
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={fotos[i]}
-        alt=""
+        alt={`Foto ${i + 1} do produto`}
         onClick={() => onOpen(i)}
         title="Clique para ampliar"
         className="w-full h-full object-cover cursor-zoom-in"
@@ -80,8 +81,8 @@ function Carrossel({ fotos, onOpen }: { fotos: string[]; onOpen: (i: number) => 
       />
       {n > 1 && (
         <>
-          <button onClick={() => setI((i - 1 + n) % n)} className="absolute left-2 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-black/45 text-white text-xl">‹</button>
-          <button onClick={() => setI((i + 1) % n)} className="absolute right-2 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-black/45 text-white text-xl">›</button>
+          <button onClick={() => setI((i - 1 + n) % n)} aria-label="Foto anterior" className="absolute left-2 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-black/45 text-white text-xl">‹</button>
+          <button onClick={() => setI((i + 1) % n)} aria-label="Próxima foto" className="absolute right-2 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-black/45 text-white text-xl">›</button>
           <span className="absolute top-2 right-2 text-[11px] bg-black/50 text-white px-2 py-0.5 rounded-full">{i + 1}/{n}</span>
         </>
       )}
@@ -96,31 +97,68 @@ function Lightbox({ fotos, inicial, onClose }: { fotos: string[]; inicial: numbe
   const n = fotos.length;
   const prev = useCallback(() => setI((x) => (x - 1 + n) % n), [n]);
   const next = useCallback(() => setI((x) => (x + 1) % n), [n]);
+  // Refs do focus trap: o dialog delimita quem recebe Tab e o botão fechar
+  // recebe o foco ao abrir (devolvido ao gatilho no fechamento).
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const fecharRef = useRef<HTMLButtonElement>(null);
+  // Transição de entrada: começa invisível/reduzido e anima no primeiro frame.
+  const [visivel, setVisivel] = useState(false);
+  useEffect(() => {
+    const id = requestAnimationFrame(() => setVisivel(true));
+    return () => cancelAnimationFrame(id);
+  }, []);
 
   useEffect(() => {
+    // Guarda quem estava focado pra devolver o foco ao fechar (a11y 2.4.3).
+    const anterior = document.activeElement as HTMLElement | null;
+    fecharRef.current?.focus();
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
-      else if (e.key === "ArrowLeft") prev();
-      else if (e.key === "ArrowRight") next();
+      if (e.key === "Escape") { onClose(); return; }
+      if (e.key === "ArrowLeft") { prev(); return; }
+      if (e.key === "ArrowRight") { next(); return; }
+      if (e.key === "Tab") {
+        // Prende o Tab dentro do modal (a11y: focus trap / 2.1.2).
+        const foco = dialogRef.current?.querySelectorAll<HTMLElement>("button");
+        if (!foco || foco.length === 0) return;
+        const primeiro = foco[0];
+        const ultimo = foco[foco.length - 1];
+        if (e.shiftKey && document.activeElement === primeiro) {
+          e.preventDefault();
+          ultimo.focus();
+        } else if (!e.shiftKey && document.activeElement === ultimo) {
+          e.preventDefault();
+          primeiro.focus();
+        }
+      }
     };
     window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      anterior?.focus?.(); // devolve o foco ao elemento que abriu o lightbox
+    };
   }, [onClose, prev, next]);
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-sm flex items-center justify-center" onClick={onClose}>
-      <button onClick={onClose} title="Fechar (Esc)" className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/10 text-white text-2xl grid place-items-center hover:bg-white/20">×</button>
+    <div
+      ref={dialogRef}
+      role="dialog"
+      aria-modal="true"
+      aria-label="Foto ampliada do produto"
+      className={`fixed inset-0 z-50 bg-black/85 backdrop-blur-sm flex items-center justify-center transition-opacity duration-200 ${visivel ? "opacity-100" : "opacity-0"}`}
+      onClick={onClose}
+    >
+      <button ref={fecharRef} onClick={onClose} aria-label="Fechar" title="Fechar (Esc)" className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/10 text-white text-2xl grid place-items-center hover:bg-white/20">×</button>
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={fotos[i]}
-        alt=""
+        alt={`Foto ${i + 1} do produto`}
         onClick={(e) => e.stopPropagation()}
-        className="max-w-[92vw] max-h-[88vh] object-contain rounded-lg shadow-2xl select-none"
+        className={`max-w-[92vw] max-h-[88vh] object-contain rounded-lg shadow-2xl select-none transition-transform duration-200 ${visivel ? "scale-100" : "scale-95"}`}
       />
       {n > 1 && (
         <>
-          <button onClick={(e) => { e.stopPropagation(); prev(); }} title="Anterior (←)" className="absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/10 text-white text-3xl grid place-items-center hover:bg-white/20">‹</button>
-          <button onClick={(e) => { e.stopPropagation(); next(); }} title="Próxima (→)" className="absolute right-3 sm:right-6 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/10 text-white text-3xl grid place-items-center hover:bg-white/20">›</button>
+          <button onClick={(e) => { e.stopPropagation(); prev(); }} aria-label="Foto anterior" title="Anterior (←)" className="absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/10 text-white text-3xl grid place-items-center hover:bg-white/20">‹</button>
+          <button onClick={(e) => { e.stopPropagation(); next(); }} aria-label="Próxima foto" title="Próxima (→)" className="absolute right-3 sm:right-6 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/10 text-white text-3xl grid place-items-center hover:bg-white/20">›</button>
           <span className="absolute bottom-5 left-1/2 -translate-x-1/2 text-sm bg-black/60 text-white px-3 py-1 rounded-full">{i + 1}/{n}</span>
         </>
       )}
@@ -248,14 +286,14 @@ export default function GabaritoIA() {
             Carregando gabarito…
           </div>
         ) : erro ? (
-          <p className={`text-center mt-20 text-sm ${TEXT_TERTIARY}`}>Não consegui carregar o gabarito_ville.json.</p>
+          <p className={`text-center mt-20 text-sm ${TEXT_TERTIARY}`}>Não consegui carregar o gabarito. Atualize a página; se continuar, avise a gente.</p>
         ) : (
           <div className="flex flex-col gap-5">
             {filtrados.map((item) => {
               const r = gab[item.id] || {};
               const feitos = nCompletos(gab, item.id);
               return (
-                <div key={item.id} className="rounded-xl bg-[rgba(255,255,255,0.025)] border border-[rgba(255,255,255,0.07)] overflow-hidden grid md:grid-cols-[300px_1fr]">
+                <div key={item.id} className={`${CARD} overflow-hidden grid md:grid-cols-[300px_1fr]`}>
                   {/* Coluna foto + meta */}
                   <div className="flex flex-col">
                     <Carrossel fotos={item.fotos} onOpen={(idx) => setLightbox({ fotos: item.fotos, i: idx })} />
@@ -263,7 +301,7 @@ export default function GabaritoIA() {
                       <a href={item.url} target="_blank" rel="noreferrer" className="text-sm text-[#f5f5f7] hover:underline leading-snug line-clamp-2">{item.titulo}</a>
                       <div className={`text-xs ${TEXT_SECONDARY}`}>{item.tamanho || "?"} · <b className="text-[#f5f5f7]">{item.preco || "?"}</b></div>
                       <div className="flex items-center gap-2 flex-wrap">
-                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-[rgba(167,139,250,.14)] text-[#c4b5fd]">{item.bucket}</span>
+                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-[rgba(255,102,226,0.12)] text-[#ff66e2]">{item.bucket}</span>
                         <span className={`text-[10px] ${feitos >= TOTAL_CRITERIOS ? "text-[#00ff88]" : TEXT_TERTIARY}`}>{feitos}/{TOTAL_CRITERIOS}</span>
                       </div>
                     </div>
@@ -276,7 +314,7 @@ export default function GabaritoIA() {
                         {status[item.id] === "saving" ? (
                           <span className="text-[#6b6b78]">salvando…</span>
                         ) : status[item.id] === "error" ? (
-                          <span className="text-[#ff4d6d] font-medium">⚠ não salvou — tente de novo</span>
+                          <span className="text-[#ffaa00]">⚠ não salvou — tente de novo</span>
                         ) : status[item.id] === "saved" ? (
                           <span className="text-[#00ff88]">salvo no servidor ✓</span>
                         ) : (
@@ -294,15 +332,15 @@ export default function GabaritoIA() {
                         const igualIA = atual && iaVal && atual === iaVal;
                         return (
                           <label key={c.key} className="flex flex-col gap-0.5">
-                            <span className="text-[11px] text-[#cfcfd8] flex items-center gap-1.5">
+                            <span className="text-[11px] text-[#b8b8c0] flex items-center gap-1.5">
                               {c.label}
                               <span className={`text-[10px] ${TEXT_TERTIARY}`}>IA: {iaLabel}{corNome}</span>
                             </span>
                             <select
                               value={atual}
                               onChange={(e) => salvar(item.id, c.key, e.target.value)}
-                              className={`text-xs rounded-lg px-2 py-1.5 bg-[#17171d] border outline-none ${
-                                atual ? (igualIA ? "border-[rgba(0,255,136,0.35)] text-[#cfe9d8]" : "border-[#00d9ff] text-[#f5f5f7]") : "border-[rgba(255,255,255,0.12)] text-[#9a9aa6]"
+                              className={`text-xs rounded-lg px-2 py-1.5 bg-[rgba(255,255,255,0.04)] border outline-none ${
+                                atual ? (igualIA ? "border-[rgba(0,255,136,0.35)] text-[#f5f5f7]" : "border-[#00d9ff] text-[#f5f5f7]") : "border-[rgba(255,255,255,0.12)] text-[#6b6b78]"
                               }`}
                             >
                               <option value="">— escolher —</option>
@@ -318,7 +356,7 @@ export default function GabaritoIA() {
                     {/* Observação livre — só pra humano ler, NÃO é critério nem
                         alimenta a IA. Vai no mesmo hash do Redis sob "observacao". */}
                     <div className="mt-3">
-                      <label htmlFor={`obs-${item.id}`} className="text-[11px] text-[#cfcfd8] flex items-center gap-1.5 mb-1">
+                      <label htmlFor={`obs-${item.id}`} className="text-[11px] text-[#b8b8c0] flex items-center gap-1.5 mb-1">
                         Observação
                         <span className="text-[10px] text-[#6b6b78]">(só pra você ler — não afeta a IA)</span>
                       </label>
@@ -331,7 +369,7 @@ export default function GabaritoIA() {
                         }}
                         rows={2}
                         placeholder="Anotação livre…"
-                        className="w-full text-xs rounded-lg px-2 py-1.5 bg-[#17171d] border border-[rgba(255,255,255,0.12)] text-[#f5f5f7] outline-none focus:border-[#00d9ff] resize-y"
+                        className="w-full text-xs rounded-lg px-2 py-1.5 bg-[rgba(255,255,255,0.04)] border border-[rgba(255,255,255,0.12)] text-[#f5f5f7] outline-none focus:border-[#00d9ff] resize-y"
                       />
                     </div>
                   </div>

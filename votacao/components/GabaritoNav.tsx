@@ -2,7 +2,7 @@
 
 // Seletor de navegação entre os 3 gabaritos (só aparece nas telas de gabarito).
 // Destaca o atual e leva pros outros dois.
-import { ACTIVE_GRADIENT } from "@/lib/theme";
+import { ACTIVE_GRADIENT, SEGMENTED_BTN, SEGMENTED_INACTIVE } from "@/lib/theme";
 
 const GABARITOS: { href: string; label: string }[] = [
   { href: "/gabarito-ia-ville", label: "Ville" },
@@ -17,8 +17,8 @@ export default function GabaritoNav({ atual }: { atual: string }) {
         <a
           key={g.href}
           href={g.href}
-          className={`px-3 py-1.5 rounded-lg text-xs transition-all ${
-            g.href === atual ? ACTIVE_GRADIENT : "text-[#b8b8c0] hover:text-[#f5f5f7]"
+          className={`${SEGMENTED_BTN} ${
+            g.href === atual ? ACTIVE_GRADIENT : SEGMENTED_INACTIVE
           }`}
         >
           {g.label}

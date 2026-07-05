@@ -22,10 +22,11 @@ import {
 import {
   CARD,
   HEADER_BG,
-  TEXT_SECONDARY,
   TEXT_TERTIARY,
   PILL_NEUTRAL,
   ACTIVE_GRADIENT,
+  SEGMENTED_BTN,
+  SEGMENTED_INACTIVE,
 } from "@/lib/theme";
 
 type Escopo = "total" | Marca;
@@ -113,8 +114,8 @@ export default function RodadaDetalhe({ params }: { params: Promise<{ historyid:
                 key={e}
                 onClick={() => setEscopo(e)}
                 disabled={!temDuasMarcas && e === "total"}
-                className={`px-4 py-1 rounded-lg text-xs transition-all ${
-                  escopo === e ? ACTIVE_GRADIENT : `${TEXT_SECONDARY} hover:text-[#f5f5f7]`
+                className={`${SEGMENTED_BTN} ${
+                  escopo === e ? ACTIVE_GRADIENT : SEGMENTED_INACTIVE
                 } ${!temDuasMarcas && e === "total" ? "opacity-40 cursor-default" : ""}`}
               >
                 {e === "total" ? "Total" : MARCA_LABEL[e as Marca]}
@@ -138,11 +139,11 @@ export default function RodadaDetalhe({ params }: { params: Promise<{ historyid:
           </div>
           {escopo === "total" && (
             <p className={`text-[11px] mt-2 ${TEXT_TERTIARY}`}>
-              Total combinado Sundek + Ville. {t.custo_usd ? `USD do dia inteiro é somado à parte no relatório de custo.` : ""}
+              Total combinado Sundek + Ville. {t.custo_usd ? `O custo em dólar do dia é contabilizado separadamente.` : ""}
             </p>
           )}
           {"duracao_s" in m && (m as MetricasMarca).duracao_s != null && (
-            <p className={`text-[11px] mt-2 ${TEXT_TERTIARY}`}>Duração do classify (Ville): {fmtDuracao((m as MetricasMarca).duracao_s)}</p>
+            <p className={`text-[11px] mt-2 ${TEXT_TERTIARY}`}>Tempo de análise da IA (Ville): {fmtDuracao((m as MetricasMarca).duracao_s)}</p>
           )}
         </section>
 
@@ -160,7 +161,7 @@ export default function RodadaDetalhe({ params }: { params: Promise<{ historyid:
             <Stat v={fmtNum(m.ativos)} l="Ativos à venda" />
           </div>
           <p className={`text-[11px] mt-2 ${TEXT_TERTIARY}`}>
-            Acervo acumulado ainda à venda (não só o que foi scrapeado nesta rodada). Vendidos: {fmtNum(m.vendidos)} · removidos: {fmtNum(m.removidos)}.
+            Acervo acumulado ainda à venda (não só o que foi coletado nesta rodada). Vendidos: {fmtNum(m.vendidos)} · removidos: {fmtNum(m.removidos)}.
           </p>
         </section>
 
@@ -178,7 +179,7 @@ export default function RodadaDetalhe({ params }: { params: Promise<{ historyid:
                       <div className="flex-1 h-2 rounded-full bg-[rgba(255,255,255,0.04)] overflow-hidden">
                         <div className="h-full rounded-full bg-[#ff7a7a]/60" style={{ width: `${(n / max) * 100}%` }} />
                       </div>
-                      <span className="text-xs text-[#8a8a94] w-10 text-right">{fmtNum(n)}</span>
+                      <span className="text-xs text-[#b8b8c0] w-10 text-right">{fmtNum(n)}</span>
                     </div>
                   );
                 })}
@@ -332,7 +333,7 @@ function ProdutoCard({ p, runId }: { p: Produto; runId: string }) {
       </div>
       <div className="p-2.5 flex flex-col gap-1">
         <span className="text-xs text-[#f5f5f7] line-clamp-2 leading-snug">{p.titulo}</span>
-        <div className="flex items-center justify-between text-[11px] text-[#8a8a94]">
+        <div className="flex items-center justify-between text-[11px] text-[#b8b8c0]">
           <span>{p.preco_total || p.preco || "—"}</span>
           <span className="font-semibold" style={{ color: meta.cor }}>{p.score}pts</span>
         </div>
@@ -345,13 +346,13 @@ function Stat({ v, l, cor }: { v: string; l: string; cor?: string }) {
   return (
     <div className={`${CARD} p-3`}>
       <div className="text-xl font-semibold" style={{ color: cor || "#f5f5f7" }}>{v}</div>
-      <div className="text-[11px] text-[#8a8a94] mt-0.5">{l}</div>
+      <div className="text-[11px] text-[#b8b8c0] mt-0.5">{l}</div>
     </div>
   );
 }
 
 function Centro({ children }: { children: React.ReactNode }) {
   return (
-    <div className="h-full flex flex-col items-center justify-center gap-3 text-sm text-[#6b6b78]">{children}</div>
+    <div className="h-full flex flex-col items-center justify-center gap-3 text-sm text-[#b8b8c0]">{children}</div>
   );
 }
