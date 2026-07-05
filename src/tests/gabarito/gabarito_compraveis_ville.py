@@ -6,7 +6,7 @@ temos dado do Vinted — então classificamos do zero com a IA. Reusa o _process
 do harness (mesmo gating/critérios).
 
 Uso (com o python do venv, precisa OPENAI_API_KEY no .env):
-  .venv/Scripts/python -m src.build.gabarito_compraveis_ville
+  .venv/Scripts/python -m src.tests.gabarito.gabarito_compraveis_ville
 """
 import json
 import sys
@@ -24,9 +24,9 @@ try:
 except Exception:
     pass
 
-from ..gabarito.gabarito_run import _processar, ORDEM, CRITERIOS
+from .gabarito_run import _processar, ORDEM, CRITERIOS
 
-ROOT = Path(__file__).resolve().parent.parent.parent
+ROOT = Path(__file__).resolve().parent.parent.parent.parent
 DATA = ROOT / "data"
 PUBLIC = ROOT / "votacao" / "public"
 ITENS = DATA / "compraveis_ville_itens.json"

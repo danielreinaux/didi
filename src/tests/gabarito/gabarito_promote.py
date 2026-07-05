@@ -4,8 +4,8 @@ Use quando gostou de uma versão e quer que ela vire a nova referência — assi
 próximas rodadas passam a comparar contra ela, e a pasta não acumula lixo.
 
 Uso:
-  python -m src.gabarito.gabarito_promote --dataset ville
-  python -m src.gabarito.gabarito_promote --dataset compraveis_ville
+  python -m src.tests.gabarito.gabarito_promote --dataset ville
+  python -m src.tests.gabarito.gabarito_promote --dataset compraveis_ville
 """
 import glob
 import json

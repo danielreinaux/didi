@@ -4,9 +4,9 @@ Use pra tirar a métrica do estado atual (ex.: a primeira rodada baseline), sem
 precisar comparar duas versões. Pra comparar duas versões, use gabarito_diff.
 
 Uso:
-  python -m src.gabarito.gabarito_export             # puxa a verdade do Redis
-  python -m src.gabarito.gabarito_run --label baseline
-  python -m src.gabarito.gabarito_aval --label baseline
+  python -m src.tests.gabarito.gabarito_export             # puxa a verdade do Redis
+  python -m src.tests.gabarito.gabarito_run --label baseline
+  python -m src.tests.gabarito.gabarito_aval --label baseline
 """
 import sys
 from html import escape

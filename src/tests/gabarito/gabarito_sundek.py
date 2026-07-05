@@ -9,7 +9,7 @@ sem_elastico, bolso_so_logo, sem_listra, tecido_brilhoso, bicolor, desbotado,
 fechamento_botao, ...) + garante alguns COMPRÁVEIS (casos bons de referência) e
 os motivos RAROS. Seed fixa → reprodutível.
 
-Uso: python -m src.build.gabarito_sundek [--n 50] [--seed 42]
+Uso: python -m src.tests.gabarito.gabarito_sundek [--n 50] [--seed 42]
 """
 import json
 import random
@@ -20,7 +20,7 @@ from pathlib import Path
 
 from .gabarito_ville import _baixar_fotos, FOTOS_DIR  # reusa download de fotos
 
-ROOT = Path(__file__).resolve().parent.parent.parent
+ROOT = Path(__file__).resolve().parent.parent.parent.parent
 DATA = ROOT / "data"
 PUBLIC = ROOT / "votacao" / "public"
 OUT = PUBLIC / "gabarito_sundek.json"

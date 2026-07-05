@@ -5,8 +5,8 @@ rota /api/gabarito da votacao. Aqui só fazemos um GET e salvamos local pra o
 diff usar — não precisa das credenciais do Redis (a API já resolve isso).
 
 Uso:
-  python -m src.gabarito.gabarito_export
-  python -m src.gabarito.gabarito_export --url https://votacao-two.vercel.app/api/gabarito
+  python -m src.tests.gabarito.gabarito_export
+  python -m src.tests.gabarito.gabarito_export --url https://votacao-two.vercel.app/api/gabarito
 """
 import json
 import sys
@@ -14,7 +14,7 @@ import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parent.parent.parent
+ROOT = Path(__file__).resolve().parent.parent.parent.parent
 REG = ROOT / "data" / "regressao"
 OUT = REG / "gabarito_respostas.json"
 URL_PADRAO = "https://votacao-two.vercel.app/api/gabarito"

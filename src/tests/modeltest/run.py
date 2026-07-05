@@ -5,7 +5,7 @@ gabarito_run) com vários modelos e mede o acerto por critério contra a verdade
 humana, além do custo/tokens de cada modelo. Serve pra responder:
 "em quais critérios dá pra usar um modelo mais barato sem perder precisão?".
 
-⚠️ Fica numa pasta SEPARADA (src/modeltest, saída em data/modeltest/) — NÃO mexe
+⚠️ Fica numa pasta SEPARADA (src/tests/modeltest, saída em data/modeltest/) — NÃO mexe
 no data/regressao/ do gabarito de regressão nem nas rodadas versionadas dele.
 
 Como funciona:
@@ -19,14 +19,14 @@ Como funciona:
 
 Uso:
   # teste barato primeiro (só 6 itens, pra ver que roda):
-  python -m src.modeltest.run --limit 6
+  python -m src.tests.modeltest.run --limit 6
 
   # comparativo completo (dataset ville, set padrão de modelos):
-  python -m src.modeltest.run
+  python -m src.tests.modeltest.run
 
   # escolher modelos e dataset:
-  python -m src.modeltest.run --dataset ville --models atual,gpt-4o-mini,gpt-4.1-nano
-  python -m src.modeltest.run --workers 6
+  python -m src.tests.modeltest.run --dataset ville --models atual,gpt-4o-mini,gpt-4.1-nano
+  python -m src.tests.modeltest.run --workers 6
 
 Saída:
   data/modeltest/<dataset>/<modelo>.json   → respostas cruas da IA por item
@@ -48,11 +48,11 @@ load_dotenv()
 
 import openai
 
-from ..config import IA as CONFIG_IA
+from ...config import IA as CONFIG_IA
 from ..gabarito import gabarito_run as gr
 from ..gabarito.gabarito_diff import _norm, _graded, _item_100, CRITERIOS, LABELS
 
-ROOT = Path(__file__).resolve().parent.parent.parent
+ROOT = Path(__file__).resolve().parent.parent.parent.parent
 DATA = ROOT / "data"
 OUT_DIR = DATA / "modeltest"
 TRUTH_PATH = DATA / "regressao" / "gabarito_respostas.json"
@@ -363,7 +363,7 @@ def main() -> None:
     args = ap.parse_args()
 
     if not TRUTH_PATH.exists():
-        print(f"Falta a verdade em {TRUTH_PATH}. Rode antes: python -m src.gabarito.gabarito_export")
+        print(f"Falta a verdade em {TRUTH_PATH}. Rode antes: python -m src.tests.gabarito.gabarito_export")
         return
     truth = json.loads(TRUTH_PATH.read_text(encoding="utf-8"))["respostas"]
 

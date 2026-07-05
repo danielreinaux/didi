@@ -13,7 +13,7 @@ O que faz:
      quebrar quando a URL do Vinted expirar.
   5. Emite votacao/public/gabarito_ville.json (lista congelada que o front lê).
 
-Uso: python -m src.build.gabarito_ville [--n 50] [--seed 42]
+Uso: python -m src.tests.gabarito.gabarito_ville [--n 50] [--seed 42]
 """
 import json
 import random
@@ -22,9 +22,9 @@ import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
 
-from ..classify.cor_ville import bucket_cor
+from ...classify.cor_ville import bucket_cor
 
-ROOT = Path(__file__).resolve().parent.parent.parent
+ROOT = Path(__file__).resolve().parent.parent.parent.parent
 DATA = ROOT / "data"
 PUBLIC = ROOT / "votacao" / "public"
 FOTOS_DIR = PUBLIC / "gabarito_fotos"

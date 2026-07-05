@@ -12,17 +12,17 @@ Como funciona o lever de custo (auto-detecção por hash do prompt):
 
 Uso:
   # 1) referência (uma vez, roda tudo):
-  python -m src.gabarito.gabarito_run --label baseline
+  python -m src.tests.gabarito.gabarito_run --label baseline
 
   # 2) depois de mexer nos prompts (auto-detecta o que mudou vs baseline):
-  python -m src.gabarito.gabarito_run --label v2
+  python -m src.tests.gabarito.gabarito_run --label v2
 
   # forçar áreas específicas (ignora o hash):
-  python -m src.gabarito.gabarito_run --label v2 --so autenticidade,fecho
+  python -m src.tests.gabarito.gabarito_run --label v2 --so autenticidade,fecho
   # forçar tudo:
-  python -m src.gabarito.gabarito_run --label v3 --all
+  python -m src.tests.gabarito.gabarito_run --label v3 --all
   # comparar contra outra rodada base (default: baseline):
-  python -m src.gabarito.gabarito_run --label v2 --base baseline
+  python -m src.tests.gabarito.gabarito_run --label v2 --base baseline
 """
 import base64
 import glob
@@ -45,17 +45,17 @@ try:
 except Exception:
     pass
 
-from ..classify.ville_brand import verificar_ville
-from ..classify.tartaruga import classificar_tartaruga
-from ..classify.autenticidade_ville import verificar_autenticidade
-from ..classify.cor import classificar_cor
-from ..classify.cordao_ville import verificar_cordao
-from ..classify.fecho_ville import verificar_fecho
-from ..classify.etiqueta import verificar_etiqueta
-from ..classify.cor_ville import bucket_cor
-from ..classify.ville_run import _parece_ville, marca_sem_evidencia
+from ...classify.ville_brand import verificar_ville
+from ...classify.tartaruga import classificar_tartaruga
+from ...classify.autenticidade_ville import verificar_autenticidade
+from ...classify.cor import classificar_cor
+from ...classify.cordao_ville import verificar_cordao
+from ...classify.fecho_ville import verificar_fecho
+from ...classify.etiqueta import verificar_etiqueta
+from ...classify.cor_ville import bucket_cor
+from ...classify.ville_run import _parece_ville, marca_sem_evidencia
 
-SRC = Path(__file__).resolve().parent.parent
+SRC = Path(__file__).resolve().parent.parent.parent
 ROOT = SRC.parent
 DATA = ROOT / "data"
 REG = DATA / "regressao"
@@ -432,10 +432,10 @@ def main() -> None:
     if len(resultados) < len(inputs):
         print(f"  ⚠ {len(inputs)-len(resultados)} pendentes — rode o MESMO comando de novo pra completar (resume automático).")
     if label.endswith("baseline"):
-        print(f"  → Baseline criado. Edite os prompts e rode:  python -m src.gabarito.gabarito_run --dataset {dataset}")
+        print(f"  → Baseline criado. Edite os prompts e rode:  python -m src.tests.gabarito.gabarito_run --dataset {dataset}")
     else:
-        print(f"  Compare:  python -m src.gabarito.gabarito_diff --dataset {dataset}")
-        print(f"  Métrica:  python -m src.gabarito.gabarito_aval --dataset {dataset}")
+        print(f"  Compare:  python -m src.tests.gabarito.gabarito_diff --dataset {dataset}")
+        print(f"  Métrica:  python -m src.tests.gabarito.gabarito_aval --dataset {dataset}")
 
 
 if __name__ == "__main__":

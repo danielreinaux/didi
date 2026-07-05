@@ -6,13 +6,13 @@ Geral: nº de itens 100% certos. E as listas de itens que FLIPARAM em cada área
 o efeito da mudança de prompt.
 
 Uso:
-  python -m src.gabarito.gabarito_diff --de baseline --para v2
+  python -m src.tests.gabarito.gabarito_diff --de baseline --para v2
 
 Pré-requisitos:
-  - python -m src.gabarito.gabarito_export        (puxa o gabarito do Redis)
-  - python -m src.gabarito.gabarito_run --label baseline
+  - python -m src.tests.gabarito.gabarito_export        (puxa o gabarito do Redis)
+  - python -m src.tests.gabarito.gabarito_run --label baseline
   - (mexe nos prompts)
-  - python -m src.gabarito.gabarito_run --label v2
+  - python -m src.tests.gabarito.gabarito_run --label v2
 """
 import json
 import sys
@@ -24,7 +24,7 @@ try:
 except Exception:
     pass
 
-ROOT = Path(__file__).resolve().parent.parent.parent
+ROOT = Path(__file__).resolve().parent.parent.parent.parent
 DATA = ROOT / "data"
 REG = DATA / "regressao"
 PUBLIC = ROOT / "votacao" / "public"
@@ -99,7 +99,7 @@ def main() -> None:
         sys.exit(0)
     if para == de:
         print(f"A última rodada de '{dataset}' É o baseline — não há versão nova pra "
-              f"comparar. Edite um prompt e rode: python -m src.gabarito.gabarito_run --dataset {dataset}")
+              f"comparar. Edite um prompt e rode: python -m src.tests.gabarito.gabarito_run --dataset {dataset}")
         sys.exit(0)
 
     truth = _carregar(REG / "gabarito_respostas.json", "gabarito (rode gabarito_export)")["respostas"]
