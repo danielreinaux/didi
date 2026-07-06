@@ -39,7 +39,7 @@ from .cor import classificar_cor
 from .cordao_ville import verificar_cordao
 from .fecho_ville import verificar_fecho
 from .etiqueta import verificar_etiqueta
-from .score_ville import calcular_score
+from .score_ville import calcular_score, _tamanho_key
 # Reusa as exclusões de título do Sundek (infantil, não-short) — P2.
 from .prefilter import EXCLUSAO, EXCLUSAO_INFANTIL
 
@@ -142,6 +142,16 @@ def _processar(item: dict, idx: str, total: int) -> tuple[dict, int, int]:
         _log(f"{prefix} → × {tipo_pf.upper()} [{motivo}]")
         return {**item, "classificacao": {"tipo": tipo_pf, "motivo": motivo, "confianca": 1}}, 0, 0
 
+    # 1b. Pré-check de tamanho (sem IA). O tamanho já vem do scrape (coleta-ville.json).
+    # Se for inválido (XS / XXL+ / numérico / "talla única"), o item é descarte
+    # garantido no score — mesma função _tamanho_key que o calcular_score usa, então a
+    # decisão é idêntica, só antecipada. Corta AQUI, antes de qualquer visão, e economiza
+    # marca+tartaruga+autenticidade+fecho (gpt-4o) num item que ia ser descartado igual.
+    if _tamanho_key(item.get("tamanho"), item.get("titulo")) is None:
+        _log(f"{prefix} → × TAMANHO [{item.get('tamanho')}]")
+        return {**item, "classificacao": {"tipo": "tamanho_invalido",
+                "motivo": f"tamanho {item.get('tamanho')!r} fora de S-XL", "confianca": 1}}, 0, 0
+
     # 2. Marca + autenticidade
     try:
         marca = verificar_ville(item)
@@ -184,6 +194,16 @@ def _processar(item: dict, idx: str, total: int) -> tuple[dict, int, int]:
         "outro": "OUTRO",
         "indefinido": "? indef",
     }.get(tipo_tart, "?")
+
+    # Early-exit: padrão "outro" (peixe/coral/âncora/etc.) é descarte garantido no score
+    # (EXCLUI_UPSTREAM → "padrao_outro_nao_compra"). Não vale gastar autenticidade (gpt-4o,
+    # a etapa mais cara), cor, etiqueta, cordão e fecho (gpt-4o) — ~metade dos itens Ville
+    # caem em "outro". Mesma ideia dos short-circuits de liso/indefinido logo abaixo, só que
+    # mais cedo e completo. O score é calculado no passe final do main() (item sem "score").
+    if tipo_tart == "outro":
+        _log(f"{prefix} → {tag_tart} — descarte garantido, pula atributos")
+        return {**item, "marca_check": marca, "tartaruga": tartaruga,
+                "classificacao": {"tipo": "outro", "autenticidade": "indefinido"}}, in_tok, out_tok
 
     # 4. Autenticidade dedicada (zoom no bolso traseiro — critério central da marca).
     # Pula a chamada de IA quando o short é liso (sem padrão pra continuar no bolso)
