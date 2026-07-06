@@ -28,7 +28,11 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
         with:
-          fetch-depth: 1
+          # fetch-depth: 50 — o passo de commit dá `git rebase`, e com checkout raso
+          # (depth 1) o rebase pode ficar sem merge-base e tratar TODO arquivo diferente
+          # como conflito. 50 commits de histórico já garantem o merge-base sem baixar o
+          # repo inteiro (que aqui commita arquivo grande ~20x/dia).
+          fetch-depth: 50
 
       - name: Setup Python 3.12
         uses: actions/setup-python@v5
@@ -59,7 +63,7 @@ jobs:
           HEADLESS: 'true'
         run: python -m src.scrape.verifica_vendidos --max 80
 
-      - name: Build analise.html + items de votação
+      - name: Build analise.html
         if: always()
         run: |
           python -m src.build.analise
@@ -67,7 +71,10 @@ jobs:
           # dentro do passo de deploy, que foi removido — o deploy agora é único, no
           # job 'deploy' do fim, e publica o que estiver commitado em votacao/public/).
           cp data/analise.html votacao/public/analise.html
-          python -m src.build.votacao_items   # gera votacao/public/items.json (só compráveis+barganha)
+          # O items.json (combinado Sundek+Ville) NÃO é mais gerado aqui: como sundek e
+          # ville rodam em paralelo e os dois escreviam o MESMO items.json, isso dava
+          # conflito de rebase no push. Agora quem monta e commita o items.json é só o
+          # job 'deploy' do fim (fonte única), a partir do main já com os dois lados.
 
       # A notificação por email saiu daqui: agora é UM email consolidado (Sundek + Ville)
       # no job 'deploy' do fim, depois que o items.json combinado já está commitado.
@@ -79,25 +86,35 @@ jobs:
         run: |
           git config user.name "Didi Bot"
           git config user.email "bot@didi.local"
-          git add data/coleta.json data/coleta-classificada.json data/historico.json data/custo_por_etapa.json data/analise.html votacao/public/analise.html votacao/public/items.json
+          # items.json saiu daqui — agora é dono único do job 'deploy' (ver comentário no build).
+          git add data/coleta.json data/coleta-classificada.json data/historico.json data/custo_por_etapa.json data/analise.html votacao/public/analise.html
           git diff --cached --quiet && echo "nada a commitar" && exit 0
           git commit -m "data: cron sundek $(date -u +'%Y-%m-%d %H:%M UTC')"
           # O job dura 1-3h; outro run pode ter empurrado pro main nesse meio-tempo.
-          # Rebase antes do push e tenta de novo (evita 'rejected: fetch first').
-          for i in 1 2 3; do
-            git pull --rebase origin main && git push && exit 0
-            echo "push falhou (tentativa $i/3) — refazendo rebase em 5s..."
+          # Rebase antes do push e tenta de novo. IMPORTANTE: se o rebase parar num
+          # conflito, tem que dar `git rebase --abort` ANTES de re-tentar — senão a
+          # próxima volta morre com "Pulling is not possible because you have unmerged
+          # files" (era esse o bug que fazia as 3 tentativas falharem em cascata).
+          for i in 1 2 3 4 5; do
+            git fetch origin main
+            if git rebase origin/main && git push; then exit 0; fi
+            git rebase --abort 2>/dev/null || true
+            echo "push falhou (tentativa $i/5) — re-sincronizando em 5s..."
             sleep 5
           done
-          echo "::error::não consegui empurrar os dados após 3 tentativas"
+          echo "::error::não consegui empurrar os dados após 5 tentativas"
           exit 1
 
   # Vilebrequin: mesma cadência do Sundek, agora EM PARALELO com ele (sem needs).
   # Antes tinha `needs: sundek` pra não competir cota de OpenAI, mas a conta hoje está
   # bem acima do Tier 1 (ver ratelimit.py: ~450K TPM, 5000 req/min) — os dois jobs
   # juntos nem chegam perto do teto, então soltamos pra cortar ~metade do tempo total.
-  # Cada um commita arquivos diferentes (coleta.json vs coleta-ville.json) e o push tem
-  # rebase+retry, então rodar junto não conflita. O deploy segue needs:[sundek, ville].
+  # Sundek e Ville commitam arquivos DISJUNTOS (coleta.json vs coleta-ville.json etc.),
+  # com uma exceção: o votacao/public/items.json é combinado (os dois lados). Por isso
+  # ele NÃO é mais commitado aqui — quem monta e commita o items.json é só o job 'deploy'
+  # (fonte única), evitando os dois jobs colidirem nesse arquivo no push. O checkout usa
+  # fetch-depth: 50 e o retry dá `git rebase --abort`, então rodar junto não trava mais.
+  # O deploy segue needs:[sundek, ville].
   ville:
     runs-on: ubuntu-latest
     timeout-minutes: 180
@@ -108,7 +125,7 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
         with:
-          fetch-depth: 1
+          fetch-depth: 50   # histórico recente p/ o rebase ter merge-base (ver job sundek)
 
       - name: Setup Python 3.12
         uses: actions/setup-python@v5
@@ -134,12 +151,13 @@ jobs:
       # analise_ville = página de auditoria (sem IA, barato) — fica só no repo.
       # oferta_ville  = página de votação do Marcos (votacao/public/oferta_ville.html).
       # votacao_items = items.json dos cards Next.js; JÁ junta Sundek + Ville numa só.
-      - name: Build analise-ville + oferta_ville + items de votação
+      - name: Build analise-ville + oferta_ville
         if: always()
         run: |
           python -m src.build.analise_ville
           python -m src.build.oferta_ville
-          python -m src.build.votacao_items
+          # items.json (combinado) NÃO é gerado aqui — dono único é o job 'deploy'
+          # (sundek e ville rodavam em paralelo e colidiam nesse arquivo no push).
 
       # (notificação consolidada Sundek+Ville movida pro job 'deploy' do fim)
 
@@ -150,20 +168,24 @@ jobs:
         run: |
           git config user.name "Didi Bot"
           git config user.email "bot@didi.local"
-          git add data/coleta-ville.json data/coleta-ville-classificada.json data/analise-ville.html votacao/public/items.json votacao/public/oferta_ville.html
+          # items.json saiu daqui — agora é dono único do job 'deploy' (ver comentário no build).
+          git add data/coleta-ville.json data/coleta-ville-classificada.json data/analise-ville.html votacao/public/oferta_ville.html
           # Custo é opcional: se o ville_run quebrou antes de gravar o custo_ville.json,
           # NÃO deixa o git add abortar o step (senão perde o checkpoint dos dados).
           git add data/custo_ville.json 2>/dev/null || true
           git diff --cached --quiet && echo "nada a commitar" && exit 0
           git commit -m "data: cron ville $(date -u +'%Y-%m-%d %H:%M UTC')"
-          # Sundek pode ter empurrado pro main nesse meio-tempo.
-          # Rebase antes do push e tenta de novo (evita 'rejected: fetch first').
-          for i in 1 2 3; do
-            git pull --rebase origin main && git push && exit 0
-            echo "push falhou (tentativa $i/3) — refazendo rebase em 5s..."
+          # Sundek pode ter empurrado pro main nesse meio-tempo. Rebase antes do push e
+          # re-tenta. IMPORTANTE: `git rebase --abort` antes de re-tentar, senão a volta
+          # seguinte morre em "unmerged files" (era o bug que derrubava o step).
+          for i in 1 2 3 4 5; do
+            git fetch origin main
+            if git rebase origin/main && git push; then exit 0; fi
+            git rebase --abort 2>/dev/null || true
+            echo "push falhou (tentativa $i/5) — re-sincronizando em 5s..."
             sleep 5
           done
-          echo "::error::não consegui empurrar os dados após 3 tentativas"
+          echo "::error::não consegui empurrar os dados após 5 tentativas"
           exit 1
 
   # Deploy ÚNICO no fim. Antes cada job (sundek e ville) rodava `vercel --prod` e os
@@ -191,7 +213,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: main        # tip atual do main (com os commits desta rodada), não o github.sha
-          fetch-depth: 1
+          fetch-depth: 50   # histórico recente p/ o rebase ter merge-base
 
       # Python já montado aqui pra servir o snapshot do histórico E a notificação
       # (ambos são stdlib puro — não precisam de pip install).
@@ -200,6 +222,15 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+
+      # items.json combinado (Sundek + Ville) montado AQUI, no único job que roda depois
+      # dos dois — fonte única, a partir do main já com os dados das duas frentes. Antes
+      # sundek e ville geravam/commitavam cada um o seu items.json em paralelo e colidiam
+      # no push (conflito de rebase). Precisa vir ANTES do snapshot e da notificação, que
+      # leem o items.json.
+      - name: Monta items.json combinado (fonte única)
+        if: always()
+        run: python -m src.build.votacao_items
 
       # Gera o snapshot DESTA rodada pro /history ANTES do deploy, pra o Vercel já
       # publicar o histórico atualizado. run_id = $GITHUB_RUN_ID (1 arquivo por run;
@@ -212,20 +243,22 @@ jobs:
       # Commita o snapshot pra ele persistir no repo (dev local + próxima rodada leem
       # o index de lá). O deploy abaixo publica o working-tree, então mesmo sem commit
       # o Vercel já subiria; o commit é pra durar.
-      - name: Commit do snapshot do histórico
+      - name: Commit do snapshot do histórico + items.json
         if: always()
         run: |
           git config user.name "Didi Bot"
           git config user.email "bot@didi.local"
-          git add -A votacao/public/history
+          git add -A votacao/public/history votacao/public/items.json
           git diff --cached --quiet && echo "nada a commitar" && exit 0
-          git commit -m "data: history $(date -u +'%Y-%m-%d %H:%M UTC')"
-          for i in 1 2 3; do
-            git pull --rebase origin main && git push && exit 0
-            echo "push falhou (tentativa $i/3) — refazendo rebase em 5s..."
+          git commit -m "data: history+items $(date -u +'%Y-%m-%d %H:%M UTC')"
+          for i in 1 2 3 4 5; do
+            git fetch origin main
+            if git rebase origin/main && git push; then exit 0; fi
+            git rebase --abort 2>/dev/null || true   # sem isto a próxima volta morre em "unmerged files"
+            echo "push falhou (tentativa $i/5) — re-sincronizando em 5s..."
             sleep 5
           done
-          echo "::error::não consegui empurrar o histórico após 3 tentativas"
+          echo "::error::não consegui empurrar o histórico após 5 tentativas"
           exit 1
 
       - name: Deploy no Vercel
@@ -262,10 +295,12 @@ jobs:
           git add data/notificados.json
           git diff --cached --quiet && echo "nada a commitar" && exit 0
           git commit -m "data: notificados $(date -u +'%Y-%m-%d %H:%M UTC')"
-          for i in 1 2 3; do
-            git pull --rebase origin main && git push && exit 0
-            echo "push falhou (tentativa $i/3) — refazendo rebase em 5s..."
+          for i in 1 2 3 4 5; do
+            git fetch origin main
+            if git rebase origin/main && git push; then exit 0; fi
+            git rebase --abort 2>/dev/null || true   # sem isto a próxima volta morre em "unmerged files"
+            echo "push falhou (tentativa $i/5) — re-sincronizando em 5s..."
             sleep 5
           done
-          echo "::error::não consegui empurrar o ledger após 3 tentativas"
+          echo "::error::não consegui empurrar o ledger após 5 tentativas"
           exit 1
