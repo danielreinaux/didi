@@ -431,6 +431,13 @@ def main() -> None:
     finally:
         _sys.argv = _argv
 
+    # Re-dump do custo por etapa: agora inclui o double-check gpt-4o (o dump acima
+    # roda antes da reclassificação, então não capturava esse gasto).
+    try:
+        (DATA / "custo_por_etapa.json").write_text(json.dumps(_dump_cost(), indent=2))
+    except Exception:
+        pass
+
 
 if __name__ == "__main__":
     main()

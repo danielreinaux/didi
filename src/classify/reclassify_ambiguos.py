@@ -7,6 +7,7 @@ O modelo retorna confianca≈0.9 pra tudo — usamos critérios estruturais:
 
 Uso: python -m src.reclassify_ambiguos [--workers N]
 """
+import hashlib
 import json
 import sys
 import threading
@@ -22,6 +23,7 @@ from ..prompts import liso_vs_estampado as prompt
 from .elastico import verificar_elastico
 from ..utils.listra_tier import avaliar_combo
 from ..utils.ratelimit import pace_gpt4o
+from ..utils.cost_tracker import track as _track, _dados as _ct_dados, PRECOS as _PRECOS
 from .score import calcular_score
 
 ROOT = Path(__file__).resolve().parent.parent.parent
@@ -37,9 +39,23 @@ def _log(msg: str) -> None:
         print(msg, flush=True)
 
 
+def _fotos_fingerprint(item: dict) -> str:
+    """Impressão digital das fotos do item. Muda quando o re-scrape traz imagens
+    diferentes — é o que nos deixa saber se o item já foi conferido com ESTAS
+    fotos (pula, economiza gpt-4o) ou se vale re-conferir (fotos novas)."""
+    fotos = item.get("fotos") or []
+    return hashlib.md5("|".join(fotos).encode("utf-8")).hexdigest()[:12]
+
+
 def _is_ambiguo(item: dict) -> bool:
     cl = item.get("classificacao") or {}
     if cl.get("tipo") != "liso":
+        return False
+
+    # Já conferido com gpt-4o NAS MESMAS fotos → não reprocessa (economia).
+    # Antes, reprocessava todos os ambíguos do acervo toda run, mesmo os já
+    # conferidos (100% redundante). Só volta a ser ambíguo se as fotos mudarem.
+    if cl.get("_model") == MODEL_FORTE and cl.get("_dc_fotos") == _fotos_fingerprint(item):
         return False
 
     bicolor = cl.get("bicolor", False)
@@ -106,6 +122,12 @@ def _processar(item: dict, idx: int, total: int) -> dict:
         c = _classificar_forte(item)
         usage = c.pop("_usage", {})
 
+        # Contabiliza o custo do double-check no cost_tracker global — antes essa
+        # etapa não passava pelo tracker e o gasto com gpt-4o ficava invisível.
+        if usage:
+            _track("reclassify_gpt4o", MODEL_FORTE,
+                   usage.get("prompt_tokens", 0), usage.get("completion_tokens", 0))
+
         if not c:
             _log(f"{prefix} → SKIP (sem resposta)")
             return item
@@ -126,6 +148,7 @@ def _processar(item: dict, idx: int, total: int) -> dict:
         cl_atual["bicolor"] = c.get("bicolor", False)
         cl_atual["confianca"] = c.get("confianca", cl_atual.get("confianca"))
         cl_atual["_model"] = MODEL_FORTE
+        cl_atual["_dc_fotos"] = _fotos_fingerprint(item)  # marca as fotos conferidas
 
         # Recalcula combo tier
         cor_atual = item.get("cor") or {}
@@ -213,7 +236,14 @@ def main() -> None:
     from collections import Counter
     decisoes = Counter((it.get("score") or {}).get("decisao", "") for it in out)
 
+    # Custo desta etapa (agora rastreado no cost_tracker) — deixa de ser invisível.
+    d = _ct_dados.get("reclassify_gpt4o", {}).get(MODEL_FORTE, {"in": 0, "out": 0, "calls": 0})
+    p = _PRECOS.get(MODEL_FORTE, {"in": 0, "out": 0})
+    usd = (d["in"] / 1_000_000) * p["in"] + (d["out"] / 1_000_000) * p["out"]
+
     print(f"\n✅ Concluído: {len(ambiguos)} ambíguos reprocessados com {MODEL_FORTE}")
+    print(f"   Custo double-check: ${usd:.4f} (~R${usd * 5:.2f}) · "
+          f"{d['calls']} chamadas · {d['in']:,} tok in / {d['out']:,} tok out")
     print(f"   Bicolor detectados: {novos_brilhosos}")
     print(f"   Brilhosos detectados: {novos_brilhosos}")
     print(f"   Listra na frente detectados: {novos_listra_frente}")
