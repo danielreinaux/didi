@@ -32,7 +32,7 @@ PTS_TIER = {
     "ruim":         0,
 }
 PTS_TAMANHO = {"M": 20, "L": 16, "XL": 8, "S": 4}
-PTS_ELASTICO = 22    # com elástico — atributo forte (doc 1.2: padrão preferido)
+PTS_ELASTICO = 30    # com elástico — atributo forte (doc 1.2: padrão preferido)
 PTS_SEM_ELASTICO = -15  # sem elástico — perde muita pontuação (doc 1.2)
 PTS_ETIQUETA = 10    # hang-tag de papel visível na foto
 PTS_LISTRA_SALVA = 5 # bônus quando listra salva a cor
