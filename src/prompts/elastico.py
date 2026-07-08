@@ -61,40 +61,42 @@ Sundeks clássicos têm cordão MAS cós plano sem elástico. O franzido do teci
 
 ## B) Botão/Velcro no fly
 
-### Sinais de BOTÃO NO FLY ou cintura (tipo_fechamento = "botao")
-- Botão CIRCULAR (metálico, plástico ou de tecido) localizado na cintura/fly
-- **Posição NÃO importa**: pode estar no CENTRO frontal OU NOS CANTOS (lados)
-  do fly. Boardshorts antigos têm snaps METÁLICOS nos CANTOS internos da cintura.
-- Pode ser snap, jeans-style button, ou botão emborrachado
-- **2 snaps metálicos visíveis no INTERIOR do cós, um em cada lado** = botão
-- Pode ter logo Sundek bordado/estampado no botão
-- Frequentemente visível em fotos de close-up do interior do cós/fly
+### ⚠️ REGRA ANTI-FALSO-POSITIVO (leia PRIMEIRO — é o erro que mais aparece)
+O erro nº1 aqui é chamar de "botao" um short de CORDÃO. **Se há um cordão/jareta
+funcional passando pela frente (visível saindo/atado, ou passando por ILHÓS), o
+fechamento é `cordao`** — os metaizinhos que você vê são quase sempre os ILHÓS por
+onde o cordão passa, NÃO botões. Só marque `botao` se houver um botão/snap que
+REALMENTE FECHA a braguilha e o cordão NÃO é o mecanismo. Na dúvida entre ilhó e
+botão com cordão presente → `cordao`.
+
+### Sinais de BOTÃO NO FLY (tipo_fechamento = "botao")
+- Botão/snap CIRCULAR **com relevo (parece um disco saliente)** que FECHA a
+  braguilha — e o furo NÃO é atravessado por cordão.
+- Estilo boardshort: braguilha com botão(ões) fazendo o fechamento, tipicamente
+  SEM cordão funcional fazendo o ajuste.
+- Pode ter logo Sundek no botão.
 
 ### Sinais de VELCRO (tipo_fechamento = "velcro")
-- Tira de velcro visível na abertura frontal central
-- Pode ter velcro embaixo de aba decorativa
+- Tira de velcro visível na abertura frontal central (às vezes sob uma aba).
 
-### ⚠️ NÃO confundir botão de fechamento com:
-- Botão pequeno do BOLSO TRASEIRO (esse é normal, não conta)
-- ILHÓ do cordão — orifício metálico PEQUENO sem relevo, com furo passante.
-  Atenção: ilhó é PEQUENO e CHATO; snap/botão é MAIOR e tem RELEVO.
-- Logo Sundek bordado liso no patch (não tem relevo de botão)
-- Decoração lateral
+### ⚠️ NÃO confundir botão de fechamento com (isto é `cordao`/normal):
+- **ILHÓ do cordão** — anel metálico com FURO PASSANTE por onde o cordão passa.
+  É CHATO (sem relevo de disco). Um PAR de ilhós ladeando a braguilha, com o cordão
+  saindo por eles, **é cordão — NÃO botão**. (Este é o caso que mais gera erro.)
+- Botão pequeno do BOLSO TRASEIRO (normal, não conta).
+- Logo Sundek bordado liso no patch (sem relevo de botão).
 
-### Diferenciando ILHÓ de SNAP/BOTÃO
-- ILHÓ: pequeno (~3-5mm), chato, com furo passante visível, posicionado na
-  cintura externa por onde o cordão passa. Geralmente 1 par na frente.
-- SNAP/BOTÃO METÁLICO: maior (~8-15mm), com relevo (parece um disco), pode
-  estar no INTERIOR do cós, em pares nas laterais. **Esses CONTAM como botão**.
-
-Esses NÃO contam como botão de fechamento.
+### Teste ILHÓ vs BOTÃO
+- Vejo o cordão passando/saindo pelo metal, ou o metal é um anel chato com furo? → ILHÓ → `cordao`.
+- O metal é um disco saliente que fecha a braguilha e NÃO tem cordão passando? → BOTÃO → `botao`.
 
 # TIPO_FECHAMENTO — escolha ÚNICA (regra de prioridade)
 
-1. **"botao"** — botão no fly visível (PRIORIDADE — mesmo com elástico no cós)
+1. **"botao"** — botão/snap saliente FECHANDO a braguilha, sem cordão fazendo o
+   ajuste (PRIORIDADE — mesmo com elástico). ⚠️ ilhó com cordão passando NÃO é botão.
 2. **"velcro"** — velcro no fly visível (PRIORIDADE — mesmo com elástico no cós)
 3. **"elastico"** — cós franzido com elástico, SEM botão/velcro no fly
-4. **"cordao"** — cós plano com cordão, SEM elástico e SEM botão/velcro no fly
+4. **"cordao"** — cós com cordão como ajuste, SEM elástico claro e SEM botão/velcro
 5. **"sem"** — sem fechamento visível (cós completamente plano, rígido, sem cordão)
 6. **"indefinido"** — foto não permite determinar
 

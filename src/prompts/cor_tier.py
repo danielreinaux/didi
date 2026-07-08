@@ -11,15 +11,19 @@ Ignore listras laterais finas e detalhes pequenos — foque na cor dominante do 
 Classifique a cor em UM dos 5 tiers, baseado no histórico real de 380 compras Sundek:
 
 TIER "maravilhoso" (elite — vendem sozinhos, máxima procura):
-  - Preto
+  - Preto (FOSCO — ver regra do brilho; preto acetinado/brilhoso cai pra "ruim")
   - Branco
-  - Azul escuro / azul marinho / navy
+  - Azul escuro / azul marinho / navy / azul ROYAL — qualquer azul PROFUNDO e
+    SATURADO (não lavado). ⚠️ Erro comum: rebaixar um navy/royal escuro pra "boa"
+    achando que é "azul médio". Se o azul é ESCURO e cheio (marinho, royal, petróleo
+    escuro) → é maravilhoso, NÃO "boa".
 
 TIER "muito_boa" (alta liquidez):
   - Cinza (qualquer tom: claro, médio, escuro, grafite, chumbo) — 19% das compras históricas
 
 TIER "boa" (boa liquidez):
-  - Azul médio — um azul "de praia" normal, não elétrico, não navy. SIM é "boa". NÃO é ruim.
+  - Azul médio — um azul "de praia" CLARO/lavado, nitidamente mais claro que o navy.
+    Só é "boa" se for claramente médio/claro; azul escuro e saturado é "maravilhoso".
   - Verde escuro, verde militar, oliva
   - Kaki escuro
 
