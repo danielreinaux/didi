@@ -16,6 +16,7 @@ on:
 
 permissions:
   contents: write            # pra commitar os JSONs de dados de volta no repo
+  actions: read              # pro history.py ler status/logs dos jobs do run (/history)
 
 jobs:
   sundek:
@@ -243,6 +244,10 @@ jobs:
       # lê os JSONs que os jobs sundek/ville acabaram de commitar.
       - name: Snapshot do histórico da rodada (/history)
         if: always()
+        env:
+          # Token do próprio Actions — o history.py usa pra ler status + link dos
+          # logs de cada job do run (rota /history). Precisa de `actions: read`.
+          GH_TOKEN: ${{ github.token }}
         run: python -m src.build.history
 
       # Commita o snapshot pra ele persistir no repo (dev local + próxima rodada leem

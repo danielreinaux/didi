@@ -30,6 +30,7 @@ import argparse
 import json
 import os
 import subprocess
+import urllib.request
 from collections import Counter
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
@@ -292,6 +293,61 @@ def _selecionar_produtos(itens: list[dict], marca: str, run_dt: datetime) -> tup
 
 
 # ─────────────────────────────────────────────────────────────────────────────
+# Status da rodada (API do GitHub Actions)
+# ─────────────────────────────────────────────────────────────────────────────
+# Conclusões de job que contam como "deu errado" (o resto — success/skipped/None
+# em andamento — não é erro). O deploy fica em andamento no momento do snapshot
+# (rodamos no meio dele), então o conclusion dele vem None e é ignorado.
+_CONCLUSOES_ERRO = {"failure", "cancelled", "timed_out", "startup_failure"}
+
+
+def _github_run_info(run_id: str) -> dict:
+    """Consulta a API do Actions e devolve {run_url, status, jobs} da rodada:
+      - run_url : link da tela do run (github.com/…/actions/runs/<id>)
+      - status  : "ok" | "erro" (algum job falhou) | None (desconhecido)
+      - jobs    : [{name, conclusion, url}] — url é o log DAQUELE job
+
+    Best-effort: sem token/rede, ou rodada local/backfill (run_id não-numérico),
+    devolve o que der (só o run_url, ou {}) e o front degrada — NUNCA levanta, pra
+    não derrubar o snapshot. Precisa de `actions: read` + env GH_TOKEN no workflow.
+    """
+    repo = os.environ.get("GITHUB_REPOSITORY")            # "danielreinaux/didi"
+    server = os.environ.get("GITHUB_SERVER_URL", "https://github.com")
+    # run_id de rodada real do Actions é numérico; backfill usa SHA → sem run.
+    if not run_id.isdigit() or not repo:
+        return {}
+    run_url = f"{server}/{repo}/actions/runs/{run_id}"
+
+    token = os.environ.get("GH_TOKEN") or os.environ.get("GITHUB_TOKEN")
+    if not token:
+        return {"run_url": run_url}  # dá pra linkar o run, mas sem status/logs por job
+
+    try:
+        req = urllib.request.Request(
+            f"https://api.github.com/repos/{repo}/actions/runs/{run_id}/jobs?per_page=50",
+            headers={
+                "Authorization": f"Bearer {token}",
+                "Accept": "application/vnd.github+json",
+                "X-GitHub-Api-Version": "2022-11-28",
+            },
+        )
+        with urllib.request.urlopen(req, timeout=15) as resp:
+            data = json.load(resp)
+    except Exception as e:  # rede, 403 (sem actions:read), rate limit, etc.
+        print(f"history: não consegui ler status dos jobs do run {run_id} ({e}); sigo sem.")
+        return {"run_url": run_url}
+
+    jobs = []
+    tem_erro = False
+    for j in data.get("jobs", []):
+        concl = j.get("conclusion")  # success/failure/cancelled/skipped/None(em andamento)
+        if concl in _CONCLUSOES_ERRO:
+            tem_erro = True
+        jobs.append({"name": j.get("name"), "conclusion": concl, "url": j.get("html_url")})
+    return {"run_url": run_url, "status": "erro" if tem_erro else "ok", "jobs": jobs}
+
+
+# ─────────────────────────────────────────────────────────────────────────────
 # Montagem do snapshot de uma rodada
 # ─────────────────────────────────────────────────────────────────────────────
 def _agregar_total(m_sundek: dict | None, m_ville: dict | None) -> dict:
@@ -338,11 +394,18 @@ def _montar_snapshot(run_id: str, fonte: str, run_dt: datetime,
 
     metricas["total"] = _agregar_total(metricas.get("sundek"), metricas.get("vilebrequin"))
 
+    # Status + links do run no GitHub Actions (só rende em rodada real do cron;
+    # backfill/local devolvem vazio). Pros botões "Logs"/"Abrir run" e o aviso de erro.
+    info = _github_run_info(run_id)
+
     return {
         "run_id": run_id,
         "fonte": fonte,
         "quando": run_dt.isoformat(),
         "commit": commit,
+        "run_url": info.get("run_url"),   # link da tela do run (ou None se backfill/local)
+        "status": info.get("status"),     # "ok" | "erro" | None (desconhecido)
+        "jobs": info.get("jobs", []),     # [{name, conclusion, url}] — url = log do job
         "marcas": marcas,
         "metricas": metricas,
         "produtos_info": produtos_info,
@@ -358,6 +421,10 @@ def _resumo_index(snap: dict) -> dict:
         "fonte": snap["fonte"],
         "quando": snap["quando"],
         "marcas": snap["marcas"],
+        # Metadados do run pros botões/aviso na lista (None em backfill/local).
+        "run_url": snap.get("run_url"),
+        "status": snap.get("status"),
+        "jobs": snap.get("jobs", []),
         "resumo": {
             "candidatos": t.get("candidatos", 0),
             "compraveis": t.get("compraveis", 0),
@@ -549,16 +616,77 @@ def backfill(n: int, clean: bool, max_runs: int | None = None) -> None:
     print(f"busca global -> {n_prod} produtos em produtos.json")
 
 
+def backfill_status() -> None:
+    """Preenche run_url/status/jobs nas rodadas JÁ no index que têm run real no
+    GitHub Actions (fonte "deploy", run_id numérico), consultando a API — pro
+    /history mostrar retroativamente quais rodadas passadas deram erro + os links.
+    Atualiza o index E cada <run_id>.json.
+
+    As rodadas de backfill (run_id = SHA) são PULADAS: o run do cron é disparado por
+    schedule, e o commit de dados que o backfill usa não é o head_sha do run, então
+    não há como mapear de volta. Requer GH_TOKEN (local: GH_TOKEN=$(gh auth token)).
+    """
+    index = _index_atual()
+    if not index:
+        print("history/status: index vazio — rode o snapshot/backfill primeiro.")
+        return
+    if not (os.environ.get("GH_TOKEN") or os.environ.get("GITHUB_TOKEN")):
+        print("history/status: sem GH_TOKEN no ambiente. Rode com:")
+        print("  GH_TOKEN=$(gh auth token) .venv/Scripts/python -m src.build.history --status")
+        return
+    os.environ.setdefault("GITHUB_REPOSITORY", "danielreinaux/didi")
+
+    alvos = [r for r in index if str(r.get("run_id", "")).isdigit()]
+    pulados = len(index) - len(alvos)
+    print(f"=== Backfill de status · {len(alvos)} rodadas com run real "
+          f"({pulados} de backfill sem run, puladas) ===")
+
+    ok = com_erro = sem_status = 0
+    for i, r in enumerate(alvos, 1):
+        rid = str(r["run_id"])
+        info = _github_run_info(rid)
+        if not info.get("status"):
+            # run expurgado (retenção) ou 404 — grava ao menos o link do run.
+            if info.get("run_url"):
+                r["run_url"] = info["run_url"]
+            sem_status += 1
+            print(f"  [{i:02d}/{len(alvos)}] {rid}: sem status (run expurgado?)")
+            continue
+        r["run_url"], r["status"], r["jobs"] = info["run_url"], info["status"], info.get("jobs", [])
+        # Espelha nos arquivos individuais (a tela de detalhe lê o <run_id>.json).
+        p = OUT_DIR / f"{rid}.json"
+        if p.exists():
+            snap = _load_json(p.read_text(encoding="utf-8"))
+            if isinstance(snap, dict):
+                snap["run_url"], snap["status"], snap["jobs"] = info["run_url"], info["status"], info.get("jobs", [])
+                p.write_text(json.dumps(snap, ensure_ascii=False, indent=1), encoding="utf-8")
+        if info["status"] == "erro":
+            com_erro += 1
+        else:
+            ok += 1
+        print(f"  [{i:02d}/{len(alvos)}] {rid}: {info['status']}")
+
+    OUT_DIR.mkdir(parents=True, exist_ok=True)
+    (OUT_DIR / "index.json").write_text(
+        json.dumps(index, ensure_ascii=False, indent=1), encoding="utf-8")
+    print(f"\nhistory/status OK -> {ok} ok · {com_erro} com erro · {sem_status} sem status. "
+          f"Index + {ok + com_erro} arquivos atualizados.")
+
+
 def main() -> None:
     ap = argparse.ArgumentParser(description="Gera o histórico de rodadas (/history).")
     ap.add_argument("--backfill", nargs="?", type=int, const=25, default=None,
                     metavar="N", help="reconstrói as últimas N rodadas do git (default 25; use um número alto, ex. 500, pra pegar todas)")
+    ap.add_argument("--status", action="store_true",
+                    help="preenche status/logs (via API do Actions) nas rodadas já no index que têm run real (deploy). Requer GH_TOKEN.")
     ap.add_argument("--clean", action="store_true", help="limpa a pasta history antes (só com --backfill)")
     ap.add_argument("--max-runs", type=int, default=None,
                     metavar="N", help="teto de rodadas no index (default 200)")
     args = ap.parse_args()
 
-    if args.backfill is not None:
+    if args.status:
+        backfill_status()
+    elif args.backfill is not None:
         backfill(args.backfill, args.clean, args.max_runs)
     else:
         snapshot(args.max_runs if args.max_runs is not None else MAX_RUNS_INDEX)

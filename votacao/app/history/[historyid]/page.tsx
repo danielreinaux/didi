@@ -19,6 +19,7 @@ import {
   fmtNum,
   fmtDuracao,
 } from "@/lib/history";
+import { RunLinks, RunErroBadge } from "@/components/RunLinks";
 import {
   CARD,
   HEADER_BG,
@@ -98,13 +99,19 @@ export default function RodadaDetalhe({ params }: { params: Promise<{ historyid:
       <header className={`sticky top-0 z-20 ${HEADER_BG}`}>
         <div className="app-wrap py-3 flex flex-col gap-2">
           <div className="flex items-center justify-between gap-3 flex-wrap">
-            <div className="flex flex-col">
+            <div className="flex flex-col gap-1">
               <nav className={`text-[11px] ${TEXT_TERTIARY}`}>
                 <a href="/history" className="hover:underline">Histórico</a> / rodada
               </nav>
-              <h1 className="text-2xl text-[#f5f5f7] leading-tight">{fmtDataHora(rodada.quando)}</h1>
+              <div className="flex items-center gap-2 flex-wrap">
+                <h1 className="text-2xl text-[#f5f5f7] leading-tight">{fmtDataHora(rodada.quando)}</h1>
+                <RunErroBadge meta={rodada} />
+              </div>
             </div>
-            <a href="/history" className="text-xs text-[#00d9ff] hover:underline">← Histórico</a>
+            <div className="flex items-center gap-3 flex-wrap">
+              <RunLinks meta={rodada} tamanho="md" />
+              <a href="/history" className="text-xs text-[#00d9ff] hover:underline">← Histórico</a>
+            </div>
           </div>
 
           {/* Escopo: total / marca */}

@@ -22,7 +22,22 @@ export interface ResumoRodada {
   calls: number;
 }
 
-export interface RodadaIndex {
+// Status/logs do run no GitHub Actions (preenchidos pelo history.py via API).
+// Ausentes em rodadas de backfill (reconstruídas do git, sem run real no Actions).
+export interface JobInfo {
+  name: string;
+  conclusion: string | null; // success | failure | cancelled | skipped | null(em andamento)
+  url: string;               // link direto pro log DESSE job
+}
+
+// Campos comuns às duas visões (lista e detalhe) — o run no GitHub.
+export interface RunMeta {
+  run_url?: string | null;        // tela do run (…/actions/runs/<id>)
+  status?: "ok" | "erro" | null;  // "erro" = algum job falhou; null = desconhecido
+  jobs?: JobInfo[];
+}
+
+export interface RodadaIndex extends RunMeta {
   run_id: string;
   fonte: "deploy" | "backfill";
   quando: string; // ISO com offset -03:00
@@ -80,7 +95,7 @@ export interface Produto {
   busca?: string;
 }
 
-export interface Rodada {
+export interface Rodada extends RunMeta {
   run_id: string;
   fonte: "deploy" | "backfill";
   quando: string;
@@ -231,4 +246,34 @@ export function fmtDuracao(s: number | null | undefined): string {
   const m = Math.floor(s / 60);
   const r = Math.round(s % 60);
   return `${m}m${r ? ` ${r}s` : ""}`;
+}
+
+// ── Helpers do run no GitHub Actions ─────────────────────────────────────────
+const CONCLUSOES_ERRO = new Set(["failure", "cancelled", "timed_out", "startup_failure"]);
+const REPO_ACTIONS_URL = "https://github.com/danielreinaux/didi/actions/runs";
+
+// Uma rodada com os metadados de run (o que a lista e o detalhe têm em comum).
+export type RunRef = RunMeta & { run_id: string; fonte: "deploy" | "backfill" };
+
+// URL da tela do run. Prefere a que o builder gravou; se faltar (rodadas geradas
+// ANTES deste campo), monta a partir do run_id — mas só quando é run real do cron
+// (fonte "deploy" + id numérico); backfill não tem run no Actions.
+export function runUrl(r: RunRef): string | null {
+  if (r.run_url) return r.run_url;
+  if (r.fonte === "deploy" && /^\d+$/.test(r.run_id)) return `${REPO_ACTIONS_URL}/${r.run_id}`;
+  return null;
+}
+
+// Jobs que falharam nesta rodada (pro aviso e pra apontar o botão de logs no erro).
+export function jobsComErro(r: RunRef): JobInfo[] {
+  return (r.jobs ?? []).filter((j) => j.conclusion && CONCLUSOES_ERRO.has(j.conclusion));
+}
+
+// URL do botão "Logs": vai direto no log do 1º job que falhou (o caso que importa);
+// se nada falhou, cai no 1º job com log; por fim, na tela do run. null se não há run.
+export function urlLogs(r: RunRef): string | null {
+  const falho = jobsComErro(r)[0];
+  if (falho?.url) return falho.url;
+  const primeiro = (r.jobs ?? []).find((j) => j.url);
+  return primeiro?.url ?? runUrl(r);
 }
