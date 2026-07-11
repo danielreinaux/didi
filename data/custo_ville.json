@@ -1,8 +1,62 @@
 {
-  "tok_in": 291746,
-  "tok_out": 3702,
-  "calls": 0,
-  "custo_usd": 0.045983,
-  "itens_processados": 22,
-  "duracao_s": 62.7
+  "por_etapa": {
+    "marca": {
+      "gpt-4o": {
+        "in": 22101,
+        "out": 1504,
+        "calls": 23
+      }
+    },
+    "tartaruga": {
+      "gpt-4o": {
+        "in": 85992,
+        "out": 1857,
+        "calls": 20
+      }
+    },
+    "cor": {
+      "gpt-4o-mini": {
+        "in": 103800,
+        "out": 276,
+        "calls": 9
+      }
+    },
+    "etiqueta": {
+      "gpt-4o-mini": {
+        "in": 99668,
+        "out": 248,
+        "calls": 9
+      }
+    },
+    "cordao": {
+      "gpt-4o-mini": {
+        "in": 109712,
+        "out": 446,
+        "calls": 9
+      }
+    },
+    "fecho": {
+      "gpt-4o": {
+        "in": 10376,
+        "out": 478,
+        "calls": 9
+      }
+    },
+    "crop_localizar": {
+      "gpt-4o-mini": {
+        "in": 43407,
+        "out": 148,
+        "calls": 3
+      }
+    },
+    "autenticidade": {
+      "gpt-4o": {
+        "in": 23679,
+        "out": 193,
+        "calls": 3
+      }
+    }
+  },
+  "duracao_s": 91.7,
+  "itens_processados": 41
 }
