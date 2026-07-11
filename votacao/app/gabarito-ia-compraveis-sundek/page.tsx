@@ -1,0 +1,363 @@
+"use client";
+
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  CARD,
+  HEADER_BG,
+  TEXT_SECONDARY,
+  TEXT_TERTIARY,
+  PILL_NEUTRAL,
+  ACTIVE_GRADIENT,
+} from "@/lib/theme";
+import GabaritoNav from "@/components/GabaritoNav";
+
+// ── Critérios da Sundek (os MESMOS 14 da /gabarito-ia-sundek) ─────────────────
+// Este dataset são shorts compráveis fotografados à parte (sem Vinted). Aqui o
+// humano responde ÀS CEGAS: NÃO mostramos o palpite da IA (não roda IA nesta
+// tela — pra não gastar). Os tokens seguem batendo com src/prompts/*.py Sundek,
+// caso depois se queira rodar o build (src/tests/gabarito/gabarito_compraveis_sundek.py).
+type Criterio = {
+  key: string;
+  label: string;
+  opts: [string, string][]; // [valor, rótulo]
+};
+
+const CRITERIOS: Criterio[] = [
+  { key: "e_sundek", label: "É Sundek?", opts: [["sim", "sim"], ["nao", "não"], ["indefinido", "indefinido"]] },
+  { key: "e_short", label: "É short?", opts: [["sim", "sim"], ["nao", "não"], ["indefinido", "indefinido"]] },
+  { key: "tipo", label: "Tipo", opts: [["liso", "liso"], ["estampado", "estampado"], ["logo_grande", "logo grande"], ["desbotado", "desbotado"], ["indefinido", "indefinido"]] },
+  { key: "aparencia", label: "Aparência", opts: [["ok", "ok"], ["desbotado", "desbotado"], ["indefinido", "indefinido"]] },
+  { key: "tecido_brilhoso", label: "Tecido brilhoso?", opts: [["sim", "sim"], ["nao", "não"], ["indefinido", "indefinido"]] },
+  { key: "listra", label: "Listra lateral", opts: [["listra_real", "listra Sundek"], ["piping", "piping"], ["sem_listra", "sem listra"], ["indefinido", "indefinido"]] },
+  { key: "bicolor", label: "Bicolor?", opts: [["sim", "sim"], ["nao", "não"], ["indefinido", "indefinido"]] },
+  { key: "cor_tier", label: "Cor (tier)", opts: [["maravilhoso", "maravilhoso"], ["muito_boa", "muito boa"], ["boa", "boa"], ["ok", "ok"], ["ruim", "ruim"]] },
+  { key: "tem_elastico", label: "Tem elástico?", opts: [["sim", "sim"], ["nao", "não"], ["indefinido", "indefinido"]] },
+  { key: "fechamento", label: "Fechamento", opts: [["elastico", "elástico"], ["cordao", "cordão"], ["botao", "botão"], ["velcro", "velcro"], ["sem", "sem"], ["indefinido", "indefinido"]] },
+  { key: "bolso_traseiro", label: "Bolso traseiro?", opts: [["sim", "sim"], ["nao", "não"], ["indefinido", "indefinido"]] },
+  { key: "bolso_nome", label: 'Patch tem "SUNDEK"?', opts: [["sim", "sim"], ["nao", "não"], ["indefinido", "indefinido"]] },
+  { key: "bolso_frontal", label: "Bolso frontal/cargo?", opts: [["sim", "sim"], ["nao", "não"], ["indefinido", "indefinido"]] },
+  { key: "etiqueta", label: "Etiqueta (hang tag)", opts: [["sim", "sim"], ["nao", "não"], ["indefinido", "indefinido"]] },
+];
+
+// "não se aplica" — pros critérios que de fato não dá pra avaliar no par de fotos.
+const NA = "n_a";
+const TOTAL_CRITERIOS = CRITERIOS.length;
+
+type Item = {
+  id: string;
+  url: string | null;
+  titulo: string;
+  tamanho?: string | null;
+  estado?: string | null;
+  preco?: string | null;
+  bucket: string;
+  fotos: string[];
+};
+
+type Gabarito = Record<string, Record<string, string>>; // id → { criterio: valor }
+
+const API = "/api/gabarito";
+
+// Carrossel de fotos simples. Clicar na foto abre o lightbox no índice atual.
+function Carrossel({ fotos, onOpen }: { fotos: string[]; onOpen: (i: number) => void }) {
+  const [i, setI] = useState(0);
+  if (!fotos.length)
+    return <div className="w-full aspect-square bg-[rgba(255,255,255,0.03)] grid place-items-center text-xs text-[#6b6b78]">sem foto</div>;
+  const n = fotos.length;
+  return (
+    <div className="relative w-full aspect-square bg-[rgba(255,255,255,0.03)]">
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={fotos[i]}
+        alt={`Foto ${i + 1} do produto`}
+        onClick={() => onOpen(i)}
+        title="Clique para ampliar"
+        className="w-full h-full object-cover cursor-zoom-in"
+        loading="lazy"
+      />
+      {n > 1 && (
+        <>
+          <button onClick={() => setI((i - 1 + n) % n)} aria-label="Foto anterior" className="absolute left-2 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-black/45 text-white text-xl">‹</button>
+          <button onClick={() => setI((i + 1) % n)} aria-label="Próxima foto" className="absolute right-2 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-black/45 text-white text-xl">›</button>
+          <span className="absolute top-2 right-2 text-[11px] bg-black/50 text-white px-2 py-0.5 rounded-full">{i + 1}/{n}</span>
+        </>
+      )}
+    </div>
+  );
+}
+
+// Lightbox: foto ampliada em modal, com navegação entre as fotos do MESMO
+// produto. Fecha no X, no fundo escuro ou Esc; setas ‹ › e teclas ←/→ andam.
+function Lightbox({ fotos, inicial, onClose }: { fotos: string[]; inicial: number; onClose: () => void }) {
+  const [i, setI] = useState(inicial);
+  const n = fotos.length;
+  const prev = useCallback(() => setI((x) => (x - 1 + n) % n), [n]);
+  const next = useCallback(() => setI((x) => (x + 1) % n), [n]);
+  // Refs do focus trap: o dialog delimita quem recebe Tab e o botão fechar
+  // recebe o foco ao abrir (devolvido ao gatilho no fechamento).
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const fecharRef = useRef<HTMLButtonElement>(null);
+  // Transição de entrada: começa invisível/reduzido e anima no primeiro frame.
+  const [visivel, setVisivel] = useState(false);
+  useEffect(() => {
+    const id = requestAnimationFrame(() => setVisivel(true));
+    return () => cancelAnimationFrame(id);
+  }, []);
+
+  useEffect(() => {
+    // Guarda quem estava focado pra devolver o foco ao fechar (a11y 2.4.3).
+    const anterior = document.activeElement as HTMLElement | null;
+    fecharRef.current?.focus();
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") { onClose(); return; }
+      if (e.key === "ArrowLeft") { prev(); return; }
+      if (e.key === "ArrowRight") { next(); return; }
+      if (e.key === "Tab") {
+        // Prende o Tab dentro do modal (a11y: focus trap / 2.1.2).
+        const foco = dialogRef.current?.querySelectorAll<HTMLElement>("button");
+        if (!foco || foco.length === 0) return;
+        const primeiro = foco[0];
+        const ultimo = foco[foco.length - 1];
+        if (e.shiftKey && document.activeElement === primeiro) {
+          e.preventDefault();
+          ultimo.focus();
+        } else if (!e.shiftKey && document.activeElement === ultimo) {
+          e.preventDefault();
+          primeiro.focus();
+        }
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      anterior?.focus?.(); // devolve o foco ao elemento que abriu o lightbox
+    };
+  }, [onClose, prev, next]);
+
+  return (
+    <div
+      ref={dialogRef}
+      role="dialog"
+      aria-modal="true"
+      aria-label="Foto ampliada do produto"
+      className={`fixed inset-0 z-50 bg-black/85 backdrop-blur-sm flex items-center justify-center transition-opacity duration-200 ${visivel ? "opacity-100" : "opacity-0"}`}
+      onClick={onClose}
+    >
+      <button ref={fecharRef} onClick={onClose} aria-label="Fechar" title="Fechar (Esc)" className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/10 text-white text-2xl grid place-items-center hover:bg-white/20">×</button>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={fotos[i]}
+        alt={`Foto ${i + 1} do produto`}
+        onClick={(e) => e.stopPropagation()}
+        className={`max-w-[92vw] max-h-[88vh] object-contain rounded-lg shadow-2xl select-none transition-transform duration-200 ${visivel ? "scale-100" : "scale-95"}`}
+      />
+      {n > 1 && (
+        <>
+          <button onClick={(e) => { e.stopPropagation(); prev(); }} aria-label="Foto anterior" title="Anterior (←)" className="absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/10 text-white text-3xl grid place-items-center hover:bg-white/20">‹</button>
+          <button onClick={(e) => { e.stopPropagation(); next(); }} aria-label="Próxima foto" title="Próxima (→)" className="absolute right-3 sm:right-6 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/10 text-white text-3xl grid place-items-center hover:bg-white/20">›</button>
+          <span className="absolute bottom-5 left-1/2 -translate-x-1/2 text-sm bg-black/60 text-white px-3 py-1 rounded-full">{i + 1}/{n}</span>
+        </>
+      )}
+    </div>
+  );
+}
+
+export default function GabaritoIACompraveisSundek() {
+  const [itens, setItens] = useState<Item[]>([]);
+  const [gab, setGab] = useState<Gabarito>({});
+  const [carregando, setCarregando] = useState(true);
+  const [erro, setErro] = useState(false);
+  const [filtro, setFiltro] = useState<"todos" | "pendentes" | "completos">("todos");
+  // Status de PERSISTÊNCIA por item — nunca falhar em silêncio (lição do bug dos
+  // arquivados): se o servidor não confirmar, o usuário tem que VER "não salvou".
+  const [status, setStatus] = useState<Record<string, "saving" | "saved" | "error">>({});
+  // Lightbox: fotos do produto clicado + índice inicial. null = fechado.
+  const [lightbox, setLightbox] = useState<{ fotos: string[]; i: number } | null>(null);
+
+  useEffect(() => {
+    Promise.all([
+      fetch("/gabarito_compraveis_sundek.json").then((r) => {
+        if (!r.ok) throw new Error("json");
+        return r.json();
+      }),
+      fetch(API).then((r) => (r.ok ? r.json() : {})).catch(() => ({})),
+    ])
+      .then(([doc, salvos]) => {
+        setItens(doc.itens || []);
+        setGab(salvos || {});
+      })
+      .catch(() => setErro(true))
+      .finally(() => setCarregando(false));
+  }, []);
+
+  function nCompletos(g: Gabarito, id: string): number {
+    const r = g[id] || {};
+    return CRITERIOS.filter((c) => r[c.key]).length;
+  }
+  const completo = (id: string) => nCompletos(gab, id) >= TOTAL_CRITERIOS;
+
+  async function salvar(id: string, criterio: string, valor: string) {
+    // otimista
+    setGab((prev) => {
+      const next = { ...prev, [id]: { ...(prev[id] || {}) } };
+      if (valor) next[id][criterio] = valor;
+      else delete next[id][criterio];
+      return next;
+    });
+    setStatus((s) => ({ ...s, [id]: "saving" }));
+    try {
+      const res = await fetch(API, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id, criterio, valor }),
+      });
+      // Só marca "salvo" se o servidor confirmou de fato (res.ok = gravou no Redis).
+      setStatus((s) => ({ ...s, [id]: res.ok ? "saved" : "error" }));
+    } catch {
+      setStatus((s) => ({ ...s, [id]: "error" }));
+    }
+  }
+
+  const filtrados = useMemo(
+    () =>
+      itens.filter((it) =>
+        filtro === "pendentes" ? !completo(it.id) : filtro === "completos" ? completo(it.id) : true
+      ),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [itens, gab, filtro]
+  );
+
+  const totalCompletos = itens.filter((it) => completo(it.id)).length;
+  const progresso = itens.length ? Math.round((totalCompletos / itens.length) * 100) : 0;
+
+  const btn = (f: typeof filtro, label: string) => (
+    <button onClick={() => setFiltro(f)} className={`px-3 py-1.5 rounded-lg text-xs transition-all ${filtro === f ? ACTIVE_GRADIENT : PILL_NEUTRAL}`}>
+      {label}
+    </button>
+  );
+
+  return (
+    <div className="h-full overflow-y-auto">
+      <header className={`sticky top-0 z-20 ${HEADER_BG}`}>
+        <div className="app-wrap py-3 flex flex-col gap-3">
+          <div className="flex items-center justify-between gap-3 flex-wrap">
+            <h1 className="text-2xl text-[#f5f5f7] leading-tight">Gabarito da IA · Sundek (compráveis)</h1>
+            <div className="flex items-center gap-3 flex-wrap">
+              <GabaritoNav atual="/gabarito-ia-compraveis-sundek" />
+              <a href="/" className="text-xs text-[#00d9ff] hover:underline">← Votação</a>
+            </div>
+          </div>
+          <p className={`text-xs ${TEXT_SECONDARY}`}>
+            43 shorts compráveis (2 fotos cada — um lado com listra/logo, o outro liso). Pra cada critério, escolha <b className="text-[#f5f5f7]">a resposta correta</b>.
+            Aqui você responde <b className="text-[#f5f5f7]">às cegas</b> — sem ver o palpite da IA.
+          </p>
+          <div className="w-full h-1.5 bg-[rgba(255,255,255,0.04)] rounded-full overflow-hidden">
+            <div className="h-full rounded-full bg-[#00d9ff] transition-all" style={{ width: `${progresso}%` }} />
+          </div>
+          <div className="flex gap-2 flex-wrap items-center">
+            <span className={`text-xs ${TEXT_TERTIARY} mr-1`}>{totalCompletos}/{itens.length} completos</span>
+            {btn("todos", `Todos (${itens.length})`)}
+            {btn("pendentes", `Pendentes (${itens.length - totalCompletos})`)}
+            {btn("completos", `Completos (${totalCompletos})`)}
+          </div>
+        </div>
+      </header>
+
+      <main className="app-wrap py-6">
+        {carregando ? (
+          <div className={`flex flex-col items-center gap-3 mt-24 text-sm ${TEXT_TERTIARY}`}>
+            <span className="w-6 h-6 rounded-full border-2 border-[rgba(255,255,255,0.15)] border-t-[#00d9ff] animate-spin" />
+            Carregando gabarito…
+          </div>
+        ) : erro ? (
+          <p className={`text-center mt-20 text-sm ${TEXT_TERTIARY}`}>Não consegui carregar o gabarito. Atualize a página; se continuar, avise a gente.</p>
+        ) : (
+          <div className="flex flex-col gap-5">
+            {filtrados.map((item) => {
+              const r = gab[item.id] || {};
+              const feitos = nCompletos(gab, item.id);
+              return (
+                <div key={item.id} className={`${CARD} overflow-hidden grid md:grid-cols-[300px_1fr]`}>
+                  {/* Coluna foto + meta */}
+                  <div className="flex flex-col">
+                    <Carrossel fotos={item.fotos} onOpen={(idx) => setLightbox({ fotos: item.fotos, i: idx })} />
+                    <div className="p-3 flex flex-col gap-1.5">
+                      <span className="text-sm text-[#f5f5f7] leading-snug">{item.titulo} <span className={TEXT_TERTIARY}>· {item.id}</span></span>
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-[rgba(255,102,226,0.12)] text-[#ff66e2]">{item.bucket}</span>
+                        <span className={`text-[10px] ${feitos >= TOTAL_CRITERIOS ? "text-[#00ff88]" : TEXT_TERTIARY}`}>{feitos}/{TOTAL_CRITERIOS}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Coluna critérios */}
+                  <div className="p-3 border-t md:border-t-0 md:border-l border-[rgba(255,255,255,0.07)]">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-xs">
+                        {status[item.id] === "saving" ? (
+                          <span className="text-[#6b6b78]">salvando…</span>
+                        ) : status[item.id] === "error" ? (
+                          <span className="text-[#ffaa00]">⚠ não salvou — tente de novo</span>
+                        ) : status[item.id] === "saved" ? (
+                          <span className="text-[#00ff88]">salvo no servidor ✓</span>
+                        ) : (
+                          <span className={TEXT_TERTIARY}>suas respostas</span>
+                        )}
+                      </span>
+                    </div>
+                    <div className="grid sm:grid-cols-2 gap-x-4 gap-y-2">
+                      {CRITERIOS.map((c) => {
+                        const atual = r[c.key] || "";
+                        return (
+                          <label key={c.key} className="flex flex-col gap-0.5">
+                            <span className="text-[11px] text-[#b8b8c0]">{c.label}</span>
+                            <select
+                              value={atual}
+                              onChange={(e) => salvar(item.id, c.key, e.target.value)}
+                              className={`text-xs rounded-lg px-2 py-1.5 bg-[rgba(255,255,255,0.04)] border outline-none ${
+                                atual ? "border-[#00d9ff] text-[#f5f5f7]" : "border-[rgba(255,255,255,0.12)] text-[#6b6b78]"
+                              }`}
+                            >
+                              <option value="">— escolher —</option>
+                              {c.opts.map(([v, l]) => (
+                                <option key={v} value={v}>{l}</option>
+                              ))}
+                              <option value={NA}>n/a — não se aplica</option>
+                            </select>
+                          </label>
+                        );
+                      })}
+                    </div>
+                    {/* Observação livre — só pra humano ler. Vai no mesmo hash do
+                        Redis sob "observacao" (não conta como critério). */}
+                    <div className="mt-3">
+                      <label htmlFor={`obs-${item.id}`} className="text-[11px] text-[#b8b8c0] flex items-center gap-1.5 mb-1">
+                        Observação
+                        <span className="text-[10px] text-[#6b6b78]">(só pra você ler)</span>
+                      </label>
+                      <textarea
+                        id={`obs-${item.id}`}
+                        defaultValue={r.observacao || ""}
+                        onBlur={(e) => {
+                          const novo = e.target.value.trim() ? e.target.value : "";
+                          if (novo !== (r.observacao || "")) salvar(item.id, "observacao", novo);
+                        }}
+                        rows={2}
+                        placeholder="Anotação livre…"
+                        className="w-full text-xs rounded-lg px-2 py-1.5 bg-[rgba(255,255,255,0.04)] border border-[rgba(255,255,255,0.12)] text-[#f5f5f7] outline-none focus:border-[#00d9ff] resize-y"
+                      />
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </main>
+
+      {lightbox && (
+        <Lightbox fotos={lightbox.fotos} inicial={lightbox.i} onClose={() => setLightbox(null)} />
+      )}
+    </div>
+  );
+}

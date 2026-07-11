@@ -8,6 +8,7 @@ const GABARITOS: { href: string; label: string }[] = [
   { href: "/gabarito-ia-ville", label: "Ville" },
   { href: "/gabarito-ia-sundek", label: "Sundek" },
   { href: "/gabarito-ia-compraveis-ville", label: "Ville compráveis" },
+  { href: "/gabarito-ia-compraveis-sundek", label: "Sundek compráveis" },
 ];
 
 export default function GabaritoNav({ atual }: { atual: string }) {
