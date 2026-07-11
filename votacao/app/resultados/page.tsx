@@ -3,7 +3,8 @@
 import { useEffect, useState } from "react";
 import ResultadoCard from "@/components/ResultadoCard";
 import { Item, Reaction, REACTION_LABELS } from "@/lib/types";
-import { ACTIVE_GRADIENT, PILL_NEUTRAL, HEADER_BG, TEXT_TERTIARY, SEGMENTED_BTN, SEGMENTED_INACTIVE } from "@/lib/theme";
+import { ACTIVE_GRADIENT, PILL_NEUTRAL, HEADER_BG, TEXT_TERTIARY, SEGMENTED_BTN, SEGMENTED_INACTIVE, NAV_BTN } from "@/lib/theme";
+import { ArrowLeft } from "lucide-react";
 
 interface Reacao {
   reaction?: Reaction;
@@ -85,7 +86,10 @@ export default function Resultados() {
             </div>
             <div className="flex items-center gap-3">
               <span className={`text-xs ${TEXT_TERTIARY}`}>{totalVotos} votos</span>
-              <a href="/" className="text-xs text-[#00d9ff] hover:underline">Voltar</a>
+              <a href="/" className={NAV_BTN}>
+                <ArrowLeft size={16} strokeWidth={1.5} aria-hidden />
+                Voltar
+              </a>
             </div>
           </div>
           <div className="flex gap-2 flex-wrap">

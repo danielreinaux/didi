@@ -80,12 +80,9 @@ def _custo(modelo: str, tin: int, tout: int) -> float:
     return (tin / 1_000_000) * p["in"] + (tout / 1_000_000) * p["out"]
 
 
-def _parse_sundek(raw: str) -> dict:
-    """custo_por_etapa.json → {tok_in, tok_out, calls, custo, por_etapa, por_modelo, vazio}."""
-    try:
-        d = json.loads(raw) if raw.strip() else {}
-    except json.JSONDecodeError:
-        d = {}
+def _agg_por_etapa(d: dict) -> dict:
+    """{etapa: {modelo: {in,out,calls}}} → totais + por_etapa + por_modelo, com custo
+    REAL por modelo. Usado pelo Sundek e, desde a instrumentação, pelo Ville."""
     por_etapa: dict[str, dict] = {}
     por_modelo: dict[str, dict] = defaultdict(lambda: {"in": 0, "out": 0, "calls": 0, "custo": 0.0})
     tin = tout = calls = 0
@@ -101,22 +98,37 @@ def _parse_sundek(raw: str) -> dict:
         por_etapa[etapa] = {"in": e_tin, "out": e_tout, "calls": e_calls, "custo": e_custo}
         tin += e_tin; tout += e_tout; calls += e_calls; custo += e_custo
     return {"tok_in": tin, "tok_out": tout, "calls": calls, "custo": custo,
-            "por_etapa": por_etapa, "por_modelo": dict(por_modelo),
-            "vazio": (calls == 0)}
+            "por_etapa": por_etapa, "por_modelo": dict(por_modelo)}
 
 
-def _parse_ville(raw: str) -> dict:
-    """custo_ville.json (formato novo, gravado pelo ville_run) → mesma cara do Sundek.
-    Estrutura esperada: {tok_in, tok_out, calls, custo_usd, itens_processados, duracao_s}.
-    Custo é PISO (preço mini) — sinalizado no relatório."""
+def _parse_sundek(raw: str) -> dict:
+    """custo_por_etapa.json → {tok_in, tok_out, calls, custo, por_etapa, por_modelo, vazio}."""
     try:
         d = json.loads(raw) if raw.strip() else {}
     except json.JSONDecodeError:
         d = {}
+    r = _agg_por_etapa(d)
+    r["vazio"] = (r["calls"] == 0)
+    return r
+
+
+def _parse_ville(raw: str) -> dict:
+    """custo_ville.json → mesma cara do Sundek.
+
+    Formato NOVO (instrumentado): {por_etapa: {etapa: {modelo: ...}}, duracao_s, itens}
+    → custo REAL por modelo (gpt-4o vs mini). Formato ANTIGO (rodadas anteriores): só
+    os totais precificados como mini (piso), com rótulo "ville (piso mini)"."""
+    try:
+        d = json.loads(raw) if raw.strip() else {}
+    except json.JSONDecodeError:
+        d = {}
+    if isinstance(d.get("por_etapa"), dict):
+        r = _agg_por_etapa(d["por_etapa"])
+        r["vazio"] = (r["calls"] == 0)
+        return r
     tin = int(d.get("tok_in", 0)); tout = int(d.get("tok_out", 0))
     calls = int(d.get("calls", 0)); custo = float(d.get("custo_usd", 0.0))
     itens = int(d.get("itens_processados", 0))
-    # Sem quebra por etapa (ville_run só tem o total); modelo entra como rótulo único.
     por_modelo = {}
     if tin or tout:
         por_modelo = {"ville (piso mini)": {"in": tin, "out": tout, "calls": calls, "custo": custo}}

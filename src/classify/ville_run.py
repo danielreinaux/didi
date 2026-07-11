@@ -42,6 +42,10 @@ from .etiqueta import verificar_etiqueta
 from .score_ville import calcular_score, _tamanho_key
 # Reusa as exclusões de título do Sundek (infantil, não-short) — P2.
 from .prefilter import EXCLUSAO, EXCLUSAO_INFANTIL
+from ..config import IA
+# Custo REAL por etapa/modelo (o Ville usa gpt-4o em marca/tartaruga/autenticidade/
+# fecho e mini no resto). Antes o custo era PISO — precificado como se fosse tudo mini.
+from ..utils.cost_tracker import track as _track, dump_json as _dump_cost, reset as _reset_cost, relatorio as _relatorio_cost, PRECOS as _PRECOS
 
 ROOT = Path(__file__).resolve().parent.parent.parent
 DATA = ROOT / "data"
@@ -158,6 +162,7 @@ def _processar(item: dict, idx: str, total: int) -> tuple[dict, int, int]:
         u = marca.pop("_usage", {})
         in_tok += u.get("prompt_tokens", 0)
         out_tok += u.get("completion_tokens", 0)
+        _track("marca", IA["model_detalhes"], u.get("prompt_tokens", 0), u.get("completion_tokens", 0))
     except Exception as e:
         marca = {"e_vilebrequin": "indefinido", "autenticidade": "indefinido", "evidencia": f"erro: {e}", "confianca": 0}
 
@@ -183,6 +188,7 @@ def _processar(item: dict, idx: str, total: int) -> tuple[dict, int, int]:
         u = tartaruga.pop("_usage", {})
         in_tok += u.get("prompt_tokens", 0)
         out_tok += u.get("completion_tokens", 0)
+        _track("tartaruga", IA["model_detalhes"], u.get("prompt_tokens", 0), u.get("completion_tokens", 0))
     except Exception as e:
         tartaruga = {"tipo": "indefinido", "justificativa": f"erro: {e}", "confianca": 0}
 
@@ -220,6 +226,7 @@ def _processar(item: dict, idx: str, total: int) -> tuple[dict, int, int]:
             u = autenticidade.pop("_usage", {})
             in_tok += u.get("prompt_tokens", 0)
             out_tok += u.get("completion_tokens", 0)
+            _track("autenticidade", IA["model_detalhes"], u.get("prompt_tokens", 0), u.get("completion_tokens", 0))
         except Exception as e:
             autenticidade = {"autenticidade": "indefinido", "evidencia": f"erro: {e}"}
 
@@ -242,6 +249,7 @@ def _processar(item: dict, idx: str, total: int) -> tuple[dict, int, int]:
         u = cor.pop("_usage", {})
         in_tok += u.get("prompt_tokens", 0)
         out_tok += u.get("completion_tokens", 0)
+        _track("cor", IA["model"], u.get("prompt_tokens", 0), u.get("completion_tokens", 0))
         linha += f" | cor={cor.get('cor_principal')} [{cor.get('tier')}]"
     except Exception as e:
         cor = {"tier": "erro", "erro": str(e)}
@@ -252,6 +260,7 @@ def _processar(item: dict, idx: str, total: int) -> tuple[dict, int, int]:
         u = etiqueta.pop("_usage", {})
         in_tok += u.get("prompt_tokens", 0)
         out_tok += u.get("completion_tokens", 0)
+        _track("etiqueta", IA["model"], u.get("prompt_tokens", 0), u.get("completion_tokens", 0))
         if etiqueta.get("tem_etiqueta") is True:
             linha += " | etiq✓"
         elif etiqueta.get("tem_etiqueta") is False:
@@ -265,6 +274,7 @@ def _processar(item: dict, idx: str, total: int) -> tuple[dict, int, int]:
         u = cordao.pop("_usage", {})
         in_tok += u.get("prompt_tokens", 0)
         out_tok += u.get("completion_tokens", 0)
+        _track("cordao", IA["model"], u.get("prompt_tokens", 0), u.get("completion_tokens", 0))
         cc = cordao.get("cordao_cor")
         if cc == "cinza":
             linha += " | cordão=cinza (antiga)"
@@ -280,6 +290,7 @@ def _processar(item: dict, idx: str, total: int) -> tuple[dict, int, int]:
         u = fecho.pop("_usage", {})
         in_tok += u.get("prompt_tokens", 0)
         out_tok += u.get("completion_tokens", 0)
+        _track("fecho", IA["model_detalhes"], u.get("prompt_tokens", 0), u.get("completion_tokens", 0))
         tf = fecho.get("tipo_fechamento")
         if tf in ("botao", "fivela", "velcro"):
             linha += f" | fecho={tf}✗"
@@ -324,6 +335,7 @@ def main() -> None:
     t0 = time.time()
     resultados: list[tuple[int, dict]] = []
     input_tokens = output_tokens = 0
+    _reset_cost()  # zera o tracker global antes de acumular o custo REAL por etapa/modelo
 
     checkpoint_path = DATA / "coleta-ville-classificada.json"
     ja_processados: dict[str, dict] = {}
@@ -377,21 +389,24 @@ def main() -> None:
     cnt = lambda t: sum(1 for x in out if (x.get("classificacao") or {}).get("tipo") == t)
     dec = lambda d: sum(1 for x in out if (x.get("score") or {}).get("decisao") == d)
 
-    in_usd = (input_tokens / 1_000_000) * 0.15
-    out_usd = (output_tokens / 1_000_000) * 0.60
-    total_usd = in_usd + out_usd
+    # Custo REAL por etapa/modelo (o cost_tracker registrou marca/tartaruga/autenticidade/
+    # fecho como gpt-4o e cor/etiqueta/cordão como mini). Antes o custo era PISO — tudo
+    # precificado como mini, subestimando ~5-10x o gasto das etapas gpt-4o.
+    por_etapa = _dump_cost()  # {etapa: {modelo: {in, out, calls}}}
+    total_usd = 0.0
+    for etapa_d in por_etapa.values():
+        for modelo, d in etapa_d.items():
+            p = _PRECOS.get(modelo, {"in": 0.0, "out": 0.0})
+            total_usd += (d["in"] / 1_000_000) * p["in"] + (d["out"] / 1_000_000) * p["out"]
 
-    # Persiste o custo deste run pra o relatório consolidado (src.build.relatorio_custo).
-    # Sem isso o custo do Ville só vive no log do Actions e some. ⚠️ custo_usd é PISO:
-    # preçamos tudo como mini, mas o Ville usa gpt-4o (17x mais caro) em vários passos.
+    # Persiste o custo deste run pro histórico/relatório. Formato igual ao
+    # custo_por_etapa.json do Sundek (por_etapa → modelo), pra o history.py aplicar
+    # o preço certo por modelo. duracao_s/itens ficam ao lado, fora do por_etapa.
     try:
         (DATA / "custo_ville.json").write_text(json.dumps({
-            "tok_in": input_tokens,
-            "tok_out": output_tokens,
-            "calls": 0,  # ville_run não conta chamadas isoladas (vários calls por item)
-            "custo_usd": round(total_usd, 6),
-            "itens_processados": len(pendentes),
+            "por_etapa": por_etapa,
             "duracao_s": round(time.time() - t0, 1),
+            "itens_processados": len(pendentes),
         }, indent=2), encoding="utf-8")
     except Exception:
         pass
@@ -413,7 +428,8 @@ def main() -> None:
     print(f"  Erros:             {cnt('erro')}")
     print(f"  Tokens IN:         {input_tokens:,}")
     print(f"  Tokens OUT:        {output_tokens:,}")
-    print(f"  Custo:             ${total_usd:.5f} (~R$ {total_usd * 5:.3f})")
+    print(f"  Custo real:        ${total_usd:.5f} (~R$ {total_usd * 5:.3f})  [gpt-4o + mini, por etapa]")
+    print(_relatorio_cost(len(pendentes)))
     print(f"  Duração:           {time.time() - t0:.1f}s")
     print(f"\n  Salvo em data/coleta-ville-classificada.json")
 

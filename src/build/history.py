@@ -156,17 +156,32 @@ def _custo_sundek(d: object) -> dict:
 
 
 def _custo_ville(d: object) -> dict:
-    """custo_ville.json (formato do ville_run) → totais. Custo é PISO (preço mini)."""
-    base = {"tok_in": 0, "tok_out": 0, "calls": 0, "custo_usd": 0.0,
-            "por_etapa": {}, "duracao_s": None, "custo_piso": True}
+    """custo_ville.json → totais + por_etapa com preço REAL por modelo.
+
+    Desde a instrumentação do ville_run (cost_tracker), o formato é
+    {por_etapa: {etapa: {modelo: {in,out,calls}}}, duracao_s, itens} — igual ao
+    custo_por_etapa.json do Sundek, então reusamos _custo_sundek pra aplicar o preço
+    certo de cada modelo (gpt-4o vs mini). NÃO é mais piso.
+
+    Compat: rodadas ANTERIORES à instrumentação gravaram só os totais
+    (tok_in/tok_out/custo_usd), precificados como mini — essas caem no piso.
+    """
     if not isinstance(d, dict):
+        return {"tok_in": 0, "tok_out": 0, "calls": 0, "custo_usd": 0.0,
+                "por_etapa": {}, "duracao_s": None, "custo_piso": True}
+    if isinstance(d.get("por_etapa"), dict):
+        base = _custo_sundek(d["por_etapa"])   # aplica preço por modelo → custo REAL
+        base["duracao_s"] = d.get("duracao_s")
+        base["custo_piso"] = False
         return base
-    base["tok_in"] = int(d.get("tok_in", 0))
-    base["tok_out"] = int(d.get("tok_out", 0))
-    base["calls"] = int(d.get("calls", 0))
-    base["custo_usd"] = round(float(d.get("custo_usd", 0.0)), 6)
-    base["duracao_s"] = d.get("duracao_s")
-    return base
+    # Formato antigo: total já calculado precificando tudo como mini (piso).
+    return {
+        "tok_in": int(d.get("tok_in", 0)),
+        "tok_out": int(d.get("tok_out", 0)),
+        "calls": int(d.get("calls", 0)),
+        "custo_usd": round(float(d.get("custo_usd", 0.0)), 6),
+        "por_etapa": {}, "duracao_s": d.get("duracao_s"), "custo_piso": True,
+    }
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -490,6 +505,60 @@ def _build_produtos() -> int:
     return len(entries)
 
 
+def _build_custo() -> int:
+    """Consolida o custo de TODAS as rodadas num único custo.json pro dashboard /custo:
+    por rodada, o custo total + split por marca (Sundek/Ville) + o custo por etapa do
+    pipeline Sundek (o breakdown gpt-4o vs mini). Um arquivo, um fetch — o dashboard
+    filtra por data e recalcula tudo no cliente.
+
+    Varre os <run_id>.json já gerados (mesmo padrão do _build_produtos). O `status` vem
+    do que o backfill de status preencheu (só nas rodadas com run real).
+    """
+    rodadas: list[dict] = []
+    for f in OUT_DIR.glob("*.json"):
+        if f.name in ("index.json", "produtos.json", "custo.json"):
+            continue
+        snap = _load_json(f.read_text(encoding="utf-8"))
+        if not isinstance(snap, dict):
+            continue
+        m = snap.get("metricas") or {}
+        tot = m.get("total") or {}
+        sk = m.get("sundek") or {}
+        vl = m.get("vilebrequin") or {}
+        # Custo por etapa das DUAS marcas, prefixado por marca (evita colidir chaves
+        # iguais tipo "etiqueta"). Só o custo_usd; o dashboard mostra % do total.
+        # Ville só tem por_etapa nas rodadas após a instrumentação (antes era piso).
+        etapas = {}
+        for et, v in (sk.get("por_etapa") or {}).items():
+            etapas[f"sundek:{et}"] = round(v.get("custo_usd", 0.0), 6)
+        for et, v in (vl.get("por_etapa") or {}).items():
+            etapas[f"ville:{et}"] = round(v.get("custo_usd", 0.0), 6)
+        rodadas.append({
+            "run_id": snap.get("run_id"),
+            "quando": snap.get("quando"),
+            "status": snap.get("status"),          # "ok" | "erro" | None
+            "custo_brl": tot.get("custo_brl", 0.0),
+            "custo_usd": tot.get("custo_usd", 0.0),
+            "calls": tot.get("calls", 0),
+            "tok_in": tot.get("tok_in", 0),
+            "tok_out": tot.get("tok_out", 0),
+            "novos": tot.get("novos", 0),
+            "candidatos": tot.get("candidatos", 0),
+            "ativos": tot.get("ativos", 0),
+            "descartados": tot.get("descartados", 0),
+            "sundek_usd": round(sk.get("custo_usd", 0.0), 6),
+            "ville_usd": round(vl.get("custo_usd", 0.0), 6),
+            "etapas": etapas,
+        })
+    rodadas.sort(key=lambda r: r.get("quando") or "")
+    doc = {"gerado_em": datetime.now(BRT).isoformat(), "rodadas": rodadas}
+    OUT_DIR.mkdir(parents=True, exist_ok=True)
+    (OUT_DIR / "custo.json").write_text(
+        json.dumps(doc, ensure_ascii=False, indent=1), encoding="utf-8"
+    )
+    return len(rodadas)
+
+
 def _reescrever_index(resumos: list[dict], max_runs: int = MAX_RUNS_INDEX) -> list[dict]:
     """Ordena por data desc, deduplica por run_id, corta em max_runs."""
     vistos: set[str] = set()
@@ -552,12 +621,13 @@ def snapshot(max_runs: int = MAX_RUNS_INDEX) -> None:
     index = _reescrever_index(resumos, max_runs)
     _prune_orfaos({r["run_id"] for r in index})
     n_prod = _build_produtos()
+    n_custo = _build_custo()
 
     t = snap["metricas"]["total"]
     print(f"history OK -> rodada {run_id} ({', '.join(snap['marcas'])}): "
           f"{t['candidatos']} candidatos, {len(snap['produtos'])} produtos no arquivo, "
           f"${t['custo_usd']:.4f}. Index com {len(index)} rodadas. "
-          f"Busca global: {n_prod} produtos.")
+          f"Busca global: {n_prod} produtos. Custo: {n_custo} rodadas.")
 
 
 def backfill(n: int, clean: bool, max_runs: int | None = None) -> None:
@@ -679,12 +749,17 @@ def main() -> None:
                     metavar="N", help="reconstrói as últimas N rodadas do git (default 25; use um número alto, ex. 500, pra pegar todas)")
     ap.add_argument("--status", action="store_true",
                     help="preenche status/logs (via API do Actions) nas rodadas já no index que têm run real (deploy). Requer GH_TOKEN.")
+    ap.add_argument("--custo", action="store_true",
+                    help="(re)gera só o custo.json agregado pro dashboard /custo (varre os snapshots existentes).")
     ap.add_argument("--clean", action="store_true", help="limpa a pasta history antes (só com --backfill)")
     ap.add_argument("--max-runs", type=int, default=None,
                     metavar="N", help="teto de rodadas no index (default 200)")
     args = ap.parse_args()
 
-    if args.status:
+    if args.custo:
+        n = _build_custo()
+        print(f"custo.json OK -> {n} rodadas em {OUT_DIR / 'custo.json'}")
+    elif args.status:
         backfill_status()
     elif args.backfill is not None:
         backfill(args.backfill, args.clean, args.max_runs)

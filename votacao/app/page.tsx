@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import VotingCard from "@/components/VotingCard";
 import { Item, Reaction, REACTIONS } from "@/lib/types";
-import { Archive, History, ListChecks } from "lucide-react";
+import { Archive, History, ListChecks, LineChart } from "lucide-react";
 import {
   ACTIVE_GRADIENT,
   PILL_NEUTRAL,
@@ -183,6 +183,14 @@ export default function Home() {
                 className="w-9 h-9 flex items-center justify-center rounded-lg bg-[rgba(255,255,255,0.04)] border border-[rgba(255,255,255,0.07)] text-[#b8b8c0] hover:text-[#f5f5f7] transition-colors"
               >
                 <History size={17} strokeWidth={1.5} aria-hidden />
+              </a>
+              <a
+                href="/custo"
+                aria-label="Dashboard de custo"
+                title="Dashboard de custo"
+                className="w-9 h-9 flex items-center justify-center rounded-lg bg-[rgba(255,255,255,0.04)] border border-[rgba(255,255,255,0.07)] text-[#b8b8c0] hover:text-[#f5f5f7] transition-colors"
+              >
+                <LineChart size={17} strokeWidth={1.5} aria-hidden />
               </a>
               <a
                 href="/resultados"

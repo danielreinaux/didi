@@ -16,6 +16,7 @@ import {
   fmtNum,
 } from "@/lib/history";
 import { RunLinks, RunErroBadge } from "@/components/RunLinks";
+import { ArrowLeft } from "lucide-react";
 import {
   CARD,
   HEADER_BG,
@@ -24,6 +25,7 @@ import {
   ACTIVE_GRADIENT,
   SEGMENTED_BTN,
   SEGMENTED_INACTIVE,
+  NAV_BTN,
 } from "@/lib/theme";
 
 // Período: atalhos rápidos, "custom" (intervalo de/até) ou um mês específico "YYYY-MM".
@@ -197,7 +199,10 @@ export default function HistoryLista() {
               <span className={`text-xs ${TEXT_TERTIARY}`}>
                 {buscando ? `${resultados.length} produtos` : `${rodadasVisiveis.length} de ${rodadas.length} rodadas`}
               </span>
-              <a href="/" className="text-xs text-[#00d9ff] hover:underline">Voltar</a>
+              <a href="/" className={NAV_BTN}>
+                <ArrowLeft size={16} strokeWidth={1.5} aria-hidden />
+                Voltar
+              </a>
             </div>
           </div>
 

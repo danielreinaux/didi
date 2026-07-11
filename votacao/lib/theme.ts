@@ -30,6 +30,11 @@ export const ACTIVE_GRADIENT =
 export const SEGMENTED_BTN = "px-5 py-1.5 rounded-lg text-xs transition-all";
 export const SEGMENTED_INACTIVE = "text-[#b8b8c0] hover:text-[#f5f5f7]";
 
+// Botão de navegação neutro (ícone + rótulo) — mesmo formato dos botões do cluster
+// da Home (Arquivar/Histórico). Pra ações secundárias tipo "Voltar" no topo das telas.
+export const NAV_BTN =
+  "h-9 px-3.5 inline-flex items-center gap-1.5 rounded-lg text-xs bg-[rgba(255,255,255,0.04)] border border-[rgba(255,255,255,0.07)] text-[#b8b8c0] hover:text-[#f5f5f7] hover:bg-[rgba(255,255,255,0.08)] transition-colors";
+
 // Header sticky (vidro escuro)
 export const HEADER_BG =
   "backdrop-blur-[40px] bg-[rgba(10,10,12,0.8)] border-b border-[rgba(255,255,255,0.07)]";
