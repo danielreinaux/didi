@@ -91,13 +91,17 @@ jobs:
           git diff --cached --quiet && echo "nada a commitar" && exit 0
           git commit -m "data: cron sundek $(date -u +'%Y-%m-%d %H:%M UTC')"
           # O job dura 1-3h; outro run pode ter empurrado pro main nesse meio-tempo.
-          # Rebase antes do push e tenta de novo. IMPORTANTE: se o rebase parar num
-          # conflito, tem que dar `git rebase --abort` ANTES de re-tentar — senão a
-          # próxima volta morre com "Pulling is not possible because you have unmerged
-          # files" (era esse o bug que fazia as 3 tentativas falharem em cascata).
+          # Rebase antes do push. CRUCIAL: `-X theirs` resolve conflito de conteúdo
+          # AUTOMATICAMENTE a favor da NOSSA versão (a recém-gerada). Isso é seguro
+          # porque os arquivos são particionados por job (só o sundek escreve estes),
+          # então "nossa versão vence" é sempre o correto — e o rebase NUNCA mais trava
+          # num conflito (era o bug: rebase parava, o retry dava --abort e re-tentava o
+          # MESMO conflito 5x, sempre falhando, e o job perdia a classificação inteira).
+          # O --abort continua como salvaguarda pro caso raro do push falhar por corrida
+          # (aí o loop refaz fetch+rebase e tenta de novo).
           for i in 1 2 3 4 5; do
             git fetch origin main
-            if git rebase origin/main && git push; then exit 0; fi
+            if git rebase -X theirs origin/main && git push; then exit 0; fi
             git rebase --abort 2>/dev/null || true
             echo "push falhou (tentativa $i/5) — re-sincronizando em 5s..."
             sleep 5
@@ -175,12 +179,13 @@ jobs:
           git add data/custo_ville.json 2>/dev/null || true
           git diff --cached --quiet && echo "nada a commitar" && exit 0
           git commit -m "data: cron ville $(date -u +'%Y-%m-%d %H:%M UTC')"
-          # Sundek pode ter empurrado pro main nesse meio-tempo. Rebase antes do push e
-          # re-tenta. IMPORTANTE: `git rebase --abort` antes de re-tentar, senão a volta
-          # seguinte morre em "unmerged files" (era o bug que derrubava o step).
+          # Sundek/outra run pode ter empurrado pro main nesse meio-tempo. `-X theirs`
+          # resolve o conflito a favor da NOSSA versão (arquivos são disjuntos por job —
+          # só o ville escreve estes), então o rebase nunca trava. O --abort fica só de
+          # salvaguarda pro caso do push falhar por corrida. (Ver comentário no job sundek.)
           for i in 1 2 3 4 5; do
             git fetch origin main
-            if git rebase origin/main && git push; then exit 0; fi
+            if git rebase -X theirs origin/main && git push; then exit 0; fi
             git rebase --abort 2>/dev/null || true
             echo "push falhou (tentativa $i/5) — re-sincronizando em 5s..."
             sleep 5
@@ -253,8 +258,8 @@ jobs:
           git commit -m "data: history+items $(date -u +'%Y-%m-%d %H:%M UTC')"
           for i in 1 2 3 4 5; do
             git fetch origin main
-            if git rebase origin/main && git push; then exit 0; fi
-            git rebase --abort 2>/dev/null || true   # sem isto a próxima volta morre em "unmerged files"
+            if git rebase -X theirs origin/main && git push; then exit 0; fi
+            git rebase --abort 2>/dev/null || true   # salvaguarda: -X theirs já evita travar em conflito; isto só cobre falha de push por corrida
             echo "push falhou (tentativa $i/5) — re-sincronizando em 5s..."
             sleep 5
           done
@@ -297,8 +302,8 @@ jobs:
           git commit -m "data: notificados $(date -u +'%Y-%m-%d %H:%M UTC')"
           for i in 1 2 3 4 5; do
             git fetch origin main
-            if git rebase origin/main && git push; then exit 0; fi
-            git rebase --abort 2>/dev/null || true   # sem isto a próxima volta morre em "unmerged files"
+            if git rebase -X theirs origin/main && git push; then exit 0; fi
+            git rebase --abort 2>/dev/null || true   # salvaguarda: -X theirs já evita travar em conflito; isto só cobre falha de push por corrida
             echo "push falhou (tentativa $i/5) — re-sincronizando em 5s..."
             sleep 5
           done
