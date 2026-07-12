@@ -12,10 +12,10 @@ import {
 import GabaritoNav from "@/components/GabaritoNav";
 
 // ── Critérios da Sundek (os MESMOS 14 da /gabarito-ia-sundek) ─────────────────
-// Este dataset são shorts compráveis fotografados à parte (sem Vinted). Aqui o
-// humano responde ÀS CEGAS: NÃO mostramos o palpite da IA (não roda IA nesta
-// tela — pra não gastar). Os tokens seguem batendo com src/prompts/*.py Sundek,
-// caso depois se queira rodar o build (src/tests/gabarito/gabarito_compraveis_sundek.py).
+// Este dataset são shorts compráveis fotografados à parte (sem Vinted). A IA rodou
+// uma vez pra popular o campo "ia" (via src/tests/gabarito/gabarito_compraveis_sundek.py),
+// então mostramos o palpite dela ao lado e liberamos o "Tudo = IA" — igual aos
+// outros 3 gabaritos. Os tokens batem com src/prompts/*.py Sundek.
 type Criterio = {
   key: string;
   label: string;
@@ -43,6 +43,7 @@ const CRITERIOS: Criterio[] = [
 const NA = "n_a";
 const TOTAL_CRITERIOS = CRITERIOS.length;
 
+type ItemIA = Record<string, string | null>;
 type Item = {
   id: string;
   url: string | null;
@@ -52,11 +53,20 @@ type Item = {
   preco?: string | null;
   bucket: string;
   fotos: string[];
+  ia: ItemIA;
 };
 
 type Gabarito = Record<string, Record<string, string>>; // id → { criterio: valor }
 
 const API = "/api/gabarito";
+
+// Traduz o valor cru da IA pro rótulo bonito do critério (ou "—" / "n/a").
+function rotuloOpt(crit: Criterio, valor: string | null | undefined): string {
+  if (!valor) return "—";
+  if (valor === NA) return "n/a";
+  const o = crit.opts.find(([v]) => v === valor);
+  return o ? o[1] : valor;
+}
 
 // Carrossel de fotos simples. Clicar na foto abre o lightbox no índice atual.
 function Carrossel({ fotos, onOpen }: { fotos: string[]; onOpen: (i: number) => void }) {
@@ -218,6 +228,17 @@ export default function GabaritoIACompraveisSundek() {
     }
   }
 
+  // "Tudo = IA": copia o palpite da IA pra todos os critérios do item de uma vez
+  // (pro user ganhar tempo quando concorda com tudo). Critério sem palpite vira NA.
+  async function tudoIgualIA(item: Item) {
+    for (const c of CRITERIOS) {
+      const alvo = item.ia[c.key] || NA;
+      if ((gab[item.id] || {})[c.key] !== alvo) {
+        await salvar(item.id, c.key, alvo);
+      }
+    }
+  }
+
   const filtrados = useMemo(
     () =>
       itens.filter((it) =>
@@ -249,7 +270,7 @@ export default function GabaritoIACompraveisSundek() {
           </div>
           <p className={`text-xs ${TEXT_SECONDARY}`}>
             43 shorts compráveis (2 fotos cada — um lado com listra/logo, o outro liso). Pra cada critério, escolha <b className="text-[#f5f5f7]">a resposta correta</b>.
-            Aqui você responde <b className="text-[#f5f5f7]">às cegas</b> — sem ver o palpite da IA.
+            O palpite atual da IA aparece ao lado (use “Tudo = IA” quando concordar com tudo).
           </p>
           <div className="w-full h-1.5 bg-[rgba(255,255,255,0.04)] rounded-full overflow-hidden">
             <div className="h-full rounded-full bg-[#00d9ff] transition-all" style={{ width: `${progresso}%` }} />
@@ -301,26 +322,35 @@ export default function GabaritoIACompraveisSundek() {
                         ) : status[item.id] === "saved" ? (
                           <span className="text-[#00ff88]">salvo no servidor ✓</span>
                         ) : (
-                          <span className={TEXT_TERTIARY}>suas respostas</span>
+                          <span className={TEXT_TERTIARY}>respostas esperadas</span>
                         )}
                       </span>
+                      <button onClick={() => tudoIgualIA(item)} className={`text-[11px] px-2.5 py-1 rounded-lg ${PILL_NEUTRAL}`}>✓ Tudo = IA</button>
                     </div>
                     <div className="grid sm:grid-cols-2 gap-x-4 gap-y-2">
                       {CRITERIOS.map((c) => {
+                        const iaVal = item.ia[c.key];
+                        const iaLabel = rotuloOpt(c, iaVal);
+                        // Regra Sundek: no critério de cor mostramos também o nome da cor (cor_nome).
+                        const corNome = c.key === "cor_tier" && item.ia.cor_nome ? ` · ${item.ia.cor_nome}` : "";
                         const atual = r[c.key] || "";
+                        const igualIA = atual && iaVal && atual === iaVal;
                         return (
                           <label key={c.key} className="flex flex-col gap-0.5">
-                            <span className="text-[11px] text-[#b8b8c0]">{c.label}</span>
+                            <span className="text-[11px] text-[#b8b8c0] flex items-center gap-1.5">
+                              {c.label}
+                              <span className={`text-[10px] ${TEXT_TERTIARY}`}>IA: {iaLabel}{corNome}</span>
+                            </span>
                             <select
                               value={atual}
                               onChange={(e) => salvar(item.id, c.key, e.target.value)}
                               className={`text-xs rounded-lg px-2 py-1.5 bg-[rgba(255,255,255,0.04)] border outline-none ${
-                                atual ? "border-[#00d9ff] text-[#f5f5f7]" : "border-[rgba(255,255,255,0.12)] text-[#6b6b78]"
+                                atual ? (igualIA ? "border-[rgba(0,255,136,0.35)] text-[#f5f5f7]" : "border-[#00d9ff] text-[#f5f5f7]") : "border-[rgba(255,255,255,0.12)] text-[#6b6b78]"
                               }`}
                             >
                               <option value="">— escolher —</option>
                               {c.opts.map(([v, l]) => (
-                                <option key={v} value={v}>{l}</option>
+                                <option key={v} value={v}>{l}{v === iaVal ? "  (IA)" : ""}</option>
                               ))}
                               <option value={NA}>n/a — não se aplica</option>
                             </select>
