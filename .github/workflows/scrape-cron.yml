@@ -153,6 +153,15 @@ jobs:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: python -m src.classify.ville_run --workers 2
 
+      # Revisita itens do acervo Ville que sumiram do scrape e marca vendidos/removidos.
+      # Espelha o passo do Sundek (mesma sessão Vinted, só muda --marca). Sem isso, a
+      # página oferta_ville mostrava anúncios já vendidos como se estivessem à venda.
+      - name: Verifica vendidos (Ville)
+        if: always()
+        env:
+          HEADLESS: 'true'
+        run: python -m src.scrape.verifica_vendidos --marca ville --max 80
+
       # analise_ville = página de auditoria (sem IA, barato) — fica só no repo.
       # oferta_ville  = página de votação do Marcos (votacao/public/oferta_ville.html).
       # votacao_items = items.json dos cards Next.js; JÁ junta Sundek + Ville numa só.

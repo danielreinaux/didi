@@ -11,8 +11,11 @@ erro de rede/ambiguidade mantém 'ativo' — melhor um falso-ativo do que sumir
 com um item que ainda está à venda.
 
 Uso:
-    python -m src.scrape.verifica_vendidos [--max N]      (padrão: 80)
-    HEADLESS=true python -m src.scrape.verifica_vendidos
+    python -m src.scrape.verifica_vendidos [--marca sundek|ville] [--max N]
+    HEADLESS=true python -m src.scrape.verifica_vendidos --marca ville
+
+Padrões: --marca sundek, --max 80. A sessão da Vinted é a mesma pras duas marcas
+(só muda quais arquivos de acervo/scrape são lidos e regravados).
 """
 import json
 import sys
@@ -39,19 +42,25 @@ def _checar_status(page, url: str) -> str:
         return "removido"  # 404/410 — anúncio apagado
 
     page.wait_for_timeout(800)
-    info = page.evaluate("""() => {
-        const has = (s) => !!document.querySelector(s);
-        const title = document.querySelector('[data-testid="item-page-title"], h1');
-        const statusTxt = (
-            document.querySelector('[data-testid="item-status"]')?.textContent || ''
-        ).toLowerCase();
-        return {
-            temTitulo: !!title,
-            podeComprar: has('[data-testid="item-buy-button"]'),
-            podeBarganhar: has('[data-testid="item-buyer-offer-button"]'),
-            statusTxt,
-        };
-    }""")
+    try:
+        info = page.evaluate("""() => {
+            const has = (s) => !!document.querySelector(s);
+            const title = document.querySelector('[data-testid="item-page-title"], h1');
+            const statusTxt = (
+                document.querySelector('[data-testid="item-status"]')?.textContent || ''
+            ).toLowerCase();
+            return {
+                temTitulo: !!title,
+                podeComprar: has('[data-testid="item-buy-button"]'),
+                podeBarganhar: has('[data-testid="item-buyer-offer-button"]'),
+                statusTxt,
+            };
+        }""")
+    except Exception:
+        # Um redirect/navegação da página (login, consentimento, SPA) destrói o
+        # contexto de execução e o evaluate lança. Mesma regra do goto: erro/dúvida
+        # mantém 'ativo' — melhor um falso-ativo do que sumir com algo à venda.
+        return "ativo"
 
     if not info["temTitulo"]:
         return "removido"
@@ -64,22 +73,38 @@ def _checar_status(page, url: str) -> str:
     return "ativo"
 
 
+# Arquivos por marca: (acervo classificado a ser atualizado, scrape atual p/ ids ativos).
+ARQUIVOS = {
+    "sundek": ("coleta-classificada.json", "coleta.json"),
+    "ville": ("coleta-ville-classificada.json", "coleta-ville.json"),
+}
+
+
 def main() -> None:
-    caminho = DATA / "coleta-classificada.json"
-    if not caminho.exists():
-        print("coleta-classificada.json não encontrado.")
+    # args: --marca sundek|ville (padrão sundek) e --max N (padrão 80).
+    argv = sys.argv[1:]
+    marca = "sundek"
+    max_check = 80
+    for i, arg in enumerate(argv):
+        if arg == "--marca" and i + 1 < len(argv):
+            marca = argv[i + 1]
+        elif arg == "--max" and i + 1 < len(argv):
+            max_check = int(argv[i + 1])
+    if marca not in ARQUIVOS:
+        print(f"marca inválida: {marca!r} (use: {', '.join(ARQUIVOS)})")
         sys.exit(1)
 
-    max_check = 80
-    for i, arg in enumerate(sys.argv[1:]):
-        if arg == "--max" and i + 1 < len(sys.argv[1:]):
-            max_check = int(sys.argv[i + 2])
+    acervo_nome, scrape_nome = ARQUIVOS[marca]
+    caminho = DATA / acervo_nome
+    if not caminho.exists():
+        print(f"{acervo_nome} não encontrado.")
+        sys.exit(1)
 
     acervo = json.loads(caminho.read_text())
 
     # ids vistos no scrape atual (esses estão comprovadamente ativos)
     ids_scrape: set[str] = set()
-    col = DATA / "coleta.json"
+    col = DATA / scrape_nome
     if col.exists():
         try:
             ids_scrape = {x.get("id") for x in json.loads(col.read_text()) if x.get("id")}
@@ -97,7 +122,7 @@ def main() -> None:
     candidatos.sort(key=lambda x: x.get("verificado_em") or x.get("ultimo_visto") or "")
     candidatos = candidatos[:max_check]
 
-    print(f"=== Verifica vendidos · acervo {len(acervo)} · "
+    print(f"=== Verifica vendidos [{marca}] · acervo {len(acervo)} · "
           f"{len(candidatos)} candidatos (sumiram do scrape) ===\n")
     if not candidatos:
         print("  nada a verificar.")
