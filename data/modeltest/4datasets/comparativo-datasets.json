@@ -1,0 +1,644 @@
+{
+ "modelos": [
+  "gpt-4o",
+  "gpt-4o-mini"
+ ],
+ "datasets": [
+  {
+   "chave": "ville",
+   "rotulo": "Ville",
+   "familia": "ville",
+   "disponivel": true,
+   "n_itens": 50,
+   "por_modelo": {
+    "gpt-4o": {
+     "erros": 0,
+     "disponivel": true,
+     "tok_in": 564311,
+     "tok_out": 14093,
+     "custo_usd": 1.5517075,
+     "duracao_s": 264.5,
+     "score": {
+      "por_criterio": {
+       "e_vilebrequin": {
+        "ok": 46,
+        "n": 50,
+        "acc": 92.0
+       },
+       "e_short": {
+        "ok": 45,
+        "n": 50,
+        "acc": 90.0
+       },
+       "tipo": {
+        "ok": 44,
+        "n": 50,
+        "acc": 88.0
+       },
+       "fundo_padrao": {
+        "ok": 49,
+        "n": 50,
+        "acc": 98.0
+       },
+       "aparencia": {
+        "ok": 49,
+        "n": 50,
+        "acc": 98.0
+       },
+       "autenticidade": {
+        "ok": 41,
+        "n": 50,
+        "acc": 82.0
+       },
+       "cor_bucket": {
+        "ok": 42,
+        "n": 50,
+        "acc": 84.0
+       },
+       "cordao_cor": {
+        "ok": 43,
+        "n": 50,
+        "acc": 86.0
+       },
+       "fecho": {
+        "ok": 41,
+        "n": 50,
+        "acc": 82.0
+       },
+       "etiqueta": {
+        "ok": 49,
+        "n": 50,
+        "acc": 98.0
+       }
+      },
+      "itens_100": 18,
+      "itens_avaliaveis": 50,
+      "pct_100": 36.0
+     }
+    },
+    "gpt-4o-mini": {
+     "erros": 0,
+     "disponivel": true,
+     "tok_in": 6473097,
+     "tok_out": 14167,
+     "custo_usd": 0.9794647499999999,
+     "duracao_s": 360.8,
+     "score": {
+      "por_criterio": {
+       "e_vilebrequin": {
+        "ok": 45,
+        "n": 50,
+        "acc": 90.0
+       },
+       "e_short": {
+        "ok": 45,
+        "n": 50,
+        "acc": 90.0
+       },
+       "tipo": {
+        "ok": 43,
+        "n": 50,
+        "acc": 86.0
+       },
+       "fundo_padrao": {
+        "ok": 43,
+        "n": 50,
+        "acc": 86.0
+       },
+       "aparencia": {
+        "ok": 48,
+        "n": 50,
+        "acc": 96.0
+       },
+       "autenticidade": {
+        "ok": 32,
+        "n": 50,
+        "acc": 64.0
+       },
+       "cor_bucket": {
+        "ok": 41,
+        "n": 50,
+        "acc": 82.0
+       },
+       "cordao_cor": {
+        "ok": 36,
+        "n": 50,
+        "acc": 72.0
+       },
+       "fecho": {
+        "ok": 37,
+        "n": 50,
+        "acc": 74.0
+       },
+       "etiqueta": {
+        "ok": 48,
+        "n": 50,
+        "acc": 96.0
+       }
+      },
+      "itens_100": 15,
+      "itens_avaliaveis": 50,
+      "pct_100": 30.0
+     }
+    }
+   }
+  },
+  {
+   "chave": "compraveis_ville",
+   "rotulo": "Ville compráveis",
+   "familia": "ville",
+   "disponivel": true,
+   "n_itens": 38,
+   "por_modelo": {
+    "gpt-4o": {
+     "erros": 0,
+     "disponivel": true,
+     "tok_in": 606822,
+     "tok_out": 14840,
+     "custo_usd": 1.6654550000000001,
+     "duracao_s": 324.5,
+     "score": {
+      "por_criterio": {
+       "e_vilebrequin": {
+        "ok": 36,
+        "n": 38,
+        "acc": 94.73684210526315
+       },
+       "e_short": {
+        "ok": 38,
+        "n": 38,
+        "acc": 100.0
+       },
+       "tipo": {
+        "ok": 38,
+        "n": 38,
+        "acc": 100.0
+       },
+       "fundo_padrao": {
+        "ok": 38,
+        "n": 38,
+        "acc": 100.0
+       },
+       "aparencia": {
+        "ok": 36,
+        "n": 38,
+        "acc": 94.73684210526315
+       },
+       "autenticidade": {
+        "ok": 37,
+        "n": 38,
+        "acc": 97.36842105263158
+       },
+       "cor_bucket": {
+        "ok": 35,
+        "n": 38,
+        "acc": 92.10526315789474
+       },
+       "cordao_cor": {
+        "ok": 33,
+        "n": 38,
+        "acc": 86.8421052631579
+       },
+       "fecho": {
+        "ok": 36,
+        "n": 38,
+        "acc": 94.73684210526315
+       },
+       "etiqueta": {
+        "ok": 33,
+        "n": 38,
+        "acc": 86.8421052631579
+       }
+      },
+      "itens_100": 23,
+      "itens_avaliaveis": 38,
+      "pct_100": 60.526315789473685
+     }
+    },
+    "gpt-4o-mini": {
+     "erros": 0,
+     "disponivel": true,
+     "tok_in": 6698311,
+     "tok_out": 14447,
+     "custo_usd": 1.01341485,
+     "duracao_s": 300.2,
+     "score": {
+      "por_criterio": {
+       "e_vilebrequin": {
+        "ok": 37,
+        "n": 38,
+        "acc": 97.36842105263158
+       },
+       "e_short": {
+        "ok": 38,
+        "n": 38,
+        "acc": 100.0
+       },
+       "tipo": {
+        "ok": 36,
+        "n": 38,
+        "acc": 94.73684210526315
+       },
+       "fundo_padrao": {
+        "ok": 36,
+        "n": 38,
+        "acc": 94.73684210526315
+       },
+       "aparencia": {
+        "ok": 35,
+        "n": 38,
+        "acc": 92.10526315789474
+       },
+       "autenticidade": {
+        "ok": 13,
+        "n": 38,
+        "acc": 34.21052631578947
+       },
+       "cor_bucket": {
+        "ok": 25,
+        "n": 38,
+        "acc": 65.78947368421053
+       },
+       "cordao_cor": {
+        "ok": 30,
+        "n": 38,
+        "acc": 78.94736842105263
+       },
+       "fecho": {
+        "ok": 33,
+        "n": 38,
+        "acc": 86.8421052631579
+       },
+       "etiqueta": {
+        "ok": 32,
+        "n": 38,
+        "acc": 84.21052631578947
+       }
+      },
+      "itens_100": 5,
+      "itens_avaliaveis": 38,
+      "pct_100": 13.157894736842104
+     }
+    }
+   }
+  },
+  {
+   "chave": "sundek",
+   "rotulo": "Sundek",
+   "familia": "sundek",
+   "disponivel": true,
+   "n_itens": 50,
+   "por_modelo": {
+    "gpt-4o": {
+     "erros": 0,
+     "disponivel": true,
+     "tok_in": 618479,
+     "tok_out": 36853,
+     "custo_usd": 1.9147275,
+     "duracao_s": 741.6,
+     "score": {
+      "por_criterio": {
+       "e_sundek": {
+        "ok": 43,
+        "n": 49,
+        "acc": 87.75510204081633
+       },
+       "e_short": {
+        "ok": 50,
+        "n": 50,
+        "acc": 100.0
+       },
+       "tipo": {
+        "ok": 39,
+        "n": 47,
+        "acc": 82.97872340425532
+       },
+       "aparencia": {
+        "ok": 40,
+        "n": 45,
+        "acc": 88.88888888888889
+       },
+       "tecido_brilhoso": {
+        "ok": 39,
+        "n": 45,
+        "acc": 86.66666666666667
+       },
+       "listra": {
+        "ok": 36,
+        "n": 45,
+        "acc": 80.0
+       },
+       "bicolor": {
+        "ok": 36,
+        "n": 40,
+        "acc": 90.0
+       },
+       "cor_tier": {
+        "ok": 26,
+        "n": 36,
+        "acc": 72.22222222222221
+       },
+       "tem_elastico": {
+        "ok": 41,
+        "n": 45,
+        "acc": 91.11111111111111
+       },
+       "fechamento": {
+        "ok": 35,
+        "n": 45,
+        "acc": 77.77777777777779
+       },
+       "bolso_traseiro": {
+        "ok": 42,
+        "n": 45,
+        "acc": 93.33333333333333
+       },
+       "bolso_nome": {
+        "ok": 33,
+        "n": 38,
+        "acc": 86.8421052631579
+       },
+       "bolso_frontal": {
+        "ok": 39,
+        "n": 45,
+        "acc": 86.66666666666667
+       },
+       "etiqueta": {
+        "ok": 42,
+        "n": 45,
+        "acc": 93.33333333333333
+       }
+      },
+      "itens_100": 20,
+      "itens_avaliaveis": 50,
+      "pct_100": 40.0
+     }
+    },
+    "gpt-4o-mini": {
+     "erros": 0,
+     "disponivel": true,
+     "tok_in": 4385087,
+     "tok_out": 38886,
+     "custo_usd": 0.68109465,
+     "duracao_s": 739.2,
+     "score": {
+      "por_criterio": {
+       "e_sundek": {
+        "ok": 45,
+        "n": 49,
+        "acc": 91.83673469387756
+       },
+       "e_short": {
+        "ok": 50,
+        "n": 50,
+        "acc": 100.0
+       },
+       "tipo": {
+        "ok": 41,
+        "n": 47,
+        "acc": 87.2340425531915
+       },
+       "aparencia": {
+        "ok": 41,
+        "n": 45,
+        "acc": 91.11111111111111
+       },
+       "tecido_brilhoso": {
+        "ok": 42,
+        "n": 45,
+        "acc": 93.33333333333333
+       },
+       "listra": {
+        "ok": 40,
+        "n": 45,
+        "acc": 88.88888888888889
+       },
+       "bicolor": {
+        "ok": 36,
+        "n": 40,
+        "acc": 90.0
+       },
+       "cor_tier": {
+        "ok": 28,
+        "n": 36,
+        "acc": 77.77777777777779
+       },
+       "tem_elastico": {
+        "ok": 30,
+        "n": 45,
+        "acc": 66.66666666666666
+       },
+       "fechamento": {
+        "ok": 29,
+        "n": 45,
+        "acc": 64.44444444444444
+       },
+       "bolso_traseiro": {
+        "ok": 38,
+        "n": 45,
+        "acc": 84.44444444444444
+       },
+       "bolso_nome": {
+        "ok": 24,
+        "n": 38,
+        "acc": 63.1578947368421
+       },
+       "bolso_frontal": {
+        "ok": 41,
+        "n": 45,
+        "acc": 91.11111111111111
+       },
+       "etiqueta": {
+        "ok": 43,
+        "n": 45,
+        "acc": 95.55555555555556
+       }
+      },
+      "itens_100": 12,
+      "itens_avaliaveis": 50,
+      "pct_100": 24.0
+     }
+    }
+   }
+  },
+  {
+   "chave": "compraveis_sundek",
+   "rotulo": "Sundek compráveis",
+   "familia": "sundek",
+   "disponivel": true,
+   "n_itens": 43,
+   "por_modelo": {
+    "gpt-4o": {
+     "erros": 0,
+     "disponivel": true,
+     "tok_in": 533200,
+     "tok_out": 35378,
+     "custo_usd": 1.68678,
+     "duracao_s": 687.1,
+     "score": {
+      "por_criterio": {
+       "e_sundek": {
+        "ok": 43,
+        "n": 43,
+        "acc": 100.0
+       },
+       "e_short": {
+        "ok": 43,
+        "n": 43,
+        "acc": 100.0
+       },
+       "tipo": {
+        "ok": 43,
+        "n": 43,
+        "acc": 100.0
+       },
+       "aparencia": {
+        "ok": 43,
+        "n": 43,
+        "acc": 100.0
+       },
+       "tecido_brilhoso": {
+        "ok": 26,
+        "n": 43,
+        "acc": 60.46511627906976
+       },
+       "listra": {
+        "ok": 43,
+        "n": 43,
+        "acc": 100.0
+       },
+       "bicolor": {
+        "ok": 43,
+        "n": 43,
+        "acc": 100.0
+       },
+       "cor_tier": {
+        "ok": 28,
+        "n": 43,
+        "acc": 65.11627906976744
+       },
+       "tem_elastico": {
+        "ok": 35,
+        "n": 43,
+        "acc": 81.3953488372093
+       },
+       "fechamento": {
+        "ok": 11,
+        "n": 43,
+        "acc": 25.581395348837212
+       },
+       "bolso_traseiro": {
+        "ok": 43,
+        "n": 43,
+        "acc": 100.0
+       },
+       "bolso_nome": {
+        "ok": 42,
+        "n": 43,
+        "acc": 97.67441860465115
+       },
+       "bolso_frontal": {
+        "ok": 43,
+        "n": 43,
+        "acc": 100.0
+       },
+       "etiqueta": {
+        "ok": 43,
+        "n": 43,
+        "acc": 100.0
+       }
+      },
+      "itens_100": 1,
+      "itens_avaliaveis": 43,
+      "pct_100": 2.3255813953488373
+     }
+    },
+    "gpt-4o-mini": {
+     "erros": 0,
+     "disponivel": true,
+     "tok_in": 2187496,
+     "tok_out": 37051,
+     "custo_usd": 0.35035499999999997,
+     "duracao_s": 691.4,
+     "score": {
+      "por_criterio": {
+       "e_sundek": {
+        "ok": 43,
+        "n": 43,
+        "acc": 100.0
+       },
+       "e_short": {
+        "ok": 43,
+        "n": 43,
+        "acc": 100.0
+       },
+       "tipo": {
+        "ok": 43,
+        "n": 43,
+        "acc": 100.0
+       },
+       "aparencia": {
+        "ok": 43,
+        "n": 43,
+        "acc": 100.0
+       },
+       "tecido_brilhoso": {
+        "ok": 43,
+        "n": 43,
+        "acc": 100.0
+       },
+       "listra": {
+        "ok": 42,
+        "n": 43,
+        "acc": 97.67441860465115
+       },
+       "bicolor": {
+        "ok": 43,
+        "n": 43,
+        "acc": 100.0
+       },
+       "cor_tier": {
+        "ok": 27,
+        "n": 43,
+        "acc": 62.7906976744186
+       },
+       "tem_elastico": {
+        "ok": 3,
+        "n": 43,
+        "acc": 6.976744186046512
+       },
+       "fechamento": {
+        "ok": 41,
+        "n": 43,
+        "acc": 95.34883720930233
+       },
+       "bolso_traseiro": {
+        "ok": 42,
+        "n": 43,
+        "acc": 97.67441860465115
+       },
+       "bolso_nome": {
+        "ok": 14,
+        "n": 43,
+        "acc": 32.55813953488372
+       },
+       "bolso_frontal": {
+        "ok": 43,
+        "n": 43,
+        "acc": 100.0
+       },
+       "etiqueta": {
+        "ok": 43,
+        "n": 43,
+        "acc": 100.0
+       }
+      },
+      "itens_100": 0,
+      "itens_avaliaveis": 43,
+      "pct_100": 0.0
+     }
+    }
+   }
+  }
+ ]
+}

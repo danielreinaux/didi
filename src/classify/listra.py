@@ -6,7 +6,7 @@ from openai import OpenAI
 
 from ..config import IA
 from ..prompts import listra_sundek as prompt
-from ..utils.ratelimit import pace_gpt4o
+from ..utils.ratelimit import pace_mini
 
 _client: OpenAI | None = None
 
@@ -33,10 +33,13 @@ def verificar_listra(item: dict) -> dict:
         *[{"type": "image_url", "image_url": {"url": u, "detail": "low"}} for u in fotos],
     ]
 
-    # gpt-4o porque a decisão é crítica e o detalhe de listra vs piping é sutil
-    pace_gpt4o()
+    # Roda no MINI: o comparativo de modelos (jul/2026, data/modeltest/4datasets)
+    # mostrou o mini EMPATANDO/superando o 4o em Listra e Bicolor — +9pts no Sundek
+    # base, empate nos compráveis. Swap sem perda de qualidade e mais barato.
+    # (Reverter pra IA["model_detalhes"] + pace_gpt4o se algum dia regredir.)
+    pace_mini()
     resp = _get_client().chat.completions.create(
-        model=IA["model_detalhes"],
+        model=IA["model"],
         messages=[
             {"role": "system", "content": prompt.SISTEMA},
             {"role": "user", "content": conteudo},
