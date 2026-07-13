@@ -345,9 +345,10 @@ def main() -> None:
         # Você não precisa mais inventar nome nem passar --base.
         label = _proxima_versao(dataset) if _carregar_rodada(f"{dataset}-baseline") else f"{dataset}-baseline"
     base_label = _arg("--base", f"{dataset}-baseline")
-    # Default 2 (não 4): as fotos em base64 pesam na serialização; 4 em paralelo
-    # num PC carregado estourou a memória. Pode subir com --workers se sobrar RAM.
-    workers = int(_arg("--workers", "2"))
+    # Default 8 (pedido do Erick — ganhar tempo). ⚠️ As fotos em base64 pesam por
+    # worker; no passado 4 em paralelo num PC carregado estourou a memória. Se der
+    # MemoryError, baixe com --workers 3 (ou 2).
+    workers = int(_arg("--workers", "8"))
 
     if not _dataset_json(dataset).exists():
         print(f"gabarito_{dataset}.json não existe em votacao/public/.")

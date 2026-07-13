@@ -11,7 +11,10 @@ Ignore listras laterais finas e detalhes pequenos — foque na cor dominante do 
 Classifique a cor em UM dos 5 tiers, baseado no histórico real de 380 compras Sundek:
 
 TIER "maravilhoso" (elite — vendem sozinhos, máxima procura):
-  - Preto (FOSCO — ver regra do brilho; preto acetinado/brilhoso cai pra "ruim")
+  - Preto — o preto de nylon COMUM de sunga/short (com o leve reflexo natural do
+    nylon na foto) É maravilhoso. Só cai pra "ruim" se for CETIM/METÁLICO EXTREMO
+    (espelhado, "wet look", folha de alumínio) — ver regra do brilho. Na dúvida, um
+    preto de swim short é maravilhoso, NÃO ruim.
   - Branco
   - Azul escuro / azul marinho / navy / azul ROYAL — qualquer azul PROFUNDO e
     SATURADO (não lavado). ⚠️ Erro comum: rebaixar um navy/royal escuro pra "boa"
@@ -41,12 +44,17 @@ TIER "ok" (aceitável, depende de outros atributos):
 TIER "ruim" (excluir — sem apelo de mercado):
   - QUALQUER cor fluorescente ou neon: verde-limão, pink fluo, laranja neon, amarelo neon, azul elétrico
   - Cores extremamente berrantes: vermelho-tomate vivo, roxo elétrico, lilás gritante
-  - Prateado / metálico / brilhoso / acetinado: tecido com aspecto espelhado, reflexivo ou satin.
-    Atenção: cinza OPACO é "muito_boa". Prateado BRILHOSO (parece folha de alumínio ou cetim) é "ruim".
+  - Prateado / metálico / cetim EXTREMO: tecido com aspecto ESPELHADO, "wet look" ou
+    cetim gritante (parece folha de alumínio/satin). ⚠️ NÃO confunda com o brilho
+    NATURAL e leve do nylon de swim short — TODO Sundek reflete um pouco de luz/flash
+    na foto, e isso NÃO rebaixa. Só é "ruim" o brilho espelhado/metálico evidente.
   - Cores sem apelo comercial para o mercado brasileiro
 
 REGRA DE OURO: na dúvida entre "ok" e "ruim", a fluorescência define. Se não for visivelmente neon, classifique como "ok" ou superior.
-REGRA DO BRILHO: cinza fosco = muito_boa. Tecido com brilho metálico/acetinado = ruim, independente da cor base.
+REGRA DO BRILHO: o brilho NATURAL do nylon (leve reflexo da luz/flash na foto) é
+normal e NÃO rebaixa — preto/cinza/azul de nylon comum MANTÊM seu tier. Só rebaixe
+pra "ruim" o tecido com brilho ESPELHADO/METÁLICO/cetim EXTREMO (wet look, alumínio),
+independente da cor base. Um cinza fosco é "muito_boa"; um preto de nylon é "maravilhoso".
 
 Responda APENAS com JSON válido (sem cercas, sem texto extra):
 

@@ -45,6 +45,8 @@ LABELS = {
 # Portão: se a verdade nega um destes, o item deveria ser descartado de cara.
 GATE_CRITS = ("e_sundek", "e_short")
 DATASET = "sundek"
+# Rótulo amigável por dataset (só cosmético: títulos/cabeçalhos).
+ROTULOS = {"sundek": "Sundek", "compraveis_sundek": "Sundek compráveis"}
 
 
 def _aplica(truth_item: dict, crit: str) -> bool:
@@ -68,25 +70,28 @@ def _item_100(ia_item: dict, truth_item: dict):
 
 
 def main() -> None:
+    # `--dataset` escolhe o conjunto congelado (sundek base ou compraveis_sundek).
+    # Default = sundek (a constante DATASET), pra não quebrar quem chama sem o flag.
+    dataset = _arg("--dataset", DATASET)
     truth = _carregar(REG / "gabarito_respostas.json",
                       "gabarito (rode gabarito_export)")["respostas"]
-    base = _carregar(PUBLIC / "gabarito_sundek.json", "gabarito_sundek")["itens"]
+    base = _carregar(PUBLIC / f"gabarito_{dataset}.json", f"gabarito_{dataset}")["itens"]
     meta = {str(x["id"]): x for x in base}  # titulo/url pros links
 
     # De onde vem a resposta da IA (ver docstring): rodada do runner (correto) ou
     # snapshot de produção (fallback, com os n_a do early-exit).
-    label = _arg("--label") or _ultima_rodada(DATASET)
+    label = _arg("--label") or _ultima_rodada(dataset)
     if label:
         rod = _carregar_rodada(label)
         if not rod:
             print(f"Rodada '{label}' não existe. Rode: "
-                  f"python -m src.tests.gabarito.gabarito_run_sundek --label {label}")
+                  f"python -m src.tests.gabarito.gabarito_run_sundek --dataset {dataset} --label {label}")
             sys.exit(1)
         ia = {str(k): (v or {}) for k, v in rod["itens"].items()}
         fonte = f"rodada '{label}'"
     else:
         ia = {str(x["id"]): (x.get("ia") or {}) for x in base}
-        fonte = "PRODUÇÃO (gabarito_sundek.json — com n_a do early-exit)"
+        fonte = f"PRODUÇÃO (gabarito_{dataset}.json — com n_a do early-exit)"
     print(f"Fonte da IA: {fonte}\n")
 
     # Escopa aos itens da base Sundek que têm gabarito preenchido.
@@ -119,7 +124,8 @@ def main() -> None:
     pct_full = (full / len(avaliaveis) * 100) if avaliaveis else 0
 
     # ── Console ──────────────────────────────────────────────────────
-    print(f"\n=== Desempenho da IA · Sundek · {len(ids)} itens com gabarito ===\n")
+    rotulo = ROTULOS.get(dataset, dataset)
+    print(f"\n=== Desempenho da IA · {rotulo} · {len(ids)} itens com gabarito ===\n")
     print(f"{'ÁREA':<20}{'acerto':>9}{'n':>5}")
     print("-" * 36)
     com = [a for a in areas if a[1] is not None]
@@ -139,10 +145,10 @@ def main() -> None:
         for iid in erros:
             print(f"  {iid}: IA={_norm(ia[iid].get(c))}  ≠  verdade={_norm(truth[iid].get(c))}")
 
-    _html(label, fonte, len(ids), areas, full, len(avaliaveis), pct_full, ia, truth, meta)
+    _html(label, fonte, len(ids), areas, full, len(avaliaveis), pct_full, ia, truth, meta, rotulo)
 
 
-def _html(label, fonte, n_itens, areas, full, n_aval, pct_full, ia, truth, meta) -> None:
+def _html(label, fonte, n_itens, areas, full, n_aval, pct_full, ia, truth, meta, rotulo="Sundek") -> None:
     linhas = []
     ordenadas = sorted([a for a in areas if a[1] is not None], key=lambda x: x[1]) \
         + [a for a in areas if a[1] is None]
@@ -176,7 +182,7 @@ def _html(label, fonte, n_itens, areas, full, n_aval, pct_full, ia, truth, meta)
     gcor = "#00ff88" if pct_full >= 70 else ("#ffaa00" if pct_full >= 40 else "#ff4d6d")
     html = f"""<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Desempenho IA · Sundek</title>
+<title>Desempenho IA · {escape(rotulo)}</title>
 <style>
 body{{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#0e0e12;color:#f5f5f7;padding:24px 16px;max-width:860px;margin:0 auto}}
 h1{{font-size:22px;margin-bottom:2px}} .sub{{color:#b8b8c0;font-size:13px;margin-bottom:20px}}
@@ -184,7 +190,7 @@ table{{width:100%;border-collapse:collapse}} th,td{{text-align:left;padding:8px 
 th{{color:#8a8a94;font-weight:500}} td:nth-child(n+2),th:nth-child(n+2){{text-align:right}}
 .card{{background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.07);border-radius:14px;padding:16px 18px;margin-bottom:18px}}
 </style></head><body>
-<h1>Desempenho da IA · Sundek</h1>
+<h1>Desempenho da IA · {escape(rotulo)}</h1>
 <div class="sub">{escape(fonte)} · {n_itens} itens com gabarito · acerto contra a verdade humana (áreas da pior pra melhor)</div>
 <div class="card">
   <table><tr><th>Área</th><th>acerto</th><th>n</th></tr>{''.join(linhas)}</table>

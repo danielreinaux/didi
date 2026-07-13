@@ -57,9 +57,13 @@ from ...config import IA as _IA
 # resume, carga de inputs — tudo parametrizado por dataset).
 from .gabarito_run import (
     _arg, _foto_para_url, _montar_inputs, _carregar_rodada,
-    _proxima_versao, SRC, REG,
+    _proxima_versao, _dataset_json, SRC, REG,
 )
 
+# Default do dataset. Vira o valor de `--dataset` quando não passado — o pipeline
+# Sundek é o mesmo pros dois (sundek base e compraveis_sundek), só muda o JSON
+# congelado de onde vêm os itens/fotos. Mantido como constante de módulo por
+# compatibilidade (o gabarito_compraveis_sundek importa deste módulo).
 DATASET = "sundek"
 
 # 15 chaves — as MESMAS que o gabarito_sundek grava no campo `ia` (14 avaliadas
@@ -245,7 +249,7 @@ def _processar(item: dict, rodar: set, base: dict | None) -> tuple[dict, int, in
     return out, in_tok, out_tok
 
 
-def _definir_rodar(label: str, base_label: str) -> tuple[set, dict | None, dict]:
+def _definir_rodar(label: str, base_label: str, dataset: str) -> tuple[set, dict | None, dict]:
     """Decide quais agentes rodar e devolve (rodar, base_itens, hashes_atuais)."""
     hashes = _hashes_atuais()
 
@@ -253,7 +257,7 @@ def _definir_rodar(label: str, base_label: str) -> tuple[set, dict | None, dict]
         return set(ORDEM), None, hashes
 
     base = _carregar_rodada(base_label)
-    if base and base.get("dataset") != DATASET:
+    if base and base.get("dataset") != dataset:
         base = None
 
     so = _arg("--so")
@@ -280,19 +284,25 @@ def _definir_rodar(label: str, base_label: str) -> tuple[set, dict | None, dict]
 
 
 def main() -> None:
+    dataset = _arg("--dataset", DATASET)
+    if not _dataset_json(dataset).exists():
+        print(f"gabarito_{dataset}.json não existe em votacao/public/.")
+        sys.exit(1)
     label = _arg("--label")
     if not label:
-        label = _proxima_versao(DATASET) if _carregar_rodada(f"{DATASET}-baseline") else f"{DATASET}-baseline"
-    base_label = _arg("--base", f"{DATASET}-baseline")
-    workers = int(_arg("--workers", "3"))
+        label = _proxima_versao(dataset) if _carregar_rodada(f"{dataset}-baseline") else f"{dataset}-baseline"
+    base_label = _arg("--base", f"{dataset}-baseline")
+    # Default 8 (pedido do Erick — ganhar tempo). Se estourar memória em PC com RAM
+    # apertada (fotos base64 pesam por worker), baixe com --workers 3.
+    workers = int(_arg("--workers", "8"))
 
-    rodar, base_itens, hashes = _definir_rodar(label, base_label)
+    rodar, base_itens, hashes = _definir_rodar(label, base_label, dataset)
     if not rodar:
         print("Nenhum prompt mudou desde o baseline — nada pra re-rodar. ✓")
         print("(Use --all pra forçar, ou --so <area> pra escolher.)")
         return
 
-    inputs = _montar_inputs(DATASET)
+    inputs = _montar_inputs(dataset)
     REG.mkdir(parents=True, exist_ok=True)
     out_path = REG / f"rodada-{label}.json"
 
@@ -304,7 +314,7 @@ def main() -> None:
             resultados = dict(anterior["itens"])
     pendentes = [it for it in inputs if it["id"] not in resultados]
 
-    print(f"=== Rodada '{label}' · dataset '{DATASET}' · {len(inputs)} itens · agentes: {sorted(rodar)} · {workers} workers ===")
+    print(f"=== Rodada '{label}' · dataset '{dataset}' · {len(inputs)} itens · agentes: {sorted(rodar)} · {workers} workers ===")
     copiados = [a for a in ORDEM if a not in rodar]
     if copiados:
         print(f"  (copiando do baseline '{base_label}': {copiados})")
@@ -319,7 +329,7 @@ def main() -> None:
         custo = (in_tok / 1_000_000) * 0.15 + (out_tok / 1_000_000) * 0.60
         out_path.write_text(json.dumps({
             "label": label,
-            "dataset": DATASET,
+            "dataset": dataset,
             "gerado_em": datetime.now(timezone.utc).isoformat(),
             "base": base_label if rodar != set(ORDEM) else None,
             "agentes_rodados": sorted(rodar),
@@ -360,7 +370,7 @@ def main() -> None:
     print(f"  {len(resultados)}/{len(inputs)} itens · tokens in/out: {in_tok:,}/{out_tok:,} · custo aprox: ${custo:.4f} · {time.time()-t0:.1f}s")
     if len(resultados) < len(inputs):
         print(f"  ⚠ {len(inputs)-len(resultados)} pendentes — rode o MESMO comando de novo (resume automático).")
-    print(f"  Métrica:  python -m src.tests.gabarito.gabarito_aval_sundek --label {label}")
+    print(f"  Métrica:  python -m src.tests.gabarito.gabarito_aval_sundek --dataset {dataset} --label {label}")
 
 
 if __name__ == "__main__":

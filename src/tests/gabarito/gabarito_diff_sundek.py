@@ -37,11 +37,13 @@ def _acertos(rod_itens: dict, truth: dict, ids: list) -> dict:
 
 
 def main() -> None:
+    # `--dataset` escolhe qual par de rodadas comparar (sundek ou compraveis_sundek).
+    dataset = _arg("--dataset", DATASET)
     truth = _carregar(REG / "gabarito_respostas.json", "gabarito (gabarito_export)")["respostas"]
-    meta = {str(x["id"]): x for x in _carregar(PUBLIC / "gabarito_sundek.json", "gabarito_sundek")["itens"]}
+    meta = {str(x["id"]): x for x in _carregar(PUBLIC / f"gabarito_{dataset}.json", f"gabarito_{dataset}")["itens"]}
 
-    de = _arg("--de", f"{DATASET}-baseline")
-    para = _arg("--para") or _ultima_rodada(DATASET)
+    de = _arg("--de", f"{dataset}-baseline")
+    para = _arg("--para") or _ultima_rodada(dataset)
     if not para or para == de:
         print(f"Preciso de 2 rodadas diferentes. --de {de} --para <rodada>. "
               f"Rode gabarito_run_sundek pra gerar uma versão nova.")
