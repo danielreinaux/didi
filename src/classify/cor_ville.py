@@ -101,7 +101,15 @@ def bucket_cor_item(item: dict) -> str:
 def _cor_principal_do_item(item: dict) -> str | None:
     cor = item.get("cor") if isinstance(item.get("cor"), dict) else {}
     tart = item.get("tartaruga") if isinstance(item.get("tartaruga"), dict) else {}
-    return cor.get("cor_principal") or tart.get("cor_principal")
+    # O agente de cor (cor_tier.py) é feito pro Sundek LISO; num Ville ESTAMPADO
+    # ele não sabe a cor de fundo (as tartarugas atrapalham) e devolve
+    # "desconhecida"/"indefinido" — que é truthy e mascarava o fallback (um navy
+    # virava "aceitavel"). Nesses casos, use a cor de FUNDO que o tartaruga.py já
+    # lê (ele ignora as tartarugas de propósito). Ver [[run-4o-vs-mini]] / cor_bucket.
+    cn = (cor.get("cor_principal") or "").strip().lower()
+    if not cn or cn in ("desconhecida", "desconhecido", "indefinido", "indefinida"):
+        return tart.get("cor_principal")
+    return cor.get("cor_principal")
 
 
 def cor_aceita_em_liso(nome: str | None) -> bool:

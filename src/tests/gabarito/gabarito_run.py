@@ -52,7 +52,7 @@ from ...classify.cor import classificar_cor
 from ...classify.cordao_ville import verificar_cordao
 from ...classify.fecho_ville import verificar_fecho
 from ...classify.etiqueta import verificar_etiqueta
-from ...classify.cor_ville import bucket_cor
+from ...classify.cor_ville import bucket_cor, _cor_principal_do_item
 from ...classify.ville_run import _parece_ville, marca_sem_evidencia
 
 SRC = Path(__file__).resolve().parent.parent.parent
@@ -91,8 +91,11 @@ ARQUIVOS = {
 }
 ORDEM = ["marca", "tartaruga", "autenticidade", "cor", "etiqueta", "cordao", "fecho"]
 # Se o prompt de X mudou, re-rodar também (dependência de portão/aplicabilidade):
-#   marca define o gate de tudo; tartaruga (tipo) define se autenticidade roda.
-CASCATA = {"marca": list(ORDEM), "tartaruga": ["tartaruga", "autenticidade"]}
+#   marca define o gate de tudo; tartaruga (tipo) define se autenticidade roda;
+#   cor precisa do tartaruga (o cor_bucket usa a cor de FUNDO do tartaruga quando
+#   o cor_tier não sabe — ver bucket_cor_item / _cor_principal_do_item).
+CASCATA = {"marca": list(ORDEM), "tartaruga": ["tartaruga", "autenticidade"],
+           "cor": ["cor", "tartaruga"]}
 
 _lock = threading.Lock()
 
@@ -236,8 +239,10 @@ def _processar(item: dict, rodar: set, base: dict | None) -> tuple[dict, int, in
         return out, in_tok, out_tok
 
     # ── Passou do portão → demais agentes ────────────────────────────
+    tart_res = None
     if "tartaruga" in rodar:
         t = chamar("tartaruga")
+        tart_res = t
         out["tipo"] = t.get("tipo")
         out["fundo_padrao"] = t.get("fundo_padrao")
         out["aparencia"] = t.get("aparencia")
@@ -251,8 +256,14 @@ def _processar(item: dict, rodar: set, base: dict | None) -> tuple[dict, int, in
             out["autenticidade"] = a.get("autenticidade")
     if "cor" in rodar:
         c = chamar("cor")
-        cn = c.get("cor_principal")
-        out["cor_bucket"] = bucket_cor(cn) if cn else None
+        # cor_bucket como a VERDADE é derivada: bucket_cor(cor de fundo). O
+        # _cor_principal_do_item cai pro cor_principal do TARTARUGA (que lê o fundo,
+        # ignorando as tartarugas) quando o cor_tier — feito pro Sundek liso —
+        # devolve "desconhecida" num Ville estampado. tartaruga roda junto (cascata).
+        # NÃO usa bucket_cor_item de propósito: o fundo-check penalizaria os gradiente
+        # que a verdade marca "aceitavel" (regressão). Só o fallback de cor importa aqui.
+        cor_nome = _cor_principal_do_item({"cor": c, "tartaruga": tart_res or {}})
+        out["cor_bucket"] = bucket_cor(cor_nome) if cor_nome else None
     if "etiqueta" in rodar:
         e = chamar("etiqueta")
         out["etiqueta"] = _norm_etiqueta(e.get("tem_etiqueta"))

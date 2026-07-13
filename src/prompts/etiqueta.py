@@ -10,6 +10,13 @@ TEM hang tag (tem_etiqueta = true):
   - Tag de PAPEL ou PAPELÃO pendurada no short, presa com cordão, plástico ou arame
   - Etiqueta pendente com preço, código de barras, referência do produto
   - Tag que balança solta, não está costurada na peça
+  - ⚠️ RECONHEÇA PELA FORMA, não pelo texto: um pequeno CARTÃO/retângulo (papel ou
+    papelão, geralmente preto ou branco) PENDURADO por um fio/cordão no cós, na alça,
+    ou caído sobre o tecido, JÁ é hang tag — MESMO pequeno na foto e MESMO que você
+    NÃO consiga ler o que está escrito. Não exija ler o texto pra confirmar.
+  - 💡 CONTEXTO de peça nova: costuma vir junto um SAQUINHO/pouch da marca. Se há o
+    saquinho E um cartão/etiqueta pendurado por fio, é hang tag = true. (O saquinho
+    sozinho, sem o cartão pendurado, NÃO conta — o que conta é o cartão pendente.)
 
 NÃO é hang tag — NÃO conta como etiqueta:
   - Etiqueta de tecido COSTURADA internamente no cós ou na lateral (label de marca/composição)
@@ -27,4 +34,9 @@ Responda APENAS com JSON válido (sem cercas de código, sem texto extra):
 
 
 def usuario(titulo: str) -> str:
-    return f'Short da marca Sundek. Título: "{titulo}". Procure uma hang tag (etiqueta de papel/papelão SOLTA e pendente). Etiquetas costuradas internamente NÃO contam.'
+    return (
+        f'Short a analisar. Título: "{titulo}". Procure uma hang tag (etiqueta de '
+        f'papel/papelão SOLTA e pendente por um fio/cordão) — reconheça pela FORMA '
+        f'de cartão pendurado, mesmo pequena e sem conseguir ler o texto. Etiquetas '
+        f'costuradas internamente NÃO contam.'
+    )

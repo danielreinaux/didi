@@ -20,17 +20,18 @@ Olhar TODAS as fotos e identificar DOIS aspectos do short:
 
 # REGRA DE OURO (PRIORIDADE)
 
-**1) Botão/velcro no fly EXCLUEM e vêm primeiro.** Se você vê BOTÃO ou VELCRO no
-fly em qualquer foto, `tipo_fechamento = "botao"` ou `"velcro"`, INDEPENDENTE do
-cós ter elástico — é característica de boardshort antigo que EXCLUI o item (mesmo
-em modelos híbridos com elástico).
+**1) Botão/velcro no fly EXCLUEM e têm prioridade ABSOLUTA.** Se você vê BOTÃO ou
+VELCRO no fly em qualquer foto, `tipo_fechamento = "botao"` ou `"velcro"` — ponto
+final, ACIMA de qualquer outra coisa (cordão OU elástico, parcial ou total). É a
+característica de boardshort antigo que EXCLUI o item. Nunca deixe um cós franzido
+(elástico) te fazer esquecer um botão/velcro visível no fly.
 
 **2) Cordão vence ELÁSTICO no TIPO de fechamento.** Se NÃO há botão/velcro, mas há
 um CORDÃO funcional (atado, saindo do cós, ou passando por ilhós), então
-`tipo_fechamento = "cordao"` — MESMO que o cós também tenha elástico. Nos Sundek o
-cordão e o elástico convivem o tempo todo (ver domínio abaixo); a convenção é que o
-CORDÃO NOMEIA o fechamento e o elástico é registrado à parte, em `tem_elastico`.
-Só use `tipo_fechamento="elastico"` quando há elástico e NÃO há cordão funcional.
+`tipo_fechamento = "cordao"` — MESMO que o cós também tenha elástico (parcial OU
+total). Nos Sundek o cordão e o elástico convivem o tempo todo; a convenção é que o
+CORDÃO NOMEIA o fechamento e o elástico vai à parte, em `tem_elastico`. Só use
+`tipo_fechamento="elastico"` quando há elástico e NÃO se vê cordão funcional algum.
 
 **3) `tem_elastico` é INDEPENDENTE do tipo.** Marque `tem_elastico=true` sempre que
 houver elástico no cós — INCLUSIVE quando `tipo_fechamento="cordao"`. Um campo não
@@ -41,13 +42,17 @@ ao mesmo tempo.
 
 ## A) Elástico no cós
 
-### ⚠️ Padrão Sundek: elástico SÓ NA TRASEIRA (MUITO comum — leia primeiro)
-Boa parte dos Sundek tem elástico apenas na METADE TRASEIRA do cós: a TRASEIRA
-franze visivelmente (ondas regulares), enquanto a FRENTE fica lisa/reta com o
-cordão. Isso É elástico. Se a parte TRASEIRA do cós está franzida/ondulada de forma
-regular, `tem_elastico=true` — MESMO que a frente seja plana. NÃO exija franzido na
-frente nem no cós inteiro; basta a traseira. (A foto da traseira do cós é a que
-decide; se só há foto da frente lisa, use null, não false.)
+### ⚠️ Padrão Sundek: elástico SÓ NA TRASEIRA (comum) — mas exija franzido REAL
+Muitos Sundek têm elástico só na METADE TRASEIRA do cós: a TRASEIRA franze, a FRENTE
+fica lisa. Se a TRASEIRA tem franzido REAL de elástico — ONDAS DENSAS E REGULARES,
+juntinhas, como um acordeão / franzido de saia — então `tem_elastico=true`, mesmo com
+a frente plana.
+⚠️ NÃO confunda com (ambos são `tem_elastico=false`):
+  (a) a ONDULAÇÃO SOLTA e irregular de um cós de tecido deitado/amassado na foto;
+  (b) o cós ESTRUTURADO e RETO de um boardshort firme — cós de prancha não tem
+      elástico, mesmo com uma ruga ou outra.
+Franzido de elástico é DENSO, apertado e REGULAR; ruga de tecido é solta e
+irregular. Na dúvida, se o cós parece firme/reto/estruturado → `tem_elastico=false`.
 
 ### Sinais REAIS de elástico (tem_elastico = true)
 - Cós comprimido/encolhido — dobras estruturais regulares comprimindo o tecido em
@@ -72,9 +77,9 @@ regulares) — seja no cós inteiro, seja só na traseira. Se você vê rugas al
 mas a borda do cós parece reta/plana na volta toda quando estendido → tem_elastico = false.
 
 ### TESTE MENTAL antes de marcar elástico=true
-"Alguma parte do cós — a TRASEIRA já basta — está franzida/comprimida com ondas
-REGULARES (diferente de rugas soltas do nylon)?" Se SIM → true. Só marque false
-quando o cós é reto/plano na volta TODA (frente E traseira).
+"A traseira do cós tem franzido DENSO e REGULAR (ondas apertadas, tipo acordeão) —
+não uma ruga solta nem tecido só amassado?" Se SIM → true. Se o cós parece firme,
+estruturado ou reto (boardshort), ou só tem ondulação solta → false.
 
 ### ⚠️ Cordão ≠ elástico (são independentes)
 Ter cordão NÃO implica ter (nem não-ter) elástico: existem Sundek de cós plano só
@@ -119,8 +124,8 @@ botão com cordão presente → `cordao`.
    ajuste (PRIORIDADE — mesmo com elástico). ⚠️ ilhó com cordão passando NÃO é botão.
 2. **"velcro"** — velcro no fly visível (PRIORIDADE — mesmo com elástico no cós)
 3. **"cordao"** — há cordão funcional (atado, saindo do cós, ou por ilhós), sem
-   botão/velcro. Vale MESMO que o cós tenha elástico (caso Sundek clássico: cordão
-   na frente + elástico na traseira). O elástico vai em `tem_elastico`, não aqui.
+   botão/velcro. Vale MESMO que o cós tenha elástico (parcial ou total): o elástico
+   vai em `tem_elastico`, não muda o tipo.
 4. **"elastico"** — cós com elástico e SEM cordão funcional visível (e sem botão/velcro).
 5. **"sem"** — cós completamente plano/rígido, sem cordão, sem elástico, sem botão/velcro.
 6. **"indefinido"** — foto não permite determinar
@@ -145,13 +150,13 @@ Olhe as fotos do fly (centro frontal):
 - Há só cordão sem botão/velcro?
 
 ## Passo 4 — APLICAR REGRA DE PRIORIDADE
-1) Botão/velcro no fly? → tipo = botao/velcro (fim).
+1) Botão/velcro no fly? → tipo = botao/velcro (PRIORIDADE ABSOLUTA, fim).
 2) Senão, há cordão funcional (atado/saindo/por ilhós)? → tipo = **cordao**
-   (mesmo com elástico no cós).
-3) Senão, cós com elástico e SEM cordão? → tipo = elastico.
-4) Senão, cós plano sem nada? → tipo = sem.
+   (mesmo com elástico, parcial ou total, no cós).
+3) Senão, cós com elástico e SEM cordão visível? → tipo = elastico.
+4) Senão, cós plano/reto sem cordão e sem elástico? → tipo = sem.
 Lembre: `tem_elastico` é decidido À PARTE (Passo 2) e pode ser true junto com
-tipo=cordao — no Sundek é o caso mais comum.
+tipo=cordao (Sundek clássico: cordão na frente, elástico atrás).
 
 ## Passo 5 — SELF-CHECK
 - Você confundiu nylon enrugado com elástico? Releia passo 2.
@@ -219,6 +224,22 @@ Fotos: cós plano e reto, cordão branco visível passando por ilhós.
   "tem_elastico": false,
   "tipo_fechamento": "cordao",
   "evidencia": "Cós plano, cordão como único mecanismo de ajuste"
+}
+```
+
+## Exemplo E — Boardshort de cós reto (sem elástico) → cordao / false
+Fotos: short estilo boardshort, cós FIRME e RETO na volta toda (frente e traseira),
+cordão branco atado na frente. Só há a ondulação solta do tecido deitado.
+```json
+{
+  "pensamento_inspecao": "Fotos 1 e 2 mostram frente e traseira do cós",
+  "pensamento_cos": "Cós estruturado, borda reta na frente E na traseira; a leve ondulação é do tecido deitado, não franzido denso de elástico",
+  "pensamento_fly": "Cordão branco atado, sem botão nem velcro",
+  "pensamento_prioridade": "Frente lisa/reta + cordão → tipo=cordao. Cós firme sem franzido regular → tem_elastico=false",
+  "pensamento_self_check": "Não confundi ondulação de tecido amassado com elástico; o cós é firme/reto",
+  "tem_elastico": false,
+  "tipo_fechamento": "cordao",
+  "evidencia": "Boardshort de cós reto/estruturado, cordão frontal, sem elástico"
 }
 ```
 

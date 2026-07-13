@@ -1,26 +1,23 @@
-"""Comparativo de EVOLUÇÃO dos prompts Sundek CRUZANDO os 2 datasets num HTML só.
+"""Comparativo de EVOLUÇÃO de prompts CRUZANDO os 2 datasets de uma família num HTML.
 
-Diferente do gabarito_diff_sundek (um dataset por vez), aqui as COLUNAS são os
-datasets (Sundek base e Sundek compráveis) e cada um vira 3 sub-colunas:
-  antes | depois | Δ (depois − antes).
-Linhas = os 14 critérios Sundek. É a "evolução do padrão de hoje": mede o efeito
-de um refino de prompt nos DOIS datasets de uma vez, lado a lado.
+Genérico por FAMÍLIA (ville | sundek): as COLUNAS são os 2 datasets da família
+(base e compráveis) e cada um vira 3 sub-colunas: antes | depois | Δ (depois − antes).
+Linhas = os critérios daquele pipeline. É a "evolução do padrão de hoje": mede o
+efeito de um refino de prompt nos DOIS datasets de uma vez, lado a lado, e destaca
+os critérios refinados (pra separar o efeito pretendido do ruído).
 
-Δ verde = o refino MELHOROU o acerto naquele critério+dataset; Δ vermelho = regrediu.
-SEM gastar IA — só compara rodadas já geradas pelo gabarito_run_sundek.
+Δ verde = o refino MELHOROU o acerto naquele critério+dataset; vermelho = regrediu.
+SEM gastar IA — só compara rodadas já geradas pelo runner (gabarito_run[_sundek]).
 
-Fluxo:
-  # antes (estado atual do repo) — roda os 2:
-  python -m src.tests.gabarito.gabarito_run_sundek --dataset sundek            --label sundek-pre --all
-  python -m src.tests.gabarito.gabarito_run_sundek --dataset compraveis_sundek --label compraveis_sundek-pre --all
+Fluxo (ex.: Ville):
+  python -m src.tests.gabarito.gabarito_run --dataset ville            --label ville-pre --all
+  python -m src.tests.gabarito.gabarito_run --dataset compraveis_ville --label compraveis_ville-pre --all
   # (edita prompts)
-  # depois (auto-detecta o que mudou vs -pre):
-  python -m src.tests.gabarito.gabarito_run_sundek --dataset sundek            --label sundek-pos --base sundek-pre
-  python -m src.tests.gabarito.gabarito_run_sundek --dataset compraveis_sundek --label compraveis_sundek-pos --base compraveis_sundek-pre
-  # comparativo cruzado:
-  python -m src.tests.gabarito.gabarito_evolucao_sundek --pre pre --pos pos --refinados listra,cor_tier,fechamento
+  python -m src.tests.gabarito.gabarito_run --dataset ville            --label ville-pos --base ville-pre
+  python -m src.tests.gabarito.gabarito_run --dataset compraveis_ville --label compraveis_ville-pos --base compraveis_ville-pre
+  python -m src.tests.gabarito.gabarito_evolucao --familia ville --pre pre --pos pos --refinados autenticidade,fecho
 
-Saída: data/regressao/evolucao-sundek.html (matriz) + eco no console.
+Saída: data/regressao/evolucao-<familia>.html (matriz) + eco no console.
 """
 import sys
 from html import escape
@@ -30,50 +27,65 @@ try:
 except Exception:
     pass
 
-from .gabarito_diff import _norm, _carregar, REG, PUBLIC
+from .gabarito_diff import (
+    _norm, _graded, _carregar, REG,
+    CRITERIOS as CRIT_V, LABELS as LAB_V, _item_100 as _item100_v,
+)
+from .gabarito_aval_sundek import (
+    CRITERIOS as CRIT_S, LABELS as LAB_S, _aplica as _aplica_s, _item_100 as _item100_s,
+)
 from .gabarito_run import _arg, _carregar_rodada
-from .gabarito_aval_sundek import CRITERIOS, LABELS, _aplica, _item_100, ROTULOS
 
-# Os 2 datasets Sundek, na ordem das colunas.
-DATASETS = [("sundek", "Sundek"), ("compraveis_sundek", "Sundek compráveis")]
+# Cada família: os 2 datasets (base, compráveis), os critérios/labels do pipeline,
+# a função "critério aplicável?" e a "item 100% certo?" — igual ao run_datasets.
+FAMILIAS = {
+    "ville": {
+        "datasets": [("ville", "Ville"), ("compraveis_ville", "Ville compráveis")],
+        "crit": CRIT_V, "lab": LAB_V,
+        "aplica": lambda t, c: _graded(t, c), "item100": _item100_v,
+    },
+    "sundek": {
+        "datasets": [("sundek", "Sundek"), ("compraveis_sundek", "Sundek compráveis")],
+        "crit": CRIT_S, "lab": LAB_S,
+        "aplica": _aplica_s, "item100": _item100_s,
+    },
+}
 
 
-def _pontuar(rod_itens: dict, truth: dict, ids: list) -> tuple[dict, tuple[int, int]]:
-    """Por critério: acerto vs verdade (só onde o humano avaliou/aplicável) +
-    (itens 100% certos, itens avaliáveis)."""
+def _pontuar(fam: dict, rod_itens: dict, truth: dict, ids: list) -> tuple[dict, tuple[int, int]]:
+    """Por critério: acerto vs verdade (só onde aplicável) + (itens 100%, avaliáveis)."""
     por = {}
-    for c in CRITERIOS:
+    for c in fam["crit"]:
         n = ok = 0
         for iid in ids:
             t = truth[iid]
-            if not _aplica(t, c):
+            if not fam["aplica"](t, c):
                 continue
             n += 1
             if _norm(rod_itens.get(iid, {}).get(c)) == _norm(t.get(c)):
                 ok += 1
         por[c] = {"ok": ok, "n": n, "acc": (ok / n * 100) if n else None}
-    aval = [i for i in ids if _item_100(rod_itens.get(i, {}), truth[i]) is not None]
-    full = sum(1 for i in aval if _item_100(rod_itens.get(i, {}), truth[i]))
+    aval = [i for i in ids if fam["item100"](rod_itens.get(i, {}), truth[i]) is not None]
+    full = sum(1 for i in aval if fam["item100"](rod_itens.get(i, {}), truth[i]))
     return por, (full, len(aval))
 
 
-def _dados_dataset(chave: str, rotulo: str, pre: str, pos: str, truth: dict) -> dict:
+def _dados_dataset(fam: dict, chave: str, rotulo: str, pre: str, pos: str, truth: dict) -> dict:
     """Carrega as rodadas -pre e -pos do dataset e pontua as duas contra a verdade."""
     lbl_pre, lbl_pos = f"{chave}-{pre}", f"{chave}-{pos}"
     A, B = _carregar_rodada(lbl_pre), _carregar_rodada(lbl_pos)
     if not A:
-        print(f"⚠ Rodada '{lbl_pre}' não existe — pule ou rode o baseline do {chave}.")
+        print(f"⚠ Rodada '{lbl_pre}' não existe — rode o baseline do {chave}.")
         return {"chave": chave, "rotulo": rotulo, "ok": False}
     if not B:
         print(f"⚠ Rodada '{lbl_pos}' não existe — rode o refino do {chave}.")
         return {"chave": chave, "rotulo": rotulo, "ok": False}
     RA, RB = A["itens"], B["itens"]
-    # Só itens presentes nas 2 rodadas E com verdade humana preenchida.
     ids = [i for i in RB if i in RA and i in truth and isinstance(truth[i], dict) and truth[i]]
-    pA, fullA = _pontuar(RA, truth, ids)
-    pB, fullB = _pontuar(RB, truth, ids)
+    pA, fullA = _pontuar(fam, RA, truth, ids)
+    pB, fullB = _pontuar(fam, RB, truth, ids)
     por = {}
-    for c in CRITERIOS:
+    for c in fam["crit"]:
         a, b = pA[c]["acc"], pB[c]["acc"]
         por[c] = {"pre": pA[c], "pos": pB[c],
                   "delta": (b - a) if (a is not None and b is not None) else None}
@@ -85,7 +97,7 @@ def _dados_dataset(chave: str, rotulo: str, pre: str, pos: str, truth: dict) -> 
 # ─────────────────────────────────────────────────────────────────────────────
 # Console
 # ─────────────────────────────────────────────────────────────────────────────
-def _console(datasets: list[dict], refinados: set) -> None:
+def _console(fam: dict, datasets: list[dict], refinados: set) -> None:
     for ds in datasets:
         if not ds.get("ok"):
             continue
@@ -97,7 +109,7 @@ def _console(datasets: list[dict], refinados: set) -> None:
         for c, d in sorted(linhas, key=lambda x: (x[1]["delta"] or 0)):
             seta = "↑" if (d["delta"] or 0) > 0 else ("↓" if (d["delta"] or 0) < 0 else "=")
             selo = " *" if c in refinados else ""
-            print(f"{LABELS[c]+selo:<22}{d['pre']['acc']:>7.0f}%{d['pos']['acc']:>8.0f}%"
+            print(f"{fam['lab'][c]+selo:<22}{d['pre']['acc']:>7.0f}%{d['pos']['acc']:>8.0f}%"
                   f"{(d['delta'] or 0):>+7.0f}% {seta}")
         fa, fb = ds["full_pre"], ds["full_pos"]
         print("-" * 47)
@@ -126,7 +138,6 @@ def _cel_acc(sc) -> str:
 
 
 def _celulas(ds: dict, c: str) -> str:
-    """3 <td> (antes | depois | Δ) do critério c na coluna deste dataset."""
     if not ds.get("ok"):
         return '<td class="nd">—</td><td class="nd">—</td><td class="nd">—</td>'
     d = ds["por"][c]
@@ -151,7 +162,7 @@ def _cel_resumo(ds: dict) -> str:
             f'<td class="delta" style="color:{_cor_delta(d)}"><b>{"+" if d>=0 else ""}{d:.0f}</b></td>')
 
 
-def _html(datasets: list[dict], refinados: set, pre: str, pos: str) -> str:
+def _html(fam: dict, familia: str, datasets: list[dict], refinados: set, pre: str, pos: str) -> str:
     grp_th = ""
     for ds in datasets:
         sub = (f'{ds["n_itens"]} itens' if ds.get("ok") else "sem rodada")
@@ -160,26 +171,25 @@ def _html(datasets: list[dict], refinados: set, pre: str, pos: str) -> str:
                      for _ in datasets)
 
     linhas = []
-    for c in CRITERIOS:
+    for c in fam["crit"]:
         selo = ('<span class="ref">refinado</span>' if c in refinados else '')
         cells = "".join(_celulas(ds, c) for ds in datasets)
         cls = ' class="reflinha"' if c in refinados else ''
-        linhas.append(f'<tr{cls}><td class="crit">{escape(LABELS[c])}{selo}</td>{cells}</tr>')
+        linhas.append(f'<tr{cls}><td class="crit">{escape(fam["lab"][c])}{selo}</td>{cells}</tr>')
     resumo = "".join(_cel_resumo(ds) for ds in datasets)
 
-    # Saldo por dataset (quantos critérios subiram/desceram) pro cabeçalho.
     resumos_txt = []
     for ds in datasets:
         if not ds.get("ok"):
             continue
-        subiu = sum(1 for c in CRITERIOS if (ds["por"][c]["delta"] or 0) >= 1)
-        desceu = sum(1 for c in CRITERIOS if (ds["por"][c]["delta"] or 0) <= -1)
+        subiu = sum(1 for c in fam["crit"] if (ds["por"][c]["delta"] or 0) >= 1)
+        desceu = sum(1 for c in fam["crit"] if (ds["por"][c]["delta"] or 0) <= -1)
         resumos_txt.append(f'<b>{escape(ds["rotulo"])}</b>: {subiu} ↑ / {desceu} ↓')
     resumo_h = " · ".join(resumos_txt)
 
     return f"""<!DOCTYPE html><html lang="pt-BR"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Evolução dos prompts Sundek · antes × depois</title>
+<title>Evolução dos prompts {escape(familia.capitalize())} · antes × depois</title>
 <style>
 *{{box-sizing:border-box;margin:0;padding:0}}
 body{{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#f2f2f0;color:#18181b;padding:24px 16px 60px}}
@@ -208,7 +218,7 @@ tr.resumo td.crit{{background:#f1f5f9}}
 .leg{{margin-top:14px;font-size:12px;color:#71717a;line-height:1.6}}
 .leg b{{color:#18181b}}
 </style></head><body><div class="container">
-<h1>Evolução dos prompts Sundek — antes × depois nos 2 datasets</h1>
+<h1>Evolução dos prompts {escape(familia.capitalize())} — antes × depois nos 2 datasets</h1>
 <p class="sub-h"><b>antes</b> = prompts no estado do repo (rótulo <code>-{escape(pre)}</code>) · <b>depois</b> = após o refino (<code>-{escape(pos)}</code>) · <b>Δ</b> = depois − antes (verde = melhorou, vermelho = regrediu) · acerto vs verdade humana.<br>
 Saldo de critérios: {resumo_h}</p>
 <div class="wrap"><table>
@@ -221,28 +231,33 @@ Saldo de critérios: {resumo_h}</p>
 <tr class="resumo"><td class="crit">Itens 100% certos</td>{resumo}</tr>
 </tbody></table></div>
 <p class="leg"><b>Linhas destacadas (amarelo)</b> = critérios cujo prompt foi refinado nesta rodada (selo <span class="ref">refinado</span>). Os demais devem ficar estáveis — se um deles mexer muito, é ruído a investigar.<br>
-"—" numa célula = critério sem itens avaliáveis naquele dataset (ninguém preencheu / não se aplica). O mesmo prompt roda nos 2 datasets, então um refino aparece nas 2 colunas.</p>
+"—" numa célula = critério sem itens avaliáveis naquele dataset. O mesmo prompt roda nos 2 datasets, então um refino aparece nas 2 colunas.</p>
 </div></body></html>"""
 
 
 def main() -> None:
+    familia = _arg("--familia", "sundek")
+    if familia not in FAMILIAS:
+        print(f"--familia inválida: '{familia}'. Use: {', '.join(FAMILIAS)}")
+        sys.exit(1)
+    fam = FAMILIAS[familia]
     pre = _arg("--pre", "pre")
     pos = _arg("--pos", "pos")
     ref = _arg("--refinados", "")
     refinados = {x.strip() for x in ref.split(",") if x.strip()}
-    invalidos = refinados - set(CRITERIOS)
+    invalidos = refinados - set(fam["crit"])
     if invalidos:
-        print(f"⚠ Critérios --refinados desconhecidos (ignorados): {invalidos}")
-        refinados &= set(CRITERIOS)
+        print(f"⚠ Critérios --refinados desconhecidos p/ {familia} (ignorados): {invalidos}")
+        refinados &= set(fam["crit"])
 
     truth = _carregar(REG / "gabarito_respostas.json",
                       "gabarito (rode gabarito_export)")["respostas"]
-    datasets = [_dados_dataset(ch, rot, pre, pos, truth) for ch, rot in DATASETS]
+    datasets = [_dados_dataset(fam, ch, rot, pre, pos, truth) for ch, rot in fam["datasets"]]
 
-    _console(datasets, refinados)
+    _console(fam, datasets, refinados)
 
-    out = REG / "evolucao-sundek.html"
-    out.write_text(_html(datasets, refinados, pre, pos), encoding="utf-8")
+    out = REG / f"evolucao-{familia}.html"
+    out.write_text(_html(fam, familia, datasets, refinados, pre, pos), encoding="utf-8")
     print(f"\nHTML -> {out}")
 
 

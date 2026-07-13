@@ -1,0 +1,46 @@
+<!DOCTYPE html><html lang="pt-BR"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Evolução dos prompts Ville · antes × depois</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#f2f2f0;color:#18181b;padding:24px 16px 60px}
+.container{max-width:1120px;margin:0 auto}
+h1{font-size:22px;margin-bottom:4px}
+.sub-h{color:#666;font-size:13px;margin-bottom:16px;line-height:1.5}
+.wrap{overflow-x:auto;border:1px solid #e4e4e7;border-radius:10px}
+table{width:100%;border-collapse:collapse;font-size:13px;background:#fff;min-width:720px}
+th,td{padding:8px 8px;border-bottom:1px solid #f0f0f0;text-align:center;white-space:nowrap}
+th{background:#fafafa;color:#3f3f46}
+th.grp{border-left:2px solid #e4e4e7;font-size:14px;padding-bottom:6px}
+th.m{font-size:11px;color:#71717a;font-weight:500;padding:4px 8px}
+th.m.dh,td.delta{border-right:1px solid #eee}
+th:first-child,td.crit{text-align:left}
+td.crit{font-weight:500;background:#fafafa;position:sticky;left:0}
+th:first-child{position:sticky;left:0;z-index:2}
+.sub{font-size:10px;color:#a1a1aa;font-weight:400;margin-top:1px}
+th .sub{color:#71717a}
+td.na{color:#c4c4c8} td.nd{color:#d4d4d8}
+td.delta{font-weight:600}
+tr.reflinha td{background:#fffdf3}
+tr.reflinha td.crit{background:#fdf6e3}
+.ref{display:inline-block;margin-left:6px;font-size:9.5px;font-weight:600;padding:1px 6px;border-radius:5px;background:#fde68a;color:#92400e;vertical-align:middle}
+tr.resumo td{background:#f8fafc;border-top:2px solid #e4e4e7;font-size:13px}
+tr.resumo td.crit{background:#f1f5f9}
+.leg{margin-top:14px;font-size:12px;color:#71717a;line-height:1.6}
+.leg b{color:#18181b}
+</style></head><body><div class="container">
+<h1>Evolução dos prompts Ville — antes × depois nos 2 datasets</h1>
+<p class="sub-h"><b>antes</b> = prompts no estado do repo (rótulo <code>-pre</code>) · <b>depois</b> = após o refino (<code>-pos</code>) · <b>Δ</b> = depois − antes (verde = melhorou, vermelho = regrediu) · acerto vs verdade humana.<br>
+Saldo de critérios: <b>Ville</b>: 1 ↑ / 2 ↓ · <b>Ville compráveis</b>: 2 ↑ / 0 ↓</p>
+<div class="wrap"><table>
+<thead>
+<tr><th rowspan="2">Critério</th><th colspan="3" class="grp">Ville<div class="sub">50 itens</div></th><th colspan="3" class="grp">Ville compráveis<div class="sub">38 itens</div></th></tr>
+<tr><th class="m">antes</th><th class="m">depois</th><th class="m dh">Δ</th><th class="m">antes</th><th class="m">depois</th><th class="m dh">Δ</th></tr>
+</thead>
+<tbody>
+<tr><td class="crit">É Vilebrequin?</td><td><b>92%</b><div class="sub">46/50</div></td><td><b>92%</b><div class="sub">46/50</div></td><td class="delta" style="color:#71717a"><b>+0</b></td><td><b>95%</b><div class="sub">36/38</div></td><td><b>95%</b><div class="sub">36/38</div></td><td class="delta" style="color:#71717a"><b>+0</b></td></tr><tr><td class="crit">É short?</td><td><b>90%</b><div class="sub">45/50</div></td><td><b>90%</b><div class="sub">45/50</div></td><td class="delta" style="color:#71717a"><b>+0</b></td><td><b>100%</b><div class="sub">38/38</div></td><td><b>100%</b><div class="sub">38/38</div></td><td class="delta" style="color:#71717a"><b>+0</b></td></tr><tr><td class="crit">Padrão</td><td><b>90%</b><div class="sub">45/50</div></td><td><b>90%</b><div class="sub">45/50</div></td><td class="delta" style="color:#71717a"><b>+0</b></td><td><b>100%</b><div class="sub">38/38</div></td><td><b>100%</b><div class="sub">38/38</div></td><td class="delta" style="color:#71717a"><b>+0</b></td></tr><tr><td class="crit">Fundo</td><td><b>98%</b><div class="sub">49/50</div></td><td><b>98%</b><div class="sub">49/50</div></td><td class="delta" style="color:#71717a"><b>+0</b></td><td><b>100%</b><div class="sub">38/38</div></td><td><b>100%</b><div class="sub">38/38</div></td><td class="delta" style="color:#71717a"><b>+0</b></td></tr><tr><td class="crit">Aparência</td><td><b>98%</b><div class="sub">49/50</div></td><td><b>98%</b><div class="sub">49/50</div></td><td class="delta" style="color:#71717a"><b>+0</b></td><td><b>95%</b><div class="sub">36/38</div></td><td><b>95%</b><div class="sub">36/38</div></td><td class="delta" style="color:#71717a"><b>+0</b></td></tr><tr><td class="crit">Autenticidade</td><td><b>80%</b><div class="sub">40/50</div></td><td><b>80%</b><div class="sub">40/50</div></td><td class="delta" style="color:#71717a"><b>+0</b></td><td><b>97%</b><div class="sub">37/38</div></td><td><b>97%</b><div class="sub">37/38</div></td><td class="delta" style="color:#71717a"><b>+0</b></td></tr><tr class="reflinha"><td class="crit">Cor (bucket)<span class="ref">refinado</span></td><td><b>84%</b><div class="sub">42/50</div></td><td><b>86%</b><div class="sub">43/50</div></td><td class="delta" style="color:#15803d"><b>+2</b></td><td><b>71%</b><div class="sub">27/38</div></td><td><b>92%</b><div class="sub">35/38</div></td><td class="delta" style="color:#15803d"><b>+21</b></td></tr><tr class="reflinha"><td class="crit">Cordão<span class="ref">refinado</span></td><td><b>76%</b><div class="sub">38/50</div></td><td><b>74%</b><div class="sub">37/50</div></td><td class="delta" style="color:#b91c1c"><b>-2</b></td><td><b>82%</b><div class="sub">31/38</div></td><td><b>82%</b><div class="sub">31/38</div></td><td class="delta" style="color:#71717a"><b>+0</b></td></tr><tr class="reflinha"><td class="crit">Fecho<span class="ref">refinado</span></td><td><b>80%</b><div class="sub">40/50</div></td><td><b>80%</b><div class="sub">40/50</div></td><td class="delta" style="color:#71717a"><b>+0</b></td><td><b>95%</b><div class="sub">36/38</div></td><td><b>95%</b><div class="sub">36/38</div></td><td class="delta" style="color:#71717a"><b>+0</b></td></tr><tr class="reflinha"><td class="crit">Etiqueta<span class="ref">refinado</span></td><td><b>98%</b><div class="sub">49/50</div></td><td><b>96%</b><div class="sub">48/50</div></td><td class="delta" style="color:#b91c1c"><b>-2</b></td><td><b>87%</b><div class="sub">33/38</div></td><td><b>92%</b><div class="sub">35/38</div></td><td class="delta" style="color:#15803d"><b>+5</b></td></tr>
+<tr class="resumo"><td class="crit">Itens 100% certos</td><td><b>30%</b><div class="sub">15/50</div></td><td><b>32%</b><div class="sub">16/50</div></td><td class="delta" style="color:#15803d"><b>+2</b></td><td><b>42%</b><div class="sub">16/38</div></td><td><b>61%</b><div class="sub">23/38</div></td><td class="delta" style="color:#15803d"><b>+18</b></td></tr>
+</tbody></table></div>
+<p class="leg"><b>Linhas destacadas (amarelo)</b> = critérios cujo prompt foi refinado nesta rodada (selo <span class="ref">refinado</span>). Os demais devem ficar estáveis — se um deles mexer muito, é ruído a investigar.<br>
+"—" numa célula = critério sem itens avaliáveis naquele dataset. O mesmo prompt roda nos 2 datasets, então um refino aparece nas 2 colunas.</p>
+</div></body></html>

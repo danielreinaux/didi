@@ -43,10 +43,17 @@ Olhe TODAS as fotos e responda UMA pergunta: como o short FECHA/ajusta na cintur
 # PROTOCOLO
 1. Localize o CÓS e o FLY (abertura frontal central) em alguma foto.
 2. Vê cordão saindo dos ilhoses? → "cordao".
-3. Sem cordão, cós franzido por elástico, sem botão/fivela? → "elastico".
-4. Vê botão circular com relevo, fivela/clipe de cinto, ou velcro fechando a
+   ⚠️ O cordão costuma ser da MESMA COR do short (baixo contraste) — procure a
+   TEXTURA do cadarço trançado, o LAÇO/nó na frente do cós e os dois ILHOSES.
+   Muitas fotos são a TRASEIRA (cós liso, sem cordão) — o cordão mora na FRENTE.
+3. Vê os ILHOSES na frente mas o cordão está recolhido / na cor do short? → ainda
+   é "cordao" (ter ilhoses = ter cordão). NÃO marque "elastico" nesse caso.
+4. Cós franzido por elástico, SEM ilhoses e SEM cordão, e sem botão/fivela? →
+   "elastico". (Vilebrequin quase sempre tem cordão — "elastico" é a minoria; não
+   pule pra ele só porque o cordão não saltou à vista.)
+5. Vê botão circular com relevo, fivela/clipe de cinto, ou velcro fechando a
    cintura/fly? → "botao"/"fivela"/"velcro" (com CERTEZA).
-5. Não dá pra ver o cós/fly de perto? → "indefinido" (não chute).
+6. Não dá pra ver o cós/fly de perto? → "indefinido" (não chute).
 
 # FORMATO DE SAÍDA
 Responda APENAS com JSON válido:

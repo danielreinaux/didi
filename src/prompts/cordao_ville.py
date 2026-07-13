@@ -21,6 +21,13 @@ Olhar TODAS as fotos e responder UMA pergunta: qual a cor predominante do CORDÃ
   atravessado sobre o tecido, saindo pela LATERAL, recolhido/parcial pelos
   ilhoses, ou num CLOSE/foto de detalhe. OLHE TODAS as fotos — se o cordão
   aparece em QUALQUER uma, use-o (não precisa ser a foto "certa" da frente).
+- ⚠️ BAIXO CONTRASTE (erro comum → vira "sem_cordao" por engano): o cordão é
+  MUITAS VEZES da MESMA COR do short (cordão vermelho num short vermelho, cordão
+  navy num short azul escuro, cordão branco num short claro). Nesses casos ele NÃO
+  "salta" à vista — procure a TEXTURA do cadarço TRANÇADO, o LAÇO/nó pendurado na
+  frente do cós, e os dois ILHOSES de onde ele sai. Muitas fotos são a TRASEIRA
+  (cós liso, sem cordão) — o cordão mora na FRENTE, então não conclua "sem cordão"
+  olhando só as costas.
 - NÃO confunda com:
   - Etiqueta de tecido interna (fica DENTRO do cós, costurada)
   - Faixa elástica do cós (é o tecido da cintura, não é cordão)
@@ -57,10 +64,14 @@ Olhar TODAS as fotos e responder UMA pergunta: qual a cor predominante do CORDÃ
    pra "indefinido" só porque falta uma foto frontal perfeita: se dá pra ver a
    cor em QUALQUER foto, comprometa-se com ela.
 3. NÃO achou cordão em nenhuma foto:
-   - Você VÊ claramente o cós e ele é só elástico, SEM ilhoses e SEM cordão? →
-     "sem_cordao" (prova positiva de ausência).
-   - Você NÃO consegue ver bem o cós/a frente em foto nenhuma? → "indefinido"
-     (não confunda "não vi" com "não tem" — a maioria dos Vilebrequin TEM cordão).
+   - Você VÊ claramente o cós NA FRENTE e ele é só elástico liso, SEM ilhoses e
+     SEM cordão? → "sem_cordao" (prova positiva de ausência).
+   - Você vê os ILHOSES (dois furinhos/anéis na frente do cós) mas não distingue
+     o cordão nem sua cor (recolhido, mesma cor do short, foto ruim)? → "indefinido"
+     (TEM cordão, você só não consegue ver a cor) — NUNCA "sem_cordao".
+   - Você só tem fotos da TRASEIRA / não vê a frente do cós em foto nenhuma? →
+     "indefinido" (não confunda "não vi a frente" com "não tem" — a maioria dos
+     Vilebrequin TEM cordão).
 4. Identifique a cor do cordão NESTA ORDEM (pare no primeiro que casar):
    a. Tom NEUTRO/acinzentado (cinza claro, médio, escuro, grafite, chumbo)? → "cinza".
    b. Branco / off-white / creme claro? → "branco".
