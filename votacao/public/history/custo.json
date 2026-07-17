@@ -1,34 +1,6 @@
 {
- "gerado_em": "2026-07-17T16:03:00.067396-03:00",
+ "gerado_em": "2026-07-17T16:55:39.295354-03:00",
  "rodadas": [
-  {
-   "run_id": "28807944189",
-   "quando": "2026-07-06T13:58:05.419579-03:00",
-   "status": "ok",
-   "custo_brl": 1.42,
-   "custo_usd": 0.283028,
-   "calls": 45,
-   "tok_in": 1012970,
-   "tok_out": 8647,
-   "novos": 56,
-   "candidatos": 38,
-   "ativos": 1854,
-   "descartados": 1732,
-   "sundek_usd": 0.191519,
-   "ville_usd": 0.091509,
-   "etapas": {
-    "sundek:brand": 0.022318,
-    "sundek:brand_4o_recheck": 0.01172,
-    "sundek:classify_tipo": 0.02088,
-    "sundek:color": 0.006869,
-    "sundek:listra": 0.044382,
-    "sundek:elastico": 0.02898,
-    "sundek:crop_localizar": 0.003975,
-    "sundek:bolso": 0.020955,
-    "sundek:etiqueta": 0.003547,
-    "sundek:reclassify_gpt4o": 0.027893
-   }
-  },
   {
    "run_id": "28808023593",
    "quando": "2026-07-06T14:09:48.300814-03:00",
@@ -6333,6 +6305,42 @@
     "ville:etiqueta": 0.016438,
     "ville:cordao": 0.018539,
     "ville:fecho": 0.041072
+   }
+  },
+  {
+   "run_id": "29608700199",
+   "quando": "2026-07-17T16:55:36.034896-03:00",
+   "status": "ok",
+   "custo_brl": 3.66,
+   "custo_usd": 0.732308,
+   "calls": 122,
+   "tok_in": 980900,
+   "tok_out": 9176,
+   "novos": 19,
+   "candidatos": 74,
+   "ativos": 3012,
+   "descartados": 2825,
+   "sundek_usd": 0.338193,
+   "ville_usd": 0.394115,
+   "etapas": {
+    "sundek:brand": 0.030516,
+    "sundek:classify_tipo": 0.029394,
+    "sundek:brand_4o_recheck": 0.011728,
+    "sundek:color": 0.012243,
+    "sundek:listra": 0.154875,
+    "sundek:elastico": 0.03924,
+    "sundek:crop_localizar": 0.005749,
+    "sundek:bolso": 0.031328,
+    "sundek:etiqueta": 0.005411,
+    "sundek:reclassify_gpt4o": 0.01771,
+    "ville:marca": 0.061643,
+    "ville:tartaruga": 0.222878,
+    "ville:cor": 0.008929,
+    "ville:etiqueta": 0.008594,
+    "ville:cordao": 0.009533,
+    "ville:fecho": 0.01935,
+    "ville:crop_localizar": 0.005272,
+    "ville:autenticidade": 0.057917
    }
   }
  ]
