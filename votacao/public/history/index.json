@@ -1,5 +1,47 @@
 [
  {
+  "run_id": "29699336411",
+  "fonte": "deploy",
+  "quando": "2026-07-19T15:59:32.300571-03:00",
+  "marcas": [
+   "sundek",
+   "vilebrequin"
+  ],
+  "run_url": "https://github.com/danielreinaux/didi/actions/runs/29699336411",
+  "status": "ok",
+  "jobs": [
+   {
+    "name": "sundek",
+    "conclusion": "success",
+    "url": "https://github.com/danielreinaux/didi/actions/runs/29699336411/job/88225586334"
+   },
+   {
+    "name": "ville",
+    "conclusion": "success",
+    "url": "https://github.com/danielreinaux/didi/actions/runs/29699336411/job/88225586343"
+   },
+   {
+    "name": "deploy",
+    "conclusion": null,
+    "url": "https://github.com/danielreinaux/didi/actions/runs/29699336411/job/88226571198"
+   }
+  ],
+  "resumo": {
+   "candidatos": 81,
+   "compraveis": 53,
+   "barganha": 28,
+   "descartados": 3032,
+   "nao_classificados": 101,
+   "novos": 39,
+   "ativos": 3214,
+   "custo_usd": 1.255689,
+   "custo_brl": 6.28,
+   "tok_in": 1509766,
+   "tok_out": 15202,
+   "calls": 180
+  }
+ },
+ {
   "run_id": "29698224206",
   "fonte": "deploy",
   "quando": "2026-07-19T15:19:37.676168-03:00",
@@ -8322,48 +8364,6 @@
     "name": "deploy",
     "conclusion": "success",
     "url": "https://github.com/danielreinaux/didi/actions/runs/28978050320/job/85991968790"
-   }
-  ]
- },
- {
-  "run_id": "28975053429",
-  "fonte": "deploy",
-  "quando": "2026-07-08T18:06:36.555299-03:00",
-  "marcas": [
-   "sundek",
-   "vilebrequin"
-  ],
-  "resumo": {
-   "candidatos": 55,
-   "compraveis": 38,
-   "barganha": 17,
-   "descartados": 1921,
-   "nao_classificados": 70,
-   "novos": 49,
-   "ativos": 2046,
-   "custo_usd": 0.059433,
-   "custo_brl": 0.3,
-   "tok_in": 320337,
-   "tok_out": 3962,
-   "calls": 12
-  },
-  "run_url": "https://github.com/danielreinaux/didi/actions/runs/28975053429",
-  "status": "ok",
-  "jobs": [
-   {
-    "name": "ville",
-    "conclusion": "success",
-    "url": "https://github.com/danielreinaux/didi/actions/runs/28975053429/job/85980030253"
-   },
-   {
-    "name": "sundek",
-    "conclusion": "success",
-    "url": "https://github.com/danielreinaux/didi/actions/runs/28975053429/job/85980030262"
-   },
-   {
-    "name": "deploy",
-    "conclusion": "success",
-    "url": "https://github.com/danielreinaux/didi/actions/runs/28975053429/job/85982310751"
    }
   ]
  }
