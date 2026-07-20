@@ -1,23 +1,6 @@
 {
- "gerado_em": "2026-07-20T17:52:26.042881-03:00",
+ "gerado_em": "2026-07-20T18:08:32.276871-03:00",
  "rodadas": [
-  {
-   "run_id": "29094282738",
-   "quando": "2026-07-10T10:25:32.625250-03:00",
-   "status": "ok",
-   "custo_brl": 0.0,
-   "custo_usd": 0.0,
-   "calls": 0,
-   "tok_in": 0,
-   "tok_out": 0,
-   "novos": 112,
-   "candidatos": 60,
-   "ativos": 2223,
-   "descartados": 2018,
-   "sundek_usd": 0.0,
-   "ville_usd": 0.0,
-   "etapas": {}
-  },
   {
    "run_id": "29095663858",
    "quando": "2026-07-10T10:55:02.888429-03:00",
@@ -6829,6 +6812,41 @@
     "ville:fecho": 0.03728,
     "ville:crop_localizar": 0.006622,
     "ville:autenticidade": 0.077107
+   }
+  },
+  {
+   "run_id": "29778368403",
+   "quando": "2026-07-20T18:08:29.274825-03:00",
+   "status": "ok",
+   "custo_brl": 3.23,
+   "custo_usd": 0.645605,
+   "calls": 110,
+   "tok_in": 796185,
+   "tok_out": 7415,
+   "novos": 56,
+   "candidatos": 91,
+   "ativos": 3335,
+   "descartados": 3146,
+   "sundek_usd": 0.164858,
+   "ville_usd": 0.480747,
+   "etapas": {
+    "sundek:brand": 0.016821,
+    "sundek:classify_tipo": 0.015129,
+    "sundek:color": 0.005617,
+    "sundek:listra": 0.091355,
+    "sundek:elastico": 0.013112,
+    "sundek:crop_localizar": 0.002199,
+    "sundek:bolso": 0.00962,
+    "sundek:etiqueta": 0.001802,
+    "sundek:reclassify_gpt4o": 0.009203,
+    "ville:marca": 0.06244,
+    "ville:tartaruga": 0.24433,
+    "ville:crop_localizar": 0.008771,
+    "ville:autenticidade": 0.094615,
+    "ville:cor": 0.013279,
+    "ville:etiqueta": 0.012724,
+    "ville:cordao": 0.014233,
+    "ville:fecho": 0.030355
    }
   }
  ]

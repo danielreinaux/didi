@@ -1,5 +1,47 @@
 [
  {
+  "run_id": "29778368403",
+  "fonte": "deploy",
+  "quando": "2026-07-20T18:08:29.274825-03:00",
+  "marcas": [
+   "sundek",
+   "vilebrequin"
+  ],
+  "run_url": "https://github.com/danielreinaux/didi/actions/runs/29778368403",
+  "status": "ok",
+  "jobs": [
+   {
+    "name": "ville",
+    "conclusion": "success",
+    "url": "https://github.com/danielreinaux/didi/actions/runs/29778368403/job/88473238935"
+   },
+   {
+    "name": "sundek",
+    "conclusion": "success",
+    "url": "https://github.com/danielreinaux/didi/actions/runs/29778368403/job/88473238940"
+   },
+   {
+    "name": "deploy",
+    "conclusion": null,
+    "url": "https://github.com/danielreinaux/didi/actions/runs/29778368403/job/88475227405"
+   }
+  ],
+  "resumo": {
+   "candidatos": 91,
+   "compraveis": 59,
+   "barganha": 32,
+   "descartados": 3146,
+   "nao_classificados": 98,
+   "novos": 56,
+   "ativos": 3335,
+   "custo_usd": 0.645605,
+   "custo_brl": 3.23,
+   "tok_in": 796185,
+   "tok_out": 7415,
+   "calls": 110
+  }
+ },
+ {
   "run_id": "29777245709",
   "fonte": "deploy",
   "quando": "2026-07-20T17:52:22.739780-03:00",
@@ -8322,48 +8364,6 @@
     "name": "deploy",
     "conclusion": "success",
     "url": "https://github.com/danielreinaux/didi/actions/runs/29095663858/job/86378741509"
-   }
-  ]
- },
- {
-  "run_id": "29094282738",
-  "fonte": "deploy",
-  "quando": "2026-07-10T10:25:32.625250-03:00",
-  "marcas": [
-   "sundek",
-   "vilebrequin"
-  ],
-  "resumo": {
-   "candidatos": 60,
-   "compraveis": 37,
-   "barganha": 23,
-   "descartados": 2018,
-   "nao_classificados": 145,
-   "novos": 112,
-   "ativos": 2223,
-   "custo_usd": 0.0,
-   "custo_brl": 0.0,
-   "tok_in": 0,
-   "tok_out": 0,
-   "calls": 0
-  },
-  "run_url": "https://github.com/danielreinaux/didi/actions/runs/29094282738",
-  "status": "ok",
-  "jobs": [
-   {
-    "name": "sundek",
-    "conclusion": "success",
-    "url": "https://github.com/danielreinaux/didi/actions/runs/29094282738/job/86366911346"
-   },
-   {
-    "name": "ville",
-    "conclusion": "success",
-    "url": "https://github.com/danielreinaux/didi/actions/runs/29094282738/job/86366911422"
-   },
-   {
-    "name": "deploy",
-    "conclusion": "success",
-    "url": "https://github.com/danielreinaux/didi/actions/runs/29094282738/job/86372584536"
    }
   ]
  }
