@@ -1,34 +1,6 @@
 {
- "gerado_em": "2026-07-20T15:44:52.488183-03:00",
+ "gerado_em": "2026-07-20T16:21:17.874428-03:00",
  "rodadas": [
-  {
-   "run_id": "29055397311",
-   "quando": "2026-07-09T19:57:21.144329-03:00",
-   "status": "ok",
-   "custo_brl": 0.89,
-   "custo_usd": 0.17875,
-   "calls": 34,
-   "tok_in": 617396,
-   "tok_out": 6911,
-   "novos": 24,
-   "candidatos": 66,
-   "ativos": 2190,
-   "descartados": 2057,
-   "sundek_usd": 0.130883,
-   "ville_usd": 0.047867,
-   "etapas": {
-    "sundek:brand": 0.015123,
-    "sundek:classify_tipo": 0.015762,
-    "sundek:brand_4o_recheck": 0.011708,
-    "sundek:color": 0.006099,
-    "sundek:listra": 0.022155,
-    "sundek:elastico": 0.019553,
-    "sundek:crop_localizar": 0.00355,
-    "sundek:bolso": 0.0208,
-    "sundek:etiqueta": 0.003122,
-    "sundek:reclassify_gpt4o": 0.013012
-   }
-  },
   {
    "run_id": "29056215912",
    "quando": "2026-07-09T20:12:10.712593-03:00",
@@ -6791,6 +6763,42 @@
     "ville:fecho": 0.042923,
     "ville:crop_localizar": 0.006549,
     "ville:autenticidade": 0.058065
+   }
+  },
+  {
+   "run_id": "29770778598",
+   "quando": "2026-07-20T16:21:14.795177-03:00",
+   "status": "ok",
+   "custo_brl": 7.38,
+   "custo_usd": 1.476608,
+   "calls": 209,
+   "tok_in": 1894808,
+   "tok_out": 18882,
+   "novos": 59,
+   "candidatos": 91,
+   "ativos": 3292,
+   "descartados": 3103,
+   "sundek_usd": 1.082785,
+   "ville_usd": 0.393823,
+   "etapas": {
+    "sundek:brand": 0.051174,
+    "sundek:classify_tipo": 0.053269,
+    "sundek:color": 0.026376,
+    "sundek:brand_4o_recheck": 0.019715,
+    "sundek:listra": 0.562495,
+    "sundek:elastico": 0.17119,
+    "sundek:crop_localizar": 0.023926,
+    "sundek:bolso": 0.13409,
+    "sundek:etiqueta": 0.021737,
+    "sundek:reclassify_gpt4o": 0.018813,
+    "ville:marca": 0.054613,
+    "ville:tartaruga": 0.210252,
+    "ville:crop_localizar": 0.006551,
+    "ville:autenticidade": 0.058318,
+    "ville:cor": 0.012243,
+    "ville:etiqueta": 0.011783,
+    "ville:cordao": 0.013104,
+    "ville:fecho": 0.02696
    }
   }
  ]
