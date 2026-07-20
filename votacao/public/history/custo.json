@@ -1,34 +1,6 @@
 {
- "gerado_em": "2026-07-20T14:30:33.232357-03:00",
+ "gerado_em": "2026-07-20T15:44:52.488183-03:00",
  "rodadas": [
-  {
-   "run_id": "29053572379",
-   "quando": "2026-07-09T19:18:37.507852-03:00",
-   "status": "erro",
-   "custo_brl": 1.31,
-   "custo_usd": 0.261592,
-   "calls": 50,
-   "tok_in": 808025,
-   "tok_out": 9022,
-   "novos": 14,
-   "candidatos": 63,
-   "ativos": 2187,
-   "descartados": 2057,
-   "sundek_usd": 0.212494,
-   "ville_usd": 0.049098,
-   "etapas": {
-    "sundek:brand": 0.022903,
-    "sundek:brand_4o_recheck": 0.007427,
-    "sundek:classify_tipo": 0.021316,
-    "sundek:color": 0.009216,
-    "sundek:listra": 0.045038,
-    "sundek:elastico": 0.03955,
-    "sundek:crop_localizar": 0.008378,
-    "sundek:bolso": 0.042388,
-    "sundek:etiqueta": 0.007091,
-    "sundek:reclassify_gpt4o": 0.009188
-   }
-  },
   {
    "run_id": "29055397311",
    "quando": "2026-07-09T19:57:21.144329-03:00",
@@ -6783,6 +6755,42 @@
     "ville:fecho": 0.034438,
     "ville:crop_localizar": 0.007847,
     "ville:autenticidade": 0.073655
+   }
+  },
+  {
+   "run_id": "29768128561",
+   "quando": "2026-07-20T15:44:49.355715-03:00",
+   "status": "ok",
+   "custo_brl": 5.98,
+   "custo_usd": 1.195912,
+   "calls": 204,
+   "tok_in": 1779762,
+   "tok_out": 15678,
+   "novos": 31,
+   "candidatos": 90,
+   "ativos": 3274,
+   "descartados": 3086,
+   "sundek_usd": 0.672954,
+   "ville_usd": 0.522958,
+   "etapas": {
+    "sundek:brand": 0.05715,
+    "sundek:classify_tipo": 0.053245,
+    "sundek:color": 0.022619,
+    "sundek:listra": 0.34087,
+    "sundek:elastico": 0.091103,
+    "sundek:crop_localizar": 0.008877,
+    "sundek:brand_4o_recheck": 0.011772,
+    "sundek:bolso": 0.051705,
+    "sundek:etiqueta": 0.008165,
+    "sundek:reclassify_gpt4o": 0.027448,
+    "ville:marca": 0.073505,
+    "ville:tartaruga": 0.280845,
+    "ville:cor": 0.020163,
+    "ville:etiqueta": 0.019409,
+    "ville:cordao": 0.021499,
+    "ville:fecho": 0.042923,
+    "ville:crop_localizar": 0.006549,
+    "ville:autenticidade": 0.058065
    }
   }
  ]
