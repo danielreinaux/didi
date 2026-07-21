@@ -1,5 +1,47 @@
 [
  {
+  "run_id": "29851484849",
+  "fonte": "deploy",
+  "quando": "2026-07-21T14:16:24.114274-03:00",
+  "marcas": [
+   "sundek",
+   "vilebrequin"
+  ],
+  "run_url": "https://github.com/danielreinaux/didi/actions/runs/29851484849",
+  "status": "ok",
+  "jobs": [
+   {
+    "name": "sundek",
+    "conclusion": "success",
+    "url": "https://github.com/danielreinaux/didi/actions/runs/29851484849/job/88705182861"
+   },
+   {
+    "name": "ville",
+    "conclusion": "success",
+    "url": "https://github.com/danielreinaux/didi/actions/runs/29851484849/job/88705183199"
+   },
+   {
+    "name": "deploy",
+    "conclusion": null,
+    "url": "https://github.com/danielreinaux/didi/actions/runs/29851484849/job/88707560054"
+   }
+  ],
+  "resumo": {
+   "candidatos": 88,
+   "compraveis": 57,
+   "barganha": 31,
+   "descartados": 3184,
+   "nao_classificados": 96,
+   "novos": 49,
+   "ativos": 3368,
+   "custo_usd": 0.92175,
+   "custo_brl": 4.61,
+   "tok_in": 1105169,
+   "tok_out": 11657,
+   "calls": 146
+  }
+ },
+ {
   "run_id": "29850241020",
   "fonte": "deploy",
   "quando": "2026-07-21T14:00:05.946730-03:00",
@@ -8324,47 +8366,5 @@
    "tok_out": 29236,
    "calls": 343
   }
- },
- {
-  "run_id": "29130762194",
-  "fonte": "deploy",
-  "quando": "2026-07-10T20:48:50.370000-03:00",
-  "marcas": [
-   "sundek",
-   "vilebrequin"
-  ],
-  "resumo": {
-   "candidatos": 58,
-   "compraveis": 36,
-   "barganha": 22,
-   "descartados": 2007,
-   "nao_classificados": 215,
-   "novos": 9,
-   "ativos": 2280,
-   "custo_usd": 0.098764,
-   "custo_brl": 0.49,
-   "tok_in": 445214,
-   "tok_out": 4932,
-   "calls": 13
-  },
-  "run_url": "https://github.com/danielreinaux/didi/actions/runs/29130762194",
-  "status": "ok",
-  "jobs": [
-   {
-    "name": "sundek",
-    "conclusion": "success",
-    "url": "https://github.com/danielreinaux/didi/actions/runs/29130762194/job/86485524839"
-   },
-   {
-    "name": "ville",
-    "conclusion": "success",
-    "url": "https://github.com/danielreinaux/didi/actions/runs/29130762194/job/86485524870"
-   },
-   {
-    "name": "deploy",
-    "conclusion": "success",
-    "url": "https://github.com/danielreinaux/didi/actions/runs/29130762194/job/86486783614"
-   }
-  ]
  }
 ]
