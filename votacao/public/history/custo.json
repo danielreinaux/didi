@@ -1,35 +1,6 @@
 {
- "gerado_em": "2026-07-22T14:18:26.838941-03:00",
+ "gerado_em": "2026-07-22T15:02:02.929342-03:00",
  "rodadas": [
-  {
-   "run_id": "29172370592",
-   "quando": "2026-07-11T20:47:07.853818-03:00",
-   "status": "ok",
-   "custo_brl": 1.84,
-   "custo_usd": 0.367541,
-   "calls": 71,
-   "tok_in": 408731,
-   "tok_out": 4475,
-   "novos": 6,
-   "candidatos": 54,
-   "ativos": 2403,
-   "descartados": 2190,
-   "sundek_usd": 0.031302,
-   "ville_usd": 0.336239,
-   "etapas": {
-    "sundek:brand": 0.007774,
-    "sundek:brand_4o_recheck": 0.017773,
-    "sundek:classify_tipo": 0.005756,
-    "ville:marca": 0.050643,
-    "ville:tartaruga": 0.174862,
-    "ville:crop_localizar": 0.004044,
-    "ville:cor": 0.008949,
-    "ville:etiqueta": 0.008503,
-    "ville:autenticidade": 0.05987,
-    "ville:cordao": 0.009593,
-    "ville:fecho": 0.019775
-   }
-  },
   {
    "run_id": "29190175888",
    "quando": "2026-07-12T08:23:59.355144-03:00",
@@ -6988,6 +6959,41 @@
     "ville:fecho": 0.03432,
     "ville:crop_localizar": 0.008747,
     "ville:autenticidade": 0.07813
+   }
+  },
+  {
+   "run_id": "29944203352",
+   "quando": "2026-07-22T15:01:59.630845-03:00",
+   "status": "ok",
+   "custo_brl": 4.07,
+   "custo_usd": 0.814574,
+   "calls": 137,
+   "tok_in": 1129471,
+   "tok_out": 9720,
+   "novos": 48,
+   "candidatos": 93,
+   "ativos": 3469,
+   "descartados": 3285,
+   "sundek_usd": 0.312235,
+   "ville_usd": 0.502339,
+   "etapas": {
+    "sundek:brand": 0.030123,
+    "sundek:classify_tipo": 0.030244,
+    "sundek:color": 0.00749,
+    "sundek:listra": 0.175768,
+    "sundek:elastico": 0.026378,
+    "sundek:crop_localizar": 0.004405,
+    "sundek:bolso": 0.020473,
+    "sundek:etiqueta": 0.003606,
+    "sundek:reclassify_gpt4o": 0.01375,
+    "ville:marca": 0.06619,
+    "ville:tartaruga": 0.24526,
+    "ville:cor": 0.015996,
+    "ville:etiqueta": 0.015384,
+    "ville:crop_localizar": 0.010101,
+    "ville:cordao": 0.017095,
+    "ville:autenticidade": 0.097737,
+    "ville:fecho": 0.034575
    }
   }
  ]
