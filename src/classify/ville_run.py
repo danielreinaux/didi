@@ -20,6 +20,7 @@ import sys
 import time
 import threading
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from datetime import datetime, timezone
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -117,18 +118,33 @@ def _log(msg: str) -> None:
         print(msg, flush=True)
 
 
-def _salvar(resultados: list, itens_orig: list, ja_processados: dict, path: Path) -> None:
+def _salvar(resultados: list, itens_orig: list, acervo_previo: dict, path: Path) -> None:
+    """Acumula por id: acervo prévio + resultados desta rodada (que sobrescrevem).
+    Itens já vistos e AUSENTES do scrape atual são PRESERVADOS — nada se perde
+    (espelha o Sundek). Antes a Ville reescrevia só o scrape atual, então item que
+    saía da janela de raspagem sumia do acervo mesmo ainda à venda, e o passo
+    `verifica_vendidos --marca ville` ficava sem candidatos pra revisitar/marcar.
+    Marca status/timestamps; reaparecer no scrape reativa (status='ativo')."""
     por_idx = {i: r for i, r in resultados}
-    out = []
+    agora = datetime.now(timezone.utc).isoformat()
+    acervo = dict(acervo_previo)  # id -> item (cópia)
     for i, item in enumerate(itens_orig):
+        rid = item.get("id")
+        if not rid:
+            continue  # stub de scrape sem id — não acumula
         if i in por_idx:
-            out.append(por_idx[i])
-        elif item.get("id") in ja_processados:
-            out.append(ja_processados[item["id"]])
+            novo = por_idx[i]
+        elif rid in acervo:
+            novo = acervo[rid]  # cacheado (fotos iguais) — mantém classificação
         else:
-            out.append(item)
+            novo = item
+        prev = acervo.get(rid, {})
+        novo["primeiro_visto"] = prev.get("primeiro_visto") or prev.get("coletado_em") or agora
+        novo["ultimo_visto"] = agora
+        novo["status"] = "ativo"  # reapareceu no scrape → ativo
+        acervo[rid] = novo
     with _print_lock:
-        path.write_text(json.dumps(out, indent=2, ensure_ascii=False), encoding="utf-8")
+        path.write_text(json.dumps(list(acervo.values()), indent=2, ensure_ascii=False), encoding="utf-8")
 
 
 def _processar(item: dict, idx: str, total: int) -> tuple[dict, int, int]:
@@ -338,14 +354,24 @@ def main() -> None:
     _reset_cost()  # zera o tracker global antes de acumular o custo REAL por etapa/modelo
 
     checkpoint_path = DATA / "coleta-ville-classificada.json"
+    # acervo_previo = TODOS já vistos (por id), pra acumular no _salvar e não perder
+    # itens que sumiram do scrape. ja_processados = subconjunto já classificado, só
+    # pra pular quem não precisa reclassificar (espelha o run.py do Sundek).
+    acervo_previo: dict[str, dict] = {}
     ja_processados: dict[str, dict] = {}
     if checkpoint_path.exists():
         try:
             for x in json.loads(checkpoint_path.read_text(encoding="utf-8")):
-                if x.get("id") and (x.get("classificacao") or {}).get("tipo") not in (None, "erro"):
-                    ja_processados[x["id"]] = x
+                rid = x.get("id")
+                if not rid:
+                    continue
+                acervo_previo[rid] = x
+                if (x.get("classificacao") or {}).get("tipo") not in (None, "erro"):
+                    ja_processados[rid] = x
         except Exception:
             pass
+    if acervo_previo:
+        print(f"  acervo acumulado: {len(acervo_previo)} itens já conhecidos.")
 
     pendentes = [(i, item) for i, item in enumerate(itens) if item.get("id") not in ja_processados]
     pulados = total - len(pendentes)
@@ -371,9 +397,9 @@ def main() -> None:
                 output_tokens += out_t
                 concluidos += 1
                 if concluidos % 10 == 0:
-                    _salvar(resultados, itens, ja_processados, checkpoint_path)
+                    _salvar(resultados, itens, acervo_previo, checkpoint_path)
 
-    _salvar(resultados, itens, ja_processados, checkpoint_path)
+    _salvar(resultados, itens, acervo_previo, checkpoint_path)
 
     # Pass final: garante que TODO item tenha score (inclusive os cacheados de
     # rodadas antigas, que foram pulados e podem não ter passado pelo score_ville).
