@@ -1,41 +1,6 @@
 {
- "gerado_em": "2026-07-26T08:57:58.795423-03:00",
+ "gerado_em": "2026-07-26T09:29:24.335037-03:00",
  "rodadas": [
-  {
-   "run_id": "29449704463",
-   "quando": "2026-07-15T17:57:38.578832-03:00",
-   "status": "ok",
-   "custo_brl": 2.84,
-   "custo_usd": 0.56711,
-   "calls": 89,
-   "tok_in": 675364,
-   "tok_out": 6572,
-   "novos": 20,
-   "candidatos": 82,
-   "ativos": 2815,
-   "descartados": 2614,
-   "sundek_usd": 0.228046,
-   "ville_usd": 0.339064,
-   "etapas": {
-    "sundek:brand": 0.011878,
-    "sundek:classify_tipo": 0.012354,
-    "sundek:color": 0.005612,
-    "sundek:listra": 0.137918,
-    "sundek:elastico": 0.02623,
-    "sundek:crop_localizar": 0.004404,
-    "sundek:bolso": 0.021275,
-    "sundek:etiqueta": 0.003603,
-    "sundek:reclassify_gpt4o": 0.004773,
-    "ville:marca": 0.054457,
-    "ville:tartaruga": 0.18648,
-    "ville:cor": 0.011226,
-    "ville:etiqueta": 0.010818,
-    "ville:cordao": 0.011949,
-    "ville:fecho": 0.02336,
-    "ville:crop_localizar": 0.003924,
-    "ville:autenticidade": 0.03685
-   }
-  },
   {
    "run_id": "29452580708",
    "quando": "2026-07-15T18:46:53.927397-03:00",
@@ -6966,6 +6931,35 @@
     "ville:etiqueta": 0.001803,
     "ville:cordao": 0.001989,
     "ville:fecho": 0.003895
+   }
+  },
+  {
+   "run_id": "30201780638",
+   "quando": "2026-07-26T09:29:20.766627-03:00",
+   "status": "ok",
+   "custo_brl": 4.26,
+   "custo_usd": 0.851134,
+   "calls": 110,
+   "tok_in": 1110238,
+   "tok_out": 11105,
+   "novos": 59,
+   "candidatos": 123,
+   "ativos": 3900,
+   "descartados": 3706,
+   "sundek_usd": 0.833264,
+   "ville_usd": 0.01787,
+   "etapas": {
+    "sundek:brand": 0.034752,
+    "sundek:classify_tipo": 0.036213,
+    "sundek:color": 0.023636,
+    "sundek:listra": 0.44627,
+    "sundek:elastico": 0.131137,
+    "sundek:crop_localizar": 0.01857,
+    "sundek:bolso": 0.099875,
+    "sundek:etiqueta": 0.016756,
+    "sundek:reclassify_gpt4o": 0.026055,
+    "ville:marca": 0.00605,
+    "ville:tartaruga": 0.01182
    }
   }
  ]
