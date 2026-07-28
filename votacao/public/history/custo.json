@@ -1,41 +1,6 @@
 {
- "gerado_em": "2026-07-27T20:52:12.310459-03:00",
+ "gerado_em": "2026-07-28T09:02:34.594709-03:00",
  "rodadas": [
-  {
-   "run_id": "29596756463",
-   "quando": "2026-07-17T13:46:49.544168-03:00",
-   "status": "ok",
-   "custo_brl": 5.45,
-   "custo_usd": 1.089633,
-   "calls": 176,
-   "tok_in": 1380183,
-   "tok_out": 14683,
-   "novos": 51,
-   "candidatos": 71,
-   "ativos": 2997,
-   "descartados": 2813,
-   "sundek_usd": 0.664926,
-   "ville_usd": 0.424707,
-   "etapas": {
-    "sundek:brand": 0.038552,
-    "sundek:classify_tipo": 0.039631,
-    "sundek:color": 0.020317,
-    "sundek:listra": 0.334245,
-    "sundek:elastico": 0.104525,
-    "sundek:crop_localizar": 0.014204,
-    "sundek:bolso": 0.082202,
-    "sundek:etiqueta": 0.013149,
-    "sundek:reclassify_gpt4o": 0.0181,
-    "ville:marca": 0.07638,
-    "ville:tartaruga": 0.268012,
-    "ville:cor": 0.010974,
-    "ville:etiqueta": 0.0105,
-    "ville:cordao": 0.011813,
-    "ville:fecho": 0.026165,
-    "ville:crop_localizar": 0.000922,
-    "ville:autenticidade": 0.01994
-   }
-  },
   {
    "run_id": "29598222375",
    "quando": "2026-07-17T14:10:30.069833-03:00",
@@ -6881,6 +6846,42 @@
     "ville:etiqueta": 0.000955,
     "ville:cordao": 0.001139,
     "ville:fecho": 0.003473
+   }
+  },
+  {
+   "run_id": "30356339762",
+   "quando": "2026-07-28T09:02:30.851672-03:00",
+   "status": "ok",
+   "custo_brl": 5.94,
+   "custo_usd": 1.187943,
+   "calls": 177,
+   "tok_in": 1755345,
+   "tok_out": 15327,
+   "novos": 53,
+   "candidatos": 133,
+   "ativos": 4165,
+   "descartados": 3965,
+   "sundek_usd": 0.9917,
+   "ville_usd": 0.196243,
+   "etapas": {
+    "sundek:brand": 0.062443,
+    "sundek:classify_tipo": 0.060277,
+    "sundek:color": 0.031548,
+    "sundek:listra": 0.537192,
+    "sundek:elastico": 0.130715,
+    "sundek:crop_localizar": 0.016407,
+    "sundek:bolso": 0.091785,
+    "sundek:etiqueta": 0.014953,
+    "sundek:brand_4o_recheck": 0.009868,
+    "sundek:reclassify_gpt4o": 0.03651,
+    "ville:marca": 0.017327,
+    "ville:tartaruga": 0.058112,
+    "ville:crop_localizar": 0.007048,
+    "ville:autenticidade": 0.076993,
+    "ville:cor": 0.007057,
+    "ville:etiqueta": 0.00679,
+    "ville:cordao": 0.00754,
+    "ville:fecho": 0.015375
    }
   }
  ]
