@@ -1,41 +1,6 @@
 {
- "gerado_em": "2026-07-29T10:23:03.122380-03:00",
+ "gerado_em": "2026-07-29T10:55:03.635908-03:00",
  "rodadas": [
-  {
-   "run_id": "29652500304",
-   "quando": "2026-07-18T13:57:12.276860-03:00",
-   "status": "ok",
-   "custo_brl": 5.05,
-   "custo_usd": 1.010718,
-   "calls": 172,
-   "tok_in": 1340564,
-   "tok_out": 13692,
-   "novos": 45,
-   "candidatos": 73,
-   "ativos": 3077,
-   "descartados": 2893,
-   "sundek_usd": 0.565083,
-   "ville_usd": 0.445635,
-   "etapas": {
-    "sundek:brand": 0.032766,
-    "sundek:classify_tipo": 0.034309,
-    "sundek:color": 0.015724,
-    "sundek:listra": 0.280532,
-    "sundek:elastico": 0.09189,
-    "sundek:crop_localizar": 0.011154,
-    "sundek:bolso": 0.07031,
-    "sundek:etiqueta": 0.010487,
-    "sundek:reclassify_gpt4o": 0.01791,
-    "ville:marca": 0.066425,
-    "ville:tartaruga": 0.233095,
-    "ville:cor": 0.015978,
-    "ville:etiqueta": 0.015378,
-    "ville:cordao": 0.017078,
-    "ville:fecho": 0.03466,
-    "ville:crop_localizar": 0.00527,
-    "ville:autenticidade": 0.05775
-   }
-  },
   {
    "run_id": "29654322769",
    "quando": "2026-07-18T14:50:21.327780-03:00",
@@ -6836,6 +6801,35 @@
     "ville:etiqueta": 0.001803,
     "ville:cordao": 0.001995,
     "ville:fecho": 0.003885
+   }
+  },
+  {
+   "run_id": "30457297604",
+   "quando": "2026-07-29T10:54:59.812473-03:00",
+   "status": "ok",
+   "custo_brl": 2.46,
+   "custo_usd": 0.491268,
+   "calls": 73,
+   "tok_in": 762701,
+   "tok_out": 6773,
+   "novos": 47,
+   "candidatos": 116,
+   "ativos": 4232,
+   "descartados": 4049,
+   "sundek_usd": 0.477243,
+   "ville_usd": 0.014025,
+   "etapas": {
+    "sundek:brand": 0.035187,
+    "sundek:classify_tipo": 0.031746,
+    "sundek:color": 0.015555,
+    "sundek:listra": 0.263157,
+    "sundek:elastico": 0.051933,
+    "sundek:crop_localizar": 0.006248,
+    "sundek:bolso": 0.040265,
+    "sundek:etiqueta": 0.005938,
+    "sundek:reclassify_gpt4o": 0.027215,
+    "ville:marca": 0.002687,
+    "ville:tartaruga": 0.011338
    }
   }
  ]
