@@ -1,41 +1,6 @@
 {
- "gerado_em": "2026-08-15T16:10:56.173741-03:00",
+ "gerado_em": "2026-08-15T16:48:14.898762-03:00",
  "rodadas": [
-  {
-   "run_id": "31003061562",
-   "quando": "2026-08-05T09:05:38.469592-03:00",
-   "status": "ok",
-   "custo_brl": 7.67,
-   "custo_usd": 1.533046,
-   "calls": 217,
-   "tok_in": 2196444,
-   "tok_out": 20185,
-   "novos": 51,
-   "candidatos": 104,
-   "ativos": 4907,
-   "descartados": 4162,
-   "sundek_usd": 1.368578,
-   "ville_usd": 0.164468,
-   "etapas": {
-    "sundek:brand": 0.075473,
-    "sundek:classify_tipo": 0.078614,
-    "sundek:color": 0.037327,
-    "sundek:listra": 0.748355,
-    "sundek:elastico": 0.196385,
-    "sundek:crop_localizar": 0.026109,
-    "sundek:bolso": 0.142685,
-    "sundek:etiqueta": 0.023537,
-    "sundek:reclassify_gpt4o": 0.040092,
-    "ville:marca": 0.017935,
-    "ville:tartaruga": 0.069895,
-    "ville:crop_localizar": 0.003072,
-    "ville:autenticidade": 0.036778,
-    "ville:cor": 0.007062,
-    "ville:etiqueta": 0.006793,
-    "ville:cordao": 0.007538,
-    "ville:fecho": 0.015395
-   }
-  },
   {
    "run_id": "31005595542",
    "quando": "2026-08-05T09:39:56.851901-03:00",
@@ -5943,6 +5908,35 @@
     "sundek:crop_localizar": 0.005752,
     "sundek:bolso": 0.031302,
     "sundek:etiqueta": 0.004982
+   }
+  },
+  {
+   "run_id": "31904425567",
+   "quando": "2026-08-15T16:48:10.076069-03:00",
+   "status": "ok",
+   "custo_brl": 0.65,
+   "custo_usd": 0.129687,
+   "calls": 25,
+   "tok_in": 255445,
+   "tok_out": 2088,
+   "novos": 19,
+   "candidatos": 127,
+   "ativos": 5496,
+   "descartados": 5071,
+   "sundek_usd": 0.099652,
+   "ville_usd": 0.030035,
+   "etapas": {
+    "sundek:brand": 0.014147,
+    "sundek:classify_tipo": 0.012353,
+    "sundek:color": 0.00374,
+    "sundek:listra": 0.038555,
+    "sundek:elastico": 0.013262,
+    "sundek:crop_localizar": 0.001774,
+    "sundek:bolso": 0.009577,
+    "sundek:etiqueta": 0.001804,
+    "sundek:reclassify_gpt4o": 0.00444,
+    "ville:marca": 0.006268,
+    "ville:tartaruga": 0.023768
    }
   }
  ]
