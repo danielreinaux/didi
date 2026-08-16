@@ -1,41 +1,6 @@
 {
- "gerado_em": "2026-08-16T17:19:43.665336-03:00",
+ "gerado_em": "2026-08-16T18:06:48.741561-03:00",
  "rodadas": [
-  {
-   "run_id": "31113557020",
-   "quando": "2026-08-06T12:13:52.801931-03:00",
-   "status": "ok",
-   "custo_brl": 4.27,
-   "custo_usd": 0.853148,
-   "calls": 120,
-   "tok_in": 1108365,
-   "tok_out": 11244,
-   "novos": 31,
-   "candidatos": 119,
-   "ativos": 5063,
-   "descartados": 4424,
-   "sundek_usd": 0.745522,
-   "ville_usd": 0.107626,
-   "etapas": {
-    "sundek:brand": 0.03621,
-    "sundek:classify_tipo": 0.035382,
-    "sundek:color": 0.01949,
-    "sundek:listra": 0.39324,
-    "sundek:elastico": 0.117575,
-    "sundek:crop_localizar": 0.01595,
-    "sundek:bolso": 0.091415,
-    "sundek:etiqueta": 0.014529,
-    "sundek:reclassify_gpt4o": 0.02173,
-    "ville:marca": 0.01089,
-    "ville:tartaruga": 0.0456,
-    "ville:crop_localizar": 0.001796,
-    "ville:autenticidade": 0.036165,
-    "ville:cor": 0.002043,
-    "ville:etiqueta": 0.001903,
-    "ville:cordao": 0.002284,
-    "ville:fecho": 0.006945
-   }
-  },
   {
    "run_id": "31132350852",
    "quando": "2026-08-06T21:01:42.298600-03:00",
@@ -5904,6 +5869,35 @@
     "sundek:bolso": 0.010643,
     "sundek:etiqueta": 0.001802,
     "sundek:reclassify_gpt4o": 0.004707
+   }
+  },
+  {
+   "run_id": "31972028541",
+   "quando": "2026-08-16T18:06:43.621614-03:00",
+   "status": "ok",
+   "custo_brl": 1.47,
+   "custo_usd": 0.293503,
+   "calls": 39,
+   "tok_in": 378796,
+   "tok_out": 3915,
+   "novos": 17,
+   "candidatos": 129,
+   "ativos": 5623,
+   "descartados": 5201,
+   "sundek_usd": 0.278608,
+   "ville_usd": 0.014895,
+   "etapas": {
+    "sundek:brand": 0.014267,
+    "sundek:classify_tipo": 0.012573,
+    "sundek:color": 0.006635,
+    "sundek:listra": 0.154515,
+    "sundek:elastico": 0.039515,
+    "sundek:crop_localizar": 0.005751,
+    "sundek:bolso": 0.031395,
+    "sundek:etiqueta": 0.004985,
+    "sundek:reclassify_gpt4o": 0.008972,
+    "ville:marca": 0.003147,
+    "ville:tartaruga": 0.011747
    }
   }
  ]
