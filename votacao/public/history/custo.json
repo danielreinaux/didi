@@ -1,35 +1,6 @@
 {
- "gerado_em": "2026-08-16T12:08:42.891783-03:00",
+ "gerado_em": "2026-08-16T12:49:04.869957-03:00",
  "rodadas": [
-  {
-   "run_id": "31050610405",
-   "quando": "2026-08-05T19:04:51.036051-03:00",
-   "status": "ok",
-   "custo_brl": 1.62,
-   "custo_usd": 0.323228,
-   "calls": 39,
-   "tok_in": 418984,
-   "tok_out": 3875,
-   "novos": 10,
-   "candidatos": 120,
-   "ativos": 5025,
-   "descartados": 4353,
-   "sundek_usd": 0.308308,
-   "ville_usd": 0.01492,
-   "etapas": {
-    "sundek:brand": 0.014562,
-    "sundek:classify_tipo": 0.013197,
-    "sundek:color": 0.00936,
-    "sundek:listra": 0.175317,
-    "sundek:elastico": 0.03994,
-    "sundek:crop_localizar": 0.006173,
-    "sundek:bolso": 0.03054,
-    "sundek:etiqueta": 0.005409,
-    "sundek:reclassify_gpt4o": 0.01381,
-    "ville:marca": 0.003085,
-    "ville:tartaruga": 0.011835
-   }
-  },
   {
    "run_id": "31052890053",
    "quando": "2026-08-05T19:39:04.770962-03:00",
@@ -5898,6 +5869,41 @@
     "sundek:bolso": 0.06295,
     "sundek:etiqueta": 0.010396,
     "sundek:reclassify_gpt4o": 0.02672
+   }
+  },
+  {
+   "run_id": "31956250986",
+   "quando": "2026-08-16T12:48:59.782823-03:00",
+   "status": "ok",
+   "custo_brl": 1.64,
+   "custo_usd": 0.327544,
+   "calls": 60,
+   "tok_in": 594369,
+   "tok_out": 4593,
+   "novos": 36,
+   "candidatos": 131,
+   "ativos": 5595,
+   "descartados": 5168,
+   "sundek_usd": 0.256073,
+   "ville_usd": 0.071471,
+   "etapas": {
+    "sundek:brand": 0.025262,
+    "sundek:classify_tipo": 0.026413,
+    "sundek:color": 0.008936,
+    "sundek:listra": 0.147285,
+    "sundek:elastico": 0.012925,
+    "sundek:crop_localizar": 0.00135,
+    "sundek:bolso": 0.01017,
+    "sundek:etiqueta": 0.001379,
+    "sundek:reclassify_gpt4o": 0.022353,
+    "ville:marca": 0.00608,
+    "ville:tartaruga": 0.02336,
+    "ville:crop_localizar": 0.002199,
+    "ville:cor": 0.003744,
+    "ville:etiqueta": 0.003607,
+    "ville:cordao": 0.00398,
+    "ville:autenticidade": 0.020708,
+    "ville:fecho": 0.007793
    }
   }
  ]
