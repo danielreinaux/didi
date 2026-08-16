@@ -1,42 +1,6 @@
 {
- "gerado_em": "2026-08-16T18:06:48.741561-03:00",
+ "gerado_em": "2026-08-16T18:45:37.929418-03:00",
  "rodadas": [
-  {
-   "run_id": "31132350852",
-   "quando": "2026-08-06T21:01:42.298600-03:00",
-   "status": "ok",
-   "custo_brl": 6.38,
-   "custo_usd": 1.275739,
-   "calls": 194,
-   "tok_in": 1954123,
-   "tok_out": 17180,
-   "novos": 52,
-   "candidatos": 119,
-   "ativos": 5083,
-   "descartados": 4466,
-   "sundek_usd": 1.110195,
-   "ville_usd": 0.165544,
-   "etapas": {
-    "sundek:brand": 0.075755,
-    "sundek:classify_tipo": 0.075828,
-    "sundek:color": 0.034269,
-    "sundek:listra": 0.577538,
-    "sundek:elastico": 0.1445,
-    "sundek:crop_localizar": 0.019448,
-    "sundek:bolso": 0.103182,
-    "sundek:etiqueta": 0.017603,
-    "sundek:brand_4o_recheck": 0.011738,
-    "sundek:reclassify_gpt4o": 0.050335,
-    "ville:marca": 0.0224,
-    "ville:tartaruga": 0.09192,
-    "ville:cor": 0.005786,
-    "ville:etiqueta": 0.005514,
-    "ville:cordao": 0.006264,
-    "ville:fecho": 0.01473,
-    "ville:crop_localizar": 0.000898,
-    "ville:autenticidade": 0.018032
-   }
-  },
   {
    "run_id": "31134845925",
    "quando": "2026-08-06T21:41:09.654735-03:00",
@@ -5898,6 +5862,35 @@
     "sundek:reclassify_gpt4o": 0.008972,
     "ville:marca": 0.003147,
     "ville:tartaruga": 0.011747
+   }
+  },
+  {
+   "run_id": "31973941047",
+   "quando": "2026-08-16T18:45:32.517858-03:00",
+   "status": "ok",
+   "custo_brl": 2.38,
+   "custo_usd": 0.47643,
+   "calls": 57,
+   "tok_in": 597264,
+   "tok_out": 6012,
+   "novos": 22,
+   "candidatos": 129,
+   "ativos": 5622,
+   "descartados": 5200,
+   "sundek_usd": 0.461905,
+   "ville_usd": 0.014525,
+   "etapas": {
+    "sundek:brand": 0.019639,
+    "sundek:classify_tipo": 0.018537,
+    "sundek:color": 0.012244,
+    "sundek:listra": 0.253227,
+    "sundek:elastico": 0.078603,
+    "sundek:crop_localizar": 0.009724,
+    "sundek:bolso": 0.052355,
+    "sundek:etiqueta": 0.00859,
+    "sundek:reclassify_gpt4o": 0.008985,
+    "ville:marca": 0.002982,
+    "ville:tartaruga": 0.011543
    }
   }
  ]
