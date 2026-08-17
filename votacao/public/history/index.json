@@ -1,5 +1,47 @@
 [
  {
+  "run_id": "32074948633",
+  "fonte": "deploy",
+  "quando": "2026-08-17T19:59:24.404187-03:00",
+  "marcas": [
+   "sundek",
+   "vilebrequin"
+  ],
+  "run_url": "https://github.com/danielreinaux/didi/actions/runs/32074948633",
+  "status": "erro",
+  "jobs": [
+   {
+    "name": "ville",
+    "conclusion": "cancelled",
+    "url": "https://github.com/danielreinaux/didi/actions/runs/32074948633/job/95526019716"
+   },
+   {
+    "name": "sundek",
+    "conclusion": "success",
+    "url": "https://github.com/danielreinaux/didi/actions/runs/32074948633/job/95526020380"
+   },
+   {
+    "name": "deploy",
+    "conclusion": null,
+    "url": "https://github.com/danielreinaux/didi/actions/runs/32074948633/job/95536433508"
+   }
+  ],
+  "resumo": {
+   "candidatos": 132,
+   "compraveis": 87,
+   "barganha": 45,
+   "descartados": 5349,
+   "nao_classificados": 284,
+   "novos": 6,
+   "ativos": 5765,
+   "custo_usd": 0.120783,
+   "custo_brl": 0.6,
+   "tok_in": 181288,
+   "tok_out": 1706,
+   "calls": 19
+  }
+ },
+ {
   "run_id": "32072536815",
   "fonte": "deploy",
   "quando": "2026-08-17T19:13:34.135397-03:00",
@@ -8355,48 +8397,6 @@
    "tok_in": 21207,
    "tok_out": 219,
    "calls": 4
-  }
- },
- {
-  "run_id": "31222007792",
-  "fonte": "deploy",
-  "quando": "2026-08-07T19:07:18.172433-03:00",
-  "marcas": [
-   "sundek",
-   "vilebrequin"
-  ],
-  "run_url": "https://github.com/danielreinaux/didi/actions/runs/31222007792",
-  "status": "ok",
-  "jobs": [
-   {
-    "name": "ville",
-    "conclusion": "success",
-    "url": "https://github.com/danielreinaux/didi/actions/runs/31222007792/job/93008396445"
-   },
-   {
-    "name": "sundek",
-    "conclusion": "success",
-    "url": "https://github.com/danielreinaux/didi/actions/runs/31222007792/job/93008396507"
-   },
-   {
-    "name": "deploy",
-    "conclusion": null,
-    "url": "https://github.com/danielreinaux/didi/actions/runs/31222007792/job/93010092712"
-   }
-  ],
-  "resumo": {
-   "candidatos": 115,
-   "compraveis": 82,
-   "barganha": 33,
-   "descartados": 4494,
-   "nao_classificados": 435,
-   "novos": 9,
-   "ativos": 5044,
-   "custo_usd": 0.141346,
-   "custo_brl": 0.71,
-   "tok_in": 185598,
-   "tok_out": 1510,
-   "calls": 15
   }
  }
 ]
