@@ -1,5 +1,47 @@
 [
  {
+  "run_id": "32170433135",
+  "fonte": "deploy",
+  "quando": "2026-08-18T18:21:21.866567-03:00",
+  "marcas": [
+   "sundek",
+   "vilebrequin"
+  ],
+  "run_url": "https://github.com/danielreinaux/didi/actions/runs/32170433135",
+  "status": "erro",
+  "jobs": [
+   {
+    "name": "sundek",
+    "conclusion": "cancelled",
+    "url": "https://github.com/danielreinaux/didi/actions/runs/32170433135/job/95820018413"
+   },
+   {
+    "name": "ville",
+    "conclusion": "cancelled",
+    "url": "https://github.com/danielreinaux/didi/actions/runs/32170433135/job/95820018538"
+   },
+   {
+    "name": "deploy",
+    "conclusion": null,
+    "url": "https://github.com/danielreinaux/didi/actions/runs/32170433135/job/95873536435"
+   }
+  ],
+  "resumo": {
+   "candidatos": 134,
+   "compraveis": 90,
+   "barganha": 44,
+   "descartados": 5336,
+   "nao_classificados": 267,
+   "novos": 1,
+   "ativos": 5737,
+   "custo_usd": 0.490032,
+   "custo_brl": 2.45,
+   "tok_in": 646140,
+   "tok_out": 6241,
+   "calls": 60
+  }
+ },
+ {
   "run_id": "32180834914",
   "fonte": "deploy",
   "quando": "2026-08-18T17:59:13.014737-03:00",
@@ -8353,48 +8395,6 @@
    "custo_usd": 0.00227,
    "custo_brl": 0.01,
    "tok_in": 14811,
-   "tok_out": 81,
-   "calls": 1
-  }
- },
- {
-  "run_id": "31276491702",
-  "fonte": "deploy",
-  "quando": "2026-08-08T17:27:09.897329-03:00",
-  "marcas": [
-   "sundek",
-   "vilebrequin"
-  ],
-  "run_url": "https://github.com/danielreinaux/didi/actions/runs/31276491702",
-  "status": "ok",
-  "jobs": [
-   {
-    "name": "ville",
-    "conclusion": "success",
-    "url": "https://github.com/danielreinaux/didi/actions/runs/31276491702/job/93150756420"
-   },
-   {
-    "name": "sundek",
-    "conclusion": "success",
-    "url": "https://github.com/danielreinaux/didi/actions/runs/31276491702/job/93150756482"
-   },
-   {
-    "name": "deploy",
-    "conclusion": null,
-    "url": "https://github.com/danielreinaux/didi/actions/runs/31276491702/job/93151780166"
-   }
-  ],
-  "resumo": {
-   "candidatos": 103,
-   "compraveis": 72,
-   "barganha": 31,
-   "descartados": 4409,
-   "nao_classificados": 408,
-   "novos": 3,
-   "ativos": 4920,
-   "custo_usd": 0.00227,
-   "custo_brl": 0.01,
-   "tok_in": 14808,
    "tok_out": 81,
    "calls": 1
   }
