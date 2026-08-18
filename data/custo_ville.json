@@ -1,5 +1,48 @@
 {
-  "por_etapa": {},
-  "duracao_s": 0.3,
-  "itens_processados": 2
+  "por_etapa": {
+    "marca": {
+      "gpt-4o": {
+        "in": 2576,
+        "out": 183,
+        "calls": 3
+      }
+    },
+    "tartaruga": {
+      "gpt-4o": {
+        "in": 12608,
+        "out": 276,
+        "calls": 3
+      }
+    },
+    "cor": {
+      "gpt-4o-mini": {
+        "in": 9528,
+        "out": 31,
+        "calls": 1
+      }
+    },
+    "etiqueta": {
+      "gpt-4o-mini": {
+        "in": 9087,
+        "out": 29,
+        "calls": 1
+      }
+    },
+    "cordao": {
+      "gpt-4o-mini": {
+        "in": 10261,
+        "out": 51,
+        "calls": 1
+      }
+    },
+    "fecho": {
+      "gpt-4o": {
+        "in": 1280,
+        "out": 53,
+        "calls": 1
+      }
+    }
+  },
+  "duracao_s": 14.9,
+  "itens_processados": 4
 }
