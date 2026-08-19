@@ -1,5 +1,62 @@
 {
-  "por_etapa": {},
-  "duracao_s": 0.2,
-  "itens_processados": 0
+  "por_etapa": {
+    "marca": {
+      "gpt-4o": {
+        "in": 2731,
+        "out": 219,
+        "calls": 3
+      }
+    },
+    "tartaruga": {
+      "gpt-4o": {
+        "in": 12763,
+        "out": 294,
+        "calls": 3
+      }
+    },
+    "crop_localizar": {
+      "gpt-4o-mini": {
+        "in": 5958,
+        "out": 7,
+        "calls": 1
+      }
+    },
+    "autenticidade": {
+      "gpt-4o": {
+        "in": 6962,
+        "out": 83,
+        "calls": 1
+      }
+    },
+    "cor": {
+      "gpt-4o-mini": {
+        "in": 6687,
+        "out": 35,
+        "calls": 1
+      }
+    },
+    "etiqueta": {
+      "gpt-4o-mini": {
+        "in": 6241,
+        "out": 29,
+        "calls": 1
+      }
+    },
+    "cordao": {
+      "gpt-4o-mini": {
+        "in": 7415,
+        "out": 60,
+        "calls": 1
+      }
+    },
+    "fecho": {
+      "gpt-4o": {
+        "in": 1182,
+        "out": 53,
+        "calls": 1
+      }
+    }
+  },
+  "duracao_s": 19.6,
+  "itens_processados": 3
 }
