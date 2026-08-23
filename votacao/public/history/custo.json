@@ -1,42 +1,6 @@
 {
- "gerado_em": "2026-08-23T11:23:06.091205-03:00",
+ "gerado_em": "2026-08-23T12:12:24.964241-03:00",
  "rodadas": [
-  {
-   "run_id": "31716350147",
-   "quando": "2026-08-13T12:47:41.190439-03:00",
-   "status": "ok",
-   "custo_brl": 1.58,
-   "custo_usd": 0.315029,
-   "calls": 61,
-   "tok_in": 584595,
-   "tok_out": 4764,
-   "novos": 43,
-   "candidatos": 129,
-   "ativos": 5245,
-   "descartados": 4794,
-   "sundek_usd": 0.238358,
-   "ville_usd": 0.076671,
-   "etapas": {
-    "sundek:brand": 0.032624,
-    "sundek:classify_tipo": 0.025348,
-    "sundek:color": 0.008503,
-    "sundek:brand_4o_recheck": 0.012003,
-    "sundek:listra": 0.108692,
-    "sundek:elastico": 0.02571,
-    "sundek:crop_localizar": 0.000925,
-    "sundek:bolso": 0.009975,
-    "sundek:etiqueta": 0.000953,
-    "sundek:reclassify_gpt4o": 0.013625,
-    "ville:marca": 0.009378,
-    "ville:tartaruga": 0.035628,
-    "ville:crop_localizar": 0.002199,
-    "ville:autenticidade": 0.019887,
-    "ville:cor": 0.001871,
-    "ville:etiqueta": 0.001803,
-    "ville:cordao": 0.001993,
-    "ville:fecho": 0.003912
-   }
-  },
   {
    "run_id": "31719360783",
    "quando": "2026-08-13T13:21:35.068412-03:00",
@@ -5968,6 +5932,39 @@
     "sundek:reclassify_gpt4o": 0.0178,
     "ville:marca": 0.002882,
     "ville:tartaruga": 0.011683
+   }
+  },
+  {
+   "run_id": "32647098163",
+   "quando": "2026-08-23T12:12:19.529146-03:00",
+   "status": "ok",
+   "custo_brl": 1.86,
+   "custo_usd": 0.371635,
+   "calls": 60,
+   "tok_in": 560856,
+   "tok_out": 5692,
+   "novos": 28,
+   "candidatos": 171,
+   "ativos": 6398,
+   "descartados": 5971,
+   "sundek_usd": 0.332572,
+   "ville_usd": 0.039063,
+   "etapas": {
+    "sundek:brand": 0.02303,
+    "sundek:classify_tipo": 0.02173,
+    "sundek:color": 0.007658,
+    "sundek:listra": 0.171945,
+    "sundek:elastico": 0.052397,
+    "sundek:crop_localizar": 0.005825,
+    "sundek:bolso": 0.03996,
+    "sundek:etiqueta": 0.005506,
+    "sundek:reclassify_gpt4o": 0.00452,
+    "ville:marca": 0.00608,
+    "ville:tartaruga": 0.02344,
+    "ville:cor": 0.001869,
+    "ville:etiqueta": 0.001804,
+    "ville:cordao": 0.001988,
+    "ville:fecho": 0.003883
    }
   }
  ]
