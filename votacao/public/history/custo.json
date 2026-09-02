@@ -1,35 +1,6 @@
 {
- "gerado_em": "2026-09-02T11:10:53.700513-03:00",
+ "gerado_em": "2026-09-02T12:04:50.776843-03:00",
  "rodadas": [
-  {
-   "run_id": "32248928206",
-   "quando": "2026-08-19T08:54:34.354277-03:00",
-   "status": "ok",
-   "custo_brl": 1.8,
-   "custo_usd": 0.360913,
-   "calls": 57,
-   "tok_in": 579296,
-   "tok_out": 5412,
-   "novos": 53,
-   "candidatos": 137,
-   "ativos": 5802,
-   "descartados": 5400,
-   "sundek_usd": 0.346443,
-   "ville_usd": 0.01447,
-   "etapas": {
-    "sundek:brand": 0.03109,
-    "sundek:classify_tipo": 0.021088,
-    "sundek:color": 0.007646,
-    "sundek:listra": 0.17161,
-    "sundek:elastico": 0.052057,
-    "sundek:crop_localizar": 0.006674,
-    "sundek:bolso": 0.04123,
-    "sundek:etiqueta": 0.00636,
-    "sundek:reclassify_gpt4o": 0.008688,
-    "ville:marca": 0.002925,
-    "ville:tartaruga": 0.011545
-   }
-  },
   {
    "run_id": "32252229972",
    "quando": "2026-08-19T09:35:50.087702-03:00",
@@ -6034,6 +6005,42 @@
     "ville:cordao": 0.005554,
     "ville:fecho": 0.011515,
     "ville:autenticidade": 0.03925
+   }
+  },
+  {
+   "run_id": "33643695996",
+   "quando": "2026-09-02T12:04:44.686795-03:00",
+   "status": "ok",
+   "custo_brl": 3.6,
+   "custo_usd": 0.72071,
+   "calls": 104,
+   "tok_in": 1010048,
+   "tok_out": 9870,
+   "novos": 30,
+   "candidatos": 214,
+   "ativos": 7452,
+   "descartados": 7002,
+   "sundek_usd": 0.676139,
+   "ville_usd": 0.044571,
+   "etapas": {
+    "sundek:brand": 0.035875,
+    "sundek:classify_tipo": 0.0341,
+    "sundek:color": 0.020741,
+    "sundek:listra": 0.34782,
+    "sundek:elastico": 0.105003,
+    "sundek:crop_localizar": 0.012,
+    "sundek:bolso": 0.069847,
+    "sundek:etiqueta": 0.011343,
+    "sundek:brand_4o_recheck": 0.00802,
+    "sundek:reclassify_gpt4o": 0.03139,
+    "ville:marca": 0.003018,
+    "ville:tartaruga": 0.011638,
+    "ville:crop_localizar": 0.001749,
+    "ville:autenticidade": 0.01867,
+    "ville:cor": 0.001868,
+    "ville:etiqueta": 0.001804,
+    "ville:cordao": 0.001995,
+    "ville:fecho": 0.00383
    }
   }
  ]
