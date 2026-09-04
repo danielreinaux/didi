@@ -1,34 +1,6 @@
 {
- "gerado_em": "2026-09-04T14:59:30.482414-03:00",
+ "gerado_em": "2026-09-04T15:39:02.042278-03:00",
  "rodadas": [
-  {
-   "run_id": "32379888752",
-   "quando": "2026-08-20T11:34:49.411003-03:00",
-   "status": "ok",
-   "custo_brl": 2.93,
-   "custo_usd": 0.586753,
-   "calls": 73,
-   "tok_in": 742555,
-   "tok_out": 7496,
-   "novos": 27,
-   "candidatos": 147,
-   "ativos": 5938,
-   "descartados": 5532,
-   "sundek_usd": 0.586753,
-   "ville_usd": 0.0,
-   "etapas": {
-    "sundek:brand": 0.02473,
-    "sundek:classify_tipo": 0.025779,
-    "sundek:brand_4o_recheck": 0.019568,
-    "sundek:color": 0.016999,
-    "sundek:listra": 0.316685,
-    "sundek:elastico": 0.09148,
-    "sundek:crop_localizar": 0.009728,
-    "sundek:bolso": 0.050615,
-    "sundek:etiqueta": 0.008589,
-    "sundek:reclassify_gpt4o": 0.02258
-   }
-  },
   {
    "run_id": "32384991343",
    "quando": "2026-08-20T12:25:25.510464-03:00",
@@ -6041,6 +6013,42 @@
     "ville:etiqueta": 0.002855,
     "ville:cordao": 0.003431,
     "ville:fecho": 0.010428
+   }
+  },
+  {
+   "run_id": "33905970225",
+   "quando": "2026-09-04T15:38:55.928195-03:00",
+   "status": "ok",
+   "custo_brl": 2.6,
+   "custo_usd": 0.520282,
+   "calls": 93,
+   "tok_in": 731754,
+   "tok_out": 7836,
+   "novos": 45,
+   "candidatos": 221,
+   "ativos": 7532,
+   "descartados": 7078,
+   "sundek_usd": 0.403825,
+   "ville_usd": 0.116457,
+   "etapas": {
+    "sundek:brand": 0.025582,
+    "sundek:classify_tipo": 0.024516,
+    "sundek:color": 0.011573,
+    "sundek:listra": 0.196082,
+    "sundek:elastico": 0.064895,
+    "sundek:crop_localizar": 0.006747,
+    "sundek:bolso": 0.047992,
+    "sundek:etiqueta": 0.006457,
+    "sundek:brand_4o_recheck": 0.007072,
+    "sundek:reclassify_gpt4o": 0.012908,
+    "ville:marca": 0.010493,
+    "ville:tartaruga": 0.045323,
+    "ville:crop_localizar": 0.001796,
+    "ville:autenticidade": 0.036135,
+    "ville:cor": 0.003916,
+    "ville:etiqueta": 0.003706,
+    "ville:cordao": 0.004269,
+    "ville:fecho": 0.01082
    }
   }
  ]
