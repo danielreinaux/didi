@@ -1,35 +1,6 @@
 {
- "gerado_em": "2026-09-07T16:39:04.370943-03:00",
+ "gerado_em": "2026-09-07T17:19:07.910758-03:00",
  "rodadas": [
-  {
-   "run_id": "32568989716",
-   "quando": "2026-08-22T08:08:35.561849-03:00",
-   "status": "ok",
-   "custo_brl": 2.03,
-   "custo_usd": 0.405976,
-   "calls": 63,
-   "tok_in": 684870,
-   "tok_out": 5689,
-   "novos": 63,
-   "candidatos": 168,
-   "ativos": 6244,
-   "descartados": 5818,
-   "sundek_usd": 0.392366,
-   "ville_usd": 0.01361,
-   "etapas": {
-    "sundek:brand": 0.031934,
-    "sundek:classify_tipo": 0.028544,
-    "sundek:color": 0.012671,
-    "sundek:listra": 0.199983,
-    "sundek:elastico": 0.052145,
-    "sundek:crop_localizar": 0.007074,
-    "sundek:bolso": 0.039852,
-    "sundek:etiqueta": 0.006783,
-    "sundek:reclassify_gpt4o": 0.01338,
-    "ville:marca": 0.00248,
-    "ville:tartaruga": 0.01113
-   }
-  },
   {
    "run_id": "32570803262",
    "quando": "2026-08-22T08:47:46.839716-03:00",
@@ -6060,6 +6031,41 @@
     "sundek:reclassify_gpt4o": 0.01378,
     "ville:marca": 0.00322,
     "ville:tartaruga": 0.01179
+   }
+  },
+  {
+   "run_id": "34158277840",
+   "quando": "2026-09-07T17:19:04.051153-03:00",
+   "status": "ok",
+   "custo_brl": 2.44,
+   "custo_usd": 0.488137,
+   "calls": 74,
+   "tok_in": 743036,
+   "tok_out": 6772,
+   "novos": 42,
+   "candidatos": 225,
+   "ativos": 7608,
+   "descartados": 7157,
+   "sundek_usd": 0.411579,
+   "ville_usd": 0.076558,
+   "etapas": {
+    "sundek:brand": 0.030114,
+    "sundek:classify_tipo": 0.025563,
+    "sundek:color": 0.008929,
+    "sundek:listra": 0.20826,
+    "sundek:elastico": 0.06592,
+    "sundek:crop_localizar": 0.009727,
+    "sundek:bolso": 0.049752,
+    "sundek:etiqueta": 0.008584,
+    "sundek:reclassify_gpt4o": 0.00473,
+    "ville:marca": 0.008063,
+    "ville:tartaruga": 0.034112,
+    "ville:crop_localizar": 0.001323,
+    "ville:cor": 0.002466,
+    "ville:autenticidade": 0.01842,
+    "ville:etiqueta": 0.002327,
+    "ville:cordao": 0.002702,
+    "ville:fecho": 0.007145
    }
   }
  ]
