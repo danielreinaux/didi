@@ -61,18 +61,42 @@ async def extract_item_async(page, url: str) -> dict:
       const enviRaw    = t('[data-testid="item-shipping-banner-price"]');
       const marcaRaw   = t('[data-testid="item-attributes-brand-menu-button"]');
 
-      // Pega só as fotos da galeria do anúncio (não do vendedor).
-      let fotos = [];
-      const gallery = document.querySelector('[data-testid="item-photos-area"], [data-testid="image-carousel"]');
-      if (gallery) {
-        fotos = Array.from(gallery.querySelectorAll('img'))
+      // Pega só as fotos da galeria do anúncio (não do vendedor, não thumbnails de outros).
+      // 1ª tentativa (layout atual, set/2026): cada foto vem num wrapper com
+      // data-testid="item-photo-N" (o container [data-testid="item-photos-area"] e o
+      // formato de URL com timestamp saíram do ar em 09/09/2026 — o scrape passou a
+      // devolver fotos:[] e a IA marcava tudo como "indefinido" sem nem chamar a API).
+      // 2ª: fallback pelo alt, que o Vinted preenche com "<título do anúncio> <n>".
+      // 3ª: layout antigo (container + timestamp dominante), mantido por segurança.
+      const ehFotoVinted = (u) => u.includes('vinted.net') && /\\/f\\d+\\//.test(u);
+      let fotos = Array.from(
+          document.querySelectorAll('[data-testid^="item-photo-"] img, img[data-testid^="item-photo-"]')
+        )
+        .map(img => img.src)
+        .filter(ehFotoVinted);
+
+      if (!fotos.length && tituloEl) {
+        const alvo = tituloEl.trim().toLowerCase();
+        fotos = Array.from(document.querySelectorAll('img'))
+          .filter(img => (img.alt || '').trim().toLowerCase().startsWith(alvo))
           .map(img => img.src)
-          .filter(u => u.includes('vinted.net') && /\\/f\\d+\\//.test(u));
+          .filter(ehFotoVinted);
+      }
+
+      if (!fotos.length) {
+        const gallery = document.querySelector('[data-testid="item-photos-area"], [data-testid="image-carousel"]');
+        if (gallery) {
+          fotos = Array.from(gallery.querySelectorAll('img'))
+            .map(img => img.src)
+            .filter(ehFotoVinted);
+        }
       }
       if (!fotos.length) {
+        // Último recurso: pega todas, identifica o timestamp dominante e mantém só essas
+        // (fotos do anúncio compartilhavam o mesmo upload_id; a do vendedor tinha outro).
         const todas = Array.from(document.querySelectorAll('img'))
           .map(img => img.src)
-          .filter(u => u.includes('vinted.net') && /\\/f\\d+\\//.test(u));
+          .filter(ehFotoVinted);
         const tsRe = /\\/(\\d{10,})\\.webp/;
         const counts = {};
         todas.forEach(u => {
@@ -85,6 +109,7 @@ async def extract_item_async(page, url: str) -> dict:
           return m && m[1] === dominante;
         });
       }
+      // dedupe mantendo ordem
       fotos = [...new Set(fotos)];
 
       const preco = t('[data-testid="item-price"]');

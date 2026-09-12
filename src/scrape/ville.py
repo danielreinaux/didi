@@ -13,6 +13,7 @@ from playwright.sync_api import sync_playwright
 from ..utils.browser import abrir_sessao_vinted
 from ..config import MAX_ITEMS_POR_RODADA
 from .extract import extract_item
+from .guard import checar_fotos
 from ..sources.vinted import listar_urls_items
 from ..sources.vinted_ville import montar_url_ville_hombre
 
@@ -79,6 +80,10 @@ def main() -> None:
 
         out.write_text(json.dumps(coletados, indent=2, ensure_ascii=False), encoding="utf-8")
         print(f"\n[5] {len(coletados)} itens salvos em data/coleta-ville.json")
+        # Guard-rail: se a extração de fotos quebrou, falha o step (ver guard.py).
+        # Vem DEPOIS do save (e do histórico) pra não perder o que já foi coletado.
+        checar_fotos(coletados, "ville")
+
         print(f"\n    duração total: {time.time() - t0:.1f}s")
 
         browser.close()

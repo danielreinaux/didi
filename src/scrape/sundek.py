@@ -13,6 +13,7 @@ from playwright.sync_api import sync_playwright
 from ..utils.browser import abrir_sessao_vinted
 from ..config import MAX_ITEMS_POR_RODADA
 from .extract import extract_item
+from .guard import checar_fotos
 from ..utils.historico import atualizar_com_scrape
 from ..sources.vinted import listar_urls_items, montar_url_sundek_hombre
 
@@ -88,6 +89,10 @@ def main() -> None:
         print(f"    baixaram preço:  {stats['preco_baixou']}")
         print(f"    vendidos agora:  {stats['vendidos_agora']}")
         print(f"    total tracking:  {stats['total_historico']}")
+        # Guard-rail: se a extração de fotos quebrou, falha o step (ver guard.py).
+        # Vem DEPOIS do save (e do histórico) pra não perder o que já foi coletado.
+        checar_fotos(coletados, "sundek")
+
         print(f"\n    duração total: {time.time() - t0:.1f}s")
 
         browser.close()
