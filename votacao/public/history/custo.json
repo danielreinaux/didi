@@ -1,35 +1,6 @@
 {
- "gerado_em": "2026-09-12T11:22:07.965410-03:00",
+ "gerado_em": "2026-09-12T13:47:46.597203-03:00",
  "rodadas": [
-  {
-   "run_id": "32755439982",
-   "quando": "2026-08-24T14:25:04.527322-03:00",
-   "status": "ok",
-   "custo_brl": 0.94,
-   "custo_usd": 0.18724,
-   "calls": 28,
-   "tok_in": 243868,
-   "tok_out": 2736,
-   "novos": 21,
-   "candidatos": 171,
-   "ativos": 6546,
-   "descartados": 6124,
-   "sundek_usd": 0.17321,
-   "ville_usd": 0.01403,
-   "etapas": {
-    "sundek:brand": 0.009749,
-    "sundek:classify_tipo": 0.008316,
-    "sundek:color": 0.004343,
-    "sundek:listra": 0.093812,
-    "sundek:elastico": 0.026095,
-    "sundek:crop_localizar": 0.003123,
-    "sundek:bolso": 0.020595,
-    "sundek:etiqueta": 0.00318,
-    "sundek:reclassify_gpt4o": 0.003998,
-    "ville:marca": 0.002735,
-    "ville:tartaruga": 0.011295
-   }
-  },
   {
    "run_id": "32758727926",
    "quando": "2026-08-24T15:00:09.583630-03:00",
@@ -5747,6 +5718,41 @@
     "sundek:reclassify_gpt4o": 0.02676,
     "ville:marca": 0.006315,
     "ville:tartaruga": 0.023665
+   }
+  },
+  {
+   "run_id": "34705713359",
+   "quando": "2026-09-12T13:47:41.449174-03:00",
+   "status": "ok",
+   "custo_brl": 5.59,
+   "custo_usd": 1.117695,
+   "calls": 152,
+   "tok_in": 1570518,
+   "tok_out": 14041,
+   "novos": 30,
+   "candidatos": 218,
+   "ativos": 7519,
+   "descartados": 7086,
+   "sundek_usd": 0.968639,
+   "ville_usd": 0.149056,
+   "etapas": {
+    "sundek:brand": 0.047485,
+    "sundek:classify_tipo": 0.047927,
+    "sundek:color": 0.029075,
+    "sundek:listra": 0.51345,
+    "sundek:elastico": 0.144943,
+    "sundek:crop_localizar": 0.022481,
+    "sundek:bolso": 0.11217,
+    "sundek:etiqueta": 0.019827,
+    "sundek:reclassify_gpt4o": 0.031282,
+    "ville:marca": 0.01186,
+    "ville:tartaruga": 0.04646,
+    "ville:crop_localizar": 0.005722,
+    "ville:autenticidade": 0.057793,
+    "ville:cor": 0.005187,
+    "ville:etiqueta": 0.004985,
+    "ville:cordao": 0.005546,
+    "ville:fecho": 0.011502
    }
   }
  ]
