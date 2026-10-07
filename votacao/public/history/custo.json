@@ -1,35 +1,6 @@
 {
- "gerado_em": "2026-10-06T22:21:32.138005-03:00",
+ "gerado_em": "2026-10-07T14:15:59.764075-03:00",
  "rodadas": [
-  {
-   "run_id": "34866043610",
-   "quando": "2026-09-14T13:14:58.896841-03:00",
-   "status": "ok",
-   "custo_brl": 5.0,
-   "custo_usd": 1.000252,
-   "calls": 153,
-   "tok_in": 1581105,
-   "tok_out": 14185,
-   "novos": 42,
-   "candidatos": 222,
-   "ativos": 7617,
-   "descartados": 7185,
-   "sundek_usd": 0.912097,
-   "ville_usd": 0.088155,
-   "etapas": {
-    "sundek:brand": 0.0666,
-    "sundek:classify_tipo": 0.066898,
-    "sundek:color": 0.028661,
-    "sundek:listra": 0.439692,
-    "sundek:elastico": 0.130443,
-    "sundek:crop_localizar": 0.018604,
-    "sundek:bolso": 0.103655,
-    "sundek:etiqueta": 0.016749,
-    "sundek:reclassify_gpt4o": 0.040795,
-    "ville:marca": 0.018028,
-    "ville:tartaruga": 0.070128
-   }
-  },
   {
    "run_id": "34869329407",
    "quando": "2026-09-14T13:45:28.253317-03:00",
@@ -5964,6 +5935,41 @@
     "sundek:bolso": 0.031255,
     "sundek:etiqueta": 0.005409,
     "sundek:reclassify_gpt4o": 0.013645
+   }
+  },
+  {
+   "run_id": "37656146895",
+   "quando": "2026-10-07T14:15:54.820605-03:00",
+   "status": "ok",
+   "custo_brl": 6.61,
+   "custo_usd": 1.322367,
+   "calls": 175,
+   "tok_in": 1767089,
+   "tok_out": 17286,
+   "novos": 44,
+   "candidatos": 225,
+   "ativos": 8131,
+   "descartados": 7732,
+   "sundek_usd": 1.262323,
+   "ville_usd": 0.060044,
+   "etapas": {
+    "sundek:brand": 0.062615,
+    "sundek:classify_tipo": 0.054735,
+    "sundek:color": 0.035879,
+    "sundek:listra": 0.678742,
+    "sundek:elastico": 0.183097,
+    "sundek:crop_localizar": 0.025275,
+    "sundek:bolso": 0.145207,
+    "sundek:etiqueta": 0.02226,
+    "sundek:reclassify_gpt4o": 0.054512,
+    "ville:marca": 0.00625,
+    "ville:tartaruga": 0.02363,
+    "ville:crop_localizar": 0.002175,
+    "ville:autenticidade": 0.01841,
+    "ville:cor": 0.001873,
+    "ville:etiqueta": 0.001805,
+    "ville:cordao": 0.001993,
+    "ville:fecho": 0.003908
    }
   }
  ]
