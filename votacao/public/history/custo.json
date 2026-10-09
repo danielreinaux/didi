@@ -1,41 +1,6 @@
 {
- "gerado_em": "2026-10-09T19:05:34.270298-03:00",
+ "gerado_em": "2026-10-09T20:03:46.862678-03:00",
  "rodadas": [
-  {
-   "run_id": "35034414920",
-   "quando": "2026-09-15T20:18:13.945441-03:00",
-   "status": "ok",
-   "custo_brl": 1.25,
-   "custo_usd": 0.249582,
-   "calls": 55,
-   "tok_in": 347975,
-   "tok_out": 3243,
-   "novos": 21,
-   "candidatos": 234,
-   "ativos": 7699,
-   "descartados": 7260,
-   "sundek_usd": 0.080211,
-   "ville_usd": 0.169371,
-   "etapas": {
-    "sundek:brand": 0.009727,
-    "sundek:classify_tipo": 0.006821,
-    "sundek:color": 0.002469,
-    "sundek:listra": 0.031495,
-    "sundek:elastico": 0.012913,
-    "sundek:crop_localizar": 0.00135,
-    "sundek:bolso": 0.010027,
-    "sundek:etiqueta": 0.001377,
-    "sundek:reclassify_gpt4o": 0.004032,
-    "ville:marca": 0.013792,
-    "ville:tartaruga": 0.045547,
-    "ville:crop_localizar": 0.004919,
-    "ville:autenticidade": 0.075803,
-    "ville:cor": 0.004934,
-    "ville:etiqueta": 0.004654,
-    "ville:cordao": 0.005416,
-    "ville:fecho": 0.014305
-   }
-  },
   {
    "run_id": "35036090753",
    "quando": "2026-09-15T20:40:20.751012-03:00",
@@ -5925,6 +5890,35 @@
     "sundek:brand": 0.011031,
     "sundek:classify_tipo": 0.007675,
     "ville:marca": 0.003205
+   }
+  },
+  {
+   "run_id": "38001625860",
+   "quando": "2026-10-09T20:03:39.729904-03:00",
+   "status": "ok",
+   "custo_brl": 1.39,
+   "custo_usd": 0.27899,
+   "calls": 39,
+   "tok_in": 394654,
+   "tok_out": 3605,
+   "novos": 10,
+   "candidatos": 220,
+   "ativos": 7893,
+   "descartados": 7500,
+   "sundek_usd": 0.275805,
+   "ville_usd": 0.003185,
+   "etapas": {
+    "sundek:brand": 0.01456,
+    "sundek:classify_tipo": 0.015121,
+    "sundek:color": 0.007055,
+    "sundek:listra": 0.122688,
+    "sundek:elastico": 0.038795,
+    "sundek:crop_localizar": 0.005752,
+    "sundek:bolso": 0.031435,
+    "sundek:etiqueta": 0.004982,
+    "sundek:brand_4o_recheck": 0.021577,
+    "sundek:reclassify_gpt4o": 0.01384,
+    "ville:marca": 0.003185
    }
   }
  ]
