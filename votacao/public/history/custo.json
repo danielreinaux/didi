@@ -1,41 +1,6 @@
 {
- "gerado_em": "2026-10-10T13:24:05.158193-03:00",
+ "gerado_em": "2026-10-10T16:46:05.530918-03:00",
  "rodadas": [
-  {
-   "run_id": "35142059784",
-   "quando": "2026-09-16T16:52:07.968907-03:00",
-   "status": "ok",
-   "custo_brl": 2.55,
-   "custo_usd": 0.509902,
-   "calls": 65,
-   "tok_in": 681714,
-   "tok_out": 6216,
-   "novos": 49,
-   "candidatos": 244,
-   "ativos": 7758,
-   "descartados": 7309,
-   "sundek_usd": 0.464185,
-   "ville_usd": 0.045717,
-   "etapas": {
-    "sundek:brand": 0.024289,
-    "sundek:classify_tipo": 0.018538,
-    "sundek:color": 0.010804,
-    "sundek:listra": 0.260277,
-    "sundek:elastico": 0.065403,
-    "sundek:crop_localizar": 0.010151,
-    "sundek:bolso": 0.052468,
-    "sundek:etiqueta": 0.008588,
-    "sundek:reclassify_gpt4o": 0.013667,
-    "ville:marca": 0.003175,
-    "ville:tartaruga": 0.011875,
-    "ville:crop_localizar": 0.002175,
-    "ville:autenticidade": 0.018928,
-    "ville:cor": 0.001869,
-    "ville:etiqueta": 0.001803,
-    "ville:cordao": 0.001989,
-    "ville:fecho": 0.003905
-   }
-  },
   {
    "run_id": "35144949341",
    "quando": "2026-09-16T17:21:32.037493-03:00",
@@ -5886,6 +5851,35 @@
     "sundek:bolso": 0.041125,
     "sundek:etiqueta": 0.005939,
     "sundek:reclassify_gpt4o": 0.014138
+   }
+  },
+  {
+   "run_id": "38080490556",
+   "quando": "2026-10-10T16:45:58.580193-03:00",
+   "status": "ok",
+   "custo_brl": 1.67,
+   "custo_usd": 0.334772,
+   "calls": 48,
+   "tok_in": 504577,
+   "tok_out": 4438,
+   "novos": 22,
+   "candidatos": 214,
+   "ativos": 7875,
+   "descartados": 7483,
+   "sundek_usd": 0.331542,
+   "ville_usd": 0.00323,
+   "etapas": {
+    "sundek:brand": 0.024425,
+    "sundek:classify_tipo": 0.016618,
+    "sundek:brand_4o_recheck": 0.009868,
+    "sundek:color": 0.009355,
+    "sundek:listra": 0.17598,
+    "sundek:elastico": 0.039412,
+    "sundek:crop_localizar": 0.006175,
+    "sundek:bolso": 0.030863,
+    "sundek:etiqueta": 0.005409,
+    "sundek:reclassify_gpt4o": 0.013437,
+    "ville:marca": 0.00323
    }
   }
  ]
