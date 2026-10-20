@@ -75,9 +75,24 @@ def _deterministico(it: dict) -> dict:
     return it
 
 
+def _conservador(it: dict, upd_cl: dict) -> dict:
+    """O backfill RESGATA e restaura — não cria descarte novo com releitura incerta:
+    - listra_na_frente que o double-check gravou era resposta real do gpt-4o (o prompt de
+      tipo pede esse campo); a releitura no mini dá falso positivo → mantém a do 4o;
+    - o bolso relido nunca rebaixa tem_bolso/tem_nome de True para False (patch claro com
+      nome tom sobre tom é ambíguo); serve para restaurar o bolso frontal e resgatar fluo."""
+    cl = it.get("classificacao") or {}
+    upd_cl = {k: v for k, v in upd_cl.items() if k != "listra_na_frente"}
+    for k in ("tem_bolso_traseiro", "bolso_traseiro_tem_nome"):
+        if cl.get(k) is True and upd_cl.get(k) is False:
+            upd_cl.pop(k)
+    return upd_cl
+
+
 def _aplicar(it: dict, upd: dict) -> dict:
     """Junta os campos da IA (classificacao/elastico) e roda a parte determinística."""
-    novo = {**it, "classificacao": {**(it.get("classificacao") or {}), **upd.get("classificacao", {})}}
+    novo = {**it, "classificacao": {**(it.get("classificacao") or {}),
+                                    **_conservador(it, upd.get("classificacao", {}))}}
     if upd.get("elastico"):
         novo["elastico"] = {**(it.get("elastico") or {}), **upd["elastico"]}
     if isinstance(novo.get("cor"), dict):
