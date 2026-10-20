@@ -14,13 +14,12 @@ _client: OpenAI | None = None
 # Typos de OCR + linhas/slogans da própria Sundek (não são "outra marca").
 SUNDEK_ALIASES = {
     "sunder", "sundeck", "sundek.", "sundek,", "sundk",
-    "goldenwave", "golden wave", "sundek goldenwave", "sundek golden wave",
     "sndk", "sndk58", "sndk 58", "follow the sun", "sundex",
 }
 # marca_identificada "vazia": o modelo disse nao_sundek SEM ver outra marca.
 _SEM_MARCA = {"", "null", "none", "nenhuma", "nenhum", "n/a", "na", "desconhecida", "indefinida", "-"}
 # Título com cara de Sundek (typos de vendedor): sandek, sudek, sundeck, sundex, sndk...
-_TITULO_SUNDEK = re.compile(r"\bs[ua]n?dec?k|\bsundex|\bsndk|golden\s?wave", re.I)
+_TITULO_SUNDEK = re.compile(r"\bs[ua]n?dec?k|\bsundex|\bsndk", re.I)
 
 
 def motivo_recheck(item: dict, marca: dict) -> str | None:
@@ -100,8 +99,8 @@ def verificar_sundek(item: dict, model: str | None = None) -> dict:
 
     # corrigir falsos negativos por OCR de baixa resolução
     # ex: "Sunder", "Sundeck", "Sundek." lidos como outra marca — e linhas/slogans
-    # da PRÓPRIA Sundek que o mini devolve como "outra marca" (acervo: 34 itens
-    # "goldenwave" descartados como nao_sundek; "Sundek linea premium Goldenwave").
+    # da PRÓPRIA Sundek que o mini devolve como "outra marca" (SNDK, slogans).
+    # Goldenwave NÃO é apelido: o cliente não compra a linha premium (20/10/2026).
     marca_id = (parsed.get("marca_identificada") or "").lower().strip()
     if parsed.get("e_sundek") == "nao" and marca_id in SUNDEK_ALIASES:
         parsed["e_sundek"] = "sim"

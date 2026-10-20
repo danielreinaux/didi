@@ -30,6 +30,8 @@ EXCLUSAO: list[tuple[re.Pattern, str]] = [
 
     # agasalhos
     (re.compile(r"\bfelpa\b", re.I), "felpa (moletom italiano)"),
+    # Cliente, 20/10/2026: short de moletom (não é de banho) → descartar sempre.
+    (re.compile(r"\bfelpat[oaie]\b|\bch[aá]ndal\b|\bsurv[eê]tement\b|\bjogg(ing|er)s?\b|\bmolleton\b|\bmoletom\b|\bsweat\s?shorts?\b|\bfleece\b", re.I), "moletom/agasalho"),
     (re.compile(r"\bmaglion(e|cino)\b", re.I), "maglione (suéter italiano)"),
     (re.compile(r"\bsweater\b|\bsuet[eé]r\b|\bsu[eé]ter\b", re.I), "suéter"),
     (re.compile(r"\bjersey\b", re.I), "jersey"),
@@ -63,6 +65,9 @@ EXCLUSAO: list[tuple[re.Pattern, str]] = [
 # "Set 3 costumi", "2 costumi uomo", "Pack 2", "Vendo costumi", "LOTTO 12 costumi".
 # Medido no acervo (26,5k): 200 títulos batem; 10 tinham virado comprável/médio, todos lotes reais.
 # "Lotto" sozinho pode ser a MARCA (Lotto) → só conta seguido de número/"di"/"/"/costum.
+# GOLDENWAVE (linha premium da Sundek): o cliente NÃO compra (decisão de 20/10/2026).
+EXCLUSAO_GOLDENWAVE = re.compile(r"golden\s?wave", re.I)
+
 EXCLUSAO_LOTE: list[tuple[re.Pattern, str]] = [
     (re.compile(r"\b(set|stock|pack|bundle|lote)\b", re.I), "lote (set/pack)"),
     (re.compile(r"\blotto\b\s*(\d|di\b|/|costum)", re.I), "lote (lotto)"),
@@ -128,6 +133,8 @@ def parece_short(item: dict) -> Resultado:
     for regex, motivo in EXCLUSAO:
         if regex.search(titulo):
             return Resultado(False, motivo, "nao_short")
+    if EXCLUSAO_GOLDENWAVE.search(titulo):
+        return Resultado(False, "goldenwave (linha premium — fora do interesse)", "nao_sundek")
     for regex, motivo in EXCLUSAO_LOTE:
         if regex.search(titulo):
             return Resultado(False, motivo, "nao_short")

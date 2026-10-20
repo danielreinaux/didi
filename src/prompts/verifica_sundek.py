@@ -16,8 +16,8 @@ Sinais de SIM (qualquer um basta):
     verde, branco, cinza, preto, rosa…) e MESMO SEM TEXTO legível — o desenho do sol
     com ondas já identifica a Sundek.
   - "SNDK", "SNDK 58", "SINCE 1958" ou o slogan "FOLLOW THE SUN" (cós/perna)
-  - GOLDENWAVE / "Golden Wave" = linha premium da Sundek (patch com o sol + "goldenwave")
-    → é Sundek (e_sundek = "sim"), NÃO é outra marca.
+  - GOLDENWAVE / "Golden Wave" (linha premium da Sundek, patch com "goldenwave"): o cliente
+    NÃO compra → e_sundek = "nao", marca_identificada = "goldenwave".
   - Faixa multicolorida característica no cós (rainbow band) em modelos clássicos
   - Bordado "Sundek" no bolso traseiro
   - Etiqueta de papel pendurada com "Sundek" (pode estar junto de tags de loja/revendedor)
