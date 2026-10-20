@@ -5,9 +5,10 @@
 import { ACTIVE_GRADIENT, SEGMENTED_BTN, SEGMENTED_INACTIVE } from "@/lib/theme";
 
 const GABARITOS: { href: string; label: string }[] = [
-  { href: "/gabarito-ia-ville", label: "Ville" },
+  // Ville desligada em 20/10/2026 (foco 100% Sundek):
+  // { href: "/gabarito-ia-ville", label: "Ville" },
   { href: "/gabarito-ia-sundek", label: "Sundek" },
-  { href: "/gabarito-ia-compraveis-ville", label: "Ville compráveis" },
+  // { href: "/gabarito-ia-compraveis-ville", label: "Ville compráveis" },
   { href: "/gabarito-ia-compraveis-sundek", label: "Sundek compráveis" },
 ];
 

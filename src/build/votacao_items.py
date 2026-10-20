@@ -9,6 +9,8 @@ import argparse
 import json
 from pathlib import Path
 
+from ..config import VILLE_ATIVA
+
 ROOT = Path(__file__).resolve().parent.parent.parent
 DATA = ROOT / "data"
 OUT = ROOT / "votacao" / "public" / "items.json"
@@ -143,7 +145,8 @@ def main() -> None:
     cand = []
     if not args.so_ville:
         cand += _carregar(DATA / "coleta-classificada.json", "sundek")
-    cand += _carregar(DATA / "coleta-ville-classificada.json", "vilebrequin")
+    if VILLE_ATIVA or args.so_ville:
+        cand += _carregar(DATA / "coleta-ville-classificada.json", "vilebrequin")
     # comprável primeiro, depois por score desc
     cand.sort(key=lambda x: (0 if x["decisao"] == "compravel" else 1, -x["score"]))
     OUT.write_text(json.dumps(cand, indent=2, ensure_ascii=False), encoding="utf-8")

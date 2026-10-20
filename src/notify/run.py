@@ -13,6 +13,7 @@ marca entra em modo seed automático pra não floodar com os candidatos já exis
 import argparse
 import sys
 
+from ..config import VILLE_ATIVA
 from . import email as mailer
 from . import ledger as led
 from .select import candidatos, novos
@@ -37,7 +38,7 @@ def main() -> None:
 
     ledger = led.carregar()
     itens = candidatos(args.marca)
-    label = MARCA_LABEL.get(args.marca, "Sundek+Ville")
+    label = MARCA_LABEL.get(args.marca, "Sundek+Ville" if VILLE_ATIVA else "Sundek")
     pendentes = novos(itens, ledger)
 
     # --dry-run: preview puro, SEM efeito colateral (não envia, não grava ledger).

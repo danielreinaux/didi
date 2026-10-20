@@ -16,7 +16,8 @@ const ORDER: Reaction[] = ["gostei", "nao_gostei", "discordo"];
 type Loja = "sundek" | "ville";
 const LOJAS: { key: Loja; label: string }[] = [
   { key: "sundek", label: "Sundek" },
-  { key: "ville", label: "Ville" },
+  // Ville desligada em 20/10/2026 (foco 100% Sundek) — volta descomentando:
+  // { key: "ville", label: "Ville" },
 ];
 
 export default function Resultados() {

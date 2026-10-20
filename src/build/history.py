@@ -35,6 +35,8 @@ from collections import Counter
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
 
+from ..config import VILLE_ATIVA
+
 ROOT = Path(__file__).resolve().parent.parent.parent
 DATA = ROOT / "data"
 OUT_DIR = ROOT / "votacao" / "public" / "history"
@@ -607,8 +609,8 @@ def snapshot(max_runs: int = MAX_RUNS_INDEX) -> None:
 
     snap = _montar_snapshot(
         run_id, "deploy", run_dt,
-        _read_working(SUNDEK_CLASSIF), _read_working(VILLE_CLASSIF),
-        _read_working(SUNDEK_CUSTO), _read_working(VILLE_CUSTO),
+        _read_working(SUNDEK_CLASSIF), _read_working(VILLE_CLASSIF) if VILLE_ATIVA else None,
+        _read_working(SUNDEK_CUSTO), _read_working(VILLE_CUSTO) if VILLE_ATIVA else None,
         commit,
     )
     if not snap["marcas"]:

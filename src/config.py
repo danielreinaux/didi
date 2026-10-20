@@ -1,5 +1,10 @@
 """Filtros de busca e configuração da IA. Derivados do manual de regras."""
 
+# Vilebrequin DESLIGADA em 20/10/2026 — foco 100% na Sundek. O código e os dados da Ville
+# continuam no repo; para religar: True aqui + tirar o `if: false` do job `ville` no
+# .github/workflows/scrape-cron.yml.
+VILLE_ATIVA = False
+
 # ---------- Sundek ----------
 SUNDEK = {
     "marca": "Sundek",

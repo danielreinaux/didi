@@ -121,6 +121,9 @@ jobs:
   # fetch-depth: 50 e o retry dá `git rebase --abort`, então rodar junto não trava mais.
   # O deploy segue needs:[sundek, ville].
   ville:
+    # Ville DESLIGADA em 20/10/2026 (foco 100% Sundek). Para religar: apague a linha
+    # abaixo e ponha VILLE_ATIVA = True em src/config.py.
+    if: false
     runs-on: ubuntu-latest
     timeout-minutes: 180
     concurrency:
