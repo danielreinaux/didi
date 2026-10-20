@@ -40,8 +40,8 @@ type Criterio = { criterio: string; antes: string; depois: string; nota?: string
 type Resumo = {
   titulo: string;
   destaques: Comparacao[];
-  criterios_titulo: string;
-  criterios: Criterio[];
+  criterios_titulo?: string;
+  criterios?: Criterio[];
   custo?: { rotulo: string; texto: string };
 };
 type Doc = { titulo: string; intro: string; resumo: Resumo; total_perguntas: number; secoes: Secao[] };
@@ -431,6 +431,7 @@ function ResumoCard({ r }: { r: Resumo }) {
         ))}
       </ul>
 
+      {r.criterios && r.criterios.length > 0 && (
       <div className="flex flex-col gap-2">
         <h3 className={`text-sm ${TEXT_SECONDARY}`}>{r.criterios_titulo}</h3>
         <div className="overflow-x-auto -mx-1 px-1 max-w-3xl">
@@ -472,6 +473,7 @@ function ResumoCard({ r }: { r: Resumo }) {
           </table>
         </div>
       </div>
+      )}
 
       {r.custo && (
         <p className={`text-xs ${TEXT_SECONDARY}`}>

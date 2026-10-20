@@ -54,22 +54,6 @@ RESUMO = {
         {"rotulo": "Decisão igual à humana — compráveis", "antes": "70%", "depois": "93%"},
         {"rotulo": "Ruins que passaram (gabarito Sundek)", "antes": "1", "depois": "0"},
     ],
-    "criterios_titulo": "Acerto por critério (Sundek)",
-    "criterios": [
-        {"criterio": "Listra", "antes": "82%", "depois": "93%"},
-        {
-            "criterio": "Fechamento",
-            "antes": "69%",
-            "depois": "76%",
-            "nota": "os erros restantes são quase todos rótulo — ver pergunta de fechamento",
-            "pergunta": "fechamento_cordao",
-        },
-        {"criterio": "Cor", "antes": "75%", "depois": "81%"},
-        {"criterio": "Tipo", "antes": "85%", "depois": "91%"},
-        {"criterio": "Nome no bolso", "antes": "87%", "depois": "92%", "nota": "compráveis 74% → 95%"},
-        {"criterio": "Bicolor", "antes": "90%", "depois": "95%"},
-    ],
-    "custo": {"rotulo": "Custo em produção", "texto": "Praticamente igual (~US$42/mês Sundek)"},
 }
 
 
