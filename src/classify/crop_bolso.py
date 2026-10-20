@@ -80,9 +80,16 @@ def _localizar(fotos: list[str]) -> dict:
 def _recortar_imagem(url: str, bbox: list[float]) -> str | None:
     """Baixa a foto, recorta a bbox com folga, amplia. Retorna data URL base64."""
     try:
-        r = requests.get(url, timeout=15)
-        r.raise_for_status()
-        img = Image.open(io.BytesIO(r.content)).convert("RGB")
+        if url.startswith("data:"):
+            # Harness do gabarito manda fotos LOCAIS como data URL base64 — antes o
+            # requests.get falhava em silêncio e a autenticidade rodava SEM o zoom
+            # (≠ produção, que usa URLs https do Vinted).
+            dados = base64.b64decode(url.split(",", 1)[1])
+        else:
+            r = requests.get(url, timeout=15)
+            r.raise_for_status()
+            dados = r.content
+        img = Image.open(io.BytesIO(dados)).convert("RGB")
     except Exception:
         return None
 
