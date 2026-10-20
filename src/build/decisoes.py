@@ -11,8 +11,6 @@ perguntas, com opções e os ids dos itens de exemplo) e resolve as FOTOS de cad
   etiqueta M520, em que a foto da etiqueta/botão é a 5ª do anúncio).
 - id não encontrado (ou sem foto) → erro. Nada é emitido em silêncio.
 
-Também grava no topo um bloco "resumo" (antes × depois dos ajustes da IA Sundek),
-com os números já medidos — ver RESUMO abaixo.
 
 Os votos NÃO passam por aqui: a página grava em /api/reactions com a chave
 "decisao:<id_da_pergunta>" (reaction = texto da opção, observacao = comentário).
@@ -46,15 +44,6 @@ STATUS_VALIDOS = {"ja_aplicado", "pendente"}
 
 # Antes × depois dos ajustes da IA Sundek (medido contra o gabarito; números
 # fornecidos prontos — não são recalculados aqui).
-RESUMO = {
-    "titulo": "O que mudou com os ajustes",
-    "destaques": [
-        {"rotulo": "Compráveis bons descartados por engano", "antes": "12 de 40", "depois": "1 de 40"},
-        {"rotulo": "Decisão igual à humana — gabarito Sundek", "antes": "94%", "depois": "98%"},
-        {"rotulo": "Decisão igual à humana — compráveis", "antes": "70%", "depois": "93%"},
-        {"rotulo": "Ruins que passaram (gabarito Sundek)", "antes": "1", "depois": "0"},
-    ],
-}
 
 
 class SpecErro(Exception):
@@ -235,8 +224,6 @@ def build(spec: dict) -> dict:
         "fonte": "src/build/decisoes_spec.json",
         "chave_voto": "decisao:<id_da_pergunta>",
         "titulo": spec.get("titulo") or "Decisões",
-        "intro": spec.get("intro") or "",
-        "resumo": RESUMO,
         "total_perguntas": total,
         "secoes": secoes,
     }

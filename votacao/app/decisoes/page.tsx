@@ -10,7 +10,7 @@
 // respondido (só as chaves com prefixo "decisao:").
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
-import { ArrowDown, ArrowLeft, Check, ExternalLink, TrendingUp } from "lucide-react";
+import { ArrowDown, ArrowLeft, Check, ExternalLink } from "lucide-react";
 import Lightbox from "@/components/Lightbox";
 import { CARD, HEADER_BG, NAV_BTN, PILL_NEUTRAL, TEXT_SECONDARY, TEXT_TERTIARY } from "@/lib/theme";
 
@@ -35,16 +35,7 @@ type Pergunta = {
   grupos?: Grupo[];
 };
 type Secao = { id: string; titulo: string; intro?: string; perguntas: Pergunta[] };
-type Comparacao = { rotulo: string; antes: string; depois: string };
-type Criterio = { criterio: string; antes: string; depois: string; nota?: string; pergunta?: string };
-type Resumo = {
-  titulo: string;
-  destaques: Comparacao[];
-  criterios_titulo?: string;
-  criterios?: Criterio[];
-  custo?: { rotulo: string; texto: string };
-};
-type Doc = { titulo: string; intro: string; resumo: Resumo; total_perguntas: number; secoes: Secao[] };
+type Doc = { titulo: string; total_perguntas: number; secoes: Secao[] };
 
 type Resposta = { reaction?: string; observacao?: string };
 type Status = "salvando" | "salvo" | "erro" | null;
@@ -413,78 +404,6 @@ function PerguntaCard({
 }
 
 // ── Resumo antes × depois ────────────────────────────────────────────────────
-function ResumoCard({ r }: { r: Resumo }) {
-  return (
-    <section aria-labelledby="resumo-titulo" className={`${CARD} p-4 sm:p-5 flex flex-col gap-4`}>
-      <h2 id="resumo-titulo" className="text-base sm:text-lg text-[#f5f5f7]">{r.titulo}</h2>
-      <ul className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3">
-        {r.destaques.map((d) => (
-          <li key={d.rotulo} className="rounded-xl border border-[rgba(255,255,255,0.07)] bg-[rgba(255,255,255,0.03)] p-3 flex flex-col gap-1.5">
-            <span className={`text-xs ${TEXT_SECONDARY} leading-snug`}>{d.rotulo}</span>
-            <span className="flex items-baseline gap-x-2 gap-y-0.5 flex-wrap">
-              <span className="text-xl sm:text-2xl font-semibold text-[#f5f5f7] whitespace-nowrap">{d.depois}</span>
-              <span className={`text-xs ${TEXT_TERTIARY}`}>
-                antes: {d.antes}
-              </span>
-            </span>
-          </li>
-        ))}
-      </ul>
-
-      {r.criterios && r.criterios.length > 0 && (
-      <div className="flex flex-col gap-2">
-        <h3 className={`text-sm ${TEXT_SECONDARY}`}>{r.criterios_titulo}</h3>
-        <div className="overflow-x-auto -mx-1 px-1 max-w-3xl">
-          <table className="w-full text-sm border-collapse">
-            <thead>
-              <tr className={`text-[11px] ${TEXT_TERTIARY} text-left`}>
-                <th scope="col" className="font-normal py-1.5 pr-3">Critério</th>
-                <th scope="col" className="font-normal py-1.5 px-2 text-right">Antes</th>
-                <th scope="col" className="font-normal py-1.5 pl-2 text-right">Depois</th>
-              </tr>
-            </thead>
-            <tbody>
-              {r.criterios.map((c) => (
-                <tr key={c.criterio} className="border-t border-[rgba(255,255,255,0.06)] align-top">
-                  <th scope="row" className="font-normal text-left py-2 pr-3 text-[#f5f5f7]">
-                    {c.criterio}
-                    {c.nota && (
-                      <span className={`block text-[11px] ${TEXT_TERTIARY} leading-snug`}>
-                        {c.nota}
-                        {c.pergunta && (
-                          <>
-                            {" "}
-                            <a href={`#${c.pergunta}`} className="text-[#00d9ff] hover:underline">ir para a pergunta</a>
-                          </>
-                        )}
-                      </span>
-                    )}
-                  </th>
-                  <td className={`py-2 px-2 text-right tabular-nums ${TEXT_TERTIARY}`}>{c.antes}</td>
-                  <td className="py-2 pl-2 text-right tabular-nums text-[#f5f5f7]">
-                    <span className="inline-flex items-center gap-1">
-                      <TrendingUp size={13} strokeWidth={2} className="text-[#00ff88]" aria-hidden />
-                      {c.depois}
-                    </span>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-      )}
-
-      {r.custo && (
-        <p className={`text-xs ${TEXT_SECONDARY}`}>
-          <span className="text-[#f5f5f7]">{r.custo.rotulo}:</span> {r.custo.texto}
-        </p>
-      )}
-    </section>
-  );
-}
-
-// ── Página ───────────────────────────────────────────────────────────────────
 export default function Decisoes() {
   const [doc, setDoc] = useState<Doc | null>(null);
   const [respostas, setRespostas] = useState<Record<string, Resposta>>({});
@@ -617,22 +536,12 @@ export default function Decisoes() {
           </div>
         ) : (
           <>
-            <section className="flex flex-col gap-3 max-w-4xl">
-              <p className={`text-sm ${TEXT_SECONDARY} leading-relaxed`}>{doc.intro}</p>
-              <p className={`text-xs ${TEXT_TERTIARY} leading-relaxed`}>
-                Como responder: toque numa opção — ela já fica salva. O comentário salva quando você sai do campo
-                (ou em “Salvar comentário”). Dá pra mudar qualquer resposta depois. Toque numa foto para ampliar.
-              </p>
-            </section>
-
             {erroRespostas && (
               <p role="alert" className="text-xs text-[#ffaa00] rounded-lg border border-[rgba(255,170,0,0.3)] bg-[rgba(255,170,0,0.08)] px-3 py-2">
                 Não consegui carregar as respostas que você já deu. O que você responder agora é salvo normalmente —
                 atualize a página para ver as anteriores.
               </p>
             )}
-
-            <ResumoCard r={doc.resumo} />
 
             {doc.secoes.map((s) => {
               const feitas = s.perguntas.filter((p) => respondida(p.id)).length;
