@@ -1,0 +1,1186 @@
+{
+  "gerado_em": "2026-10-20T17:03:03+00:00",
+  "fonte": "src/build/decisoes_spec.json",
+  "chave_voto": "decisao:<id_da_pergunta>",
+  "titulo": "Decisões pendentes — Sundek",
+  "intro": "Ajustamos a IA da Sundek com base no seu feedback (nome amarelo no bolso, botão, sem elástico, lotes). Medimos tudo contra o gabarito: compráveis bons descartados por engano caíram de 12 para 1 em 40. Agora precisamos que você decida alguns pontos — são regras de negócio e alguns rótulos do gabarito que se contradizem. Para cada pergunta, escolha uma opção e, se quiser, deixe um comentário.",
+  "resumo": {
+    "titulo": "O que mudou com os ajustes",
+    "destaques": [
+      {
+        "rotulo": "Compráveis bons descartados por engano",
+        "antes": "12 de 40",
+        "depois": "1 de 40"
+      },
+      {
+        "rotulo": "Decisão igual à humana — gabarito Sundek",
+        "antes": "94%",
+        "depois": "98%"
+      },
+      {
+        "rotulo": "Decisão igual à humana — compráveis",
+        "antes": "70%",
+        "depois": "93%"
+      },
+      {
+        "rotulo": "Ruins que passaram (gabarito Sundek)",
+        "antes": "1",
+        "depois": "0"
+      }
+    ],
+    "criterios_titulo": "Acerto por critério (Sundek)",
+    "criterios": [
+      {
+        "criterio": "Listra",
+        "antes": "82%",
+        "depois": "93%"
+      },
+      {
+        "criterio": "Fechamento",
+        "antes": "69%",
+        "depois": "76%",
+        "nota": "os erros restantes são quase todos rótulo — ver pergunta de fechamento",
+        "pergunta": "fechamento_cordao"
+      },
+      {
+        "criterio": "Cor",
+        "antes": "75%",
+        "depois": "81%"
+      },
+      {
+        "criterio": "Tipo",
+        "antes": "85%",
+        "depois": "91%"
+      },
+      {
+        "criterio": "Nome no bolso",
+        "antes": "87%",
+        "depois": "92%",
+        "nota": "compráveis 74% → 95%"
+      },
+      {
+        "criterio": "Bicolor",
+        "antes": "90%",
+        "depois": "95%"
+      }
+    ],
+    "custo": {
+      "rotulo": "Custo em produção",
+      "texto": "Praticamente igual (~US$42/mês Sundek)"
+    }
+  },
+  "total_perguntas": 19,
+  "secoes": [
+    {
+      "id": "regras",
+      "titulo": "Regras de compra",
+      "perguntas": [
+        {
+          "id": "fluo_nome",
+          "titulo": "Patch FLUO (amarelo, lima, rosa) sempre tem o nome SUNDEK bordado?",
+          "contexto": "O nome vem bordado na mesma cor do patch e quase não aparece na foto. A IA dizia 'sem nome' e descartava como coleção antiga. JÁ ESTÁ VALENDO: patch fluo conta como 'tem nome'. Confirme se é sempre assim.",
+          "status": "ja_aplicado",
+          "opcoes": [
+            "Sim, patch fluo sempre tem nome",
+            "Não — existe fluo sem nome (coleção antiga)",
+            "Não sei"
+          ],
+          "itens": [
+            {
+              "id": "cs03",
+              "origem": "gabarito",
+              "titulo": "Sundek (comprável)",
+              "url": null,
+              "preco": null,
+              "fotos": [
+                "/gabarito_fotos/cs03/0.jpeg",
+                "/gabarito_fotos/cs03/1.jpeg"
+              ]
+            },
+            {
+              "id": "cs17",
+              "origem": "gabarito",
+              "titulo": "Sundek (comprável)",
+              "url": null,
+              "preco": null,
+              "fotos": [
+                "/gabarito_fotos/cs17/0.jpeg",
+                "/gabarito_fotos/cs17/1.jpeg"
+              ]
+            },
+            {
+              "id": "cs21",
+              "origem": "gabarito",
+              "titulo": "Sundek (comprável)",
+              "url": null,
+              "preco": null,
+              "fotos": [
+                "/gabarito_fotos/cs21/0.jpeg",
+                "/gabarito_fotos/cs21/1.jpeg"
+              ]
+            },
+            {
+              "id": "9877681046",
+              "origem": "coleta",
+              "titulo": "costume uomo Sundek",
+              "url": "https://www.vinted.es/items/9877681046-costume-uomo-sundek",
+              "preco": "5,00 €",
+              "fotos": [
+                "https://images1.vinted.net/t/02_02066_LEhzxxKWcJfTRcuiPtSxDUCJ/f800/1788453485.webp?s=dd90cffab20ef806b3307bfe1b05a65f9fd1af41",
+                "https://images1.vinted.net/t/02_003c4_NxpgKoAFsEXmJkGPFLz8mfvs/f800/1788453485.webp?s=44f1e0dde40f1b46a1d87422623d3d61e800f4b2",
+                "https://images1.vinted.net/t/04_01c6e_2BAGn7Bsumifntzv2D7bJqnM/f800/1788453485.webp?s=f8e5a953fec769f7ee61d4920f68d32ed5c87d42",
+                "https://images1.vinted.net/t/03_013de_ZXukLUBwE6Pmvd5YotWNjLyy/f800/1788453485.webp?s=01a2b64a5fc5e8ebd6af9e368c5e0832feac240a"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "patch_claro",
+          "titulo": "E patch CLARO/creme tom sobre tom (ícone e nome da mesma cor do patch)? Tem nome?",
+          "contexto": "Mesmo fenômeno do fluo, mas em patch creme/azul-claro. Hoje a IA às vezes diz 'sem nome' e descarta.",
+          "status": "pendente",
+          "opcoes": [
+            "Sim, tem nome (tratar como o fluo)",
+            "Não, é coleção antiga (descartar)",
+            "Depende — quero ver caso a caso"
+          ],
+          "itens": [
+            {
+              "id": "9390125021",
+              "origem": "coleta",
+              "titulo": "Costume Sundek",
+              "url": "https://www.vinted.es/items/9390125021-costume-sundek",
+              "preco": "20,00 €",
+              "fotos": [
+                "https://images1.vinted.net/t/06_0161f_nV49YDZG3Yq4m85TgqqhHtY5/f800/1783953839.webp?s=e67b7f9fdca657358c5db7ad9806fdf4d8be1161",
+                "https://images1.vinted.net/t/06_00ed6_eY8A5JMNdaxKVrY5sdhyvQp4/f800/1783953839.webp?s=0fd9778ab396e6f60c058b60e4ae0b852b3e823f",
+                "https://images1.vinted.net/t/05_00fac_9dt46TcsCtt8w6VsADJ9V6gd/f800/1783953839.webp?s=bd46c873730889f7286fb139004999f8a9d668e6"
+              ]
+            },
+            {
+              "id": "9708706773",
+              "origem": "coleta",
+              "titulo": "Costume uomo Sundek grigio tg 32",
+              "url": "https://www.vinted.es/items/9708706773-costume-uomo-sundek-grigio-tg-32",
+              "preco": "15,00 €",
+              "fotos": [
+                "https://images1.vinted.net/t/06_0048f_3uwRxHy7215pLiExq1r5nk1u/f800/1787142157.webp?s=4e4a5dd9a48e734e75772f0bdf879e489acfe0c8",
+                "https://images1.vinted.net/t/04_00ca5_enihR2yqBkJM7nKoLaAr5T25/f800/1787142157.webp?s=596ee2f3d6fe662651b2f71bbb3ec077b4e10611",
+                "https://images1.vinted.net/t/02_01ea8_8MrArYvmf1NUJ4KBEitEK9m8/f800/1787142157.webp?s=64bae5382c9cb70b2cdb793f9f0cb01740c87f59"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "sem_elastico",
+          "titulo": "Short SEM elástico: quais cores ainda valem?",
+          "contexto": "JÁ ESTÁ VALENDO o seu pedido: só preto e branco (marinho saiu). Observação: nos 13 preto/branco sem elástico em que você votou, você marcou 'não gostei' em 12 — mas os seus comentários foram 'coleção antiga', 'listras feias', 'antigo', não a falta de elástico. Exemplos abaixo.",
+          "status": "ja_aplicado",
+          "opcoes": [
+            "Só preto e branco (como está agora)",
+            "Nenhum sem elástico",
+            "Preto, branco e marinho (como era antes)"
+          ],
+          "itens": [
+            {
+              "id": "9336876389",
+              "origem": "coleta",
+              "titulo": "Sundek 34",
+              "url": "https://www.vinted.es/items/9336876389-sundek-34",
+              "preco": "12,00 €",
+              "fotos": [
+                "https://images1.vinted.net/t/06_00b7c_KCMA8hQNNBMVxpUiQRb3MVrN/f800/1783352724.webp?s=1fe5b5eb13d4dff7cdd6297ab813213f0844303b",
+                "https://images1.vinted.net/t/04_00c0c_a82nGecgSFj4PiQpMoJSS3sj/f800/1783352724.webp?s=b38025be71fecdb5189b754786d26ddfb1cbeed6",
+                "https://images1.vinted.net/t/05_00afa_JXE3fRp9RczDR4jVYRJ3jWHC/f800/1783352724.webp?s=4cd5853e36893cdf6e2af2693bc9983547441000",
+                "https://images1.vinted.net/t/06_00ad9_qontbCcvTmu2msNYW8QhSCds/f800/1783352724.webp?s=799ec401547bdb5a3be38319bc485b0845ea362b"
+              ]
+            },
+            {
+              "id": "9344566075",
+              "origem": "coleta",
+              "titulo": "Costume sundek",
+              "url": "https://www.vinted.es/items/9344566075-costume-sundek",
+              "preco": "8,00 €",
+              "fotos": [
+                "https://images1.vinted.net/t/06_014db_2yuvZmtwWwAzBDF8hyqxm5ak/f800/1783436810.webp?s=d2b284f091e96dd0dd37af448cf81e94105222c0",
+                "https://images1.vinted.net/t/06_008f9_BYtLwQupjs7GtJ2TEtiS1nCm/f800/1783436810.webp?s=77b94bd541e1b326cc547a6b54466024d3516a4d",
+                "https://images1.vinted.net/t/05_013ea_QFwB8RkbokdLmwaDKhzMSfqN/f800/1783436810.webp?s=2f66bee24cfd2dd31c4acfe9b1726ec79d6788cf",
+                "https://images1.vinted.net/t/04_007f7_UPHAdBCP2G9THEnnCGhpUWPC/f800/1783436810.webp?s=dd27e4e04dec539ea7fb1240bd1fe55a69bfdc3c"
+              ]
+            },
+            {
+              "id": "9350308113",
+              "origem": "coleta",
+              "titulo": "Maillot de bain short homme Sundek",
+              "url": "https://www.vinted.es/items/9350308113-maillot-de-bain-short-homme-sundek",
+              "preco": "12,00 €",
+              "fotos": [
+                "https://images1.vinted.net/t/06_011d6_BRgV4KkBqazbXU8y5WY56pnd/f800/1783507460.webp?s=76162bb151fa951ef934d71652890c1699e76a45",
+                "https://images1.vinted.net/t/01_007bf_CMKCcKJKEEnZJKFHEb27BiZr/f800/1783507460.webp?s=e24acad7a3d7680be134f9178c44e34b28257803",
+                "https://images1.vinted.net/t/05_01fa0_MnHLJyaM7RzcfzTiBqyjWE8R/f800/1783507460.webp?s=57dc46586bc7e3e99e19a7bf9235b3541e9b195a",
+                "https://images1.vinted.net/t/06_00e7f_5g1zJjfekprjRJX7hThg42Lp/f800/1783507460.webp?s=a94b02ce7751bc00b944e9828a4eec0a40433d27"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "rosa_choque",
+          "titulo": "Rosa choque / pink: aceitável?",
+          "contexto": "Seu manual diz 'aceitáveis: rosa choque'. A IA às vezes dava 'ruim' (excluía). JÁ ESTÁ VALENDO: pink/rosa choque = cor 'ok' (pontua menos, mas não é descartado só pela cor).",
+          "status": "ja_aplicado",
+          "opcoes": [
+            "Aceitável (como está agora)",
+            "Descartar sempre",
+            "Só se o preço for muito bom"
+          ],
+          "itens": [
+            {
+              "id": "cs41",
+              "origem": "gabarito",
+              "titulo": "Sundek (comprável)",
+              "url": null,
+              "preco": null,
+              "fotos": [
+                "/gabarito_fotos/cs41/0.jpeg",
+                "/gabarito_fotos/cs41/1.jpeg"
+              ]
+            },
+            {
+              "id": "9279287531",
+              "origem": "coleta",
+              "titulo": "Maillot de bain sundek",
+              "url": "https://www.vinted.es/items/9279287531-maillot-de-bain-sundek",
+              "preco": "17,99 €",
+              "fotos": [
+                "https://images1.vinted.net/t/06_010a7_MuaNcu7hKhDwV1esQNfqDSRv/f800/1782729020.webp?s=b9faac61cf7653dba5fdf91aad049302a5fca79c",
+                "https://images1.vinted.net/t/06_017bc_FRoURBDSZPe4f7kywvMtov9k/f800/1782729020.webp?s=8689efc6237c57e33cabe79dd0f70eacaf84a353",
+                "https://images1.vinted.net/t/05_018fd_cQwi8dyQzgakjvwCeHtUft8M/f800/1782729020.webp?s=ee761b854194013202e0287b9d2857a5a4d5547a",
+                "https://images1.vinted.net/t/03_001f1_aThz2Tym5KvhBPFgXu5LCoJb/f800/1782729020.webp?s=7d3940137c35243bb07f74577e5ceccb04894554"
+              ]
+            },
+            {
+              "id": "9334193190",
+              "origem": "coleta",
+              "titulo": "Maillot Sundek",
+              "url": "https://www.vinted.es/items/9334193190-maillot-sundek",
+              "preco": "6,00 €",
+              "fotos": [
+                "https://images1.vinted.net/t/04_012f9_rY2VjksE1gMTYqjfT69LJL93/f800/1783335523.webp?s=2687e167c14582d04c694782ef22818e03862e56",
+                "https://images1.vinted.net/t/01_00fb0_hLKC9VCwhDnhtNPeSE8orHpp/f800/1783335523.webp?s=86bf68af9b3da3d2d558141c1ad5576547ea3de6",
+                "https://images1.vinted.net/t/05_025f0_n9uxvgn3mzi9PmhM6Nd48Enc/f800/1783335523.webp?s=76aabdf8ba3d6631ea2ed57cbfcdbf7a03788cbd",
+                "https://images1.vinted.net/t/06_01b9f_tDQhANe2hbHo9CJ4qrCQrzQ3/f800/1783335523.webp?s=8e00dc85e3bb23038228c2b1b35e036a63c6717f"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "verde_limao",
+          "titulo": "Verde-limão com listra azul/branca: compraria?",
+          "contexto": "O manual diz que fluorescente é ruim, mas o cs35 (verde-limão com listra azul/branca) está entre os seus compráveis. Hoje a IA descarta. Temos a correção pronta, esperando a sua resposta.",
+          "status": "pendente",
+          "opcoes": [
+            "Sim, com listra azul/branca vale",
+            "Não, verde-limão é sempre ruim"
+          ],
+          "itens": [
+            {
+              "id": "cs35",
+              "origem": "gabarito",
+              "titulo": "Sundek (comprável)",
+              "url": null,
+              "preco": null,
+              "fotos": [
+                "/gabarito_fotos/cs35/0.jpeg",
+                "/gabarito_fotos/cs35/1.jpeg"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "faixa_unica",
+          "titulo": "Faixa de UMA cor só na costura lateral conta como a listra Sundek?",
+          "contexto": "Hoje conta (regra de junho). Exemplos abaixo — um deles você mesmo chamou de 'sem listra'. A listra clássica é o arco de 2+ cores nas costas.",
+          "status": "pendente",
+          "opcoes": [
+            "Conta (como está)",
+            "Não conta — exigir 2 cores ou mais",
+            "Depende da cor"
+          ],
+          "itens": [
+            {
+              "id": "9384140885",
+              "origem": "coleta",
+              "titulo": "Costume da bagno, uomo, Sundek, tg S, come nuovo, con misure in descrizione.",
+              "url": "https://www.vinted.es/items/9384140885-costume-da-bagno-uomo-sundek-tg-s-come-nuovo-con-misure-in-descrizione",
+              "preco": "9,90 €",
+              "fotos": [
+                "https://images1.vinted.net/t/04_00f50_NsoFosp2K6nvfNXP12wfGT3P/f800/1783879266.webp?s=2aca10a3075151cbda690fa5e750b1364c4e8c55",
+                "https://images1.vinted.net/t/05_01bee_NbZkZEiaaWTqhooPbyTkhPLE/f800/1783879266.webp?s=283fcefb36bea2b408bb13ba28b2d5335c56ae67",
+                "https://images1.vinted.net/t/02_00215_29kyWoY3BA5megiBxbAB3M31/f800/1783879266.webp?s=cba2adc6fa359b8f57d4f798a769ce0addff5e82",
+                "https://images1.vinted.net/t/02_01577_VawEBExu7zEaUQoyEVCjGsYT/f800/1783879266.webp?s=afb9e7d0c04e54f36e0b727733cc59eeaa0a5213"
+              ]
+            },
+            {
+              "id": "9643733799",
+              "origem": "coleta",
+              "titulo": "Costume da bagno uomo Sundek, taglia L",
+              "url": "https://www.vinted.es/items/9643733799-costume-da-bagno-uomo-sundek-taglia-l",
+              "preco": "6,00 €",
+              "fotos": [
+                "https://images1.vinted.net/t/06_01789_np9HYVF4B83e3CrvZycRdhbb/f800/1786540728.webp?s=341e632741bafc8943f6f9109d0036e0fe2fa906",
+                "https://images1.vinted.net/t/06_01566_JgG5tiFt22UZrTfkMbktDrpZ/f800/1786540728.webp?s=d06c277519e4f131d52ffd93ac565e02243a4d93",
+                "https://images1.vinted.net/t/04_01819_LRKwoszD8W9Zv5KWVzabVBHD/f800/1786540728.webp?s=bc02c96c256f471369783211bf95deccf181c154",
+                "https://images1.vinted.net/t/01_00a8c_nR6xJ4iAhhg4ujFh6ZsKUsyk/f800/1786540728.webp?s=8378911dbb049884119f9b63d2c23f3b15802b93"
+              ]
+            },
+            {
+              "id": "9672517285",
+              "origem": "coleta",
+              "titulo": "Bañador Sundek hombre gris con detalles verde flúor talla S",
+              "url": "https://www.vinted.es/items/9672517285-banador-sundek-hombre-gris-con-detalles-verde-fluor-talla-s",
+              "preco": "20,00 €",
+              "fotos": [
+                "https://images1.vinted.net/t/05_00bd3_FwwUPnm9Voz67dZk4Yqcxg6B/f800/1786825984.webp?s=db4aefa3f56a200d5f9218d611d290fd3c45d42f",
+                "https://images1.vinted.net/t/05_00d6b_Ku7AQVe163MJwgdcjdmQrR1e/f800/1786825984.webp?s=8f40d4797eac6198c2b0e0b18eec46a4f5cb4af0",
+                "https://images1.vinted.net/t/03_0222c_xc22swR4inDda1chGZM8G7uA/f800/1786825984.webp?s=aad6003f8a4e0be3270c083b118de53205b4e742"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "listras_feias",
+          "titulo": "Listras em bege, dourado ou prata: descartar?",
+          "contexto": "Você comentou 'listras feias' nesses. A IA detecta a listra corretamente; falta a regra de quais cores de listra são ruins.",
+          "status": "pendente",
+          "opcoes": [
+            "Descartar listra bege/dourado/prata",
+            "Só penalizar (cai para médio)",
+            "Não importa"
+          ],
+          "itens": [
+            {
+              "id": "9317079207",
+              "origem": "coleta",
+              "titulo": "Costume Sundek",
+              "url": "https://www.vinted.es/items/9317079207-costume-sundek",
+              "preco": "9,00 €",
+              "fotos": [
+                "https://images1.vinted.net/t/06_01245_rjRgJfE6CriGMvdf7ihJrjrz/f800/1783162316.webp?s=e6788eb68f29f645de9e75e81f8aceef17a434b7",
+                "https://images1.vinted.net/t/01_00d34_3N8TSJNF4xySgCTrcscSFZNt/f800/1783162316.webp?s=a6c8bd672bf5a7062aceb6ac1e20fdbf1c4473d0",
+                "https://images1.vinted.net/t/06_00e70_Ajw1dg52MqJjwoaRMLtRdjdc/f800/1783162316.webp?s=28144327bccc90e2d5896902851fef3e18d7cea0"
+              ]
+            },
+            {
+              "id": "9344566075",
+              "origem": "coleta",
+              "titulo": "Costume sundek",
+              "url": "https://www.vinted.es/items/9344566075-costume-sundek",
+              "preco": "8,00 €",
+              "fotos": [
+                "https://images1.vinted.net/t/06_014db_2yuvZmtwWwAzBDF8hyqxm5ak/f800/1783436810.webp?s=d2b284f091e96dd0dd37af448cf81e94105222c0",
+                "https://images1.vinted.net/t/06_008f9_BYtLwQupjs7GtJ2TEtiS1nCm/f800/1783436810.webp?s=77b94bd541e1b326cc547a6b54466024d3516a4d",
+                "https://images1.vinted.net/t/05_013ea_QFwB8RkbokdLmwaDKhzMSfqN/f800/1783436810.webp?s=2f66bee24cfd2dd31c4acfe9b1726ec79d6788cf",
+                "https://images1.vinted.net/t/04_007f7_UPHAdBCP2G9THEnnCGhpUWPC/f800/1783436810.webp?s=dd27e4e04dec539ea7fb1240bd1fe55a69bfdc3c"
+              ]
+            },
+            {
+              "id": "9363216769",
+              "origem": "coleta",
+              "titulo": "Costume da bagno",
+              "url": "https://www.vinted.es/items/9363216769-costume-da-bagno",
+              "preco": "4,99 €",
+              "fotos": [
+                "https://images1.vinted.net/t/02_01a98_G84cWjg1Uf226ngJE59ESBkW/f800/1783633995.webp?s=e8e13a60d46192a6c626a88f72849228cd273d03",
+                "https://images1.vinted.net/t/03_00a6e_KEFEr7r5XSXN4cA8yiGHm9ps/f800/1783633995.webp?s=80f31fdd9de51c9cf57bb5c1edf3a11dc70373fe",
+                "https://images1.vinted.net/t/01_01b01_yoXHxQQi92QwfPsh3QykeibN/f800/1783633995.webp?s=f4fc35937f48ff547eadd3b22dcda95de0239674",
+                "https://images1.vinted.net/t/02_02510_QKu58VDdUSjZSXcbkmZm1enQ/f800/1783633995.webp?s=d60b1c75414b97a664ce0e46ca20e71b2b4bd18f"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "lotes",
+          "titulo": "Anúncio com várias peças (lote): descartar sempre?",
+          "contexto": "JÁ ESTÁ VALENDO: lote é descartado (ex.: 'Set 3', '2 costumi', short + sunga).",
+          "status": "ja_aplicado",
+          "opcoes": [
+            "Descartar sempre (como está)",
+            "Mostrar como barganha"
+          ],
+          "itens": [
+            {
+              "id": "9314243074",
+              "origem": "coleta",
+              "titulo": "Set 3 taglia S Costumi pari al nuovo",
+              "url": "https://www.vinted.es/items/9314243074-set-3-taglia-s-costumi-pari-al-nuovo",
+              "preco": "8,40 €",
+              "fotos": [
+                "https://images1.vinted.net/t/04_00412_P3RSv3uMVDpbrjkAUd3gneJv/f800/1783109336.webp?s=cc9dfa909fca188f29a4df21315760fd61475f3f",
+                "https://images1.vinted.net/t/06_01cbc_nqF9GJ8caxKYqo9oso665wJT/f800/1783109336.webp?s=28d2953414ca0238cdf458f18f45380ac6450274",
+                "https://images1.vinted.net/t/06_00b37_ajQYGrGfST7y9ZYif6sH9nTi/f800/1783109336.webp?s=09bbb9ccf26b50e8a11e44e4f9f8c3866416539c",
+                "https://images1.vinted.net/t/01_02524_66vqfo7uqA7DPRvwXxhamwEd/f800/1783109336.webp?s=14544f762e1812d6d21e2098373eaa69bc38d936"
+              ]
+            },
+            {
+              "id": "9526345091",
+              "origem": "coleta",
+              "titulo": "Sundek 2 costumi uomo",
+              "url": "https://www.vinted.es/items/9526345091-sundek-2-costumi-uomo",
+              "preco": "10,00 €",
+              "fotos": [
+                "https://images1.vinted.net/t/05_0228a_wm89md9vnW31Z7acgHsF8d19/f800/1785359796.webp?s=4e16d183f55224b9eeb7ee7e4eaa42c684b67dd7",
+                "https://images1.vinted.net/t/06_00052_NhifNTadSEwfBV9Z7Sh85wCy/f800/1785359796.webp?s=63aef8296878691e2c72aeeffdaad7dc7eee3b4e",
+                "https://images1.vinted.net/t/05_005ca_79cuZbHBUG7vBcsqQnoMjQY8/f800/1785359796.webp?s=bf879d38c2688d029c2a401ecf3fde6dde94239f",
+                "https://images1.vinted.net/t/06_0223d_MZNXKgTQKn2oAoXW98ewYmvk/f800/1785359796.webp?s=17b59a29b89680dc1d3e567eb67af01cbea363cb"
+              ]
+            },
+            {
+              "id": "9736468346",
+              "origem": "coleta",
+              "titulo": "Costume SUNDEK - nero",
+              "url": "https://www.vinted.es/items/9736468346-costume-sundek-nero",
+              "preco": "25,00 €",
+              "fotos": [
+                "https://images1.vinted.net/t/06_0211f_yrYfo6jFyuLT3HtmTnBjQkNn/f800/1787384561.webp?s=aff6c87ae223415f8fd2341893ce3d9d40191db2",
+                "https://images1.vinted.net/t/06_023d5_h97SY1stfBLMvLLVXgUgAuFd/f800/1787384561.webp?s=ead6533454496fe45d3873bee313dcb59e018c71",
+                "https://images1.vinted.net/t/04_016ad_3NdvHAwy3qCi1KQn1pqKWw7p/f800/1787384561.webp?s=40908dc75841ea23bc00c70b4187427b9c62f6ff",
+                "https://images1.vinted.net/t/02_0217e_ZLf4LAmtQMmVqnPWrBcAgaRz/f800/1787384561.webp?s=6c62aa6e557586a74bf71677680f53e1006c31e8"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "moletom",
+          "titulo": "Short de moletom (não é de banho): descartar?",
+          "contexto": "Hoje passa, porque o prompt aceita 'bermuda'.",
+          "status": "pendente",
+          "opcoes": [
+            "Descartar",
+            "Manter"
+          ],
+          "itens": [
+            {
+              "id": "10281583413",
+              "origem": "coleta",
+              "titulo": "Pantaloncini sundek blu scuro",
+              "url": "https://www.vinted.es/items/10281583413-pantaloncini-sundek-blu-scuro",
+              "preco": "4,00 €",
+              "fotos": [
+                "https://images1.vinted.net/t/06_015ed_gYAuRX33jP4TAvwgAwfKwhwx/f800/f13ea6cf.webp?s=b9c482ba75d19d6241103a6bf8c631856acdcdae",
+                "https://images1.vinted.net/t/02_00b93_xjNrfz1zbxVC5GsR7JXqnVnk/f800/5cc9d796.webp?s=756c18dfdfbdb39f19102e7faa9747820911228a",
+                "https://images1.vinted.net/t/04_0125f_LMomnrdoM9tg1y3QyXi1XFiu/f800/1f99abc2.webp?s=6187351896abc22ddab61503640f573bd7331744",
+                "https://images1.vinted.net/t/02_021b5_45xZuHyqygeZ4w1oAN7vT1Mb/f800/adeecc8a.webp?s=6b978b8a09728c8bbb9b1a8ba693a9eb5cc3edbd"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "desbotado_borda",
+          "titulo": "Short com só umas marquinhas visíveis num close-up: é 'desbotado'?",
+          "contexto": "Hoje a IA descarta como desbotado. O gabarito diz que não é. Temos uma correção testada (segunda opinião só nesses casos) que solta esses itens, mas também deixaria passar 2 de 18 desbotados reais com cor gasta sutil.",
+          "status": "pendente",
+          "opcoes": [
+            "Não é desbotado — pode passar",
+            "É desbotado — descartar",
+            "Depende do preço"
+          ],
+          "itens": [
+            {
+              "id": "9280328167",
+              "origem": "gabarito",
+              "titulo": "Maillot short, Sundek",
+              "url": "https://www.vinted.es/items/9280328167-maillot-short-sundek",
+              "preco": "21,70 €",
+              "fotos": [
+                "/gabarito_fotos/9280328167/0.webp",
+                "/gabarito_fotos/9280328167/1.webp",
+                "/gabarito_fotos/9280328167/2.webp",
+                "/gabarito_fotos/9280328167/3.webp"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "goldenwave",
+          "titulo": "Sundek Goldenwave (linha premium) interessa?",
+          "contexto": "Antes a IA descartava como 'outra marca'. JÁ ESTÁ VALENDO: Goldenwave conta como Sundek.",
+          "status": "ja_aplicado",
+          "opcoes": [
+            "Sim, interessa (como está)",
+            "Não, descartar Goldenwave"
+          ],
+          "itens": [
+            {
+              "id": "9282732909",
+              "origem": "coleta",
+              "titulo": "Shorts sundek Limited Edition",
+              "url": "https://www.vinted.es/items/9282732909-shorts-sundek-limited-edition",
+              "preco": "33,00 €",
+              "fotos": [
+                "https://images1.vinted.net/t/05_01157_fRjAfCgDssY88m3nHnxaETRM/f800/1782753092.webp?s=7209accae9004b27d39a8d826417d4440eddbe8e",
+                "https://images1.vinted.net/t/04_00277_yV1wrVJNiPBTNfh7Y5nx7QgP/f800/1782753092.webp?s=2ce3da516ee7994fc15b3a6ae4fd2d0cc601702a",
+                "https://images1.vinted.net/t/05_017b1_vATi45x8aFEd7yoLfovaFKkc/f800/1782753092.webp?s=1634650d0f605cab4a7a92028bf0f4051f7442f7",
+                "https://images1.vinted.net/t/05_006c1_5dhi2DuXRHDGxQL31FnW6stN/f800/1782753092.webp?s=035ba02f29489216857635a83379b08f9fc32d1f"
+              ]
+            },
+            {
+              "id": "9302701676",
+              "origem": "coleta",
+              "titulo": "Sundek Costume Uomo Tie-Dye Nero Arancio – Goldenwave Boardshort taglia S",
+              "url": "https://www.vinted.es/items/9302701676-sundek-costume-uomo-tie-dye-nero-arancio-goldenwave-boardshort-taglia-s",
+              "preco": "27,50 €",
+              "fotos": [
+                "https://images1.vinted.net/t/05_01e0f_Y1bSydP53Qtrmb3AuguqCnbA/f800/1782992280.webp?s=1037eadcc7afd21cd8fe8c41a0cf654feddb6170",
+                "https://images1.vinted.net/t/05_00d4b_BkJAD5swvTbGCDmZ3aqn9CUf/f800/1782992280.webp?s=dd2001edd9f5e3edaeb406852577a307cd126197",
+                "https://images1.vinted.net/t/05_01fda_2VfAhY9KxtnzsPfK91swyVLB/f800/1782992280.webp?s=3e000c7a9df2a5a47cd91e0e04d0a755953cbeca",
+                "https://images1.vinted.net/t/03_017a7_Ad2HS5qhMr559vHNEcD48SjE/f800/1782992280.webp?s=7af72cc4eef0c39e7cfccee7e9eb241237d01d4e"
+              ]
+            },
+            {
+              "id": "9308851127",
+              "origem": "coleta",
+              "titulo": "Maillot Sundek Goldenwave",
+              "url": "https://www.vinted.es/items/9308851127-maillot-sundek-goldenwave",
+              "preco": "13,90 €",
+              "fotos": [
+                "https://images1.vinted.net/t/05_02129_8kbB2Pg3DgHiRgNbU3DwYHGV/f800/1783067333.webp?s=0c2741f3bc9f6f9ad57d741e9b6a4eb9c4bec1de",
+                "https://images1.vinted.net/t/05_00ea2_j7vvCJZMqNaMq2DQC7xCjLyQ/f800/1783067333.webp?s=52186259fac01996e7910e2ce8d215aa96b33961",
+                "https://images1.vinted.net/t/04_01422_ZWpVrWWdBgVJ5AgqKiScYSVw/f800/1783067333.webp?s=a2f8d1d8666701c6f96965fbd97ea72968bad63d",
+                "https://images1.vinted.net/t/06_011c4_6ji2iavr9UE9kNL3VyFHgN16/f800/1783067333.webp?s=8b657cd19a783a5489644f5a302ead39f2038257"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "etiqueta_m520",
+          "titulo": "A etiqueta interna M520… indica SEMPRE o modelo com botão de pressão (snap) na braguilha?",
+          "contexto": "Nos casos de botão que você marcou, a etiqueta interna começa com M520 (ex.: M520BDTA100); nos sem botão vimos M502/M504. Se for sempre assim, dá para usar a etiqueta como pista para pegar os botões que a foto não mostra bem.",
+          "status": "pendente",
+          "opcoes": [
+            "Sim, M520 é sempre o modelo com snap",
+            "Não, há M520 sem snap",
+            "Não sei"
+          ],
+          "itens": [
+            {
+              "id": "9682987080",
+              "origem": "coleta",
+              "titulo": "Costume da uomo sundek",
+              "url": "https://www.vinted.es/items/9682987080-costume-da-uomo-sundek",
+              "preco": "15,00 €",
+              "fotos": [
+                "https://images1.vinted.net/t/04_01e82_HwcYJfiQiLzeyBpXgoDxYqkY/f800/1786909013.webp?s=b46de3370b0804e6fe6fa3ee3dbb94feb0faf283",
+                "https://images1.vinted.net/t/03_00240_Qo8ZXtBzukVama3h68mm5EvK/f800/1786909013.webp?s=40964eea67815d21db5d3bf47a856146f72204aa",
+                "https://images1.vinted.net/t/06_007c5_papRmToBW3uHPHznegm8mSNc/f800/1786909013.webp?s=0f25eb9f136544e0d4c86d54abb5ec6cd5331479",
+                "https://images1.vinted.net/t/04_01ed2_Jqr7v4Ke3dV71qjoHzDQkzrg/f800/1786909013.webp?s=acaf12a946607bc2912e45de1b4f28dac371f083",
+                "https://images1.vinted.net/t/06_01c9c_RgkxNZstUNhnwytHmLNDCNSC/f800/1786909013.webp?s=404483b0dfa5b04d7d528fd8f25d12733d59714b"
+              ]
+            },
+            {
+              "id": "9874196122",
+              "origem": "coleta",
+              "titulo": "Costume sundek",
+              "url": "https://www.vinted.es/items/9874196122-costume-sundek",
+              "preco": "20,00 €",
+              "fotos": [
+                "https://images1.vinted.net/t/02_012aa_ACGMQtGBHuK6ncCQeyenCn2f/f800/1788435341.webp?s=bccc404aa6577c6c2e958079e1ebbe00340e43b0",
+                "https://images1.vinted.net/t/02_024fe_REZVsj21tXQd9obprSvsYjtj/f800/1788435341.webp?s=917743be8aaa3bcc0f9105618aec2b3b9d20c50f",
+                "https://images1.vinted.net/t/02_01a1b_YUA3AUGhwKaZchef4P4U24m4/f800/1788435341.webp?s=5ddde25633e40c923d16a95b7255491251897506"
+              ]
+            },
+            {
+              "id": "9982424010",
+              "origem": "coleta",
+              "titulo": "Costume",
+              "url": "https://www.vinted.es/items/9982424010-costume",
+              "preco": "25,00 €",
+              "fotos": [
+                "https://images1.vinted.net/t/02_002de_hUEto6MrBk8vnCCkHfTTq6Up/f800/6241370b.webp?s=6cd44d2340dd36e1cd1f2dffb974fa8e2f7a1d1d",
+                "https://images1.vinted.net/t/02_0106b_Am8PYBNhpvBui6rdrwdXpLiq/f800/843e5517.webp?s=59c4b7141b187140f306401f43fe293d48c238ce",
+                "https://images1.vinted.net/t/02_00273_Rp73K9uRDTRtFkpQZHFDYesz/f800/f22f899e.webp?s=5b7e7342030ff3b9add38decf235e95522dcb1ee",
+                "https://images1.vinted.net/t/05_0033e_cBxeUrUgmsLXvNtXoMKJc5U5/f800/5bc7bc76.webp?s=1bc3461b255897e6a853925990638af82f6e1ad0",
+                "https://images1.vinted.net/t/04_01db7_BbiMcP8qcyEvWFvPAuphMard/f800/affc1bc8.webp?s=cf5bb986b7b631f0837b04b3953a464e2374c828"
+              ]
+            },
+            {
+              "id": "10046832419",
+              "origem": "coleta",
+              "titulo": "Costume pantaloncino sandek",
+              "url": "https://www.vinted.es/items/10046832419-costume-pantaloncino-sandek",
+              "preco": "8,00 €",
+              "fotos": [
+                "https://images1.vinted.net/t/06_01ea6_s86zuYQUXPjjsh9M1kSTUpfb/f800/b58a7f33.webp?s=c3124a107300e3f11bd217dd88a6a2704a0e8d1f",
+                "https://images1.vinted.net/t/05_00483_KbQGFE8jqrrMqetkZpyxjrQ5/f800/c6af6fce.webp?s=8ad969db05659e099f3d4e4c161818868a11b5ce",
+                "https://images1.vinted.net/t/06_00775_9VF7i4q3yHJ9txrztEQyYF2A/f800/72349425.webp?s=d1841c480a74ec4d9064bb59b68a5c22768a3cfb",
+                "https://images1.vinted.net/t/01_02061_cGBxWgvbJv9q5ntkH2sbXL4j/f800/98cfce19.webp?s=0e29c8fbd3a46501c28aa19fa9e3098659a47f9c"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gabarito",
+      "titulo": "Gabarito — rótulos que se contradizem",
+      "intro": "Itens muito parecidos receberam respostas diferentes no gabarito. A IA não tem como acertar os dois lados. Escolha a resposta certa para cada grupo — corrigimos o gabarito com base nisso.",
+      "perguntas": [
+        {
+          "id": "cor_navy",
+          "titulo": "Este azul marinho é 'maravilhoso' ou 'muito boa'?",
+          "contexto": "Grupo A (cs18, cs20, cs21) está como 'muito boa'; grupo B (cs33, cs37, cs42), o mesmo navy, está como 'maravilhoso'.",
+          "opcoes": [
+            "Todos maravilhoso",
+            "Todos muito boa",
+            "São diferentes (explique no comentário)"
+          ],
+          "grupos": [
+            {
+              "rotulo": "Grupo A — marcado 'muito boa'",
+              "itens": [
+                {
+                  "id": "cs18",
+                  "origem": "gabarito",
+                  "titulo": "Sundek (comprável)",
+                  "url": null,
+                  "preco": null,
+                  "fotos": [
+                    "/gabarito_fotos/cs18/0.jpeg",
+                    "/gabarito_fotos/cs18/1.jpeg"
+                  ]
+                },
+                {
+                  "id": "cs20",
+                  "origem": "gabarito",
+                  "titulo": "Sundek (comprável)",
+                  "url": null,
+                  "preco": null,
+                  "fotos": [
+                    "/gabarito_fotos/cs20/0.jpeg",
+                    "/gabarito_fotos/cs20/1.jpeg"
+                  ]
+                },
+                {
+                  "id": "cs21",
+                  "origem": "gabarito",
+                  "titulo": "Sundek (comprável)",
+                  "url": null,
+                  "preco": null,
+                  "fotos": [
+                    "/gabarito_fotos/cs21/0.jpeg",
+                    "/gabarito_fotos/cs21/1.jpeg"
+                  ]
+                }
+              ]
+            },
+            {
+              "rotulo": "Grupo B — marcado 'maravilhoso'",
+              "itens": [
+                {
+                  "id": "cs33",
+                  "origem": "gabarito",
+                  "titulo": "Sundek (comprável)",
+                  "url": null,
+                  "preco": null,
+                  "fotos": [
+                    "/gabarito_fotos/cs33/0.jpeg",
+                    "/gabarito_fotos/cs33/1.jpeg"
+                  ]
+                },
+                {
+                  "id": "cs37",
+                  "origem": "gabarito",
+                  "titulo": "Sundek (comprável)",
+                  "url": null,
+                  "preco": null,
+                  "fotos": [
+                    "/gabarito_fotos/cs37/0.jpeg",
+                    "/gabarito_fotos/cs37/1.jpeg"
+                  ]
+                },
+                {
+                  "id": "cs42",
+                  "origem": "gabarito",
+                  "titulo": "Sundek (comprável)",
+                  "url": null,
+                  "preco": null,
+                  "fotos": [
+                    "/gabarito_fotos/cs42/0.jpeg",
+                    "/gabarito_fotos/cs42/1.jpeg"
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "cor_grafite",
+          "titulo": "Este grafite/cinza chumbo é 'muito boa' ou 'boa'?",
+          "opcoes": [
+            "Todos muito boa",
+            "Todos boa",
+            "São diferentes (explique no comentário)"
+          ],
+          "grupos": [
+            {
+              "rotulo": "Grupo A — marcado 'boa'",
+              "itens": [
+                {
+                  "id": "cs28",
+                  "origem": "gabarito",
+                  "titulo": "Sundek (comprável)",
+                  "url": null,
+                  "preco": null,
+                  "fotos": [
+                    "/gabarito_fotos/cs28/0.jpeg",
+                    "/gabarito_fotos/cs28/1.jpeg"
+                  ]
+                },
+                {
+                  "id": "cs34",
+                  "origem": "gabarito",
+                  "titulo": "Sundek (comprável)",
+                  "url": null,
+                  "preco": null,
+                  "fotos": [
+                    "/gabarito_fotos/cs34/0.jpeg",
+                    "/gabarito_fotos/cs34/1.jpeg"
+                  ]
+                }
+              ]
+            },
+            {
+              "rotulo": "Grupo B — marcado 'muito boa'",
+              "itens": [
+                {
+                  "id": "cs02",
+                  "origem": "gabarito",
+                  "titulo": "Sundek (comprável)",
+                  "url": null,
+                  "preco": null,
+                  "fotos": [
+                    "/gabarito_fotos/cs02/0.jpeg",
+                    "/gabarito_fotos/cs02/1.jpeg"
+                  ]
+                },
+                {
+                  "id": "cs16",
+                  "origem": "gabarito",
+                  "titulo": "Sundek (comprável)",
+                  "url": null,
+                  "preco": null,
+                  "fotos": [
+                    "/gabarito_fotos/cs16/0.jpeg",
+                    "/gabarito_fotos/cs16/1.jpeg"
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "cor_royal",
+          "titulo": "Azul royal: qual tier?",
+          "opcoes": [
+            "muito boa",
+            "boa",
+            "ok",
+            "São diferentes (explique no comentário)"
+          ],
+          "grupos": [
+            {
+              "rotulo": "Marcado 'muito boa'",
+              "itens": [
+                {
+                  "id": "cs13",
+                  "origem": "gabarito",
+                  "titulo": "Sundek (comprável)",
+                  "url": null,
+                  "preco": null,
+                  "fotos": [
+                    "/gabarito_fotos/cs13/0.jpeg",
+                    "/gabarito_fotos/cs13/1.jpeg"
+                  ]
+                }
+              ]
+            },
+            {
+              "rotulo": "Marcado 'boa'",
+              "itens": [
+                {
+                  "id": "cs26",
+                  "origem": "gabarito",
+                  "titulo": "Sundek (comprável)",
+                  "url": null,
+                  "preco": null,
+                  "fotos": [
+                    "/gabarito_fotos/cs26/0.jpeg",
+                    "/gabarito_fotos/cs26/1.jpeg"
+                  ]
+                },
+                {
+                  "id": "cs27",
+                  "origem": "gabarito",
+                  "titulo": "Sundek (comprável)",
+                  "url": null,
+                  "preco": null,
+                  "fotos": [
+                    "/gabarito_fotos/cs27/0.jpeg",
+                    "/gabarito_fotos/cs27/1.jpeg"
+                  ]
+                },
+                {
+                  "id": "cs40",
+                  "origem": "gabarito",
+                  "titulo": "Sundek (comprável)",
+                  "url": null,
+                  "preco": null,
+                  "fotos": [
+                    "/gabarito_fotos/cs40/0.jpeg",
+                    "/gabarito_fotos/cs40/1.jpeg"
+                  ]
+                }
+              ]
+            },
+            {
+              "rotulo": "Marcado 'ok'",
+              "itens": [
+                {
+                  "id": "cs05",
+                  "origem": "gabarito",
+                  "titulo": "Sundek (comprável)",
+                  "url": null,
+                  "preco": null,
+                  "fotos": [
+                    "/gabarito_fotos/cs05/0.jpeg",
+                    "/gabarito_fotos/cs05/1.jpeg"
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "cor_roxo",
+          "titulo": "Roxo/violeta: 'ok' ou 'ruim'?",
+          "opcoes": [
+            "Os dois ok",
+            "Os dois ruim",
+            "São diferentes (explique no comentário)"
+          ],
+          "grupos": [
+            {
+              "rotulo": "Violeta — marcado 'ok'",
+              "itens": [
+                {
+                  "id": "9285757049",
+                  "origem": "gabarito",
+                  "titulo": "Shorts de bain Sundek",
+                  "url": "https://www.vinted.es/items/9285757049-shorts-de-bain-sundek",
+                  "preco": "32,19 €",
+                  "fotos": [
+                    "/gabarito_fotos/9285757049/0.webp",
+                    "/gabarito_fotos/9285757049/1.webp",
+                    "/gabarito_fotos/9285757049/2.webp",
+                    "/gabarito_fotos/9285757049/3.webp",
+                    "/gabarito_fotos/9285757049/4.webp"
+                  ]
+                }
+              ]
+            },
+            {
+              "rotulo": "Roxo — marcado 'ruim'",
+              "itens": [
+                {
+                  "id": "cs11",
+                  "origem": "gabarito",
+                  "titulo": "Sundek (comprável)",
+                  "url": null,
+                  "preco": null,
+                  "fotos": [
+                    "/gabarito_fotos/cs11/0.jpeg",
+                    "/gabarito_fotos/cs11/1.jpeg"
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "cor_marrom",
+          "titulo": "Este marrom acetinado é 'ruim'?",
+          "contexto": "Está como 'ruim' no gabarito; o manual diz que marrom é 'ok'.",
+          "opcoes": [
+            "ruim (manter)",
+            "ok",
+            "boa"
+          ],
+          "itens": [
+            {
+              "id": "9281059882",
+              "origem": "gabarito",
+              "titulo": "Bellissimi pantaloncini Sundek, originali. Taglia: S",
+              "url": "https://www.vinted.es/items/9281059882-bellissimi-pantaloncini-sundek-originali-taglia-s",
+              "preco": "42,70 €",
+              "fotos": [
+                "/gabarito_fotos/9281059882/0.webp",
+                "/gabarito_fotos/9281059882/1.webp",
+                "/gabarito_fotos/9281059882/2.webp",
+                "/gabarito_fotos/9281059882/3.webp",
+                "/gabarito_fotos/9281059882/4.webp"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "fechamento_cordao",
+          "titulo": "Short com elástico E cordinha: o fechamento é 'cordão'?",
+          "contexto": "No gabarito, 44 shorts com elástico + cordinha estão como 'cordão' e estes 11 estão como 'elástico'. Em todos a cordinha aparece na foto. Não muda nenhuma decisão de compra — é só para o gabarito ficar consistente.",
+          "opcoes": [
+            "Corrigir os 11 para 'cordão'",
+            "Manter 'elástico'"
+          ],
+          "itens": [
+            {
+              "id": "9282326737",
+              "origem": "gabarito",
+              "titulo": "Costume Sundek",
+              "url": "https://www.vinted.es/items/9282326737-costume-sundek",
+              "preco": "21,69 €",
+              "fotos": [
+                "/gabarito_fotos/9282326737/0.webp",
+                "/gabarito_fotos/9282326737/1.webp",
+                "/gabarito_fotos/9282326737/2.webp",
+                "/gabarito_fotos/9282326737/3.webp"
+              ]
+            },
+            {
+              "id": "9282671288",
+              "origem": "gabarito",
+              "titulo": "Sundek zwembroek",
+              "url": "https://www.vinted.es/items/9282671288-sundek-zwembroek",
+              "preco": "32,20 €",
+              "fotos": [
+                "/gabarito_fotos/9282671288/0.webp",
+                "/gabarito_fotos/9282671288/1.webp",
+                "/gabarito_fotos/9282671288/2.webp"
+              ]
+            },
+            {
+              "id": "9285736659",
+              "origem": "gabarito",
+              "titulo": "Costume da bagno Sundek taglia M",
+              "url": "https://www.vinted.es/items/9285736659-costume-da-bagno-sundek-taglia-m",
+              "preco": "37,45 €",
+              "fotos": [
+                "/gabarito_fotos/9285736659/0.webp",
+                "/gabarito_fotos/9285736659/1.webp",
+                "/gabarito_fotos/9285736659/2.webp",
+                "/gabarito_fotos/9285736659/3.webp",
+                "/gabarito_fotos/9285736659/4.webp"
+              ]
+            },
+            {
+              "id": "9286013127",
+              "origem": "gabarito",
+              "titulo": "Maillot de bain Sundek homme gris",
+              "url": "https://www.vinted.es/items/9286013127-maillot-de-bain-sundek-homme-gris",
+              "preco": "42,70 €",
+              "fotos": [
+                "/gabarito_fotos/9286013127/0.webp",
+                "/gabarito_fotos/9286013127/1.webp",
+                "/gabarito_fotos/9286013127/2.webp"
+              ]
+            },
+            {
+              "id": "9285999169",
+              "origem": "gabarito",
+              "titulo": "Maillot de bain Sundek homme bleue",
+              "url": "https://www.vinted.es/items/9285999169-maillot-de-bain-sundek-homme-bleue",
+              "preco": "42,70 €",
+              "fotos": [
+                "/gabarito_fotos/9285999169/0.webp",
+                "/gabarito_fotos/9285999169/1.webp",
+                "/gabarito_fotos/9285999169/2.webp"
+              ]
+            },
+            {
+              "id": "9288475892",
+              "origem": "gabarito",
+              "titulo": "Costume boxer mare uomo Sundek Verde - S",
+              "url": "https://www.vinted.es/items/9288475892-costume-boxer-mare-uomo-sundek-verde-s",
+              "preco": "20,65 €",
+              "fotos": [
+                "/gabarito_fotos/9288475892/0.webp",
+                "/gabarito_fotos/9288475892/1.webp",
+                "/gabarito_fotos/9288475892/2.webp",
+                "/gabarito_fotos/9288475892/3.webp"
+              ]
+            },
+            {
+              "id": "9283409657",
+              "origem": "gabarito",
+              "titulo": "Short de bain sundek homme",
+              "url": "https://www.vinted.es/items/9283409657-short-de-bain-sundek-homme",
+              "preco": "47,95 €",
+              "fotos": [
+                "/gabarito_fotos/9283409657/0.webp",
+                "/gabarito_fotos/9283409657/1.webp",
+                "/gabarito_fotos/9283409657/2.webp",
+                "/gabarito_fotos/9283409657/3.webp",
+                "/gabarito_fotos/9283409657/4.webp"
+              ]
+            },
+            {
+              "id": "9280883900",
+              "origem": "gabarito",
+              "titulo": "Costumi da bagno",
+              "url": "https://www.vinted.es/items/9280883900-costumi-da-bagno",
+              "preco": "16,45 €",
+              "fotos": [
+                "/gabarito_fotos/9280883900/0.webp",
+                "/gabarito_fotos/9280883900/1.webp",
+                "/gabarito_fotos/9280883900/2.webp",
+                "/gabarito_fotos/9280883900/3.webp",
+                "/gabarito_fotos/9280883900/4.webp"
+              ]
+            },
+            {
+              "id": "9287474529",
+              "origem": "gabarito",
+              "titulo": "Short de bain Sundek rouge M Homme",
+              "url": "https://www.vinted.es/items/9287474529-short-de-bain-sundek-rouge-m-homme",
+              "preco": "22,75 €",
+              "fotos": [
+                "/gabarito_fotos/9287474529/0.webp",
+                "/gabarito_fotos/9287474529/1.webp",
+                "/gabarito_fotos/9287474529/2.webp",
+                "/gabarito_fotos/9287474529/3.webp",
+                "/gabarito_fotos/9287474529/4.webp"
+              ]
+            },
+            {
+              "id": "cs02",
+              "origem": "gabarito",
+              "titulo": "Sundek (comprável)",
+              "url": null,
+              "preco": null,
+              "fotos": [
+                "/gabarito_fotos/cs02/0.jpeg",
+                "/gabarito_fotos/cs02/1.jpeg"
+              ]
+            },
+            {
+              "id": "cs16",
+              "origem": "gabarito",
+              "titulo": "Sundek (comprável)",
+              "url": null,
+              "preco": null,
+              "fotos": [
+                "/gabarito_fotos/cs16/0.jpeg",
+                "/gabarito_fotos/cs16/1.jpeg"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "rotulos_soltos",
+          "titulo": "Outros rótulos que parecem errados — confirme",
+          "contexto": "Marque a opção que se aplica a TODOS, ou use o comentário para corrigir item a item.",
+          "opcoes": [
+            "Concordo com as correções sugeridas",
+            "Discordo (explique no comentário)"
+          ],
+          "itens": [
+            {
+              "id": "cs01",
+              "origem": "gabarito",
+              "titulo": "Sundek (comprável)",
+              "url": null,
+              "preco": null,
+              "fotos": [
+                "/gabarito_fotos/cs01/0.jpeg",
+                "/gabarito_fotos/cs01/1.jpeg"
+              ],
+              "legenda": "bolso 'sem nome', mas a sua observação diz 'coleção nova, bolso 100% aceitável'"
+            },
+            {
+              "id": "9281059882",
+              "origem": "gabarito",
+              "titulo": "Bellissimi pantaloncini Sundek, originali. Taglia: S",
+              "url": "https://www.vinted.es/items/9281059882-bellissimi-pantaloncini-sundek-originali-taglia-s",
+              "preco": "42,70 €",
+              "fotos": [
+                "/gabarito_fotos/9281059882/0.webp",
+                "/gabarito_fotos/9281059882/1.webp",
+                "/gabarito_fotos/9281059882/2.webp",
+                "/gabarito_fotos/9281059882/3.webp",
+                "/gabarito_fotos/9281059882/4.webp"
+              ],
+              "legenda": "listra 'sem listra', mas a foto 1 mostra arco de 3 cores"
+            },
+            {
+              "id": "9267294121",
+              "origem": "gabarito",
+              "titulo": "Costume uomo Sundek",
+              "url": "https://www.vinted.es/items/9267294121-costume-uomo-sundek",
+              "preco": "18,55 €",
+              "fotos": [
+                "/gabarito_fotos/9267294121/0.webp",
+                "/gabarito_fotos/9267294121/1.webp",
+                "/gabarito_fotos/9267294121/2.webp",
+                "/gabarito_fotos/9267294121/3.webp",
+                "/gabarito_fotos/9267294121/4.webp"
+              ],
+              "legenda": "marca 'indefinido', mas tem 'SNDK 58' na perna (anúncio duplicado do 9283498191)"
+            },
+            {
+              "id": "9280097121",
+              "origem": "gabarito",
+              "titulo": "Costume Sandek",
+              "url": "https://www.vinted.es/items/9280097121-costume-sandek",
+              "preco": "11,20 €",
+              "fotos": [
+                "/gabarito_fotos/9280097121/0.webp",
+                "/gabarito_fotos/9280097121/1.webp",
+                "/gabarito_fotos/9280097121/2.webp",
+                "/gabarito_fotos/9280097121/3.webp",
+                "/gabarito_fotos/9280097121/4.webp"
+              ],
+              "legenda": "marca 'não é Sundek', mas tem o sol da Sundek"
+            },
+            {
+              "id": "9289267004",
+              "origem": "gabarito",
+              "titulo": "Pantaloncino Sundek bianco uomo mare taglia S",
+              "url": "https://www.vinted.es/items/9289267004-pantaloncino-sundek-bianco-uomo-mare-taglia-s",
+              "preco": "13,30 €",
+              "fotos": [
+                "/gabarito_fotos/9289267004/0.webp",
+                "/gabarito_fotos/9289267004/1.webp",
+                "/gabarito_fotos/9289267004/2.webp",
+                "/gabarito_fotos/9289267004/3.webp",
+                "/gabarito_fotos/9289267004/4.webp"
+              ],
+              "legenda": "listra 'sem listra' — faixa marinho reta na lateral (limítrofe)"
+            },
+            {
+              "id": "9289304070",
+              "origem": "gabarito",
+              "titulo": "Costume Uomo Sundek Tg. M",
+              "url": "https://www.vinted.es/items/9289304070-costume-uomo-sundek-tg-m",
+              "preco": "10,15 €",
+              "fotos": [
+                "/gabarito_fotos/9289304070/0.webp",
+                "/gabarito_fotos/9289304070/1.webp",
+                "/gabarito_fotos/9289304070/2.webp",
+                "/gabarito_fotos/9289304070/3.webp",
+                "/gabarito_fotos/9289304070/4.webp"
+              ],
+              "legenda": "fechamento 'cordão', mas a braguilha aberta mostra tiras de velcro"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

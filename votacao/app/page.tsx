@@ -3,7 +3,8 @@
 import { useEffect, useState } from "react";
 import VotingCard from "@/components/VotingCard";
 import { Item, Reaction, REACTIONS } from "@/lib/types";
-import { Archive, History, ListChecks, LineChart } from "lucide-react";
+import Link from "next/link";
+import { Archive, ClipboardCheck, History, ListChecks, LineChart } from "lucide-react";
 import {
   ACTIVE_GRADIENT,
   PILL_NEUTRAL,
@@ -141,18 +142,31 @@ export default function Home() {
         <div className="app-wrap py-3 flex flex-col gap-3">
           {/* Linha 1: seletor de loja + atalho de resultados */}
           <div className="flex items-center justify-between gap-3 flex-wrap">
-            <div className="inline-flex p-1 rounded-xl bg-[rgba(255,255,255,0.04)] border border-[rgba(255,255,255,0.07)]">
-              {LOJAS.map((l) => (
-                <button
-                  key={l.key}
-                  onClick={() => setLoja(l.key)}
-                  className={`${SEGMENTED_BTN} ${
-                    loja === l.key ? ACTIVE_GRADIENT : SEGMENTED_INACTIVE
-                  }`}
-                >
-                  {l.label}
-                </button>
-              ))}
+            <div className="flex items-center gap-2">
+              <div className="inline-flex p-1 rounded-xl bg-[rgba(255,255,255,0.04)] border border-[rgba(255,255,255,0.07)]">
+                {LOJAS.map((l) => (
+                  <button
+                    key={l.key}
+                    onClick={() => setLoja(l.key)}
+                    className={`${SEGMENTED_BTN} ${
+                      loja === l.key ? ACTIVE_GRADIENT : SEGMENTED_INACTIVE
+                    }`}
+                  >
+                    {l.label}
+                  </button>
+                ))}
+              </div>
+              {/* Decisões pendentes do cliente (regras de compra + rótulos do gabarito).
+                  Fica ao lado do seletor de loja pra não empurrar o cluster de ações
+                  pra uma 3ª linha no celular. */}
+              <Link
+                href="/decisoes"
+                title="Decisões pendentes — regras de compra e rótulos do gabarito"
+                className="h-9 px-3 flex items-center gap-1.5 rounded-lg text-xs bg-[rgba(255,102,226,0.1)] border border-[rgba(255,102,226,0.3)] text-[#ff66e2] hover:bg-[rgba(255,102,226,0.16)] transition-colors"
+              >
+                <ClipboardCheck size={16} strokeWidth={1.5} aria-hidden />
+                Decisões
+              </Link>
             </div>
             {/* Ações — Arquivar/Histórico como ícones secundários; "Ver resultados"
                 em destaque (pill com o gradiente ativo). O contador foi pro cluster

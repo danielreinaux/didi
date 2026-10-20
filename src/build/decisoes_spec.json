@@ -1,0 +1,467 @@
+{
+  "titulo": "Decisões pendentes — Sundek",
+  "intro": "Ajustamos a IA da Sundek com base no seu feedback (nome amarelo no bolso, botão, sem elástico, lotes). Medimos tudo contra o gabarito: compráveis bons descartados por engano caíram de 12 para 1 em 40. Agora precisamos que você decida alguns pontos — são regras de negócio e alguns rótulos do gabarito que se contradizem. Para cada pergunta, escolha uma opção e, se quiser, deixe um comentário.",
+  "secoes": [
+    {
+      "id": "regras",
+      "titulo": "Regras de compra",
+      "perguntas": [
+        {
+          "id": "fluo_nome",
+          "titulo": "Patch FLUO (amarelo, lima, rosa) sempre tem o nome SUNDEK bordado?",
+          "contexto": "O nome vem bordado na mesma cor do patch e quase não aparece na foto. A IA dizia 'sem nome' e descartava como coleção antiga. JÁ ESTÁ VALENDO: patch fluo conta como 'tem nome'. Confirme se é sempre assim.",
+          "status": "ja_aplicado",
+          "itens": [
+            {
+              "id": "cs03"
+            },
+            {
+              "id": "cs17"
+            },
+            {
+              "id": "cs21"
+            },
+            {
+              "id": "9877681046"
+            }
+          ],
+          "opcoes": [
+            "Sim, patch fluo sempre tem nome",
+            "Não — existe fluo sem nome (coleção antiga)",
+            "Não sei"
+          ]
+        },
+        {
+          "id": "patch_claro",
+          "titulo": "E patch CLARO/creme tom sobre tom (ícone e nome da mesma cor do patch)? Tem nome?",
+          "contexto": "Mesmo fenômeno do fluo, mas em patch creme/azul-claro. Hoje a IA às vezes diz 'sem nome' e descarta.",
+          "status": "pendente",
+          "itens": [
+            {
+              "id": "9390125021"
+            },
+            {
+              "id": "9708706773"
+            }
+          ],
+          "opcoes": [
+            "Sim, tem nome (tratar como o fluo)",
+            "Não, é coleção antiga (descartar)",
+            "Depende — quero ver caso a caso"
+          ]
+        },
+        {
+          "id": "sem_elastico",
+          "titulo": "Short SEM elástico: quais cores ainda valem?",
+          "contexto": "JÁ ESTÁ VALENDO o seu pedido: só preto e branco (marinho saiu). Observação: nos 13 preto/branco sem elástico em que você votou, você marcou 'não gostei' em 12 — mas os seus comentários foram 'coleção antiga', 'listras feias', 'antigo', não a falta de elástico. Exemplos abaixo.",
+          "status": "ja_aplicado",
+          "itens": [
+            {
+              "id": "9336876389"
+            },
+            {
+              "id": "9344566075"
+            },
+            {
+              "id": "9350308113"
+            }
+          ],
+          "opcoes": [
+            "Só preto e branco (como está agora)",
+            "Nenhum sem elástico",
+            "Preto, branco e marinho (como era antes)"
+          ]
+        },
+        {
+          "id": "rosa_choque",
+          "titulo": "Rosa choque / pink: aceitável?",
+          "contexto": "Seu manual diz 'aceitáveis: rosa choque'. A IA às vezes dava 'ruim' (excluía). JÁ ESTÁ VALENDO: pink/rosa choque = cor 'ok' (pontua menos, mas não é descartado só pela cor).",
+          "status": "ja_aplicado",
+          "itens": [
+            {
+              "id": "cs41"
+            },
+            {
+              "id": "9279287531"
+            },
+            {
+              "id": "9334193190"
+            }
+          ],
+          "opcoes": [
+            "Aceitável (como está agora)",
+            "Descartar sempre",
+            "Só se o preço for muito bom"
+          ]
+        },
+        {
+          "id": "verde_limao",
+          "titulo": "Verde-limão com listra azul/branca: compraria?",
+          "contexto": "O manual diz que fluorescente é ruim, mas o cs35 (verde-limão com listra azul/branca) está entre os seus compráveis. Hoje a IA descarta. Temos a correção pronta, esperando a sua resposta.",
+          "status": "pendente",
+          "itens": [
+            {
+              "id": "cs35"
+            }
+          ],
+          "opcoes": [
+            "Sim, com listra azul/branca vale",
+            "Não, verde-limão é sempre ruim"
+          ]
+        },
+        {
+          "id": "faixa_unica",
+          "titulo": "Faixa de UMA cor só na costura lateral conta como a listra Sundek?",
+          "contexto": "Hoje conta (regra de junho). Exemplos abaixo — um deles você mesmo chamou de 'sem listra'. A listra clássica é o arco de 2+ cores nas costas.",
+          "status": "pendente",
+          "itens": [
+            {
+              "id": "9384140885"
+            },
+            {
+              "id": "9643733799"
+            },
+            {
+              "id": "9672517285"
+            }
+          ],
+          "opcoes": [
+            "Conta (como está)",
+            "Não conta — exigir 2 cores ou mais",
+            "Depende da cor"
+          ]
+        },
+        {
+          "id": "listras_feias",
+          "titulo": "Listras em bege, dourado ou prata: descartar?",
+          "contexto": "Você comentou 'listras feias' nesses. A IA detecta a listra corretamente; falta a regra de quais cores de listra são ruins.",
+          "status": "pendente",
+          "itens": [
+            {
+              "id": "9317079207"
+            },
+            {
+              "id": "9344566075"
+            },
+            {
+              "id": "9363216769"
+            }
+          ],
+          "opcoes": [
+            "Descartar listra bege/dourado/prata",
+            "Só penalizar (cai para médio)",
+            "Não importa"
+          ]
+        },
+        {
+          "id": "lotes",
+          "titulo": "Anúncio com várias peças (lote): descartar sempre?",
+          "contexto": "JÁ ESTÁ VALENDO: lote é descartado (ex.: 'Set 3', '2 costumi', short + sunga).",
+          "status": "ja_aplicado",
+          "itens": [
+            {
+              "id": "9314243074"
+            },
+            {
+              "id": "9526345091"
+            },
+            {
+              "id": "9736468346"
+            }
+          ],
+          "opcoes": [
+            "Descartar sempre (como está)",
+            "Mostrar como barganha"
+          ]
+        },
+        {
+          "id": "moletom",
+          "titulo": "Short de moletom (não é de banho): descartar?",
+          "contexto": "Hoje passa, porque o prompt aceita 'bermuda'.",
+          "status": "pendente",
+          "itens": [
+            {
+              "id": "10281583413"
+            }
+          ],
+          "opcoes": [
+            "Descartar",
+            "Manter"
+          ]
+        },
+        {
+          "id": "desbotado_borda",
+          "titulo": "Short com só umas marquinhas visíveis num close-up: é 'desbotado'?",
+          "contexto": "Hoje a IA descarta como desbotado. O gabarito diz que não é. Temos uma correção testada (segunda opinião só nesses casos) que solta esses itens, mas também deixaria passar 2 de 18 desbotados reais com cor gasta sutil.",
+          "status": "pendente",
+          "itens": [
+            {
+              "id": "9280328167"
+            }
+          ],
+          "opcoes": [
+            "Não é desbotado — pode passar",
+            "É desbotado — descartar",
+            "Depende do preço"
+          ]
+        },
+        {
+          "id": "goldenwave",
+          "titulo": "Sundek Goldenwave (linha premium) interessa?",
+          "contexto": "Antes a IA descartava como 'outra marca'. JÁ ESTÁ VALENDO: Goldenwave conta como Sundek.",
+          "status": "ja_aplicado",
+          "itens": [
+            {
+              "id": "9282732909"
+            },
+            {
+              "id": "9302701676"
+            },
+            {
+              "id": "9308851127"
+            }
+          ],
+          "opcoes": [
+            "Sim, interessa (como está)",
+            "Não, descartar Goldenwave"
+          ]
+        },
+        {
+          "id": "etiqueta_m520",
+          "titulo": "A etiqueta interna M520… indica SEMPRE o modelo com botão de pressão (snap) na braguilha?",
+          "contexto": "Nos casos de botão que você marcou, a etiqueta interna começa com M520 (ex.: M520BDTA100); nos sem botão vimos M502/M504. Se for sempre assim, dá para usar a etiqueta como pista para pegar os botões que a foto não mostra bem.",
+          "status": "pendente",
+          "itens": [
+            {
+              "id": "9682987080"
+            },
+            {
+              "id": "9874196122"
+            },
+            {
+              "id": "9982424010"
+            },
+            {
+              "id": "10046832419"
+            }
+          ],
+          "max_fotos": 10,
+          "opcoes": [
+            "Sim, M520 é sempre o modelo com snap",
+            "Não, há M520 sem snap",
+            "Não sei"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gabarito",
+      "titulo": "Gabarito — rótulos que se contradizem",
+      "intro": "Itens muito parecidos receberam respostas diferentes no gabarito. A IA não tem como acertar os dois lados. Escolha a resposta certa para cada grupo — corrigimos o gabarito com base nisso.",
+      "perguntas": [
+        {
+          "id": "cor_navy",
+          "titulo": "Este azul marinho é 'maravilhoso' ou 'muito boa'?",
+          "contexto": "Grupo A (cs18, cs20, cs21) está como 'muito boa'; grupo B (cs33, cs37, cs42), o mesmo navy, está como 'maravilhoso'.",
+          "grupos": [
+            {
+              "rotulo": "Grupo A — marcado 'muito boa'",
+              "itens": [
+                "cs18",
+                "cs20",
+                "cs21"
+              ]
+            },
+            {
+              "rotulo": "Grupo B — marcado 'maravilhoso'",
+              "itens": [
+                "cs33",
+                "cs37",
+                "cs42"
+              ]
+            }
+          ],
+          "opcoes": [
+            "Todos maravilhoso",
+            "Todos muito boa",
+            "São diferentes (explique no comentário)"
+          ]
+        },
+        {
+          "id": "cor_grafite",
+          "titulo": "Este grafite/cinza chumbo é 'muito boa' ou 'boa'?",
+          "grupos": [
+            {
+              "rotulo": "Grupo A — marcado 'boa'",
+              "itens": [
+                "cs28",
+                "cs34"
+              ]
+            },
+            {
+              "rotulo": "Grupo B — marcado 'muito boa'",
+              "itens": [
+                "cs02",
+                "cs16"
+              ]
+            }
+          ],
+          "opcoes": [
+            "Todos muito boa",
+            "Todos boa",
+            "São diferentes (explique no comentário)"
+          ]
+        },
+        {
+          "id": "cor_royal",
+          "titulo": "Azul royal: qual tier?",
+          "grupos": [
+            {
+              "rotulo": "Marcado 'muito boa'",
+              "itens": [
+                "cs13"
+              ]
+            },
+            {
+              "rotulo": "Marcado 'boa'",
+              "itens": [
+                "cs26",
+                "cs27",
+                "cs40"
+              ]
+            },
+            {
+              "rotulo": "Marcado 'ok'",
+              "itens": [
+                "cs05"
+              ]
+            }
+          ],
+          "opcoes": [
+            "muito boa",
+            "boa",
+            "ok",
+            "São diferentes (explique no comentário)"
+          ]
+        },
+        {
+          "id": "cor_roxo",
+          "titulo": "Roxo/violeta: 'ok' ou 'ruim'?",
+          "grupos": [
+            {
+              "rotulo": "Violeta — marcado 'ok'",
+              "itens": [
+                "9285757049"
+              ]
+            },
+            {
+              "rotulo": "Roxo — marcado 'ruim'",
+              "itens": [
+                "cs11"
+              ]
+            }
+          ],
+          "opcoes": [
+            "Os dois ok",
+            "Os dois ruim",
+            "São diferentes (explique no comentário)"
+          ]
+        },
+        {
+          "id": "cor_marrom",
+          "titulo": "Este marrom acetinado é 'ruim'?",
+          "contexto": "Está como 'ruim' no gabarito; o manual diz que marrom é 'ok'.",
+          "itens": [
+            {
+              "id": "9281059882"
+            }
+          ],
+          "opcoes": [
+            "ruim (manter)",
+            "ok",
+            "boa"
+          ]
+        },
+        {
+          "id": "fechamento_cordao",
+          "titulo": "Short com elástico E cordinha: o fechamento é 'cordão'?",
+          "contexto": "No gabarito, 44 shorts com elástico + cordinha estão como 'cordão' e estes 11 estão como 'elástico'. Em todos a cordinha aparece na foto. Não muda nenhuma decisão de compra — é só para o gabarito ficar consistente.",
+          "itens": [
+            {
+              "id": "9282326737"
+            },
+            {
+              "id": "9282671288"
+            },
+            {
+              "id": "9285736659"
+            },
+            {
+              "id": "9286013127"
+            },
+            {
+              "id": "9285999169"
+            },
+            {
+              "id": "9288475892"
+            },
+            {
+              "id": "9283409657"
+            },
+            {
+              "id": "9280883900"
+            },
+            {
+              "id": "9287474529"
+            },
+            {
+              "id": "cs02"
+            },
+            {
+              "id": "cs16"
+            }
+          ],
+          "opcoes": [
+            "Corrigir os 11 para 'cordão'",
+            "Manter 'elástico'"
+          ]
+        },
+        {
+          "id": "rotulos_soltos",
+          "titulo": "Outros rótulos que parecem errados — confirme",
+          "contexto": "Marque a opção que se aplica a TODOS, ou use o comentário para corrigir item a item.",
+          "itens": [
+            {
+              "id": "cs01",
+              "legenda": "bolso 'sem nome', mas a sua observação diz 'coleção nova, bolso 100% aceitável'"
+            },
+            {
+              "id": "9281059882",
+              "legenda": "listra 'sem listra', mas a foto 1 mostra arco de 3 cores"
+            },
+            {
+              "id": "9267294121",
+              "legenda": "marca 'indefinido', mas tem 'SNDK 58' na perna (anúncio duplicado do 9283498191)"
+            },
+            {
+              "id": "9280097121",
+              "legenda": "marca 'não é Sundek', mas tem o sol da Sundek"
+            },
+            {
+              "id": "9289267004",
+              "legenda": "listra 'sem listra' — faixa marinho reta na lateral (limítrofe)"
+            },
+            {
+              "id": "9289304070",
+              "legenda": "fechamento 'cordão', mas a braguilha aberta mostra tiras de velcro"
+            }
+          ],
+          "opcoes": [
+            "Concordo com as correções sugeridas",
+            "Discordo (explique no comentário)"
+          ]
+        }
+      ]
+    }
+  ]
+}
