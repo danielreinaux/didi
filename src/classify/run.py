@@ -11,6 +11,7 @@ Pipeline por item:
 Uso: python -m src.classify_run [--workers N]   (padrão: 8)
 """
 import json
+import os
 import sys
 import time
 import threading
@@ -24,7 +25,7 @@ load_dotenv()
 
 from .tipo import classificar_item
 from .bolso import verificar_bolso
-from .brand import verificar_sundek
+from .brand import verificar_sundek, motivo_recheck, aceita_recheck
 from .cor import classificar_cor
 from .elastico import verificar_elastico
 from .botao_fly import verificar_botao
@@ -99,16 +100,17 @@ def _processar(item: dict, idx: str, total: int) -> tuple[dict, int, int]:
         out_tok += u.get("completion_tokens", 0)
         _track("brand", _IA["model"], u.get("prompt_tokens", 0), u.get("completion_tokens", 0))
 
-        # Double-check: mini tem falsos negativos de marca. Se disse "não-Sundek"
-        # mas o título contém "sundek", re-verifica com gpt-4o.
-        titulo_lower = (item.get("titulo") or "").lower()
-        if marca.get("e_sundek") == "nao" and "sundek" in titulo_lower:
+        # Double-check: mini tem falsos negativos de marca (em detail=low não reconhece
+        # o logo do sol sem texto). Re-verifica com gpt-4o (detail=high) quando o mini
+        # disse "não-Sundek" e o título tem "sundek" OU ele não identificou outra marca.
+        motivo_rc = motivo_recheck(item, marca)
+        if motivo_rc:
             marca_4o = verificar_sundek(item, model=_IA["model_detalhes"])
             u = marca_4o.pop("_usage", {})
             in_tok += u.get("prompt_tokens", 0)
             out_tok += u.get("completion_tokens", 0)
             _track("brand_4o_recheck", _IA["model_detalhes"], u.get("prompt_tokens", 0), u.get("completion_tokens", 0))
-            if marca_4o.get("e_sundek") != "nao":
+            if aceita_recheck(motivo_rc, marca_4o):
                 marca_4o["evidencia"] = "[double-check gpt-4o] " + (marca_4o.get("evidencia") or "")
                 marca = marca_4o
     except Exception as e:
@@ -139,7 +141,10 @@ def _processar(item: dict, idx: str, total: int) -> tuple[dict, int, int]:
         _track("classify_tipo", _IA["model"], u.get("prompt_tokens", 0), u.get("completion_tokens", 0))
 
         tipo_original = c.get("tipo")
-        if c.get("aparencia") == "desbotado":
+        # Desbotado rebaixa só o LISO (e o indefinido). Estampado/logo_grande desbotado
+        # continua com o tipo real (já é excluído pelo tipo; a aparência fica registrada
+        # e o score exclui por "desbotado" de qualquer jeito) — mesma convenção do gabarito.
+        if c.get("aparencia") == "desbotado" and tipo_original in ("liso", "indefinido", None):
             c["tipo_original"] = tipo_original
             c["tipo"] = "desbotado"
 
@@ -445,16 +450,24 @@ def main() -> None:
             it["score"] = calcular_score(it)
     checkpoint_path.write_text(json.dumps(final, indent=2, ensure_ascii=False))
 
-    # Auto-double-check com gpt-4o em compráveis e ambíguos estruturais
-    print("\n=== Double-check automático com gpt-4o ===")
-    from .reclassify_ambiguos import main as reclassify_main
-    import sys as _sys
-    _argv = _sys.argv
-    _sys.argv = ["reclassify_ambiguos"]
-    try:
-        reclassify_main()
-    finally:
-        _sys.argv = _argv
+    # Auto-double-check com gpt-4o (reclassify_ambiguos) DESLIGADO (out/2026):
+    #  - o prompt de tipo não devolve mais bicolor/cores_listras/tem_bolso_frontal, e o
+    #    double-check sobrescrevia esses campos com False/[] (4.947 itens no acervo:
+    #    bicolor apagado — ex. 9282863282 "misto, não é somente azul" passou —, cores
+    #    das listras apagadas → listra_tier errado);
+    #  - gpt-4o marca tecido_brilhoso=true em 15/43 compráveis do gabarito (humano: não)
+    #    → 113 lisos com listra descartados SÓ por "brilhoso" depois do double-check.
+    # Para reativar, só com a versão corrigida do script e medição no gabarito.
+    if os.environ.get("SUNDEK_DOUBLE_CHECK") == "1":
+        print("\n=== Double-check automático com gpt-4o ===")
+        from .reclassify_ambiguos import main as reclassify_main
+        import sys as _sys
+        _argv = _sys.argv
+        _sys.argv = ["reclassify_ambiguos"]
+        try:
+            reclassify_main()
+        finally:
+            _sys.argv = _argv
 
     # Re-dump do custo por etapa: agora inclui o double-check gpt-4o (o dump acima
     # roda antes da reclassificação, então não capturava esse gasto).

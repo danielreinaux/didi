@@ -44,7 +44,7 @@ except Exception:
     pass
 
 # Agentes Sundek (mesmas funções que a produção usa em classify/run.py).
-from ...classify.brand import verificar_sundek
+from ...classify.brand import verificar_sundek, motivo_recheck, aceita_recheck
 from ...classify.tipo import classificar_item
 from ...classify.cor import classificar_cor
 from ...classify.listra import verificar_listra
@@ -181,15 +181,15 @@ def _processar(item: dict, rodar: set, base: dict | None) -> tuple[dict, int, in
     # ── MARCA + portão (é Sundek? é short?) ──────────────────────────
     if "marca" in rodar:
         marca = chamar("marca")
-        # Double-check da produção: mini erra marca; se disse "não-Sundek" mas o
-        # título tem "sundek", re-verifica com gpt-4o.
-        titulo_lower = (item.get("titulo") or "").lower()
-        if marca.get("e_sundek") == "nao" and "sundek" in titulo_lower:
+        # Double-check da produção (mesma regra de classify/run.py): mini disse
+        # "não-Sundek" e (título tem "sundek" OU não identificou outra marca) → gpt-4o high.
+        motivo_rc = motivo_recheck(item, marca)
+        if motivo_rc:
             marca_4o = verificar_sundek(item, model=_IA["model_detalhes"])
             u = marca_4o.pop("_usage", {})
             in_tok += u.get("prompt_tokens", 0)
             out_tok += u.get("completion_tokens", 0)
-            if marca_4o.get("e_sundek") != "nao":
+            if aceita_recheck(motivo_rc, marca_4o):
                 marca = marca_4o
         out["e_sundek"] = marca.get("e_sundek")
         out["e_short"] = marca.get("e_short")
@@ -215,8 +215,9 @@ def _processar(item: dict, rodar: set, base: dict | None) -> tuple[dict, int, in
     if "tipo" in rodar:
         t = chamar("tipo")
         tp = t.get("tipo")
-        # Igual produção: aparência desbotada rebaixa o tipo pra "desbotado".
-        if t.get("aparencia") == "desbotado":
+        # Igual produção: aparência desbotada rebaixa o LISO pra "desbotado"
+        # (estampado/logo_grande desbotado mantém o tipo — convenção do gabarito).
+        if t.get("aparencia") == "desbotado" and tp in ("liso", "indefinido", None):
             tp = "desbotado"
         out["tipo"] = tp
         out["aparencia"] = t.get("aparencia")

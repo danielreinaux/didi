@@ -10,7 +10,14 @@ VERIFICAÇÃO 1 — É da marca Sundek?
 
 Sinais de SIM (qualquer um basta):
   - Texto "SUNDEK" visível (etiqueta interna, bordado, estampa, tag de papel)
-  - Logo Sundek: patch quadrado preto/escuro com montanha/sol/onda em laranja ou amarelo
+  - LOGO SUNDEK = meio-sol (semicírculo) com raios em forma de ONDAS/chamas, quase sempre
+    num patch em formato de MEIA-LUA/arco (domo) no bolso traseiro ou na perna, ou na
+    etiqueta interna (laranja sobre preto/branco). Vale em QUALQUER cor (laranja, azul,
+    verde, branco, cinza, preto, rosa…) e MESMO SEM TEXTO legível — o desenho do sol
+    com ondas já identifica a Sundek.
+  - "SNDK", "SNDK 58", "SINCE 1958" ou o slogan "FOLLOW THE SUN" (cós/perna)
+  - GOLDENWAVE / "Golden Wave" = linha premium da Sundek (patch com o sol + "goldenwave")
+    → é Sundek (e_sundek = "sim"), NÃO é outra marca.
   - Faixa multicolorida característica no cós (rainbow band) em modelos clássicos
   - Bordado "Sundek" no bolso traseiro
   - Etiqueta de papel pendurada com "Sundek" (pode estar junto de tags de loja/revendedor)
@@ -21,6 +28,8 @@ Sinais de NÃO:
   - Nenhuma evidência de Sundek E logo de outra marca claramente visível na peça
     (Calvin Klein, CK, Nike, Adidas, Polo Ralph Lauren, Tommy Hilfiger, Lacoste,
     Quiksilver, Billabong, Rip Curl, O'Neill, Vilebrequin, Hugo Boss, Armani, Diesel, etc.)
+    → preencha marca_identificada com essa marca.
+  - Nenhuma marca visível em lugar nenhum (nem Sundek, nem outra) → "indefinido", não "nao".
 
 VERIFICAÇÃO 2 — É um SHORT (de banho ou bermuda) propriamente dito?
 

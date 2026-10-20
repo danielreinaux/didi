@@ -9,6 +9,7 @@ from ..utils.ratelimit import pace_mini
 from ..prompts import liso_vs_estampado as prompt
 
 _client: OpenAI | None = None
+_TIPOS = {"liso", "logo_grande", "estampado", "indefinido"}
 
 
 def _get_client() -> OpenAI:
@@ -48,6 +49,13 @@ def classificar_item(item: dict) -> dict:
         parsed = json.loads(texto)
     except json.JSONDecodeError:
         parsed = {"tipo": "indefinido", "justificativa": "JSON inválido", "confianca": 0, "raw": texto}
+
+    # tipo fora dos 4 valores (o mini às vezes escreve um campo/critério no lugar do tipo)
+    # → deriva das flags, como manda a regra de prioridade do prompt.
+    if parsed.get("tipo") not in _TIPOS and "corpo_tem_padrao_repetido" in parsed:
+        parsed["tipo_raw"] = parsed.get("tipo")
+        parsed["tipo"] = ("estampado" if parsed.get("corpo_tem_padrao_repetido")
+                          else "logo_grande" if parsed.get("tem_logo_grande") else "liso")
 
     parsed["_usage"] = {
         "prompt_tokens": resp.usage.prompt_tokens,

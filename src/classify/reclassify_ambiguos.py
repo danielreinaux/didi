@@ -139,13 +139,16 @@ def _processar(item: dict, idx: int, total: int) -> dict:
             "listra_frente": cl_atual.get("listra_na_frente"),
         }
 
-        cores_listras = c.get("cores_listras") or []
-        cl_atual["cores_listras"] = cores_listras
-        cl_atual["tem_listra_lateral_sundek"] = c.get("tem_listra_lateral_sundek", cl_atual.get("tem_listra_lateral_sundek"))
-        cl_atual["tecido_brilhoso"] = c.get("tecido_brilhoso", False)
-        cl_atual["tem_bolso_frontal"] = c.get("tem_bolso_frontal", False)
-        cl_atual["listra_na_frente"] = c.get("listra_na_frente", False)
-        cl_atual["bicolor"] = c.get("bicolor", False)
+        # O prompt de tipo NÃO devolve cores_listras/bicolor/tem_bolso_frontal/
+        # tem_listra_lateral_sundek (vêm dos agentes dedicados) → mantém o valor atual.
+        # Antes: c.get(k, False/[]) APAGAVA esses campos em todo item reconferido.
+        # tecido_brilhoso do gpt-4o NÃO é aplicado: no gabarito ele marcou brilhoso em
+        # 15/43 compráveis foscos (humano: não) — o mini erra bem menos nesse campo.
+        cores_listras = cl_atual.get("cores_listras") or []
+        for k in ("tem_listra_lateral_sundek", "tem_bolso_frontal", "bicolor"):
+            if k in c:
+                cl_atual[k] = c[k]
+        cl_atual["listra_na_frente"] = c.get("listra_na_frente", cl_atual.get("listra_na_frente", False))
         cl_atual["confianca"] = c.get("confianca", cl_atual.get("confianca"))
         cl_atual["_model"] = MODEL_FORTE
         cl_atual["_dc_fotos"] = _fotos_fingerprint(item)  # marca as fotos conferidas

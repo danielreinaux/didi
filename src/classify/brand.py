@@ -1,6 +1,7 @@
 """Verifica se a peça é REALMENTE Sundek E se é um SHORT (não sunga)."""
 import json
 import os
+import re
 
 from openai import OpenAI
 
@@ -9,6 +10,42 @@ from ..prompts import verifica_sundek as prompt
 from ..utils.ratelimit import pace_gpt4o, pace_mini
 
 _client: OpenAI | None = None
+
+# Typos de OCR + linhas/slogans da própria Sundek (não são "outra marca").
+SUNDEK_ALIASES = {
+    "sunder", "sundeck", "sundek.", "sundek,", "sundk",
+    "goldenwave", "golden wave", "sundek goldenwave", "sundek golden wave",
+    "sndk", "sndk58", "sndk 58", "follow the sun", "sundex",
+}
+# marca_identificada "vazia": o modelo disse nao_sundek SEM ver outra marca.
+_SEM_MARCA = {"", "null", "none", "nenhuma", "nenhum", "n/a", "na", "desconhecida", "indefinida", "-"}
+# Título com cara de Sundek (typos de vendedor): sandek, sudek, sundeck, sundex, sndk...
+_TITULO_SUNDEK = re.compile(r"\bs[ua]n?dec?k|\bsundex|\bsndk|golden\s?wave", re.I)
+
+
+def motivo_recheck(item: dict, marca: dict) -> str | None:
+    """Quando o mini disse "nao_sundek", decide se vale re-verificar com gpt-4o (detail=high).
+
+    - "titulo": título contém "sundek" (regra antiga) → aceita o 4o se ele NÃO disser "nao".
+    - "sem_marca": o mini disse nao_sundek SEM identificar outra marca (não viu o logo do
+      sol em detail=low) ou o título tem typo de Sundek → aceita o 4o só se disser "sim"
+      (sem evidência nenhuma continua barrado — não abre a porta para short genérico).
+    """
+    if marca.get("e_sundek") != "nao":
+        return None
+    titulo = (item.get("titulo") or "").lower()
+    if "sundek" in titulo:
+        return "titulo"
+    mi = str(marca.get("marca_identificada") or "").strip().lower()
+    if mi in _SEM_MARCA or _TITULO_SUNDEK.search(titulo):
+        return "sem_marca"
+    return None
+
+
+def aceita_recheck(motivo: str, marca_4o: dict) -> bool:
+    if motivo == "titulo":
+        return marca_4o.get("e_sundek") != "nao"
+    return marca_4o.get("e_sundek") == "sim"
 
 
 def _get_client() -> OpenAI:
@@ -62,10 +99,11 @@ def verificar_sundek(item: dict, model: str | None = None) -> dict:
     }
 
     # corrigir falsos negativos por OCR de baixa resolução
-    # ex: "Sunder", "Sundeck", "Sundek." lidos como outra marca
+    # ex: "Sunder", "Sundeck", "Sundek." lidos como outra marca — e linhas/slogans
+    # da PRÓPRIA Sundek que o mini devolve como "outra marca" (acervo: 34 itens
+    # "goldenwave" descartados como nao_sundek; "Sundek linea premium Goldenwave").
     marca_id = (parsed.get("marca_identificada") or "").lower().strip()
-    SUNDEK_TYPOS = {"sunder", "sundeck", "sundek.", "sundek,", "sundk", "sundeck"}
-    if parsed.get("e_sundek") == "nao" and marca_id in SUNDEK_TYPOS:
+    if parsed.get("e_sundek") == "nao" and marca_id in SUNDEK_ALIASES:
         parsed["e_sundek"] = "sim"
         parsed["marca_identificada"] = None
         parsed["evidencia"] = f"[corrigido: '{marca_id}' → Sundek] " + (parsed.get("evidencia") or "")
