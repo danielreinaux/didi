@@ -36,6 +36,8 @@ PTS_ELASTICO = 30    # com elástico — atributo forte (doc 1.2: padrão prefer
 PTS_SEM_ELASTICO = -15  # sem elástico — perde muita pontuação (doc 1.2)
 PTS_ETIQUETA = 10    # hang-tag de papel visível na foto
 PTS_LISTRA_SALVA = 5 # bônus quando listra salva a cor
+# Cores em que um short SEM elástico ainda é aceito (cliente, out/2026: só preto e branco).
+CORES_SEM_ELASTICO = ("preto", "negro", "branco", "blanco")
 
 # Exclusões automáticas (além de ruim/estampado/desbotado):
 # bicolor, botao/velcro, tecido_brilhoso → descarte direto no bloco de exclusoes
@@ -190,6 +192,9 @@ def calcular_score(item: dict) -> dict:
             exclusoes.append("cor_ruim")
         else:
             exclusoes.append("combinacao_listra_cor_ruim")
+    # LOTE: o agente de marca viu 2+ peças diferentes à venda (short + sunga, 2 shorts…)
+    if (item.get("marca_check") or {}).get("lote") is True:
+        exclusoes.append("lote_multiplas_pecas")
     if tecido_brilhoso:
         exclusoes.append("tecido_brilhoso")
     if bicolor:
@@ -207,11 +212,12 @@ def calcular_score(item: dict) -> dict:
         exclusoes.append("bolso_so_logo_colecao_antiga")
     if tipo == "liso" and cl.get("tem_listra_lateral_sundek") is False:
         exclusoes.append("sem_listra_sundek")
-    # SEM elástico só vale em preto / branco / azul marinho (decisão do dono +
-    # feedback do voto). Fora dessas cores → EXCLUSÃO sempre (etiqueta não salva).
+    # SEM elástico só vale em PRETO / BRANCO (feedback do cliente, out/2026: "reduzir
+    # os sem elástico — limitar a preto e branco"; antes aceitava azul marinho).
+    # Fora dessas cores → EXCLUSÃO sempre (etiqueta não salva).
     if not tem_elastico:
         _cn = (cor.get("cor_principal") or "").lower()
-        _cor_elite = any(k in _cn for k in ("preto", "negro", "branco", "blanco", "marinho", "navy"))
+        _cor_elite = any(k in _cn for k in CORES_SEM_ELASTICO)
         if not _cor_elite:
             exclusoes.append("sem_elastico_cor_fraca")
     # Piping: prompt dedicado detecta acabamento de costura disfarçado de listra
@@ -289,16 +295,15 @@ def calcular_score(item: dict) -> dict:
             motivo = "elástico + preço ≤ €14"
 
     # Override SEM elástico (decisão do dono + feedback de votação):
-    #   só vale se a cor for preto / branco / azul marinho.
-    #   preto → até €15 · branco/navy → até €10.
+    #   só vale se a cor for preto / branco (navy saiu em out/2026, pedido do cliente).
+    #   preto → até €15 · branco → até €10.
     #   fora dessas cores → descarta. EXCEÇÃO: etiqueta visível → não descarta (revisar).
     if not tem_elastico and preco:
         cor_nome = (cor.get("cor_principal") or "").lower()
         is_preto = "preto" in cor_nome or "negro" in cor_nome
-        is_branco_navy = ("branco" in cor_nome or "blanco" in cor_nome
-                          or "marinho" in cor_nome or "navy" in cor_nome)
-        cor_elite = is_preto or is_branco_navy
-        cap = 15 if is_preto else (10 if is_branco_navy else 0)
+        is_branco = "branco" in cor_nome or "blanco" in cor_nome
+        cor_elite = is_preto or is_branco
+        cap = 15 if is_preto else (10 if is_branco else 0)
 
         # (cor não-elite já foi EXCLUÍDA no bloco de exclusões — aqui só chega cor elite)
         if cor_elite and preco <= cap:

@@ -59,6 +59,19 @@ EXCLUSAO: list[tuple[re.Pattern, str]] = [
 
 ]
 
+# LOTE (várias peças num anúncio) — feedback do cliente "shorts nada a ver passando":
+# "Set 3 costumi", "2 costumi uomo", "Pack 2", "Vendo costumi", "LOTTO 12 costumi".
+# Medido no acervo (26,5k): 200 títulos batem; 10 tinham virado comprável/médio, todos lotes reais.
+# "Lotto" sozinho pode ser a MARCA (Lotto) → só conta seguido de número/"di"/"/"/costum.
+EXCLUSAO_LOTE: list[tuple[re.Pattern, str]] = [
+    (re.compile(r"\b(set|stock|pack|bundle|lote)\b", re.I), "lote (set/pack)"),
+    (re.compile(r"\blotto\b\s*(\d|di\b|/|costum)", re.I), "lote (lotto)"),
+    (re.compile(r"\b([2-9]|due|tre|quattro|deux|trois|dos|tres|two|three)\s+"
+                r"(costumi|maillots|shorts|ba[ñn]adores|pantaloncini|boxer|pezzi|pz|pcs|unidades)\b", re.I),
+     "lote (N peças)"),
+    (re.compile(r"\bvendo costumi\b", re.I), "lote (vendo costumi)"),
+]
+
 # Regras de infantil — retornadas com categoria 'infantil' (não 'nao_short')
 EXCLUSAO_INFANTIL: list[tuple[re.Pattern, str]] = [
     (re.compile(r"\bbambin[oa]s?\b|\bbimb[oa]\b", re.I), "infantil (bambino)"),
@@ -113,6 +126,9 @@ def parece_short(item: dict) -> Resultado:
         if regex.search(titulo):
             return Resultado(False, motivo, "infantil")
     for regex, motivo in EXCLUSAO:
+        if regex.search(titulo):
+            return Resultado(False, motivo, "nao_short")
+    for regex, motivo in EXCLUSAO_LOTE:
         if regex.search(titulo):
             return Resultado(False, motivo, "nao_short")
     # Tamanhos inválidos: a peça PODE ser short, mas o tamanho não serve. Categoria separada.

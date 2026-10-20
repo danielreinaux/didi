@@ -78,6 +78,19 @@ pequenas/borradas/ilegíveis, ou se a foto não deixa confirmar → marque tem_n
 ⚠️ NÃO use a etiqueta INTERNA (tag de tecido/laranja dentro do cós, com SUNDEK +
 código) pra decidir — ela não é o patch do bolso. Decida só pelo patch EXTERNO.
 
+### ⚠️ CASO ESPECIAL — PATCH FLUO (nome AMARELO / tom sobre tom)
+Os Sundek da coleção ATUAL (listras fluo) usam o patch meio-lua em cor FLUO/NEON —
+AMARELO, amarelo-limão, verde-lima, rosa-choque ou laranja-neon — e o nome SUNDEK
+vem BORDADO NA MESMA COR do patch (letras amarelas sobre o patch amarelo/claro,
+tom sobre tom). Nas fotos do Vinted essas letras quase NUNCA aparecem: o patch
+parece "só o ícone". Isso NÃO é coleção antiga.
+→ Se o patch é FLUO/NEON → `patch_fluo = true` e `tem_nome = true`, MESMO que você
+  não consiga ler as letras.
+→ Os patches da coleção ANTIGA (sem nome) NÃO são fluo: são PRETOS/MARINHO/ESCUROS
+  com o ícone branco, ou de cor clara/sóbria (azul-claro, branco) com o ícone em
+  contraste. Esses continuam podendo ser `tem_nome = false`.
+→ Na dúvida se a cor é fluo, descreva a cor em `cor_patch` e decida pelo resto do protocolo.
+
 ## Passo 4 — VERIFICAR BOLSO FRONTAL
 Veja as fotos da FRENTE/lateral externa da perna. Há um bolso GRANDE com aba
 visível ali (estilo cargo)?
@@ -186,6 +199,8 @@ Responda APENAS com JSON válido nesta ordem (pensamento ANTES da decisão):
   "pensamento_patch": "<patch tem letras ou só logo>",
   "pensamento_frontal": "<viu bolso cargo na perna ou não>",
   "pensamento_self_check": "<revisão antes de finalizar>",
+  "cor_patch": "<cor do patch externo do bolso, ex: preto, marinho, amarelo fluo, verde-lima, laranja, rosa-choque; null se não há patch>",
+  "patch_fluo": true|false,
   "tem_bolso": true|false|null,
   "tem_nome": true|false|null,
   "bolso_frontal": true|false,

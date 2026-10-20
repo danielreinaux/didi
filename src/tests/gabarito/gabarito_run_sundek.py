@@ -76,13 +76,30 @@ CRITERIOS = [
 # Tudo que morre quando o item é barrado no portão (não é Sundek / não é short).
 DOWNSTREAM = [c for c in CRITERIOS if c not in ("e_sundek", "e_short")]
 
+def _elastico_com_botao(item: dict) -> dict:
+    """Elástico (prompt de produção) + detector dedicado de botão no fly (override)."""
+    from ...classify.botao_fly import verificar_botao
+    e = verificar_elastico(item)
+    # Mesmo gating da produção (classify/run.py): só roda se o elástico não excluiu
+    # e o cós não é "sem elástico".
+    if e.get("tipo_fechamento") not in ("botao", "velcro") and e.get("tem_elastico") is not False:
+        bt = verificar_botao(item)
+        ub = bt.pop("_usage", {}); bt.pop("_crop", None)
+        u = e.get("_usage", {})
+        e["_usage"] = {"prompt_tokens": u.get("prompt_tokens", 0) + ub.get("prompt_tokens", 0),
+                       "completion_tokens": u.get("completion_tokens", 0) + ub.get("completion_tokens", 0)}
+        if bt.get("tem_botao") is True:
+            e["tipo_fechamento"] = "velcro" if bt.get("tipo") == "velcro" else "botao"
+    return e
+
+
 # Agente → função de classificação.
 FN = {
     "marca": verificar_sundek,
     "tipo": classificar_item,
     "cor": classificar_cor,
     "listra": verificar_listra,
-    "elastico": verificar_elastico,
+    "elastico": _elastico_com_botao,
     "bolso": verificar_bolso,
     "etiqueta": verificar_etiqueta,
 }
@@ -92,7 +109,8 @@ ARQUIVOS = {
     "tipo": ["prompts/liso_vs_estampado.py", "classify/tipo.py"],
     "cor": ["prompts/cor_tier.py", "classify/cor.py"],
     "listra": ["prompts/listra_sundek.py", "classify/listra.py"],
-    "elastico": ["prompts/elastico.py", "classify/elastico.py"],
+    "elastico": ["prompts/elastico.py", "classify/elastico.py", "prompts/botao_fly.py",
+                 "classify/botao_fly.py", "classify/crop_fly.py"],
     "bolso": ["prompts/bolso_traseiro.py", "classify/bolso.py"],
     "etiqueta": ["prompts/etiqueta.py", "classify/etiqueta.py"],
 }

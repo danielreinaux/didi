@@ -27,6 +27,7 @@ from .bolso import verificar_bolso
 from .brand import verificar_sundek
 from .cor import classificar_cor
 from .elastico import verificar_elastico
+from .botao_fly import verificar_botao
 from .etiqueta import verificar_etiqueta
 from .listra import verificar_listra
 from ..utils.cost_tracker import track as _track, relatorio as _relatorio, dump_json as _dump_cost
@@ -183,7 +184,7 @@ def _processar(item: dict, idx: str, total: int) -> tuple[dict, int, int]:
                 u = listra.pop("_usage", {})
                 in_tok += u.get("prompt_tokens", 0)
                 out_tok += u.get("completion_tokens", 0)
-                _track("listra", _IA["model_detalhes"], u.get("prompt_tokens", 0), u.get("completion_tokens", 0))
+                _track("listra", _IA["model"], u.get("prompt_tokens", 0), u.get("completion_tokens", 0))
                 c["cores_listras"] = listra.get("cores") or []
                 c["e_piping"] = listra.get("e_piping", False)
                 c["tem_listra_lateral_sundek"] = listra.get("e_listra_sundek", False)
@@ -224,6 +225,30 @@ def _processar(item: dict, idx: str, total: int) -> tuple[dict, int, int]:
                 linha += f" | {'elás✓' if elastico.get('tem_elastico') else '!SEM-ELÁS'}"
             except Exception as e:
                 elastico = {"tem_elastico": None, "erro": str(e)}
+
+            # 4c'. Detector dedicado de botão/snap no fly (feedback do cliente: "muitos com
+            # BOTÃO passando" — o snap do modelo elástico+snap é pequeno e some em detail=low).
+            # Zoom da cintura frontal + foto de frente em high. Só roda se o elástico não
+            # já excluiu E o cós tem elástico (os 21 casos "botão" do cliente são TODOS o
+            # modelo elástico+snap; boardshort de cós fixo com botão o prompt de elástico já
+            # pega) → ~metade do custo. tem_botao=None (sem foto de frente) NÃO exclui.
+            if ((elastico or {}).get("tipo_fechamento") not in ("botao", "velcro")
+                    and (elastico or {}).get("tem_elastico") is not False):
+                try:
+                    bt = verificar_botao(item)
+                    u = bt.pop("_usage", {})
+                    bt.pop("_crop", None)
+                    in_tok += u.get("prompt_tokens", 0)
+                    out_tok += u.get("completion_tokens", 0)
+                    _track("botao_fly", _IA["model_detalhes"], u.get("prompt_tokens", 0), u.get("completion_tokens", 0))
+                    if elastico is not None:
+                        elastico["botao_fly"] = {k: bt.get(k) for k in ("tem_botao", "tipo", "o_que_vi_no_centro", "evidencia", "_crop_modo")}
+                        if bt.get("tem_botao") is True:
+                            elastico["tipo_fechamento_original"] = elastico.get("tipo_fechamento")
+                            elastico["tipo_fechamento"] = "velcro" if bt.get("tipo") == "velcro" else "botao"
+                            elastico["evidencia"] = f"[botão no fly: {bt.get('evidencia')}] " + (elastico.get("evidencia") or "")
+                except Exception as e_bt:
+                    print(f"  [{idx}] botao_fly falhou: {e_bt}")
 
             # Short-circuit: botão/velcro → descartado. Pula bolso e etiqueta.
             if (elastico or {}).get("tipo_fechamento") in ("botao", "velcro"):

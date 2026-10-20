@@ -37,9 +37,18 @@ NÃO é short (REJEITAR) quando:
 
 ATENÇÃO: muitas vezes o título diz "costume", "swim", "boxer", "boardshort" — não confie no título, OLHE A FOTO. A peça precisa ter pernas separadas e comprimento real de short.
 
+VERIFICAÇÃO 3 — É um short de BANHO (nylon/poliéster de praia)?
+  - NÃO é de banho (e_short = "nao", formato "short_moletom"): short de MOLETOM/
+    algodão felpudo (tecido grosso, fosco, punho canelado), jeans, sarja/chino.
+
+VERIFICAÇÃO 4 — O anúncio vende MAIS DE UMA peça (LOTE)?
+  - lote = true quando as fotos mostram 2 ou mais shorts DIFERENTES à venda (outra cor/
+    outro modelo), ou short + sunga/outra peça juntos. (Fotos do MESMO short de vários
+    ângulos NÃO é lote.)
+
 Responda APENAS com JSON válido:
 
-{"e_sundek":"sim"|"nao"|"indefinido","marca_identificada":"<marca vista se não-Sundek, ou null>","e_short":"sim"|"nao"|"indefinido","formato_identificado":"short|sunga|slip|cueca|outro","evidencia":"<o que viu nas fotos>"}"""
+{"e_sundek":"sim"|"nao"|"indefinido","marca_identificada":"<marca vista se não-Sundek, ou null>","e_short":"sim"|"nao"|"indefinido","formato_identificado":"short|sunga|slip|cueca|short_moletom|outro","lote":true|false,"qtd_pecas":<int>,"evidencia":"<o que viu nas fotos>"}"""
 
 
 def usuario(titulo: str) -> str:

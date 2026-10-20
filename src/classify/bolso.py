@@ -22,6 +22,17 @@ def _get_client() -> OpenAI:
     return _client
 
 
+# Fallback só com termos inequívocos (ex.: "preto com sol amarelo" NÃO pode disparar).
+_FLUO_KW = ("fluo", "neon", "verde-lima", "verde lima", "amarelo-limão", "amarelo limão")
+
+
+def _patch_fluo(parsed: dict) -> bool:
+    if parsed.get("patch_fluo") is True:
+        return True
+    cor = (parsed.get("cor_patch") or "").lower()
+    return any(k in cor for k in _FLUO_KW)
+
+
 def verificar_bolso(item: dict) -> dict:
     """Retorna dict com tem_bolso, tem_nome, bolso_frontal, evidencia."""
     fotos = (item.get("fotos") or [])[:6]
@@ -30,11 +41,19 @@ def verificar_bolso(item: dict) -> dict:
 
     # Recorta e amplia o bolso traseiro — o patch é minúsculo na foto inteira,
     # então mandamos um zoom dedicado pro modelo conseguir ler o texto.
-    crop_info = recortar_bolso(item)
+    crop_info = recortar_bolso(item, alvo="patch")
     crop_url = crop_info.get("crop")
 
     conteudo = [{"type": "text", "text": prompt.usuario(item.get("titulo") or "")}]
-    if crop_url:
+    if crop_url and crop_info.get("alvo") == "patch":
+        onde = crop_info.get("onde") or "?"
+        conteudo.append({"type": "text", "text": (
+            f"ZOOM do PATCH (o localizador diz que ele está em: {onde}). Use este zoom para "
+            "LER o patch; confirme nas fotos gerais se ele está mesmo no bolso TRASEIRO "
+            "(costas) — se estiver num bolso lateral/cargo, isso NÃO é bolso traseiro:")})
+        conteudo.append({"type": "image_url", "image_url": {"url": crop_url, "detail": "high"}})
+        conteudo.append({"type": "text", "text": "Fotos gerais do short (contexto):"})
+    elif crop_url:
         conteudo.append({"type": "text", "text": "ZOOM do bolso traseiro (use esta para ler o patch):"})
         conteudo.append({"type": "image_url", "image_url": {"url": crop_url, "detail": "high"}})
         conteudo.append({"type": "text", "text": "Fotos gerais do short (contexto):"})
@@ -60,6 +79,15 @@ def verificar_bolso(item: dict) -> dict:
         parsed = json.loads(texto)
     except json.JSONDecodeError:
         parsed = {"tem_bolso": None, "tem_nome": None, "bolso_frontal": False, "evidencia": "JSON inválido"}
+
+    # Caso especial (feedback do cliente): patch FLUO (amarelo/lima/rosa/laranja neon)
+    # = coleção atual, nome SUNDEK bordado tom sobre tom → invisível na foto. O modelo
+    # tende a dizer "só ícone" → exclusão errada (bolso_so_logo). Regra determinística:
+    # patch fluo nunca vira "sem nome".
+    if parsed.get("tem_bolso") is True and parsed.get("tem_nome") is False and _patch_fluo(parsed):
+        parsed["tem_nome"] = True
+        parsed["tem_nome_override"] = "patch_fluo"
+        parsed["evidencia"] = "[patch fluo → nome tom-sobre-tom presumido] " + (parsed.get("evidencia") or "")
 
     parsed["_usage"] = {
         "prompt_tokens": resp.usage.prompt_tokens,
