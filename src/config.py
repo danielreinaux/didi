@@ -53,3 +53,11 @@ IA = {
     "model": "gpt-4o-mini",      # padrão: liso/estampado, brand check, cor
     "model_detalhes": "gpt-4o",  # visão fina: elástico e etiqueta
 }
+
+# Listra Sundek — "faixa de UMA cor só (racing stripe) conta como listra?"
+#   "conta"     = política atual (decisão do dono, jun/2026)  ← DEFAULT
+#   "nao_conta" = exige 2+ cores sempre
+# ⚠ "nao_conta" PENDENTE de confirmação do cliente: o gabarito e as reclamações
+#   "sem listra" sugerem que ele não considera faixa única listra Sundek, mas a regra de
+#   jun/2026 foi explícita. Não trocar sem o OK dele. (Env LISTRA_FAIXA_UNICA sobrepõe.)
+LISTRA_FAIXA_UNICA = "conta"

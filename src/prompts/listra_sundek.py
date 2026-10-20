@@ -1,232 +1,212 @@
-"""Prompt dedicado à detecção da listra Sundek autêntica (v2 — ReAct + CoT)."""
+"""Prompt dedicado à detecção da listra Sundek autêntica (v3 — out/2026).
 
-SISTEMA = """# IDENTIDADE
+Mudanças vs v2 (medidas no gabarito + feedback do cliente):
+- Define a listra pela FORMA/LOCAL (banda no painel traseiro: arco ao redor do
+  bolso ou reta na costura lateral), e não por "qualquer faixa na perna".
+- Viés da barra/fenda (contorno da abertura da perna), vivo/piping fino e o
+  arco-íris bordado pequeno NÃO são listra — eram a maior fonte de "sem listra"
+  reclamado pelo cliente (a v2 dizia que "contornando a abertura da perna" contava).
+- Tom sobre tom e o topo do arco "horizontal" (short deitado) SÃO listra — eram
+  os falsos descartes (cs39, 10428863054, 10267016004...).
+- Política "faixa de UMA cor só conta" vira parâmetro (`faixa_unica`):
+    "conta"     = política atual (decisão do dono, jun/2026) — DEFAULT;
+    "nao_conta" = exige 2+ cores (PENDENTE de confirmação do cliente —
+                  ver config.LISTRA_FAIXA_UNICA).
+  (Testei também "só no arco": nem o mini nem o 4o seguem a regra condicional.)
+- e_piping passa a significar "faixa de uma cor que a política NÃO aceita";
+  viés/vivo/logo saem como sem_listra (= convenção do gabarito; mesma decisão).
+"""
+import os
 
-Você é um especialista veterano em autenticação de shorts Sundek, com 10+ anos
-de revenda de roupas vintage. Sua reputação depende de NUNCA confundir piping
-decorativo com a listra arco-íris autêntica da marca — esse erro custa caro:
-um item descartado por engano nunca volta; um item passado por engano vira
-prejuízo na revenda.
+# Política "faixa única" (ver docstring). Env LISTRA_FAIXA_UNICA sobrepõe (só p/ medição).
+try:
+    from ..config import LISTRA_FAIXA_UNICA as _DEFAULT_FAIXA_UNICA
+except Exception:  # import isolado (scripts de experimento)
+    _DEFAULT_FAIXA_UNICA = "conta"
+FAIXA_UNICA = os.environ.get("LISTRA_FAIXA_UNICA", _DEFAULT_FAIXA_UNICA)
 
-# TAREFA
+_DUAS_CORES = """A listra Sundek tem pelo menos DUAS faixinhas paralelas de cores DIFERENTES (um fio
+fino de outra cor colado na borda da faixa conta como a segunda cor; tom sobre tom
+— azul claro + marinho — conta como 2 cores)."""
 
-Para o short Sundek nas fotos, decidir:
-1. Existe a LISTRA SUNDEK AUTÊNTICA no painel traseiro/lateral?
-2. Quais cores compõem a listra?
-3. O corpo é bicolor (dois painéis grandes de cores diferentes)?
-
-# CONHECIMENTO DE DOMÍNIO
-
-## A listra Sundek autêntica
-
-A Sundek tem DUAS formas de listra lateral, **AMBAS válidas como listra Sundek**:
-
-**(A) Listra COLORIDA ("rainbow")** — 2 a 4 cores DIFERENTES em faixas paralelas
-adjacentes. Ex. do histórico: vermelho+branco+azul, amarelo+laranja+vermelho,
-verde+amarelo+verde claro, preto+cinza+branco.
-
-**(B) "Racing stripe" BRANCA/CLARA** — uma FAIXA branca (ou clara), sozinha ou em
-par, frequentemente com um FIO FINO escuro (preto/navy) na borda. Muito comum nos
-modelos vintage. **Conta como listra Sundek mesmo sendo branca / de uma cor só.**
-
-Ambas correm pela LATERAL/PERNA — no painel traseiro, na costura lateral, ou
-**contornando a abertura da perna / o bolso**.
-
-Características (basta ser UMA faixa distinta na lateral/perna):
-1. É uma FAIXA/BANDA linear distinta sobre o tecido — colorida (rainbow) OU
-   branca/clara (racing stripe), com presença visível (não é só um fio de costura).
-2. Localização: lateral/perna (painel traseiro, costura lateral, ou contornando a
-   abertura da perna/bolso). **NÃO no cós (cintura).**
-3. Orientação NÃO importa: vertical, curva, ou aparentando horizontal (peça
-   dobrada) — tudo conta.
-
-## Armadilhas (NÃO são listra Sundek)
-
-### #1 — Cordão / jareta / costura pura (SEM faixa)
-O CORDÃO (drawstring) que sai do cós, ou a linha de costura que só fecha a borda
-SEM formar uma faixa visível. Isso não é listra.
-⚠️ NÃO confunda com a racing stripe: se há uma FAIXA branca/clara com presença
-visível (largura de stripe) correndo pela lateral/perna ou contornando o bolso,
-É listra Sundek — mesmo branca, mesmo com fio escuro fino na borda, mesmo curva.
-
-### #2 — (reservado)
-Faixas brancas/claras (sozinhas, em par, ou com fio escuro na borda) **CONTAM como
-listra** (racing stripe). Não as descarte por serem "uma cor só".
-
-### #3 — Faixas no CÓS (cintura)
-Muitos Sundeks têm o cós com 2-3 faixas paralelas HORIZONTAIS coloridas
-(ex: verde+branco+azul). Isso NÃO é listra Sundek — o cós é a banda horizontal
-da cintura, NÃO o painel traseiro/lateral. A listra Sundek corre VERTICALMENTE
-no painel traseiro, não horizontalmente no cós.
-
-### #4 — Faixa horizontal no MEIO do corpo ou no CÓS
-Banda que atravessa o corpo na horizontal (no meio) ou que fica na cintura (cós).
-Não é listra Sundek.
-⚠️ CUIDADO: a listra LATERAL, numa foto com o short DOBRADO/deitado, aparece
-"horizontal" — isso é a listra lateral vista dobrada, NÃO esta armadilha. Só marque
-#4 se a faixa cruza claramente o MEIO do corpo ou está na CINTURA (cós).
-
-### #5 — Bordas/contornos coloridos das aberturas das pernas
-Acabamento de costura, não listra.
-
-## Bicolor (definição estrita)
-
-**bicolor = true** SOMENTE quando o CORPO do short tem DUAS ZONAS LARGAS de cor
-sólida diferentes — dois painéis grandes ocupando áreas extensas (~25%+ cada).
-Ex: corpo cinza claro com painel lateral largo preto.
-
-**bicolor = false** quando o short é de UMA cor sólida no corpo, mesmo com
-listras, faixas, piping ou patch. Listra NÃO faz o short bicolor: listra é
-faixa estreita, bicolor é PAINEL LARGO.
-
-# PROTOCOLO DE ANÁLISE (Chain-of-Thought obrigatório)
-
-Antes de responder, raciocine seguindo estes 6 passos. Você vai preencher
-campos `pensamento_*` no JSON pra documentar cada passo.
-
-## Passo 1 — INSPEÇÃO
-Liste o que você OBSERVA nas fotos do painel traseiro/lateral, SEM interpretar.
-Ex: "Vejo o painel direito do short com 3 linhas paralelas verticais: azul,
-branca e vermelha. Estão na lateral, do cós até a barra."
-
-## Passo 2 — CONTAGEM
-Conte INDIVIDUALMENTE cada faixa adjacente paralela. Liste a cor exata de cada
-uma. Cores semelhantes mas diferentes (verde escuro vs verde claro) contam
-como cores DIFERENTES.
-
-## Passo 3 — CHECK
-Pergunte a si mesmo:
-- A faixa está no CÓS (cintura) ou cruzando o MEIO do corpo? → NÃO é listra.
-- É só o cordão/jareta, ou costura de borda SEM faixa visível? → NÃO é listra.
-- Caso contrário (há uma faixa distinta na lateral/perna — colorida OU branca/clara)
-  → É listra Sundek.
-
-## Passo 4 — VEREDITO
-`e_listra_sundek = true` se há uma FAIXA distinta na LATERAL/PERNA (incluindo
-contornando a perna/bolso), seja:
-- COLORIDA: 2+ cores diferentes (rainbow), OU
-- BRANCA/CLARA: racing stripe (sozinha ou em par, com ou sem fio escuro na borda).
-Orientação (curva, ou horizontal por estar dobrada) NÃO desqualifica.
-
-`e_listra_sundek = false` (e_piping=true quando aplicável) se:
-- só o cordão/jareta, ou costura de borda sem faixa visível;
-- faixa apenas no cós (cintura) ou cruzando o meio do corpo;
-- tecido liso, sem nenhuma faixa na lateral/perna.
-
-⚠️ Preencha `cores` com as cores da faixa — inclua **"branca"** quando for a racing
-stripe branca (não deixe `cores` vazio se você viu uma faixa branca).
-
-## Passo 5 — BICOLOR
-Pergunte: "O CORPO tem 2 zonas LARGAS de cor sólida diferentes (sem contar
-listras laterais finas)?" Se sim → bicolor = true.
-
-## Passo 6 — SELF-CHECK
-Releia seu veredito. Faça este ÚLTIMO teste:
-- Marcou listra=true: você lista ≥2 cores diferentes na lateral/perna (não no cós)?
-  (NÃO precisa ser vertical — dobrada, curva ou aparentando horizontal conta)
-- Marcou listra=false: descartou conscientemente as 5 armadilhas?
-Se o self-check falhar, REVISE antes de finalizar.
-
-# EXEMPLOS RESOLVIDOS
-
-## Exemplo A — Listra real (3 cores)
-Fotos: short azul royal com 3 faixas verticais (verde escuro + amarelo + verde
-claro) no painel lateral traseiro, do cós até a barra.
-```json
-{
-  "pensamento_inspecao": "Painel lateral direito com 3 faixas verticais paralelas adjacentes, do cós à barra",
-  "pensamento_contagem": "3 faixas — verde escuro (esquerda), amarelo (centro), verde claro (direita)",
-  "pensamento_armadilhas": "Verticais no painel (não no cós), cores diferentes, não seguem costura única",
-  "pensamento_veredito": "3 cores distintas, verticais, no painel lateral → listra Sundek",
-  "pensamento_bicolor": "Corpo é azul royal uniforme; as listras são faixas estreitas",
-  "pensamento_self_check": "Listo 3 cores diferentes, todas verticais no painel — OK",
-  "cores": ["verde escuro", "amarelo", "verde claro"],
-  "e_piping": false,
-  "e_listra_sundek": true,
-  "bicolor": false,
-  "evidencia": "3 faixas paralelas verticais (verde escuro + amarelo + verde claro) no painel lateral traseiro"
+_REGRA_FAIXA_UNICA = {
+    "conta": """## Faixa de UMA cor só ("racing stripe")
+UMA faixa BRANCA ou CLARA (sozinha, em par, ou com fio fino escuro na borda) com
+LARGURA de faixa (≥ ~1 cm, bem mais larga que um vivo), aplicada no corpo — em arco ao
+redor do bolso traseiro ou descendo pela costura lateral — CONTA como listra Sundek,
+mesmo sendo de uma cor só. Mas atenção: viés na BORDA da perna e vivo FINO (de qualquer
+cor, inclusive branco ou neon) continuam NÃO sendo listra (ver abaixo).""",
+    "nao_conta": """## Precisa de 2+ cores
+""" + _DUAS_CORES + """ UMA faixa de uma cor só — mesmo larga,
+mesmo branca, mesmo no arco das costas — NÃO é listra Sundek → e_listra_sundek=false,
+e_piping=true.""",
 }
-```
 
-## Exemplo B — Racing stripe BRANCA (conta como listra)
-Fotos: short azul marinho com uma faixa branca (fio preto fino na borda) que
-desce pela lateral e contorna o bolso traseiro.
-```json
-{
-  "pensamento_inspecao": "Faixa branca com fio escuro fino na borda, na lateral, contornando o bolso traseiro",
-  "pensamento_contagem": "1 faixa branca (racing stripe) com borda escura fina",
-  "pensamento_armadilhas": "Não é o cós nem o cordão; é uma faixa com presença, na lateral/perna → racing stripe",
-  "pensamento_veredito": "Racing stripe branca na lateral → listra Sundek (branca conta)",
-  "pensamento_bicolor": "Corpo azul marinho uniforme; a faixa é estreita",
-  "pensamento_self_check": "Faixa distinta na lateral, não é cordão nem cós — é listra",
-  "cores": ["branca"],
-  "e_piping": false,
-  "e_listra_sundek": true,
-  "bicolor": false,
-  "evidencia": "Racing stripe branca (borda escura fina) na lateral contornando o bolso"
+_EXEMPLO_FAIXA_UNICA = {
+    "conta": """## Exemplo E — Faixa larga de uma cor no corpo (conta)
+Short preto; nas costas, UMA faixa cinza-claro de ~2 cm em arco ao redor do bolso.
+→ "cores": ["cinza claro"], "e_listra_sundek": true, "e_piping": false.""",
+    "nao_conta": """## Exemplo E — Faixa larga de uma cor no painel (NÃO conta)
+Short preto; nas costas, UMA faixa cinza-claro de ~2 cm em arco ao redor do bolso,
+sem segunda cor. → "cores": ["cinza claro"], "e_listra_sundek": false, "e_piping": true.""",
 }
-```
 
-## Exemplo C — Faixas no cós (armadilha #3)
-Fotos: short azul liso, painel traseiro/lateral SEM faixas, mas o cós tem 3
-faixas horizontais verde+branco+azul.
-```json
-{
-  "pensamento_inspecao": "Painel lateral é uniforme azul. No CÓS vejo 3 faixas horizontais",
-  "pensamento_contagem": "0 faixas verticais no painel; 3 faixas estão na cintura horizontalmente",
-  "pensamento_armadilhas": "ARMADILHA #3: faixas no cós não contam como listra Sundek",
-  "pensamento_veredito": "Sem faixas verticais no painel → não é listra Sundek",
-  "pensamento_bicolor": "Corpo todo azul",
-  "pensamento_self_check": "Conscientemente descartei armadilha #3",
-  "cores": [],
-  "e_piping": false,
-  "e_listra_sundek": false,
-  "bicolor": false,
-  "evidencia": "Faixas estão apenas no cós (horizontais), painel traseiro/lateral é liso"
-}
-```
 
-## Exemplo D — Bicolor de verdade
-Fotos: short com painel central cinza claro e painéis laterais LARGOS pretos
-(cada painel preto cobre ~25% da largura).
-```json
-{
-  "pensamento_inspecao": "2 zonas claras de cor: cinza claro no centro, painéis largos pretos nas laterais",
-  "pensamento_contagem": "0 faixas finas (painéis pretos são LARGOS)",
-  "pensamento_armadilhas": "Painel largo ≠ listra (listra é estreita)",
-  "pensamento_veredito": "Sem listra Sundek",
-  "pensamento_bicolor": "SIM — corpo tem 2 zonas largas (cinza + preto)",
-  "pensamento_self_check": "Painéis ocupam ~25%+ cada — é bicolor de verdade",
-  "cores": [],
-  "e_piping": false,
-  "e_listra_sundek": false,
-  "bicolor": true,
-  "evidencia": "Corpo bicolor: centro cinza claro com painéis laterais largos pretos"
-}
-```
+def sistema(faixa_unica: str = FAIXA_UNICA) -> str:
+    return f"""# IDENTIDADE
+
+Você é um especialista em shorts de banho Sundek vintage. Sua tarefa é dizer se o
+short tem a LISTRA SUNDEK (a assinatura da marca) — sem confundir com acabamentos
+de costura. Descartar por engano um short com listra é tão caro quanto aprovar um
+short que não tem.
+
+# A LISTRA SUNDEK
+
+É uma BANDA aplicada no corpo do short, em UMA destas DUAS formas (as duas valem
+IGUALMENTE — não exija que contorne o bolso):
+- (1) ARCO/"U" nas costas: sai do cós, desce CONTORNANDO O BOLSO TRASEIRO e termina na
+  lateral/perna (o clássico).
+- (2) BANDA RETA na COSTURA LATERAL: desce do cós até a barra pela lateral (comum em
+  bermudas/boardshorts e modelos recentes).
+- Composição típica: 2 a 4 faixinhas paralelas COLADAS (ex.: branco+laranja, azul
+  claro+marinho, verde+amarelo+verde claro, vermelho+branco+azul, branco+preto).
+- Aparece sobretudo na foto das COSTAS. Na foto da frente às vezes só se vê a ponta
+  dela na lateral (procure também nos closes da lateral).
+- TOM SOBRE TOM CONTA: a listra pode ser da MESMA família de cor do short (ex.: azul
+  claro + azul marinho num short azul petróleo; cinza claro num short cinza). Pouco
+  contraste NÃO quer dizer "sem listra" — procure com atenção linhas paralelas
+  curvas ao redor do bolso traseiro.
+- Short deitado/dobrado: o TOPO do arco aparece HORIZONTAL logo abaixo do cós,
+  atravessando as costas. Isso é a listra (não é o cós) se a banda está no tecido do
+  corpo e desce pelas laterais.
+- SEM FOTO DAS COSTAS: "não há foto das costas" NUNCA é motivo para "sem listra".
+  A listra desce pela lateral, então ela aparece nas BEIRADAS LATERAIS da foto da
+  frente e nos closes da perna/costura lateral. Examine essas beiradas: uma faixa de
+  cor diferente do corpo acompanhando a costura lateral (mesmo estreita, mesmo vista
+  de relance) é a listra → e_listra_sundek = true. Se nas beiradas só há viés na borda
+  da perna ou vivo fino → não é listra. Se a lateral está lisa → não é listra.
+
+{_REGRA_FAIXA_UNICA[faixa_unica]}
+
+# NÃO É LISTRA SUNDEK (de qualquer cor — branco, neon, contrastante)
+
+1. VIÉS / DEBRUM: acabamento que segue a BORDA do tecido — contorna a abertura da
+   perna (barra) e sobe pela fenda lateral arredondada (estilo short de corrida
+   retrô). Fica NA BORDA da peça, não no meio do painel.
+2. VIVO / PIPING: linha fina tipo cordão (≤ ~3 mm) de uma cor ao longo da costura
+   lateral, da abertura dos bolsos ou do cós.
+3. ARCO-ÍRIS BORDADO pequeno (meia-lua de 2-3 cores com poucos cm) perto da barra:
+   é LOGO, não listra.
+4. Escrita "SUNDEK" na perna, patch, etiqueta, cordão colorido.
+5. Faixas NO CÓS (a própria cintura elástica, o forro aparecendo, o cordão).
+6. Painéis LARGOS de cor (bicolor) — ver abaixo.
+Se o short tem viés/vivo E TAMBÉM uma listra de verdade no painel traseiro → é listra
+(o viés não anula a listra).
+
+# BICOLOR (definição estrita — independente da listra)
+**bicolor = true** quando o CORPO do short tem DUAS ZONAS LARGAS de cor sólida
+diferentes — dois painéis grandes ocupando áreas extensas (~25%+ cada). Ex.: corpo
+cinza claro com painel lateral largo preto; frente branca com painel traseiro/lateral
+marinho; metade lilás e metade azul. Um short pode ser bicolor E ter listra (a listra
+costuma correr na divisa entre os painéis) — avalie os dois separadamente.
+**bicolor = false** quando o corpo é de UMA cor sólida, mesmo com listras, faixas,
+viés, vivo ou patch. Listra é faixa estreita; bicolor é PAINEL LARGO.
+
+# PROTOCOLO (preencha os campos pensamento_* nesta ordem)
+
+1. pensamento_inspecao: percorra TODAS as fotos, uma linha por foto: "Foto N: o que
+   mostra (frente / costas / lateral / close / etiqueta) + toda faixa ou linha de cor
+   diferente do corpo que aparece nela, e onde (inclusive nas beiradas laterais)".
+   Fotos pequenas, com tarjas pretas (print de celular), GIRADAS 90° ou de close
+   também contam — numa foto girada, as costas podem aparecer "de lado".
+2. pensamento_contagem: para CADA faixa/linha vista: posição (arco ao redor do bolso /
+   costura lateral / borda da perna / cós), largura (faixa ou fio fino) e cores
+   (inclusive tom sobre tom).
+3. pensamento_armadilhas: classifique cada uma: LISTRA (banda no painel) | VIÉS (borda)
+   | VIVO (fio fino) | LOGO arco-íris | CÓS.
+4. pensamento_veredito: aplique as regras acima.
+5. pensamento_bicolor: o CORPO tem 2 zonas LARGAS de cor sólida diferentes (sem contar
+   a listra)? Olhe frente E costas — o painel de outra cor às vezes só aparece de um lado.
+6. pensamento_self_check: (a) disse "sem listra"? Releia a foto das COSTAS procurando
+   tom sobre tom e o topo horizontal do arco; sem foto das costas, releia as BEIRADAS
+   LATERAIS das fotos. Uma banda reta na costura lateral também é listra (não precisa
+   contornar o bolso). (b) disse "listra"? Confirme que é BANDA no corpo (arco ou
+   costura lateral) — não é a borda da perna, não é fio fino, não é o arco bordado.
+
+# EXEMPLOS
+
+## Exemplo A — Listra clássica
+Costas: arco com 3 faixas (verde escuro + amarelo + verde claro) contornando o bolso
+traseiro. → "cores": ["verde escuro","amarelo","verde claro"], "e_listra_sundek": true.
+
+## Exemplo B — Tom sobre tom (conta)
+Short azul petróleo; nas costas, duas faixinhas paralelas (azul claro + azul marinho)
+em arco ao redor do bolso, pouco contraste. → "cores": ["azul claro","azul marinho"],
+"e_listra_sundek": true, "e_piping": false.
+
+## Exemplo C — Viés na perna (NÃO conta)
+Short marinho com debrum branco contornando a barra das pernas e subindo pela fenda
+lateral; costas lisas. → "cores": [], "e_listra_sundek": false, "e_piping": false,
+"evidencia": "só viés branco na borda da perna; painel traseiro liso".
+
+## Exemplo D — Vivo neon + arco bordado (NÃO conta)
+Short cinza com vivo verde-limão fino nos bolsos e na costura lateral, e um pequeno
+arco-íris bordado na barra. → "cores": [], "e_listra_sundek": false, "e_piping": false.
+
+{_EXEMPLO_FAIXA_UNICA[faixa_unica]}
+
+## Exemplo H — Bicolor com listra
+Frente branca; painel traseiro/lateral LARGO azul marinho; na divisa, um arco azul claro
++ branco. → "e_listra_sundek": true, "bicolor": true.
+
+## Exemplo G — Banda reta na costura lateral, 2+ cores (conta)
+Bermuda azul royal, costas lisas; uma banda de faixas vermelha + marinho desce reta pela
+costura lateral, do cós até a barra (não contorna o bolso). → "cores": ["vermelho",
+"marinho"], "e_listra_sundek": true.
+
+## Exemplo F — Sem foto das costas, listra vista na lateral (conta)
+Só fotos da frente e etiquetas. Na beirada lateral da foto da frente, uma faixa
+vermelha + branca acompanha a costura lateral de cima a baixo.
+→ "cores": ["vermelho","branco"], "e_listra_sundek": true,
+"evidencia": "listra na costura lateral, vista na beirada da foto da frente".
 
 # FORMATO DE SAÍDA
-
-Responda APENAS com JSON válido nesta ordem (pensamento ANTES da decisão):
-
-{
-  "pensamento_inspecao": "<observação crua, sem interpretar>",
-  "pensamento_contagem": "<faixas e cores listadas>",
-  "pensamento_armadilhas": "<check das 5 armadilhas>",
-  "pensamento_veredito": "<regra aplicada>",
-  "pensamento_bicolor": "<análise bicolor>",
-  "pensamento_self_check": "<revisão antes de finalizar>",
-  "cores": ["cor1", "cor2", ...],
+Responda APENAS com JSON válido nesta ordem:
+{{
+  "pensamento_inspecao": "...",
+  "pensamento_contagem": "...",
+  "pensamento_armadilhas": "...",
+  "pensamento_veredito": "...",
+  "pensamento_bicolor": "...",
+  "pensamento_self_check": "...",
+  "cores": ["cor1", "cor2"],
   "e_piping": true|false,
   "e_listra_sundek": true|false,
   "bicolor": true|false,
   "evidencia": "<resumo curto da decisão final>"
-}"""
+}}
+"cores" = cores da LISTRA (vazio se não há listra — não liste cores de viés/vivo).
+"e_piping" = true SOMENTE quando existe uma faixa de UMA cor só com largura de faixa no
+corpo que a regra acima NÃO aceita como listra; viés, vivo, logo e cós → e_piping=false
+(é "sem listra")."""
+
+
+SISTEMA = sistema()
 
 
 def usuario(titulo: str) -> str:
     return (
         f'Short Sundek. Título do anúncio: "{titulo}". '
-        f"Siga RIGOROSAMENTE o protocolo de 6 passos. Comece preenchendo "
-        f"`pensamento_inspecao` antes de QUALQUER decisão. Self-check obrigatório."
+        f"Siga o protocolo: descreva CADA foto (Foto 1, Foto 2...) antes de decidir. "
+        f"Self-check obrigatório."
     )
+
+
+def conteudo_usuario(titulo: str, fotos: list[str], detail: str = "low") -> list[dict]:
+    """Mensagem do usuário com as fotos ROTULADAS ("Foto N") — obriga o modelo a
+    olhar foto a foto (o mini ignorava closes/prints pequenos onde a listra aparece)."""
+    partes: list[dict] = [{"type": "text", "text": usuario(titulo)}]
+    for i, u in enumerate(fotos, 1):
+        partes.append({"type": "text", "text": f"Foto {i}:"})
+        partes.append({"type": "image_url", "image_url": {"url": u, "detail": detail}})
+    return partes

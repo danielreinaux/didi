@@ -28,10 +28,9 @@ def verificar_listra(item: dict) -> dict:
         return {"cores": [], "e_piping": False, "e_listra_sundek": False,
                 "bicolor": False, "evidencia": "sem fotos"}
 
-    conteudo = [
-        {"type": "text", "text": prompt.usuario(item.get("titulo") or "")},
-        *[{"type": "image_url", "image_url": {"url": u, "detail": "low"}} for u in fotos],
-    ]
+    # Fotos ROTULADAS ("Foto 1", "Foto 2"...) + protocolo foto a foto: o mini
+    # ignorava closes/prints pequenos e fotos giradas onde a listra aparece.
+    conteudo = prompt.conteudo_usuario(item.get("titulo") or "", fotos, "low")
 
     # Roda no MINI: o comparativo de modelos (jul/2026, data/modeltest/4datasets)
     # mostrou o mini EMPATANDO/superando o 4o em Listra e Bicolor — +9pts no Sundek
