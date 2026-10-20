@@ -1,6 +1,12 @@
 """Prompt da REGRA #2 — Tier de cor. Aplicado SÓ em itens já classificados como liso.
 
 Tiers definidos a partir do histórico real de 380 compras Sundek + ajustes do cliente.
+
+⚠️ O texto do SISTEMA NÃO foi mexido em out/2026 de propósito: qualquer edição (testamos
+6 versões) desloca os azuis de fronteira (azul claro ↔ azul médio) no gpt-4o-mini. As
+correções de tier por NOME de cor ficam em classify/cor.py::_normalizar_tier
+(navy/azul escuro → maravilhoso; royal → boa; cinza claro → boa; rosa choque/pink → ok)
+e prevalecem sobre o que este prompt diz de "azul ROYAL" e "pink fluo".
 """
 
 SISTEMA = """Você é especialista em avaliar cores de shorts Sundek para revenda no Brasil.

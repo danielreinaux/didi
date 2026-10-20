@@ -9,8 +9,11 @@ Regras:
 - Listras monocromáticas (mesma cor do short) são seguras quando a cor base já é boa
 """
 
-# Cores de short que listras NEUTRAS conseguem salvar (de "ok" para "boa")
-_CORES_SALVAVEIS = {"laranja", "coral", "salmão", "verde", "verde médio", "fucsia"}
+# Cores de short que listras NEUTRAS conseguem salvar (de "ok" para "boa").
+# "fucsia" saiu (out/2026): o rosa choque/pink agora é "ok" pelo cor.py (manual do
+# cliente: rosa choque = ACEITÁVEL, não "boa"); sem isso o mesmo pink virava "boa"
+# ou "ok" só pelo nome que o modelo escolhesse ("fucsia" × "rosa").
+_CORES_SALVAVEIS = {"laranja", "coral", "salmão", "verde", "verde médio"}
 
 # Listras consideradas neutras/valorizadas
 _LISTRAS_NEUTRAS = {"azul", "branco", "cinza", "preto", "azul escuro", "azul marinho"}
@@ -47,8 +50,18 @@ def avaliar_combo(cor_short: str, cores_listras: list[str], tier_cor: str) -> di
             "motivo": "sem listras laterais",
         }
 
-    # Cor ruim absoluto — listras não salvam
+    # Cor ruim absoluto — listras não SALVAM um neon que o agente de cor deu "ruim".
+    # Mas se o agente de cor já deu tier acima de "ruim" — ex.: "pink fluo"/"rosa fluo"
+    # que cor.py normaliza pra "ok" (manual do cliente: rosa choque é aceitável) —
+    # respeita: este guard só impede o resgate ruim→ok, não rebaixa (antes ele
+    # rebaixava pra ruim qualquer nome com "fluo", contradizendo o agente de cor).
     for ruim in _CORES_RUIM_ABSOLUTO:
+        if ruim in cor and tier_cor not in (None, "", "ruim", "erro", "indefinido"):
+            return {
+                "listra_tier": "neutra",
+                "tier_final": tier_cor,
+                "motivo": f"cor '{cor_short}' (viva) mantida em '{tier_cor}' pelo agente de cor",
+            }
         if ruim in cor:
             return {
                 "listra_tier": "penaliza",
