@@ -4,9 +4,14 @@ import os
 
 from openai import OpenAI
 
-from ..config import IA
+from ..config import IA, LISTRA_FAIXA_UNICA
+from ..prompts import listra_confirma
 from ..prompts import listra_sundek as prompt
-from ..utils.ratelimit import pace_mini
+from ..utils.ratelimit import pace_gpt4o, pace_mini
+
+# Decisão do cliente (out/2026): faixa de UMA cor só na COSTURA LATERAL não conta.
+# Arco nas costas de 1 cor segue contando (regra de jun/2026, fora da decisão).
+_FORMAS_SEM_LISTRA_SE_1_COR = {"reta_lateral", "borda_perna"}
 
 _client: OpenAI | None = None
 
@@ -60,3 +65,58 @@ def verificar_listra(item: dict) -> dict:
         "completion_tokens": resp.usage.completion_tokens,
     }
     return parsed
+
+
+# ── 2ª olhada: "faixa de uma cor só" (LISTRA_FAIXA_UNICA="nao_conta") ────────────
+# O v3 sub-conta cores (lê "amarelo" num arco amarelo-neon + branco; 10 de 77 listras
+# reais do gabarito saem com 1 cor), então "1 cor" dele NÃO basta para descartar. Quando
+# o v3 diz listra com ≤1 cor, o gpt-4o (detail HIGH) conta as faixinhas e diz onde a
+# faixa está. Medido em 47 itens (+3 repetições nos 14 sensíveis): 11/11 faixas de 1 cor
+# na lateral pegas, 30/30 listras de 2+ cores preservadas, estável 3/3. Em detail LOW o
+# 4o perde o fio azul do 9280883900 (comprável) → HIGH (~US$ 0,0095/chamada).
+
+def modo_faixa_unica() -> str:
+    return os.environ.get("LISTRA_FAIXA_UNICA", LISTRA_FAIXA_UNICA)
+
+
+def precisa_confirmar(tem_listra, cores, ja_confirmado: bool = False) -> bool:
+    """True se a regra do cliente está ligada e o v3 disse listra com ≤1 cor."""
+    if modo_faixa_unica() != "nao_conta" or tem_listra is not True or ja_confirmado:
+        return False
+    return len({str(c).strip().lower() for c in (cores or []) if str(c).strip()}) <= 1
+
+
+def confirmar_faixa_unica(item: dict) -> dict | None:
+    """Roda a 2ª olhada. Retorna {"forma", "faixas", "n_cores", "evidencia",
+    "rejeitada": bool, "_usage": {...}} ou None se a chamada falhar (mantém o v3)."""
+    fotos = (item.get("fotos") or [])[:6]
+    if not fotos:
+        return None
+    try:
+        pace_gpt4o()
+        resp = _get_client().chat.completions.create(
+            model=IA["model_detalhes"],
+            messages=[
+                {"role": "system", "content": listra_confirma.SISTEMA},
+                {"role": "user", "content": listra_confirma.conteudo_usuario(
+                    item.get("titulo") or "", fotos, "high")},
+            ],
+            max_tokens=400,
+            temperature=0.1,
+            response_format={"type": "json_object"},
+        )
+        conf = json.loads(resp.choices[0].message.content or "{}")
+    except Exception:
+        return None
+    try:
+        n = int(conf.get("n_cores"))
+    except (TypeError, ValueError):
+        n = len({str(f).strip().lower() for f in (conf.get("faixas") or [])})
+    conf["n_cores"] = n
+    conf["rejeitada"] = n <= 1 and conf.get("forma") in _FORMAS_SEM_LISTRA_SE_1_COR
+    conf["_usage"] = {
+        "model": IA["model_detalhes"],
+        "prompt_tokens": resp.usage.prompt_tokens,
+        "completion_tokens": resp.usage.completion_tokens,
+    }
+    return conf

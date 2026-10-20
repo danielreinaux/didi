@@ -118,7 +118,7 @@ ARQUIVOS = {
     "marca": ["prompts/verifica_sundek.py", "classify/brand.py"],
     "tipo": ["prompts/liso_vs_estampado.py", "classify/tipo.py"],
     "cor": ["prompts/cor_tier.py", "classify/cor.py"],
-    "listra": ["prompts/listra_sundek.py", "classify/listra.py"],
+    "listra": ["prompts/listra_sundek.py", "classify/listra.py", "prompts/listra_confirma.py"],
     "elastico": ["prompts/elastico.py", "classify/elastico.py", "prompts/botao_fly.py",
                  "classify/botao_fly.py", "classify/crop_fly.py", "prompts/velcro_fly.py"],
     "bolso": ["prompts/bolso_traseiro.py", "classify/bolso.py"],
@@ -241,6 +241,18 @@ def _processar(item: dict, rodar: set, base: dict | None) -> tuple[dict, int, in
 
     if "listra" in rodar:
         l = chamar("listra")
+        # 2ª olhada "faixa de 1 cor só" (LISTRA_FAIXA_UNICA=nao_conta) — mesma função da
+        # produção. Produção só confere quem iria passar; aqui confere todo disparado.
+        from ...classify.listra import precisa_confirmar, confirmar_faixa_unica
+        if precisa_confirmar(l.get("e_listra_sundek"), l.get("cores")):
+            conf = confirmar_faixa_unica(item)
+            if conf is not None:
+                u = conf.pop("_usage")
+                in_tok += u.get("prompt_tokens", 0)
+                out_tok += u.get("completion_tokens", 0)
+                if conf["rejeitada"]:
+                    l["e_listra_sundek"] = False
+                    l["e_piping"] = False
         if l.get("e_listra_sundek"):
             out["listra"] = "listra_real"
         elif l.get("e_piping"):

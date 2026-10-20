@@ -59,10 +59,14 @@ IA = {
     "model_detalhes": "gpt-4o",  # visão fina: elástico e etiqueta
 }
 
-# Listra Sundek — "faixa de UMA cor só (racing stripe) conta como listra?"
-#   "conta"     = política atual (decisão do dono, jun/2026)  ← DEFAULT
-#   "nao_conta" = exige 2+ cores sempre
-# ⚠ "nao_conta" PENDENTE de confirmação do cliente: o gabarito e as reclamações
-#   "sem listra" sugerem que ele não considera faixa única listra Sundek, mas a regra de
-#   jun/2026 foi explícita. Não trocar sem o OK dele. (Env LISTRA_FAIXA_UNICA sobrepõe.)
-LISTRA_FAIXA_UNICA = "conta"
+# Listra Sundek — faixa de UMA cor só conta como listra?
+#   "conta"     = regra de jun/2026 (o prompt v3 sozinho).
+#   "nao_conta" = decisão do CLIENTE (out/2026): faixa de UMA cor só na COSTURA LATERAL
+#                 (ou viés na borda da perna) NÃO é listra. Quando o v3 diz "listra" com
+#                 ≤1 cor, uma 2ª olhada (gpt-4o, detail high, prompts/listra_confirma.py)
+#                 conta as cores e diz onde a faixa está; 1 cor + lateral/borda → sem listra.
+#                 Arco nas costas de 1 cor continua contando (fora da decisão do cliente).
+#                 Em produção (run.py) a 2ª olhada só roda em item ATIVO que iria PASSAR
+#                 (≈ US$ 0,0095 cada; 1ª rodada ≈ 34 itens ≈ US$ 0,32; depois < US$ 1/mês).
+#   Env LISTRA_FAIXA_UNICA sobrepõe (medição; o harness do gabarito confere todo disparado).
+LISTRA_FAIXA_UNICA = "nao_conta"  # decidido pelo cliente em 20/10/2026

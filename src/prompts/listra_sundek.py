@@ -8,22 +8,17 @@ Mudanças vs v2 (medidas no gabarito + feedback do cliente):
   reclamado pelo cliente (a v2 dizia que "contornando a abertura da perna" contava).
 - Tom sobre tom e o topo do arco "horizontal" (short deitado) SÃO listra — eram
   os falsos descartes (cs39, 10428863054, 10267016004...).
-- Política "faixa de UMA cor só conta" vira parâmetro (`faixa_unica`):
-    "conta"     = política atual (decisão do dono, jun/2026) — DEFAULT;
-    "nao_conta" = exige 2+ cores (PENDENTE de confirmação do cliente —
-                  ver config.LISTRA_FAIXA_UNICA).
-  (Testei também "só no arco": nem o mini nem o 4o seguem a regra condicional.)
+- O SISTEMA roda SEMPRE no modo "conta". A regra do cliente (out/2026: "faixa de UMA
+  cor só na costura lateral NÃO conta") é aplicada DEPOIS, por uma segunda olhada
+  (prompts/listra_confirma.py, em classify/listra.py) — ligar o texto "nao_conta"
+  aqui fazia o mini chamar de piping listras de 2+ cores (cs04, cs39).
+  `sistema("nao_conta")` fica só p/ experimento.
 - e_piping passa a significar "faixa de uma cor que a política NÃO aceita";
   viés/vivo/logo saem como sem_listra (= convenção do gabarito; mesma decisão).
 """
-import os
 
-# Política "faixa única" (ver docstring). Env LISTRA_FAIXA_UNICA sobrepõe (só p/ medição).
-try:
-    from ..config import LISTRA_FAIXA_UNICA as _DEFAULT_FAIXA_UNICA
-except Exception:  # import isolado (scripts de experimento)
-    _DEFAULT_FAIXA_UNICA = "conta"
-FAIXA_UNICA = os.environ.get("LISTRA_FAIXA_UNICA", _DEFAULT_FAIXA_UNICA)
+# O texto do prompt é sempre o "conta" (ver docstring); a política vive em classify/listra.py.
+FAIXA_UNICA = "conta"
 
 _DUAS_CORES = """A listra Sundek tem pelo menos DUAS faixinhas paralelas de cores DIFERENTES (um fio
 fino de outra cor colado na borda da faixa conta como a segunda cor; tom sobre tom

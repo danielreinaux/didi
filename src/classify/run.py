@@ -30,7 +30,7 @@ from .cor import classificar_cor
 from .elastico import verificar_elastico
 from .botao_fly import verificar_botao, verificar_velcro
 from .etiqueta import verificar_etiqueta
-from .listra import verificar_listra
+from .listra import verificar_listra, precisa_confirmar, confirmar_faixa_unica
 from ..utils.cost_tracker import track as _track, relatorio as _relatorio, dump_json as _dump_cost
 from ..utils.listra_tier import avaliar_combo
 from .prefilter import parece_short
@@ -331,6 +331,38 @@ def _processar(item: dict, idx: str, total: int) -> tuple[dict, int, int]:
         return {**item, "marca_check": marca, "classificacao": {"tipo": "erro", "erro": str(e)}}, in_tok, out_tok
 
 
+# Teto de 2ªs olhadas da listra por rodada (gpt-4o high ≈ US$ 0,0095 cada).
+LISTRA_CONFIRMA_MAX_POR_RODADA = 80
+
+
+def _precisa_confirmar_listra(it: dict) -> bool:
+    cl = it.get("classificacao") or {}
+    return ((it.get("score") or {}).get("decisao") in ("compravel", "medio")
+            and (it.get("status") or "ativo") == "ativo"  # vendido/removido: não gasta
+            and precisa_confirmar(cl.get("tem_listra_lateral_sundek"), cl.get("cores_listras"),
+                                  "listra_confirma" in cl))
+
+
+def _confirmar_listra(it: dict, calcular_score) -> None:
+    """2ª olhada na listra de ≤1 cor; se for faixa de 1 cor na lateral → sem listra + rescore."""
+    conf = confirmar_faixa_unica(it)
+    if conf is None:  # falhou → tenta de novo na próxima rodada
+        return
+    u = conf.pop("_usage")
+    _track("listra_confirma", u["model"], u["prompt_tokens"], u["completion_tokens"])
+    cl = it.get("classificacao") or {}
+    cl["listra_confirma"] = conf
+    if conf["rejeitada"]:
+        cl["tem_listra_lateral_sundek"] = False
+        cl["faixa_unica_rejeitada"] = True
+        cl["listra_evidencia"] = (
+            f"faixa de 1 cor só ({', '.join(map(str, conf.get('faixas') or []))}) na "
+            f"{conf.get('forma')} — não conta (decisão do cliente). [v3: {cl.get('listra_evidencia')}]")
+    it["classificacao"] = cl
+    if conf["rejeitada"]:
+        it["score"] = calcular_score(it)
+
+
 def main() -> None:
     inp = DATA / "coleta.json"
     if not inp.exists():
@@ -465,6 +497,7 @@ def main() -> None:
     from .score import calcular_score
     from ..utils.listra_tier import avaliar_combo
     final = json.loads(checkpoint_path.read_text())
+    n_confirma = 0
     for it in final:
         cor = it.get("cor")
         if isinstance(cor, dict) and cor.get("tier"):
@@ -474,6 +507,15 @@ def main() -> None:
             cor["combo_motivo"] = combo["motivo"]
         if not it.get("manual_exclusao"):
             it["score"] = calcular_score(it)
+            # Faixa de UMA cor só na lateral não conta (cliente, out/2026; só com
+            # LISTRA_FAIXA_UNICA="nao_conta"). A 2ª olhada (gpt-4o) roda SÓ em quem iria
+            # PASSAR com listra de ≤1 cor — o resto já é descartado por outro motivo e a
+            # resposta não mudaria a decisão. Na 1ª rodada cobre os ativos (backfill).
+            if n_confirma < LISTRA_CONFIRMA_MAX_POR_RODADA and _precisa_confirmar_listra(it):
+                n_confirma += 1
+                _confirmar_listra(it, calcular_score)
+    if n_confirma:
+        print(f"  listra 2ª olhada (faixa de 1 cor): {n_confirma} item(ns) conferidos com gpt-4o")
     checkpoint_path.write_text(json.dumps(final, indent=2, ensure_ascii=False))
 
     # Auto-double-check com gpt-4o (reclassify_ambiguos) DESLIGADO (out/2026):
