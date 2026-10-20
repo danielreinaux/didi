@@ -90,6 +90,16 @@ def _elastico_com_botao(item: dict) -> dict:
                        "completion_tokens": u.get("completion_tokens", 0) + ub.get("completion_tokens", 0)}
         if bt.get("tem_botao") is True:
             e["tipo_fechamento"] = "velcro" if bt.get("tipo") == "velcro" else "botao"
+    # Mesmo passo da produção: VELCRO nos shorts SEM elástico (onde o botao_fly não roda).
+    if e.get("tipo_fechamento") not in ("botao", "velcro") and e.get("tem_elastico") is False:
+        from ...classify.botao_fly import verificar_velcro
+        vc = verificar_velcro(item)
+        uv = vc.pop("_usage", {})
+        u = e.get("_usage", {})
+        e["_usage"] = {"prompt_tokens": u.get("prompt_tokens", 0) + uv.get("prompt_tokens", 0),
+                       "completion_tokens": u.get("completion_tokens", 0) + uv.get("completion_tokens", 0)}
+        if vc.get("tem_velcro") is True:
+            e["tipo_fechamento"] = "velcro"
     return e
 
 
@@ -110,7 +120,7 @@ ARQUIVOS = {
     "cor": ["prompts/cor_tier.py", "classify/cor.py"],
     "listra": ["prompts/listra_sundek.py", "classify/listra.py"],
     "elastico": ["prompts/elastico.py", "classify/elastico.py", "prompts/botao_fly.py",
-                 "classify/botao_fly.py", "classify/crop_fly.py"],
+                 "classify/botao_fly.py", "classify/crop_fly.py", "prompts/velcro_fly.py"],
     "bolso": ["prompts/bolso_traseiro.py", "classify/bolso.py"],
     "etiqueta": ["prompts/etiqueta.py", "classify/etiqueta.py"],
 }

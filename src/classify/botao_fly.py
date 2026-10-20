@@ -7,6 +7,7 @@ from openai import OpenAI
 
 from ..config import IA
 from ..prompts import botao_fly as prompt
+from ..prompts import velcro_fly as prompt_velcro
 from .crop_fly import recortar_fly
 
 _client: OpenAI | None = None
@@ -46,5 +47,29 @@ def verificar_botao(item: dict) -> dict:
     parsed["_crop_modo"] = cr.get("modo")
     parsed["_crop_foto"] = cr.get("foto_index")
     parsed["_crop"] = cr.get("crop") if (cr.get("crop") or "").startswith("data:") else None
+    parsed["_usage"] = {"prompt_tokens": resp.usage.prompt_tokens, "completion_tokens": resp.usage.completion_tokens}
+    return parsed
+
+
+def verificar_velcro(item: dict) -> dict:
+    """Velcro na braguilha — pros shorts SEM elástico (onde o botao_fly não roda).
+    Todas as fotos em detail=low (o velcro aparece em close-up da braguilha aberta,
+    tira grande: low basta) → ~US$0,003/item no gpt-4o."""
+    fotos = (item.get("fotos") or [])[:6]
+    if not fotos:
+        return {"tem_velcro": None, "evidencia": "sem fotos"}
+    conteudo = [{"type": "text", "text": prompt_velcro.usuario(item.get("titulo") or "")}]
+    for i, u in enumerate(fotos):
+        conteudo.append({"type": "text", "text": f"Foto {i}:"})
+        conteudo.append({"type": "image_url", "image_url": {"url": u, "detail": "low"}})
+    resp = _get_client().chat.completions.create(
+        model=os.environ.get("BOTAO_MODEL", IA["model_detalhes"]),
+        messages=[{"role": "system", "content": prompt_velcro.SISTEMA}, {"role": "user", "content": conteudo}],
+        max_tokens=250, temperature=0.1, response_format={"type": "json_object"},
+    )
+    try:
+        parsed = json.loads(resp.choices[0].message.content or "{}")
+    except json.JSONDecodeError:
+        parsed = {"tem_velcro": None, "evidencia": "JSON inválido"}
     parsed["_usage"] = {"prompt_tokens": resp.usage.prompt_tokens, "completion_tokens": resp.usage.completion_tokens}
     return parsed

@@ -28,7 +28,7 @@ from .bolso import verificar_bolso
 from .brand import verificar_sundek, motivo_recheck, aceita_recheck
 from .cor import classificar_cor
 from .elastico import verificar_elastico
-from .botao_fly import verificar_botao
+from .botao_fly import verificar_botao, verificar_velcro
 from .etiqueta import verificar_etiqueta
 from .listra import verificar_listra
 from ..utils.cost_tracker import track as _track, relatorio as _relatorio, dump_json as _dump_cost
@@ -254,6 +254,32 @@ def _processar(item: dict, idx: str, total: int) -> tuple[dict, int, int]:
                             elastico["evidencia"] = f"[botão no fly: {bt.get('evidencia')}] " + (elastico.get("evidencia") or "")
                 except Exception as e_bt:
                     print(f"  [{idx}] botao_fly falhou: {e_bt}")
+
+            # 4c''. VELCRO nos shorts SEM elástico (boardshort de cós fixo), onde o botao_fly
+            # não roda (o gate dele evita os ilhós de boardshort virarem "botão"). Velcro só
+            # aparece com a braguilha ABERTA; prompt curto, fotos em low (~US$0,003/item).
+            # Gabarito: 9290341091 (velcro → "cordao"). Só roda se a cor é PRETO/BRANCO:
+            # sem elástico em outra cor já é excluído pelo score (sem_elastico_cor_fraca)
+            # → ~70 itens/mês em vez de ~580.
+            from .score import CORES_SEM_ELASTICO
+            _cor_sem_el_ok = any(k in ((cor or {}).get("cor_principal") or "").lower() for k in CORES_SEM_ELASTICO)
+            if (elastico is not None
+                    and elastico.get("tipo_fechamento") not in ("botao", "velcro")
+                    and elastico.get("tem_elastico") is False
+                    and _cor_sem_el_ok):
+                try:
+                    vc = verificar_velcro(item)
+                    u = vc.pop("_usage", {})
+                    in_tok += u.get("prompt_tokens", 0)
+                    out_tok += u.get("completion_tokens", 0)
+                    _track("velcro_fly", _IA["model_detalhes"], u.get("prompt_tokens", 0), u.get("completion_tokens", 0))
+                    elastico["velcro_fly"] = {k: vc.get(k) for k in ("tem_velcro", "foto_braguilha_aberta", "o_que_vi", "evidencia")}
+                    if vc.get("tem_velcro") is True:
+                        elastico["tipo_fechamento_original"] = elastico.get("tipo_fechamento")
+                        elastico["tipo_fechamento"] = "velcro"
+                        elastico["evidencia"] = f"[velcro na braguilha: {vc.get('evidencia')}] " + (elastico.get("evidencia") or "")
+                except Exception as e_vc:
+                    print(f"  [{idx}] velcro_fly falhou: {e_vc}")
 
             # Short-circuit: botão/velcro → descartado. Pula bolso e etiqueta.
             if (elastico or {}).get("tipo_fechamento") in ("botao", "velcro"):
