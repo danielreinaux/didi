@@ -38,9 +38,10 @@ PTS_ETIQUETA = 10    # hang-tag de papel visível na foto
 PTS_LISTRA_SALVA = 5 # bônus quando listra salva a cor
 # Elástico + anúncio até €10 quase sempre é comprado (cliente, 21/10/2026): o preço
 # perdoa estes motivos de descarte (cor ruim e os graves continuam descartando).
+# Sem listra Sundek, vivo (piping) e bicolor NÃO são mais perdoados (Daniel, 21/10/2026, revendo
+# o app: short de vivo verde/laranja e o bicolor azul/branco "não entram, pelas listras laterais").
 PRECO_BARATO_ELASTICO = 10.0
-PERDOA_BARATO_ELASTICO = {"bolso_so_logo_colecao_antiga", "sem_listra_sundek",
-                          "piping_nao_e_listra_sundek", "tecido_brilhoso", "bicolor"}
+PERDOA_BARATO_ELASTICO = {"bolso_so_logo_colecao_antiga", "tecido_brilhoso"}
 
 # Cores em que um short SEM elástico ainda é aceito (cliente, out/2026: só preto e branco).
 CORES_SEM_ELASTICO = ("preto", "negro", "branco", "blanco")
@@ -113,6 +114,8 @@ def _tamanho_key(tamanho: str | None) -> str:
     if not tamanho:
         return "L"
     t = (tamanho or "").strip().upper()
+    if re.search(r"\b[2-9]\s*XL\b", t):  # 2XL/3XL/4XL... = XXL ou maior ("4XL" caía em XL)
+        return "XXL"
     for key in ("XXL", "XL", "M", "L", "S"):  # XXL antes de XL
         if key in t:
             return key

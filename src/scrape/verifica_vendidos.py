@@ -18,6 +18,7 @@ Padrões: --marca sundek, --max 80. A sessão da Vinted é a mesma pras duas mar
 (só muda quais arquivos de acervo/scrape são lidos e regravados).
 """
 import json
+import re
 import sys
 import time
 from datetime import datetime, timezone
@@ -29,6 +30,12 @@ from ..utils.browser import abrir_sessao_vinted
 
 ROOT = Path(__file__).resolve().parent.parent.parent
 DATA = ROOT / "data"
+
+
+# Selos exatos (texto inteiro do elemento, sem pontuação) — es/en/fr/it/nl/de/pt/pl.
+_SELO_REMOVIDO = {"eliminado", "deleted", "removed", "supprimé", "supprime", "eliminato",
+                  "verwijderd", "gelöscht", "geloscht", "usunięte", "usuniete"}
+_SELO_VENDIDO = {"vendido", "sold", "vendu", "venduto", "verkocht", "verkauft", "sprzedane"}
 
 
 def _checar_status(page, url: str) -> str:
@@ -49,11 +56,21 @@ def _checar_status(page, url: str) -> str:
             const statusTxt = (
                 document.querySelector('[data-testid="item-status"]')?.textContent || ''
             ).toLowerCase();
+            // Selo solto na foto ("¡Eliminado!", "Vendido"...): em out/2026 o Vinted não usa
+            // mais o item-status e mantém os botões de compra na página de anúncio apagado.
+            // Só no topo da página (sobre a foto principal): os carrosséis de "similares" /
+            // "mais do vendedor" mais abaixo têm selos de OUTROS anúncios.
+            const selos = [...document.querySelectorAll('span, div')]
+                .filter(e => e.children.length === 0)
+                .filter(e => { const r = e.getBoundingClientRect(); return r.height > 0 && r.top + window.scrollY < 900; })
+                .map(e => (e.textContent || '').trim().toLowerCase())
+                .filter(t => t.length > 0 && t.length <= 20);
             return {
                 temTitulo: !!title,
                 podeComprar: has('[data-testid="item-buy-button"]'),
                 podeBarganhar: has('[data-testid="item-buyer-offer-button"]'),
                 statusTxt,
+                selos,
             };
         }""")
     except Exception:
@@ -64,6 +81,11 @@ def _checar_status(page, url: str) -> str:
 
     if not info["temTitulo"]:
         return "removido"
+    selo = {re.sub(r"[¡!¿?.\s]", "", t) for t in info.get("selos") or []}
+    if selo & _SELO_REMOVIDO:
+        return "removido"
+    if selo & _SELO_VENDIDO:
+        return "vendido"
     # badge explícito de vendido (es/en/fr/it)
     if any(k in info["statusTxt"] for k in ("vendido", "sold", "vendu", "venduto")):
         return "vendido"
