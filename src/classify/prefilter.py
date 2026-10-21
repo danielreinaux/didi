@@ -110,6 +110,16 @@ def _tamanho_ok(tamanho: str | None) -> bool:
     return True  # dúvida → passa
 
 
+def _tamanho_excluido_no_score(tamanho: str | None) -> bool:
+    """Exatamente as exclusões de tamanho do score.py (tamanho_XS, tamanho_XXL)."""
+    from .score import _tamanho_key
+    t = (tamanho or "").strip().upper()
+    if not t:
+        return False
+    k = _tamanho_key(t)
+    return k == "XXL" or (k == "S" and t.startswith("XS"))
+
+
 def _tamanho_numerico_ruim(tamanho: str | None, titulo: str | None) -> int | None:
     """Detecta tamanho numérico fora de 31-34 no campo OU no título. Retorna o número."""
     for txt in (tamanho, titulo):
@@ -138,6 +148,12 @@ def parece_short(item: dict) -> Resultado:
     # Lote não é mais descartado aqui (cliente, 21/10/2026: "mostrar como barganha") —
     # o item segue pela IA e o score.py limita a decisão a "medio".
     # Tamanhos inválidos: a peça PODE ser short, mas o tamanho não serve. Categoria separada.
+    # XS / XXL / XXXL: o _tamanho_ok deixava passar ("s" está em "xs", "xl" em "xxl") e o
+    # item rodava o pipeline INTEIRO de IA só pra o score excluir no fim (~8 itens/dia,
+    # out/2026). Mesma regra do score.py (tamanho_XS / tamanho_XXL) → decisão idêntica.
+    if _tamanho_excluido_no_score(item.get("tamanho")):
+        tam = item.get("tamanho") or "?"
+        return Resultado(False, f"tamanho fora do range ({tam})", "tamanho_invalido")
     if not _tamanho_ok(item.get("tamanho")):
         tam = item.get("tamanho") or "?"
         return Resultado(False, f"tamanho fora do range ({tam})", "tamanho_invalido")

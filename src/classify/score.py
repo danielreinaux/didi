@@ -358,3 +358,58 @@ def calcular_score(item: dict) -> dict:
             "ratio_preco_teto": round(ratio, 2) if ratio else None,
         },
     }
+
+
+# ── Descarte garantido (early-exit do pipeline, out/2026) ──────────────────────
+# Etapas de IA na ordem do classify/run.py. Depois de cada uma, se o score dá
+# DESCARTADO em QUALQUER resposta possível das etapas que faltam, elas só gastariam
+# IA sem mudar a decisão → o run.py pula. Ex.: sem elástico + cor que não é
+# preto/branco (= exclusão "sem_elastico_cor_fraca") ia pro bolso (gpt-4o, a etapa
+# mais cara) e pra etiqueta à toa — 55% dos bolsos de out/2026.
+ETAPAS_IA = ("marca", "tipo", "cor", "listra", "elastico", "bolso")
+_RANK_TIER = {"ruim": 0, "ok": 1, "boa": 2, "muito_boa": 3, "maravilhoso": 4}
+
+
+def _melhor_caso(item: dict, etapa: str, tem_elastico: bool | None) -> dict:
+    """Cópia do item com as etapas DEPOIS de `etapa` no MELHOR caso possível (o que
+    mais ajuda a passar no score). Só copia os dicts que altera (fotos ficam por ref)."""
+    from ..utils.listra_tier import avaliar_combo
+    k = ETAPAS_IA.index(etapa)
+    x = dict(item)
+    cl = dict(x.get("classificacao") or {})
+    cor = dict(x["cor"]) if isinstance(x.get("cor"), dict) else {}
+    if k < 1:  # tipo ainda não rodou
+        cl.update(tipo="liso", aparencia="ok", tecido_brilhoso=False, listra_na_frente=False)
+    if k < 2:  # cor ainda não rodou: melhor tier + preto (única cor aceita também sem elástico)
+        cor = {"tier": "maravilhoso", "tier_final": "maravilhoso", "listra_tier": "salva",
+               "cor_principal": "preto"}
+    elif k < 3:  # cor conhecida, listra não: melhor combinação que uma listra poderia dar
+        tier = cor.get("tier")
+        finais = [avaliar_combo(cor.get("cor_principal") or "", ls, tier)["tier_final"]
+                  for ls in (["azul"], ["branco"], ["azul", "branco"])]
+        cor["tier_final"] = max(finais + [tier], key=lambda t: _RANK_TIER.get(t, -1))
+        cor["listra_tier"] = "salva"
+    if k < 3:  # listra ainda não rodou
+        cl.update(tem_listra_lateral_sundek=True, e_piping=False, bicolor=False)
+    if k < 4:  # elástico ainda não rodou (botão/velcro só excluem → melhor caso = sem)
+        x["elastico"] = {"tem_elastico": tem_elastico, "tipo_fechamento": None}
+    if k < 5:  # bolso ainda não rodou
+        cl.update(tem_bolso_traseiro=True, bolso_traseiro_tem_nome=True, tem_bolso_frontal=False)
+    x["etiqueta"] = {"tem_etiqueta": True}  # etiqueta é sempre a última
+    x["classificacao"] = cl
+    x["cor"] = cor
+    return x
+
+
+def descarte_garantido(item: dict, etapa: str) -> str | None:
+    """Depois de `etapa` (uma de ETAPAS_IA), o item é DESCARTADO qualquer que seja a
+    resposta das etapas seguintes? Devolve o motivo (str) se sim; None se ainda pode
+    passar. Função pura sobre o score atual → muda junto quando a regra mudar."""
+    casos = (True, False) if ETAPAS_IA.index(etapa) < 4 else (None,)
+    motivo = None
+    for tem_el in casos:
+        s = calcular_score(_melhor_caso(item, etapa, tem_el))
+        if s["decisao"] != "descartado":
+            return None
+        motivo = motivo or s.get("motivo_exclusao") or s.get("motivo") or "descartado"
+    return motivo

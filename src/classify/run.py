@@ -34,6 +34,7 @@ from .listra import verificar_listra, precisa_confirmar, confirmar_faixa_unica
 from ..utils.cost_tracker import track as _track, relatorio as _relatorio, dump_json as _dump_cost
 from ..utils.listra_tier import avaliar_combo, limao_salvavel
 from .prefilter import parece_short
+from .score import descarte_garantido
 
 ROOT = Path(__file__).resolve().parent.parent.parent
 DATA = ROOT / "data"
@@ -71,6 +72,17 @@ def _salvar(resultados: list, itens_orig: list, acervo_previo: dict, path: Path)
 def _log(msg: str) -> None:
     with _print_lock:
         print(msg, flush=True)
+
+
+def _pular_resto(c: dict, parcial: dict, etapa: str) -> str | None:
+    """Early-exit "descarte garantido": se, com o que já se sabe depois de `etapa`, o score
+    DESCARTA o item qualquer que seja a resposta das etapas seguintes, marca o motivo em
+    `c` e devolve-o (o caller retorna sem chamar as etapas restantes). Decisão idêntica;
+    só deixa de gastar IA. Ver score.descarte_garantido."""
+    m = descarte_garantido(parcial, etapa)
+    if m:
+        c["descarte_garantido"] = {"etapa": etapa, "motivo": m}
+    return m
 
 
 def _processar(item: dict, idx: str, total: int) -> tuple[dict, int, int]:
@@ -161,6 +173,13 @@ def _processar(item: dict, idx: str, total: int) -> tuple[dict, int, int]:
         cor = elastico = etiqueta = None
 
         if tipo == "liso":
+            # 3b. Descarte garantido já pelo tipo/marca (tecido brilhoso, listra na frente,
+            #     lote): cor/listra/elástico/bolso não mudariam a decisão.
+            m = _pular_resto(c, {**item, "marca_check": marca, "classificacao": c}, "tipo")
+            if m:
+                _log(f"{linha} | ✗ descarte garantido [{m}] → skip resto")
+                return {**item, "marca_check": marca, "classificacao": c, "cor": None, "elastico": None, "etiqueta": None}, in_tok, out_tok
+
             # 4. Cor PRIMEIRO — se ruim, corta antes de gastar listra/bolso/elástico
             try:
                 cor = classificar_cor(item)
@@ -181,6 +200,16 @@ def _processar(item: dict, idx: str, total: int) -> tuple[dict, int, int]:
                 cor["tier_final"] = combo["tier_final"]
                 cor["combo_motivo"] = combo["motivo"]
                 linha += f" | cor={cor.get('cor_principal')} [ruim] ✗ skip listra/bolso/elas/etiq"
+                _log(linha)
+                return {**item, "marca_check": marca, "classificacao": c, "cor": cor, "elastico": None, "etiqueta": None}, in_tok, out_tok
+
+            # 4a-bis. Descarte garantido pela cor (ex.: preço acima do teto até no melhor caso).
+            m = _pular_resto(c, {**item, "marca_check": marca, "classificacao": c, "cor": cor}, "cor")
+            if m:
+                combo = avaliar_combo(cor.get("cor_principal", ""), [], cor.get("tier", ""))
+                cor.update(cores_listras=[], listra_tier=combo["listra_tier"],
+                           tier_final=combo["tier_final"], combo_motivo=combo["motivo"])
+                linha += f" | cor={cor.get('cor_principal')} [{cor.get('tier')}] ✗ descarte garantido [{m}] → skip resto"
                 _log(linha)
                 return {**item, "marca_check": marca, "classificacao": c, "cor": cor, "elastico": None, "etiqueta": None}, in_tok, out_tok
 
@@ -228,6 +257,13 @@ def _processar(item: dict, idx: str, total: int) -> tuple[dict, int, int]:
             _barato = bool(_preco_anuncio and _preco_anuncio <= PRECO_BARATO_ELASTICO)
             if (not c.get("tem_listra_lateral_sundek") or c.get("e_piping")) and not _barato:
                 linha += " | ✗ sem listra → skip elas/bolso/etiq"
+                _log(linha)
+                return {**item, "marca_check": marca, "classificacao": c, "cor": cor, "elastico": None, "etiqueta": None}, in_tok, out_tok
+
+            # 4b-bis. Descarte garantido com marca+tipo+cor+listra (bicolor, combinação ruim, preço…).
+            m = _pular_resto(c, {**item, "marca_check": marca, "classificacao": c, "cor": cor}, "listra")
+            if m:
+                linha += f" | ✗ descarte garantido [{m}] → skip elas/bolso/etiq"
                 _log(linha)
                 return {**item, "marca_check": marca, "classificacao": c, "cor": cor, "elastico": None, "etiqueta": None}, in_tok, out_tok
 
@@ -298,6 +334,16 @@ def _processar(item: dict, idx: str, total: int) -> tuple[dict, int, int]:
                 _log(linha)
                 return {**item, "marca_check": marca, "classificacao": c, "cor": cor, "elastico": elastico, "etiqueta": None}, in_tok, out_tok
 
+            # 4c-bis. Descarte garantido depois do elástico — o caso grande: SEM elástico em cor
+            #         que não é preto/branco (exclusão sem_elastico_cor_fraca) ia pro bolso
+            #         (gpt-4o, a etapa mais cara) e pra etiqueta à toa (~55% dos bolsos, out/2026).
+            m = _pular_resto(c, {**item, "marca_check": marca, "classificacao": c, "cor": cor,
+                                 "elastico": elastico}, "elastico")
+            if m:
+                linha += f" | ✗ descarte garantido [{m}] → skip bolso/etiq"
+                _log(linha)
+                return {**item, "marca_check": marca, "classificacao": c, "cor": cor, "elastico": elastico, "etiqueta": None}, in_tok, out_tok
+
             # 4d. Bolso traseiro (etapa MAIS CARA — só roda no que sobreviveu a tudo)
             try:
                 bolso = verificar_bolso(item)
@@ -319,7 +365,14 @@ def _processar(item: dict, idx: str, total: int) -> tuple[dict, int, int]:
             except Exception as e:
                 pass
 
-            # 6. Etiqueta (barata, só dá bônus — por último)
+            # 6. Etiqueta (barata, só dá bônus — por último). Não roda se o bolso já
+            #    garantiu o descarte (sem bolso / bolso só com logo / bolso frontal).
+            m = _pular_resto(c, {**item, "marca_check": marca, "classificacao": c, "cor": cor,
+                                 "elastico": elastico}, "bolso")
+            if m:
+                linha += f" | ✗ descarte garantido [{m}] → skip etiq"
+                _log(linha)
+                return {**item, "marca_check": marca, "classificacao": c, "cor": cor, "elastico": elastico, "etiqueta": None}, in_tok, out_tok
             try:
                 etiqueta = verificar_etiqueta(item)
                 u = etiqueta.pop("_usage", {})
@@ -340,6 +393,18 @@ def _processar(item: dict, idx: str, total: int) -> tuple[dict, int, int]:
     except Exception as e:
         _log(f"{prefix} → ERRO: {str(e)[:80]}")
         return {**item, "marca_check": marca, "classificacao": {"tipo": "erro", "erro": str(e)}}, in_tok, out_tok
+
+
+def _pulo_vencido(it: dict) -> bool:
+    """True se o item pulou etapas por "descarte garantido" e, pela regra ATUAL do score,
+    o descarte já não é garantido (regra mudou) → precisa reprocessar."""
+    dg = (it.get("classificacao") or {}).get("descarte_garantido")
+    if not isinstance(dg, dict) or not dg.get("etapa"):
+        return False
+    try:
+        return descarte_garantido(it, dg["etapa"]) is None
+    except Exception:
+        return True
 
 
 # Teto de 2ªs olhadas da listra por rodada (gpt-4o high ≈ US$ 0,0095 cada).
@@ -421,7 +486,8 @@ def main() -> None:
     reprocessados = 0
     for i, item in enumerate(itens):
         cached = ja_processados.get(item.get("id"))
-        if cached and _mesmas_fotos(item, cached):
+        if cached and _mesmas_fotos(item, cached) and not _pulo_vencido(
+                {**cached, "preco": item.get("preco"), "preco_total": item.get("preco_total")}):
             continue  # mesmo item, mesmas fotos → skip
         if cached:
             reprocessados += 1  # fotos mudaram, reprocessar
@@ -520,6 +586,14 @@ def main() -> None:
             cor["combo_motivo"] = combo["motivo"]
         if not it.get("manual_exclusao"):
             it["score"] = calcular_score(it)
+            # Item que PULOU etapas por "descarte garantido" e que, com a regra de HOJE, não
+            # seria mais descartado (o score mudou desde então): não pode passar sem as etapas
+            # que faltaram → fica "não classificado" até ser reprocessado (_pulo_vencido).
+            if (it["score"].get("decisao") in ("compravel", "medio")
+                    and _pulo_vencido(it)):
+                it["score"] = {"score": 0, "teto": 0, "decisao": "nao_classificado",
+                               "motivo": "pulou etapas por descarte garantido e a regra mudou — reprocessar",
+                               "breakdown": {}}
             # Faixa de UMA cor só na lateral não conta (cliente, out/2026; só com
             # LISTRA_FAIXA_UNICA="nao_conta"). A 2ª olhada (gpt-4o) roda SÓ em quem iria
             # PASSAR com listra de ≤1 cor — o resto já é descartado por outro motivo e a
