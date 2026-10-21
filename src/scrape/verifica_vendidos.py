@@ -21,7 +21,7 @@ import json
 import re
 import sys
 import time
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 from playwright.sync_api import sync_playwright
@@ -95,6 +95,46 @@ def _checar_status(page, url: str) -> str:
     return "ativo"
 
 
+_JS_DADOS = """() => ({
+  fotos: [...document.querySelectorAll('img')]
+    .filter(i => i.src.includes('images1.vinted.net') && i.src.includes('/f800/')
+                 && i.getBoundingClientRect().top + window.scrollY < 1100 && i.width > 120)
+    .map(i => i.src),
+  preco: (document.querySelector('[data-testid="item-price"]')?.textContent || '').trim()
+})"""
+
+
+def _preco_float(txt: str | None) -> float | None:
+    t = re.sub(r"\.(?=\d{3}\b)", "", (txt or "").replace("\xa0", " "))  # 1.234,00 → 1234,00
+    m = re.search(r"(\d+(?:[.,]\d{1,2})?)", t)
+    return float(m.group(1).replace(",", ".")) if m else None
+
+
+def _atualizar_dados(page, item: dict) -> str:
+    """Anúncio ATIVO: atualiza fotos e preço com o que está na página. O Vinted troca o endereço
+    das fotos com o tempo (o link guardado dá 404 e o app mostra foto quebrada) e o vendedor baixa
+    o preço. Retorna um resumo curto do que mudou ("" se nada)."""
+    try:
+        d = page.evaluate(_JS_DADOS)
+    except Exception:
+        return ""
+    mud = []
+    fotos = list(dict.fromkeys(d.get("fotos") or []))
+    chave = lambda u: u.split("/f800/")[-1].split("?")[0]
+    if fotos and [chave(u) for u in fotos] != [chave(u) for u in (item.get("fotos") or [])]:
+        item["fotos"] = fotos
+        mud.append("fotos")
+    novo = _preco_float(d.get("preco"))
+    velho = _preco_float(item.get("preco"))
+    if novo and velho and abs(novo - velho) >= 0.01:
+        item.setdefault("preco_inicial", item.get("preco"))
+        item["preco"] = f"{novo:.2f}".replace(".", ",") + "\xa0€"
+        # preço com a taxa do Vinted (5% + €0,70), como o scrape grava
+        item["preco_total"] = f"{novo * 1.05 + 0.70:.2f}".replace(".", ",") + "\xa0€"
+        mud.append(f"preço {velho:g}→{novo:g}")
+    return ", ".join(mud)
+
+
 # Arquivos por marca: (acervo classificado a ser atualizado, scrape atual p/ ids ativos).
 ARQUIVOS = {
     "sundek": ("coleta-classificada.json", "coleta.json"),
@@ -142,7 +182,13 @@ def main() -> None:
         and x.get("url")
     ]
     candidatos.sort(key=lambda x: x.get("verificado_em") or x.get("ultimo_visto") or "")
-    candidatos = candidatos[:max_check]
+    # Os que estão NO APP (comprável/barganha) vêm primeiro, revistos a cada 6h: vendido
+    # tem que sair do app rápido e foto/preço precisam estar atuais. O resto segue por antiguidade.
+    limite = (datetime.now(timezone.utc) - timedelta(hours=6)).isoformat()
+    no_app = [x for x in candidatos if (x.get("score") or {}).get("decisao") in ("compravel", "medio")
+              and (x.get("verificado_em") or "") < limite]
+    ids_app = {id(x) for x in no_app}
+    candidatos = (no_app + [x for x in candidatos if id(x) not in ids_app])[:max_check]
 
     print(f"=== Verifica vendidos [{marca}] · acervo {len(acervo)} · "
           f"{len(candidatos)} candidatos (sumiram do scrape) ===\n")
@@ -160,7 +206,9 @@ def main() -> None:
             item["status"] = status if status != "ativo" else "ativo"
             item["verificado_em"] = agora
             mudancas[status] += 1
-            print(f"  [{i+1}/{len(candidatos)}] {status:<8} {(item.get('titulo') or '')[:45]}")
+            extra = _atualizar_dados(page, item) if status == "ativo" else ""
+            print(f"  [{i+1}/{len(candidatos)}] {status:<8} {(item.get('titulo') or '')[:45]}"
+                  + (f"  ({extra})" if extra else ""))
             time.sleep(0.4)
         browser.close()
 
