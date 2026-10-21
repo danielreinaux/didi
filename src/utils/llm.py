@@ -83,7 +83,16 @@ def _limpa_json(txt: str) -> str:
         return t2
     except Exception:
         pass
-    i, j = t.find("{"), t.rfind("}")
+    i = t.find("{")
+    if i != -1:
+        # 1º objeto completo: o gemini-2.5-flash-lite às vezes emite o JSON certo seguido de
+        # lixo com '}' (ex.: '{...}\n"}'), que o corte até o último '}' não salva
+        try:
+            _, fim = json.JSONDecoder().raw_decode(t, i)
+            return t[i:fim]
+        except Exception:
+            pass
+    j = t.rfind("}")
     return t[i:j + 1] if i != -1 and j > i else t
 
 
