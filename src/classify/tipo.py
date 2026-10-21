@@ -23,7 +23,9 @@ def _get_client() -> OpenAI:
 
 
 def classificar_item(item: dict) -> dict:
-    fotos = (item.get("fotos") or [])[:6]
+    # Só as 2 primeiras fotos (out/2026): no mini cada foto low custa ~2.833 tokens; no
+    # gabarito tipo/aparência/brilho e a decisão ficaram iguais com 2, 3 e 5 fotos.
+    fotos = (item.get("fotos") or [])[:2]
     if not fotos:
         return {"tipo": "indefinido", "justificativa": "sem fotos", "confianca": 0}
 

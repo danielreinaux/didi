@@ -27,8 +27,14 @@ def verificar_elastico(item: dict) -> dict:
     if not fotos:
         return {"tem_elastico": True, "evidencia": "sem fotos", "confianca": 0}
 
+    # Saída SEM os campos pensamento_* (out/2026): o system (com o protocolo e os exemplos)
+    # continua igual — e cacheado —, só a resposta encolhe (~226 → ~48 tokens de saída,
+    # −US$ 0,0018/chamada). Gabarito: tem_elastico/decisão dentro do ruído do v2 (2 rodadas).
+    texto = (prompt.usuario(item.get("titulo") or "") +
+             " IMPORTANTE: responda SOMENTE o JSON final com os campos tem_elastico, "
+             "tipo_fechamento e evidencia — NÃO escreva os campos pensamento_*.")
     conteudo_usuario = [
-        {"type": "text", "text": prompt.usuario(item.get("titulo") or "")},
+        {"type": "text", "text": texto},
         *[{"type": "image_url", "image_url": {"url": u, "detail": "low"}} for u in fotos],
     ]
 
@@ -39,7 +45,7 @@ def verificar_elastico(item: dict) -> dict:
             {"role": "system", "content": prompt.SISTEMA},
             {"role": "user", "content": conteudo_usuario},
         ],
-        max_tokens=800,  # CoT v2 precisa de mais tokens pros campos pensamento_*
+        max_tokens=300,  # sem os campos pensamento_* (resposta curta)
         temperature=0.1,
         response_format={"type": "json_object"},
     )

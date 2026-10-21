@@ -8,6 +8,7 @@ from openai import OpenAI
 from ..config import IA
 from ..prompts import verifica_sundek as prompt
 from ..utils.ratelimit import pace_gpt4o, pace_mini
+from ._colagem import colagem
 
 _client: OpenAI | None = None
 
@@ -66,9 +67,17 @@ def verificar_sundek(item: dict, model: str | None = None) -> dict:
     # 'auto' no mini virava 'high' (~25K tokens/foto) — gastava 60% do custo total!
     # detail=high só pro double-check com gpt-4o (raros casos suspeitos).
     detail = "high" if model == IA["model_detalhes"] else "low"
+    # No mini (detail=low) as fotos vão numa COLAGEM só (~2.833 tokens no total em vez de
+    # ~2.833 por foto): mesmo acerto no gabarito e −2/3 do custo da etapa. O recheck 4o
+    # (detail=high) continua com as fotos inteiras.
+    imagens = fotos
+    if detail == "low" and len(fotos) > 1:
+        c = colagem(fotos)
+        if c:
+            imagens = [c]
     conteudo = [
         {"type": "text", "text": prompt.usuario(item.get("titulo") or "")},
-        *[{"type": "image_url", "image_url": {"url": u, "detail": detail}} for u in fotos],
+        *[{"type": "image_url", "image_url": {"url": u, "detail": detail}} for u in imagens],
     ]
 
     if (model or IA["model"]) == IA["model_detalhes"]:

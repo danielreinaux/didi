@@ -65,7 +65,8 @@ def _normalizar_tier(parsed: dict) -> dict:
 
 
 def classificar_cor(item: dict) -> dict:
-    fotos = (item.get("fotos") or [])[:4]
+    # Só as 2 primeiras fotos (out/2026): mesma cor/decisão no gabarito com 2, 3 e 4 fotos.
+    fotos = (item.get("fotos") or [])[:2]
     if not fotos:
         return {"tier": "indefinido", "justificativa": "sem fotos", "confianca": 0}
 
