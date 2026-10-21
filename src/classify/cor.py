@@ -24,6 +24,9 @@ def _get_client() -> OpenAI:
 _TIERS = ("maravilhoso", "muito_boa", "boa", "ok", "ruim")
 _NAVY = ("marinho", "navy", "azul escuro", "petróleo escuro", "petroleo escuro")
 _ROSA = ("rosa", "pink", "fucsia", "fúcsia", "fuchsia", "magenta")
+# Cliente (/decisoes, 21/10/2026): roxo/violeta = ruim; laranja salmão pode ser bem classificada.
+_ROXO = ("roxo", "violeta", "lilás", "lilas", "púrpura", "purpura", "purple", "lavanda")
+_SALMAO = ("salmão", "salmao", "salmon")
 _METAL = ("metál", "metal", "cetim", "espelh", "wet look", "alumínio", "aluminio", "prate")
 
 
@@ -48,6 +51,10 @@ def _normalizar_tier(parsed: dict) -> dict:
     elif "royal" in nome and tier in ("maravilhoso", "muito_boa"):
         novo = "boa"
     elif "cinza claro" in nome and tier in ("muito_boa", "ok"):
+        novo = "boa"
+    elif any(k in nome for k in _ROXO) and tier != "ruim":
+        novo = "ruim"
+    elif any(k in nome for k in _SALMAO) and tier in ("ruim", "ok"):
         novo = "boa"
     elif tier == "ruim" and any(k in nome for k in _ROSA) and not any(k in just for k in _METAL):
         novo = "ok"

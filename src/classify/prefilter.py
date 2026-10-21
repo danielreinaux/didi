@@ -135,9 +135,8 @@ def parece_short(item: dict) -> Resultado:
             return Resultado(False, motivo, "nao_short")
     if EXCLUSAO_GOLDENWAVE.search(titulo):
         return Resultado(False, "goldenwave (linha premium — fora do interesse)", "nao_sundek")
-    for regex, motivo in EXCLUSAO_LOTE:
-        if regex.search(titulo):
-            return Resultado(False, motivo, "nao_short")
+    # Lote não é mais descartado aqui (cliente, 21/10/2026: "mostrar como barganha") —
+    # o item segue pela IA e o score.py limita a decisão a "medio".
     # Tamanhos inválidos: a peça PODE ser short, mas o tamanho não serve. Categoria separada.
     if not _tamanho_ok(item.get("tamanho")):
         tam = item.get("tamanho") or "?"

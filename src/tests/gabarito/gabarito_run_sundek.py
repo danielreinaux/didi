@@ -48,6 +48,7 @@ from ...classify.brand import verificar_sundek, motivo_recheck, aceita_recheck
 from ...classify.tipo import classificar_item
 from ...classify.cor import classificar_cor
 from ...classify.listra import verificar_listra
+from ...utils.listra_tier import avaliar_combo, limao_salvavel
 from ...classify.elastico import verificar_elastico
 from ...classify.bolso import verificar_bolso
 from ...classify.etiqueta import verificar_etiqueta
@@ -238,6 +239,12 @@ def _processar(item: dict, rodar: set, base: dict | None) -> tuple[dict, int, in
         tier = c.get("tier")
         out["cor_tier"] = None if tier in ("erro", None) else tier
         out["cor_nome"] = c.get("cor_principal")
+        # Igual produção (run.py): verde-limão "ruim" ainda roda a listra e é salvo
+        # (ruim→ok) pela listra azul/branca. O gabarito rotula a cor FINAL do item.
+        if tier == "ruim" and limao_salvavel(c.get("cor_principal") or ""):
+            lc = chamar("listra")
+            combo = avaliar_combo(c.get("cor_principal") or "", lc.get("cores") or [], tier)
+            out["cor_tier"] = combo["tier_final"]
 
     if "listra" in rodar:
         l = chamar("listra")

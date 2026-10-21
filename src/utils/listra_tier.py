@@ -32,6 +32,38 @@ _CORES_RUIM_ABSOLUTO = {"neon", "fluo", "fluor", "fluorescente",
                         "verde neon", "roxo elétrico", "roxo eletrico"}
 
 
+
+# Verde-limão / verde fluo: o agente de cor dá "ruim" (manual: fluorescente = ruim),
+# mas o cliente COMPRA o verde-limão com a listra clássica AZUL/BRANCA (cs35; confirmado
+# em /decisoes, 21/10/2026). Só esse combo é resgatado (ruim → ok).
+_CORES_LIMAO = ("verde-limão", "verde limão", "verde limao", "verde-limao", "verde fluo",
+                "verde flúor", "verde neon", "verde lima", "lima")
+_LISTRAS_AZUL = ("azul", "marinho", "navy", "celeste", "turquesa")
+_LISTRAS_OK_LIMAO = _LISTRAS_AZUL + ("branc", "verde")  # "verde" = o próprio corpo lido como faixa
+
+# Listra DOURADA ou BEGE: o cliente diz que "geralmente são ruins" (prata é ok) —
+# rebaixa a cor para no máximo "ok" (pontua pouco, só passa com preço bom). Não exclui:
+# o mini às vezes chama de "bege" uma listra creme/off-white.
+_LISTRAS_FEIAS = ("dourad", "ouro", "gold", "bege", "beige", "caqui")
+# Só rebaixa quando a listra é DOMINADA pelo dourado/bege: num arco clássico com cores
+# vivas (azul, verde, laranja…), o "bege" que o mini lista é a faixa creme padrão.
+_LISTRAS_VIVAS = ("azul", "verde", "laranja", "vermelh", "amarel", "rosa", "coral", "salm",
+                  "turquesa", "celeste", "lima", "fluo", "roxo", "pink", "fucsia")
+_TIERS_ACIMA_DE_OK = ("boa", "muito_boa", "maravilhoso")
+
+
+def limao_salvavel(cor_short: str) -> bool:
+    """Cor ruim que ainda pode ser salva pela listra (o run.py NÃO pula a listra)."""
+    c = (cor_short or "").lower()
+    return any(k in c for k in _CORES_LIMAO)
+
+
+def _limao_com_listra_azul_branca(listras: list[str]) -> bool:
+    tem_azul = any(any(k in l for k in _LISTRAS_AZUL) for l in listras)
+    so_neutras = all(any(k in l for k in _LISTRAS_OK_LIMAO) for l in listras)
+    return tem_azul and so_neutras
+
+
 def avaliar_combo(cor_short: str, cores_listras: list[str], tier_cor: str) -> dict:
     """
     Retorna dict com:
@@ -48,6 +80,24 @@ def avaliar_combo(cor_short: str, cores_listras: list[str], tier_cor: str) -> di
             "listra_tier": "sem_listra",
             "tier_final": tier_cor,
             "motivo": "sem listras laterais",
+        }
+
+    # Verde-limão + listra azul/branca (só azul/branco) → ok (cliente compra; cs35).
+    if tier_cor == "ruim" and limao_salvavel(cor) and _limao_com_listra_azul_branca(listras):
+        return {
+            "listra_tier": "neutra",  # sem o bônus de "salva": só deixa de excluir
+            "tier_final": "ok",
+            "motivo": f"verde-limão com listra azul/branca {listras}: ruim→ok",
+        }
+
+    # Listra dourada/bege → cor no máximo "ok" (cliente: geralmente ruins; prata é ok).
+    feias = [l for l in listras if any(k in l for k in _LISTRAS_FEIAS)]
+    vivas = [l for l in listras if any(k in l for k in _LISTRAS_VIVAS)]
+    if feias and not vivas and tier_cor in _TIERS_ACIMA_DE_OK:
+        return {
+            "listra_tier": "penaliza",
+            "tier_final": "ok",
+            "motivo": f"listra {feias} (dourado/bege) rebaixa '{cor_short}': {tier_cor}→ok",
         }
 
     # Cor ruim absoluto — listras não SALVAM um neon que o agente de cor deu "ruim".

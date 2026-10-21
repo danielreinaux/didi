@@ -36,6 +36,12 @@ PTS_ELASTICO = 30    # com elástico — atributo forte (doc 1.2: padrão prefer
 PTS_SEM_ELASTICO = -15  # sem elástico — perde muita pontuação (doc 1.2)
 PTS_ETIQUETA = 10    # hang-tag de papel visível na foto
 PTS_LISTRA_SALVA = 5 # bônus quando listra salva a cor
+# Elástico + anúncio até €10 quase sempre é comprado (cliente, 21/10/2026): o preço
+# perdoa estes motivos de descarte (cor ruim e os graves continuam descartando).
+PRECO_BARATO_ELASTICO = 10.0
+PERDOA_BARATO_ELASTICO = {"bolso_so_logo_colecao_antiga", "sem_listra_sundek",
+                          "piping_nao_e_listra_sundek", "tecido_brilhoso", "bicolor"}
+
 # Cores em que um short SEM elástico ainda é aceito (cliente, out/2026: só preto e branco).
 CORES_SEM_ELASTICO = ("preto", "negro", "branco", "blanco")
 
@@ -192,9 +198,10 @@ def calcular_score(item: dict) -> dict:
             exclusoes.append("cor_ruim")
         else:
             exclusoes.append("combinacao_listra_cor_ruim")
-    # LOTE: o agente de marca viu 2+ peças diferentes à venda (short + sunga, 2 shorts…)
-    if (item.get("marca_check") or {}).get("lote") is True:
-        exclusoes.append("lote_multiplas_pecas")
+    # LOTE (várias peças num anúncio): não exclui — vira barganha lá embaixo (cliente, 21/10/2026).
+    from .prefilter import EXCLUSAO_LOTE
+    lote = (item.get("marca_check") or {}).get("lote") is True or any(
+        r.search(item.get("titulo") or "") for r, _ in EXCLUSAO_LOTE)
     if tecido_brilhoso:
         exclusoes.append("tecido_brilhoso")
     if bicolor:
@@ -231,6 +238,13 @@ def calcular_score(item: dict) -> dict:
     num = _tamanho_numerico(tamanho, item.get("titulo"))
     if num is not None and not (31 <= num <= 34):
         exclusoes.append(f"tamanho_numerico_{num}")
+
+    # Elástico + anúncio até €10: o preço perdoa os motivos leves (lista acima).
+    preco_anuncio = _parse_preco(item.get("preco"))
+    barato_elastico = bool(tem_elastico and preco_anuncio and preco_anuncio <= PRECO_BARATO_ELASTICO)
+    perdoadas = []
+    if exclusoes and barato_elastico and set(exclusoes) <= PERDOA_BARATO_ELASTICO:
+        perdoadas, exclusoes = exclusoes, []
 
     if exclusoes:
         return {
@@ -293,6 +307,10 @@ def calcular_score(item: dict) -> dict:
         elif preco <= 14 and decisao == "descartado":
             decisao = "medio"
             motivo = "elástico + preço ≤ €14"
+    if barato_elastico and tier_final != "ruim":
+        decisao = "compravel"
+        motivo = f"elástico + anúncio ≤ €{PRECO_BARATO_ELASTICO:g}" + (
+            f" (perdoa: {', '.join(perdoadas)})" if perdoadas else "")
 
     # Override SEM elástico (decisão do dono + feedback de votação):
     #   só vale se a cor for preto / branco (navy saiu em out/2026, pedido do cliente).
@@ -312,6 +330,11 @@ def calcular_score(item: dict) -> dict:
         elif cor_elite:  # cor elite mas acima do cap (preto>15 / branco-navy>10)
             decisao = "descartado"
             motivo = f"sem elástico, {cor.get('cor_principal')} acima de €{cap}"
+
+    # Lote: aparece como barganha (cliente, 21/10/2026), nunca como comprável direto.
+    if lote and (decisao == "compravel" or (decisao == "descartado" and motivo == "score baixo")):
+        decisao = "medio"
+        motivo = "lote (várias peças) — barganha"
 
     # Sugestão de negociação (preço a oferecer) — só pra candidatos.
     negociacao = {}

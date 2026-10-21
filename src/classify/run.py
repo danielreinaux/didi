@@ -32,7 +32,7 @@ from .botao_fly import verificar_botao, verificar_velcro
 from .etiqueta import verificar_etiqueta
 from .listra import verificar_listra, precisa_confirmar, confirmar_faixa_unica
 from ..utils.cost_tracker import track as _track, relatorio as _relatorio, dump_json as _dump_cost
-from ..utils.listra_tier import avaliar_combo
+from ..utils.listra_tier import avaliar_combo, limao_salvavel
 from .prefilter import parece_short
 
 ROOT = Path(__file__).resolve().parent.parent.parent
@@ -173,7 +173,8 @@ def _processar(item: dict, idx: str, total: int) -> tuple[dict, int, int]:
 
             # Short-circuit: cor ruim → pula listra, bolso, elástico, etiqueta
             # (cores ruins são neon/fluo — listras neutras não salvam, ver listra_tier)
-            if cor and cor.get("tier") == "ruim":
+            # Exceção: verde-limão ainda pode ser salvo pela listra azul/branca → roda a listra.
+            if cor and cor.get("tier") == "ruim" and not limao_salvavel(cor.get("cor_principal", "")):
                 combo = avaliar_combo(cor.get("cor_principal", ""), [], cor.get("tier", ""))
                 cor["cores_listras"] = []
                 cor["listra_tier"] = combo["listra_tier"]
@@ -213,9 +214,19 @@ def _processar(item: dict, idx: str, total: int) -> tuple[dict, int, int]:
             cor["combo_motivo"] = combo["motivo"]
             linha += f" | cor={cor.get('cor_principal')} [{cor.get('tier')}→{combo['tier_final']}]"
 
+            # Verde-limão que a listra NÃO salvou → continua ruim → mesmo skip do cor ruim.
+            if combo["tier_final"] == "ruim" and cor.get("tier") == "ruim":
+                linha += " | ✗ cor ruim (listra não salvou) → skip elas/bolso/etiq"
+                _log(linha)
+                return {**item, "marca_check": marca, "classificacao": c, "cor": cor, "elastico": None, "etiqueta": None}, in_tok, out_tok
+
             # Short-circuit: sem listra Sundek real (ou piping) → será descartado.
-            # Pula elástico, bolso e etiqueta (economiza ~$0.08/item).
-            if not c.get("tem_listra_lateral_sundek") or c.get("e_piping"):
+            # Pula elástico, bolso e etiqueta (economiza ~$0.08/item). EXCEÇÃO: anúncio até
+            # €10 segue, porque com elástico o preço perdoa a falta de listra (score.py).
+            from .score import PRECO_BARATO_ELASTICO, _parse_preco
+            _preco_anuncio = _parse_preco(item.get("preco"))
+            _barato = bool(_preco_anuncio and _preco_anuncio <= PRECO_BARATO_ELASTICO)
+            if (not c.get("tem_listra_lateral_sundek") or c.get("e_piping")) and not _barato:
                 linha += " | ✗ sem listra → skip elas/bolso/etiq"
                 _log(linha)
                 return {**item, "marca_check": marca, "classificacao": c, "cor": cor, "elastico": None, "etiqueta": None}, in_tok, out_tok
@@ -496,11 +507,13 @@ def main() -> None:
     # mudanças em listra_tier.py / score.py propagam pros itens antigos a cada run.
     from .score import calcular_score
     from ..utils.listra_tier import avaliar_combo
+    from .cor import _normalizar_tier
     final = json.loads(checkpoint_path.read_text())
     n_confirma = 0
     for it in final:
         cor = it.get("cor")
         if isinstance(cor, dict) and cor.get("tier"):
+            _normalizar_tier(cor)  # regras de cor por nome valem também pros itens antigos
             combo = avaliar_combo(cor.get("cor_principal", "") or "", cor.get("cores_listras") or [], cor.get("tier"))
             cor["listra_tier"] = combo["listra_tier"]
             cor["tier_final"] = combo["tier_final"]
