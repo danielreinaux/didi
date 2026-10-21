@@ -47,6 +47,22 @@ OUT_DIR = ROOT / "votacao" / "public" / "history"
 PRECOS = {
     "gpt-4o-mini": {"in": 0.15, "out": 0.60},
     "gpt-4o":      {"in": 2.50, "out": 10.00},
+    # OpenAI vigentes (out/2026) — config.IA_OPENAI. Tabela padrão, sem cache nem flex (teto).
+    "gpt-6-luna":    {"in": 0.10, "out": 0.50},
+    "gpt-6-sol":     {"in": 2.00, "out": 10.00},
+    "gpt-5.6-luna":  {"in": 0.20, "out": 1.20},
+    "gpt-5.6-terra": {"in": 2.00, "out": 12.00},
+    "gpt-5.4-mini":  {"in": 0.75, "out": 4.50},
+    # OpenRouter (rotas de config.IA_ROTAS) — antes ficavam com custo 0 no /history
+    "google/gemini-2.5-flash-lite": {"in": 0.10, "out": 0.40},
+    "google/gemini-3.5-flash-lite": {"in": 0.30, "out": 2.50},
+    "bytedance-seed/seed-2.0-mini": {"in": 0.10, "out": 0.40},
+    "bytedance-seed/seed-2.0-lite": {"in": 0.25, "out": 2.00},
+    "qwen/qwen3.7-flash":           {"in": 0.03, "out": 0.13},
+    "google/gemma-4-26b-a4b-it":    {"in": 0.10, "out": 0.30},
+    "anthropic/claude-haiku-5.5":   {"in": 0.10, "out": 0.50},
+    "google/gemini-3.1-flash-lite": {"in": 0.25, "out": 1.50},
+    "google/gemma-4-31b-it":        {"in": 0.20, "out": 0.40},
 }
 USD_BRL = 5.0  # mesma taxa que o resto do pipeline usa nos resumos
 
