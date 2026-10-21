@@ -74,10 +74,13 @@ def confirmar_desbotado(item: dict) -> dict:
         return {"confirmado": None, "votos": validos, "motivo": "votos insuficientes", "_usage": uso}
     sim = validos.count("desbotado")
     confirmado = sim * 2 > len(validos)
+    # tecido de moletom (cliente: "descartar sempre") — maioria dos votos que responderam
+    tecidos = [v.get("tecido") for v in votos if v.get("tecido") in ("banho", "moletom")]
+    moletom = bool(tecidos) and tecidos.count("moletom") * 2 > len(tecidos)
     ref = next((v for v in votos if v.get("veredito") == ("desbotado" if confirmado else "ok")), {})
     motivo = "; ".join(f"{k}: {ref.get(k)}" for k in ("cor_gasta", "manchas", "desgaste_fisico")
                        if ref.get(k) and str(ref.get(k)).lower() not in ("não", "nao"))
-    return {"confirmado": confirmado, "votos": validos, "motivo": motivo[:300], "_usage": uso}
+    return {"confirmado": confirmado, "votos": validos, "motivo": motivo[:300], "moletom": moletom, "_usage": uso}
 
 
 def aplicar(c: dict, item: dict) -> dict | None:
@@ -87,8 +90,40 @@ def aplicar(c: dict, item: dict) -> dict | None:
     if c.get("aparencia") != "desbotado" or c.get("tipo") not in ("liso", "indefinido", None):
         return None
     chk = confirmar_desbotado(item)
-    c["desbotado_check"] = {k: chk.get(k) for k in ("confirmado", "votos", "motivo")}
+    c["desbotado_check"] = {k: chk.get(k) for k in ("confirmado", "votos", "motivo", "moletom")}
     if chk.get("confirmado") is False:
         c["aparencia_mini"] = "desbotado"
         c["aparencia"] = "ok"
+    return chk
+
+
+def precisa_checar_aprovado(it: dict) -> bool:
+    """LISO ativo que vai PASSAR (comprável/barganha) e nunca teve o 2º olhar. O modelo de tipo
+    do OpenRouter (gemma-4) marca bem menos "desbotado" que o gpt-4o-mini: em 21/10, dos 68
+    lisos que o mini tinha descartado por desbotado, o gemma marcou só 2 — e 3 dos 9 que
+    voltariam a passar eram rosa desbotado / moletom. Por isso o Haiku confere TODO liso que
+    vai aparecer no app, não só os que o tipo desconfiou."""
+    cl = it.get("classificacao") or {}
+    return ((it.get("score") or {}).get("decisao") in ("compravel", "medio")
+            and (it.get("status") or "ativo") == "ativo"
+            and cl.get("tipo") == "liso" and "desbotado_check" not in cl)
+
+
+def checar_aprovado(it: dict) -> dict | None:
+    """Roda o 2º olhar num liso aprovado e aplica: desbotado → tipo "desbotado"; moletom →
+    "nao_short". Retorna o check (p/ custo) ou None se não deu pra checar (tenta na próxima
+    rodada). Quem chama recalcula o score."""
+    chk = confirmar_desbotado(it)
+    if chk.get("confirmado") is None:
+        return None
+    cl = it["classificacao"]
+    cl["desbotado_check"] = {k: chk.get(k) for k in ("confirmado", "votos", "motivo", "moletom")}
+    if chk["confirmado"]:
+        cl["tipo_original"] = cl.get("tipo")
+        cl["aparencia"] = "desbotado"
+        cl["tipo"] = "desbotado"
+    elif chk.get("moletom"):
+        cl["tipo_original"] = cl.get("tipo")
+        cl["tipo"] = "nao_short"
+        cl["motivo_nao_short"] = "short de moletom (2º olhar)"
     return chk

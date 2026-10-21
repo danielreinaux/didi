@@ -25,8 +25,13 @@ NÃO é desbotado (responda "ok"):
 - estampa cujo desenho imita lavado/manchado.
 Na dúvida entre "ok" e "desbotado", decida pelo que um comprador veria nas fotos do short inteiro.
 
+TECIDO (pergunta à parte, NÃO muda o veredito): "moletom" se o short é de MOLETOM/agasalho —
+malha de algodão grossa e fosca (felpada ou de meia por dentro), cós e barra com punho canelado,
+cara de bermuda de treino/pijama; "banho" se é tecido de short de banho (nylon/poliéster liso e
+leve, geralmente com forro de tela). Na dúvida → "banho".
+
 Responda APENAS com JSON válido:
-{"cor_gasta":"<o que viu, ou 'não'>","manchas":"<onde/quantas, ou 'não'>","desgaste_fisico":"<o que viu, ou 'não'>","so_detalhe_em_close":true|false,"veredito":"desbotado"|"ok","confianca":<0-100>}"""
+{"cor_gasta":"<o que viu, ou 'não'>","manchas":"<onde/quantas, ou 'não'>","desgaste_fisico":"<o que viu, ou 'não'>","so_detalhe_em_close":true|false,"veredito":"desbotado"|"ok","tecido":"banho"|"moletom","confianca":<0-100>}"""
 
 
 def usuario(titulo: str) -> str:

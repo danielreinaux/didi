@@ -24,7 +24,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 from .tipo import classificar_item
-from .desbotado import aplicar as aplicar_desbotado
+from .desbotado import aplicar as aplicar_desbotado, checar_aprovado, precisa_checar_aprovado
 from .bolso import verificar_bolso
 from .brand import verificar_sundek, motivo_recheck, aceita_recheck
 from .cor import classificar_cor
@@ -426,6 +426,22 @@ def _precisa_confirmar_listra(it: dict) -> bool:
                                   "listra_confirma" in cl))
 
 
+# Teto de 2ºs olhares do desbotado em lisos APROVADOS por rodada (Haiku, 3 votos ≈ US$ 0,002).
+DESBOTADO_CHECK_MAX_POR_RODADA = 60
+
+
+def _checar_aprovado(it: dict, calcular_score) -> None:
+    """Liso que vai aparecer no app sem ter tido o 2º olhar do desbotado (classify/desbotado.py)."""
+    chk = checar_aprovado(it)
+    if chk is None:  # sem rota/falhou → tenta de novo na próxima rodada
+        return
+    u = chk.get("_usage") or {}
+    from ..config import IA as _IA
+    _track("desbotado_aprovado", u.get("model") or _IA["model_desbotado"], u.get("prompt_tokens", 0), u.get("completion_tokens", 0))
+    if (it["classificacao"].get("tipo")) != "liso":
+        it["score"] = calcular_score(it)
+
+
 def _confirmar_listra(it: dict, calcular_score) -> None:
     """2ª olhada na listra de ≤1 cor; se for faixa de 1 cor na lateral → sem listra + rescore."""
     conf = confirmar_faixa_unica(it)
@@ -582,6 +598,7 @@ def main() -> None:
     from .cor import _normalizar_tier
     final = json.loads(checkpoint_path.read_text())
     n_confirma = 0
+    n_desb = 0
     for it in final:
         cor = it.get("cor")
         if isinstance(cor, dict) and cor.get("tier"):
@@ -607,8 +624,14 @@ def main() -> None:
             if n_confirma < LISTRA_CONFIRMA_MAX_POR_RODADA and _precisa_confirmar_listra(it):
                 n_confirma += 1
                 _confirmar_listra(it, calcular_score)
+            # Liso que vai aparecer no app: Haiku confere desbotado/moletom (uma vez por item).
+            if n_desb < DESBOTADO_CHECK_MAX_POR_RODADA and precisa_checar_aprovado(it):
+                n_desb += 1
+                _checar_aprovado(it, calcular_score)
     if n_confirma:
         print(f"  listra 2ª olhada (faixa de 1 cor): {n_confirma} item(ns) conferidos com gpt-4o")
+    if n_desb:
+        print(f"  desbotado/moletom 2º olhar em lisos aprovados: {n_desb} item(ns) conferidos")
     checkpoint_path.write_text(json.dumps(final, indent=2, ensure_ascii=False))
 
     # Auto-double-check com gpt-4o (reclassify_ambiguos) DESLIGADO (out/2026):
