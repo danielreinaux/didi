@@ -6,6 +6,10 @@ Regras:
 - Hard-exclude SÓ neon/fluo/metálico — o modelo (cor_tier.py) já tiera o resto certo.
   (decisão do dono: ser permissivo; rosa suave, vermelho vinho, amarelo mostarda = ok)
 - Listras neutras (azul, branco, cinza, preto) salvam cores "ok" como laranja, verde, coral
+  — só quando TODAS as listras são neutras (out/2026, gabarito corpo+listras)
+- Listra dominada por rosa (rosa + branco/preto/cinza) desce a combinação um nível (out/2026)
+- O gabarito de cor rotula a COMBINAÇÃO corpo + listras (cliente, 21/10/2026); o harness
+  compara com o tier_final daqui (gabarito_run_sundek)
 - Listras monocromáticas (mesma cor do short) são seguras quando a cor base já é boa
 """
 
@@ -17,6 +21,28 @@ _CORES_SALVAVEIS = {"laranja", "coral", "salmão", "verde", "verde médio"}
 
 # Listras consideradas neutras/valorizadas
 _LISTRAS_NEUTRAS = {"azul", "branco", "cinza", "preto", "azul escuro", "azul marinho"}
+# Mesma ideia, por PREFIXO (o agente de listra flexiona: "branca", "azul clara", "preta"…).
+_NEUTRAS_PREFIXO = ("azul", "branc", "cinz", "pret", "marinho", "navy", "prat")
+_NEUTRAS_EXATAS = ("clara", "claro", "mais clara")
+
+# Listra "rosa": o cliente rejeitou navy/creme com listra rosa ("não compraria pelas
+# listras", "cores da listra não tão boas") e o gabarito põe o grafite cs34 (listra
+# rosa/branca/preta) um nível abaixo dos outros grafites (cliente, 21/10/2026: "o
+# diferencial são as listras").
+_LISTRAS_ROSA = ("rosa", "pink", "fucsia", "fúcsia", "magenta")
+_ACOMPANHA_ROSA = ("branc", "pret", "cinz", "prat")  # só neutros claros/escuros — sem azul
+_DESCE_UM = {"maravilhoso": "muito_boa", "muito_boa": "boa", "boa": "ok"}
+
+
+def _eh_neutra(listra: str) -> bool:
+    return listra.startswith(_NEUTRAS_PREFIXO) or listra in _NEUTRAS_EXATAS
+
+
+def _listra_rosa_dominante(listras: list[str]) -> bool:
+    """A listra é rosa + só branco/preto/cinza (sem outra cor viva nem azul)."""
+    rosas = [l for l in listras if any(k in l for k in _LISTRAS_ROSA)]
+    outras = [l for l in listras if l not in rosas]
+    return bool(rosas) and all(l.startswith(_ACOMPANHA_ROSA) or l in _NEUTRAS_EXATAS for l in outras)
 
 # Listras top do histórico (azul 108x, laranja 70x, verde 38x, amarela 35x, salmão 34x)
 _LISTRAS_TOP = {"azul", "laranja", "verde", "amarela", "salmão", "azul escuro"}
@@ -119,9 +145,22 @@ def avaliar_combo(cor_short: str, cores_listras: list[str], tier_cor: str) -> di
                 "motivo": f"cor '{cor_short}' é ruim independente das listras",
             }
 
-    # Cor salvável + listras neutras → sobe um nível
+    # Listra dominada por ROSA (rosa + branco/preto/cinza) → a combinação desce um nível
+    # (piso "ok": não exclui). Abaixo de boa segue a regra antiga de listras raras.
+    if tier_cor in _DESCE_UM and _listra_rosa_dominante(listras):
+        tier_novo = _DESCE_UM[tier_cor]
+        return {
+            "listra_tier": "penaliza",
+            "tier_final": tier_novo,
+            "motivo": f"listra rosa {listras} desvaloriza '{cor_short}': {tier_cor}→{tier_novo}",
+        }
+
+    # Cor salvável + listras NEUTRAS → sobe um nível. "Neutras" = TODAS as listras
+    # neutras (azul/branco/cinza/preto). Antes bastava UMA (e por nome exato): coral com
+    # listra vermelha+azul+cinza (9285736659) e verde médio com azul+amarelo+verde (cs38)
+    # subiam pra "boa", e o gabarito (corpo + listras) diz "ok" nos dois.
     eh_salvavel = any(s in cor for s in _CORES_SALVAVEIS)
-    tem_listra_neutra = any(ln in listras for ln in _LISTRAS_NEUTRAS)
+    tem_listra_neutra = all(_eh_neutra(l) for l in listras)
 
     if eh_salvavel and tem_listra_neutra:
         tier_upgrades = {

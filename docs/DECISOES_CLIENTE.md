@@ -20,6 +20,6 @@ https://votacao-two.vercel.app/decisoes (votos no Redis, chaves `reaction:decisa
 | 21/10/2026 | Patch claro tom sobre tom = coleção antiga (descartar) | comportamento atual (bolso só logo) | sem mudança |
 | 21/10/2026 | Marrom acetinado = ruim | rótulo do gabarito mantido | sem mudança |
 | 21/10/2026 | Desbotado "de borda" (só marquinhas num close) não é desbotado | 2ª olhada com Claude Haiku via OpenRouter (patch pronto) | pendente: precisa do secret OPENROUTER_API_KEY no GitHub |
-| 21/10/2026 | Cor: a diferença entre itens da mesma cor do corpo vem das LISTRAS (navy, grafite, royal) — o tier do gabarito é a combinação corpo + listras | `utils/listra_tier.py` (calibração em andamento) | em andamento |
+| 21/10/2026 | Cor: a diferença entre itens da mesma cor do corpo vem das LISTRAS (navy, grafite, royal) — o tier do gabarito é a combinação corpo + listras | `utils/listra_tier.py`: listra só "salva" a cor quando TODAS as faixas são neutras; listra dominada por rosa desce 1 nível (mín. ok) | aplicado (compráveis: cor 81→86%). Diferenças finas de tom (verde-limão/ciano, pêssego/creme) ainda não são lidas pelo agente de listra |
 | 21/10/2026 | Etiqueta M520 = modelo com botão? "Não sei" | — | descartado |
 | 21/10/2026 | Correções do gabarito: 11 fechamentos → cordão; cs01 tem nome; 9281059882 tem listra; 9267294121/9283498191/9280097121 são Sundek; 9289304070 tem velcro; 9285757049 cor ruim | Redis `gabarito:*` via /api/gabarito | pendente de gravação |

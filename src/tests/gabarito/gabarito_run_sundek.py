@@ -171,6 +171,9 @@ def _processar(item: dict, rodar: set, base: dict | None) -> tuple[dict, int, in
     """Classifica um item rodando só os agentes em `rodar`; o resto vem de `base`.
     SEM short-circuit: passou do portão, roda todos os agentes de `rodar`."""
     out = {c: (base.get(c) if base else None) for c in CRITERIOS}
+    # Contexto do tier FINAL (não são critérios): tier do CORPO e cores das listras.
+    for k in ("cor_tier_corpo", "cores_listras"):
+        out[k] = (base or {}).get(k)
     gate = (base or {}).get("_gate")
     in_tok = out_tok = 0
 
@@ -237,14 +240,8 @@ def _processar(item: dict, rodar: set, base: dict | None) -> tuple[dict, int, in
     if "cor" in rodar:
         c = chamar("cor")
         tier = c.get("tier")
-        out["cor_tier"] = None if tier in ("erro", None) else tier
+        out["cor_tier_corpo"] = None if tier in ("erro", None) else tier
         out["cor_nome"] = c.get("cor_principal")
-        # Igual produção (run.py): verde-limão "ruim" ainda roda a listra e é salvo
-        # (ruim→ok) pela listra azul/branca. O gabarito rotula a cor FINAL do item.
-        if tier == "ruim" and limao_salvavel(c.get("cor_principal") or ""):
-            lc = chamar("listra")
-            combo = avaliar_combo(c.get("cor_principal") or "", lc.get("cores") or [], tier)
-            out["cor_tier"] = combo["tier_final"]
 
     if "listra" in rodar:
         l = chamar("listra")
@@ -260,6 +257,7 @@ def _processar(item: dict, rodar: set, base: dict | None) -> tuple[dict, int, in
                 if conf["rejeitada"]:
                     l["e_listra_sundek"] = False
                     l["e_piping"] = False
+        out["cores_listras"] = l.get("cores") or []
         if l.get("e_listra_sundek"):
             out["listra"] = "listra_real"
         elif l.get("e_piping"):
@@ -292,6 +290,25 @@ def _processar(item: dict, rodar: set, base: dict | None) -> tuple[dict, int, in
     if "etiqueta" in rodar:
         et = chamar("etiqueta")
         out["etiqueta"] = _campo(et, "tem_etiqueta")
+
+    # ── Tier FINAL da cor = corpo (agente de cor) + listras (avaliar_combo), igual
+    # produção (run.py). O gabarito rotula a cor do ITEM: o cliente (21/10/2026) disse que
+    # navy/grafite/royal iguais têm tiers diferentes por causa das listras.
+    corpo = out.get("cor_tier_corpo")
+    if corpo is None and "cor" not in rodar:
+        corpo = out.get("cor_tier")  # base antiga (sem tier do corpo): melhor aproximação
+    if corpo is not None:
+        nome = out.get("cor_nome") or ""
+        cores = out.get("cores_listras")
+        if corpo == "ruim" and not limao_salvavel(nome):
+            final = "ruim"  # produção: cor ruim pula a listra (early-exit)
+        else:
+            if cores is None and corpo == "ruim":  # limão sem listra conhecida → roda a listra
+                cores = chamar("listra").get("cores") or []
+                out["cores_listras"] = cores
+            final = avaliar_combo(nome, cores or [], corpo)["tier_final"] if cores is not None else corpo
+        out["cor_tier_corpo"] = corpo
+        out["cor_tier"] = final
 
     out["_gate"] = None
     return out, in_tok, out_tok
