@@ -82,10 +82,13 @@ IA_ROTAS = {
     # tipo: +2/+1/0 em 3 rodadas, corrige 1 falso descarte (9280328167). Fixado no host CoreWeave
     # (bf16): no OpenRouter o gemma-4 só tem hosts de terceiros, e o Google Vertex deu erro 400 em
     # 25/93 itens. US$0,00022 (mini: 0,0019)
-    "sundek:tipo": {"to": "openrouter:google/gemma-4-26b-a4b-it", **_SEM_RACIOCINIO,
-                    "provider": {"order": ["coreweave"], "allow_fallbacks": False},
-                    # reserva: o mesmo gemma em qualquer host (rodada com hosts mistos: Δ0)
-                    "reserva": {"to": "openrouter:google/gemma-4-26b-a4b-it", **_SEM_RACIOCINIO}},
+    # tipo: DESLIGADO em 21/10 (volta ao gpt-4o-mini). O gemma-4 marca listra_na_frente=true em
+    # short com listra só na LATERAL (a própria justificativa diz "listras laterais"): 24 de ~55
+    # aprovados do app viraram descarte na reclassificação. O gabarito não pegou. Não religar sem
+    # medir listra_na_frente nos aprovados do app.
+    # "sundek:tipo": {"to": "openrouter:google/gemma-4-26b-a4b-it", **_SEM_RACIOCINIO,
+    #                 "provider": {"order": ["coreweave"], "allow_fallbacks": False},
+    #                 "reserva": {"to": "openrouter:google/gemma-4-26b-a4b-it", **_SEM_RACIOCINIO}},
     # 2º olhar do desbotado (só nos lisos marcados desbotado; 3 votos) — Claude Haiku 5.5.
     # Sem a chave → não roda e vale o desbotado do tipo. Medição: reports/tipo_sundek.md.
     "sundek:desbotado": {"to": "openrouter:anthropic/claude-haiku-5.5", "min_tokens": 1500},
