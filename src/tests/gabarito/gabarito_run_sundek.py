@@ -46,6 +46,7 @@ except Exception:
 # Agentes Sundek (mesmas funções que a produção usa em classify/run.py).
 from ...classify.brand import verificar_sundek, motivo_recheck, aceita_recheck
 from ...classify.tipo import classificar_item
+from ...classify.desbotado import aplicar as aplicar_desbotado
 from ...classify.cor import classificar_cor
 from ...classify.listra import verificar_listra
 from ...utils.listra_tier import avaliar_combo, limao_salvavel
@@ -117,7 +118,7 @@ FN = {
 # Agente → arquivos que compõem o hash (prompt + wrapper). Mudou → re-roda.
 ARQUIVOS = {
     "marca": ["prompts/verifica_sundek.py", "classify/brand.py"],
-    "tipo": ["prompts/liso_vs_estampado.py", "classify/tipo.py"],
+    "tipo": ["prompts/liso_vs_estampado.py", "classify/tipo.py", "prompts/desbotado.py", "classify/desbotado.py"],
     "cor": ["prompts/cor_tier.py", "classify/cor.py"],
     "listra": ["prompts/listra_sundek.py", "classify/listra.py", "prompts/listra_confirma.py"],
     "elastico": ["prompts/elastico.py", "classify/elastico.py", "prompts/botao_fly.py",
@@ -228,6 +229,12 @@ def _processar(item: dict, rodar: set, base: dict | None) -> tuple[dict, int, in
     # ── Passou do portão → TODOS os agentes de `rodar` (sem early-exit) ──
     if "tipo" in rodar:
         t = chamar("tipo")
+        # Igual produção: 2º olhar do desbotado nos lisos (Haiku via OpenRouter).
+        chk = aplicar_desbotado(t, item)
+        if chk is not None:
+            u = chk.get("_usage", {})
+            in_tok += u.get("prompt_tokens", 0)
+            out_tok += u.get("completion_tokens", 0)
         tp = t.get("tipo")
         # Igual produção: aparência desbotada rebaixa o LISO pra "desbotado"
         # (estampado/logo_grande desbotado mantém o tipo — convenção do gabarito).

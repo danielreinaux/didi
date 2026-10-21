@@ -24,6 +24,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 from .tipo import classificar_item
+from .desbotado import aplicar as aplicar_desbotado
 from .bolso import verificar_bolso
 from .brand import verificar_sundek, motivo_recheck, aceita_recheck
 from .cor import classificar_cor
@@ -110,7 +111,7 @@ def _processar(item: dict, idx: str, total: int) -> tuple[dict, int, int]:
         u = marca.pop("_usage", {})
         in_tok += u.get("prompt_tokens", 0)
         out_tok += u.get("completion_tokens", 0)
-        _track("brand", _IA["model"], u.get("prompt_tokens", 0), u.get("completion_tokens", 0))
+        _track("brand", u.get("model") or _IA["model"], u.get("prompt_tokens", 0), u.get("completion_tokens", 0))
 
         # Double-check: mini tem falsos negativos de marca (em detail=low não reconhece
         # o logo do sol sem texto). Re-verifica com gpt-4o (detail=high) quando o mini
@@ -121,7 +122,7 @@ def _processar(item: dict, idx: str, total: int) -> tuple[dict, int, int]:
             u = marca_4o.pop("_usage", {})
             in_tok += u.get("prompt_tokens", 0)
             out_tok += u.get("completion_tokens", 0)
-            _track("brand_4o_recheck", _IA["model_detalhes"], u.get("prompt_tokens", 0), u.get("completion_tokens", 0))
+            _track("brand_4o_recheck", u.get("model") or _IA["model_detalhes"], u.get("prompt_tokens", 0), u.get("completion_tokens", 0))
             if aceita_recheck(motivo_rc, marca_4o):
                 marca_4o["evidencia"] = "[double-check gpt-4o] " + (marca_4o.get("evidencia") or "")
                 marca = marca_4o
@@ -150,9 +151,15 @@ def _processar(item: dict, idx: str, total: int) -> tuple[dict, int, int]:
         u = c.pop("_usage", {})
         in_tok += u.get("prompt_tokens", 0)
         out_tok += u.get("completion_tokens", 0)
-        _track("classify_tipo", _IA["model"], u.get("prompt_tokens", 0), u.get("completion_tokens", 0))
+        _track("classify_tipo", u.get("model") or _IA["model"], u.get("prompt_tokens", 0), u.get("completion_tokens", 0))
 
         tipo_original = c.get("tipo")
+        # 2º olhar do desbotado (Haiku, 3 votos) — só quando o tipo marcou um LISO como
+        # desbotado; se não confirmar, aparencia volta a "ok" (classify/desbotado.py).
+        chk = aplicar_desbotado(c, item)
+        if chk is not None:
+            u = chk.get("_usage", {})
+            _track("desbotado_check", u.get("model") or _IA["model_desbotado"], u.get("prompt_tokens", 0), u.get("completion_tokens", 0))
         # Desbotado rebaixa só o LISO (e o indefinido). Estampado/logo_grande desbotado
         # continua com o tipo real (já é excluído pelo tipo; a aparência fica registrada
         # e o score exclui por "desbotado" de qualquer jeito) — mesma convenção do gabarito.
@@ -186,7 +193,7 @@ def _processar(item: dict, idx: str, total: int) -> tuple[dict, int, int]:
                 u = cor.pop("_usage", {})
                 in_tok += u.get("prompt_tokens", 0)
                 out_tok += u.get("completion_tokens", 0)
-                _track("color", _IA["model"], u.get("prompt_tokens", 0), u.get("completion_tokens", 0))
+                _track("color", u.get("model") or _IA["model"], u.get("prompt_tokens", 0), u.get("completion_tokens", 0))
             except Exception as e:
                 cor = {"tier": "erro", "erro": str(e)}
 
@@ -219,7 +226,7 @@ def _processar(item: dict, idx: str, total: int) -> tuple[dict, int, int]:
                 u = listra.pop("_usage", {})
                 in_tok += u.get("prompt_tokens", 0)
                 out_tok += u.get("completion_tokens", 0)
-                _track("listra", _IA["model"], u.get("prompt_tokens", 0), u.get("completion_tokens", 0))
+                _track("listra", u.get("model") or _IA["model"], u.get("prompt_tokens", 0), u.get("completion_tokens", 0))
                 c["cores_listras"] = listra.get("cores") or []
                 c["e_piping"] = listra.get("e_piping", False)
                 c["tem_listra_lateral_sundek"] = listra.get("e_listra_sundek", False)
@@ -273,7 +280,7 @@ def _processar(item: dict, idx: str, total: int) -> tuple[dict, int, int]:
                 u = elastico.pop("_usage", {})
                 in_tok += u.get("prompt_tokens", 0)
                 out_tok += u.get("completion_tokens", 0)
-                _track("elastico", _IA["model_detalhes"], u.get("prompt_tokens", 0), u.get("completion_tokens", 0))
+                _track("elastico", u.get("model") or _IA["model_detalhes"], u.get("prompt_tokens", 0), u.get("completion_tokens", 0))
                 linha += f" | {'elás✓' if elastico.get('tem_elastico') else '!SEM-ELÁS'}"
             except Exception as e:
                 elastico = {"tem_elastico": None, "erro": str(e)}
@@ -292,7 +299,7 @@ def _processar(item: dict, idx: str, total: int) -> tuple[dict, int, int]:
                     bt.pop("_crop", None)
                     in_tok += u.get("prompt_tokens", 0)
                     out_tok += u.get("completion_tokens", 0)
-                    _track("botao_fly", _IA["model_detalhes"], u.get("prompt_tokens", 0), u.get("completion_tokens", 0))
+                    _track("botao_fly", u.get("model") or _IA["model_detalhes"], u.get("prompt_tokens", 0), u.get("completion_tokens", 0))
                     if elastico is not None:
                         elastico["botao_fly"] = {k: bt.get(k) for k in ("tem_botao", "tipo", "o_que_vi_no_centro", "evidencia", "_crop_modo")}
                         if bt.get("tem_botao") is True:
@@ -319,7 +326,7 @@ def _processar(item: dict, idx: str, total: int) -> tuple[dict, int, int]:
                     u = vc.pop("_usage", {})
                     in_tok += u.get("prompt_tokens", 0)
                     out_tok += u.get("completion_tokens", 0)
-                    _track("velcro_fly", _IA["model_detalhes"], u.get("prompt_tokens", 0), u.get("completion_tokens", 0))
+                    _track("velcro_fly", u.get("model") or _IA["model_detalhes"], u.get("prompt_tokens", 0), u.get("completion_tokens", 0))
                     elastico["velcro_fly"] = {k: vc.get(k) for k in ("tem_velcro", "foto_braguilha_aberta", "o_que_vi", "evidencia")}
                     if vc.get("tem_velcro") is True:
                         elastico["tipo_fechamento_original"] = elastico.get("tipo_fechamento")
@@ -350,7 +357,7 @@ def _processar(item: dict, idx: str, total: int) -> tuple[dict, int, int]:
                 u = bolso.pop("_usage", {})
                 in_tok += u.get("prompt_tokens", 0)
                 out_tok += u.get("completion_tokens", 0)
-                _track("bolso", _IA["model_detalhes"], u.get("prompt_tokens", 0), u.get("completion_tokens", 0))
+                _track("bolso", u.get("model") or _IA["model_detalhes"], u.get("prompt_tokens", 0), u.get("completion_tokens", 0))
                 c["tem_bolso_traseiro"] = bolso.get("tem_bolso")
                 c["bolso_traseiro_tem_nome"] = bolso.get("tem_nome")
                 c["tem_bolso_frontal"] = bolso.get("bolso_frontal", False)
@@ -379,7 +386,7 @@ def _processar(item: dict, idx: str, total: int) -> tuple[dict, int, int]:
                 in_tok += u.get("prompt_tokens", 0)
                 out_tok += u.get("completion_tokens", 0)
                 # etiqueta foi migrada pro mini (config conservadora)
-                _track("etiqueta", _IA["model"], u.get("prompt_tokens", 0), u.get("completion_tokens", 0))
+                _track("etiqueta", u.get("model") or _IA["model"], u.get("prompt_tokens", 0), u.get("completion_tokens", 0))
                 if etiqueta.get("tem_etiqueta") is True:
                     linha += " | etiq✓"
                 elif etiqueta.get("tem_etiqueta") is False:
@@ -531,8 +538,7 @@ def main() -> None:
     # Custo real usando o cost_tracker (separa mini vs gpt-4o)
     # ⚠️ não use input_tokens × $0.15 — gpt-4o custa 17x mais que mini
     from ..utils.cost_tracker import _dados as _ct
-    PRECOS = {"gpt-4o-mini": {"in": 0.15, "out": 0.60},
-              "gpt-4o":      {"in": 2.50, "out": 10.00}}
+    from ..utils.cost_tracker import PRECOS  # inclui os modelos das rotas (config.IA_ROTAS)
     total_usd = 0.0
     for etapa_d in _ct.values():
         for modelo, d in etapa_d.items():

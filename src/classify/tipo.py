@@ -5,6 +5,7 @@ import os
 from openai import OpenAI
 
 from ..config import IA
+from ..utils import llm
 from ..utils.ratelimit import pace_mini
 from ..prompts import liso_vs_estampado as prompt
 
@@ -25,7 +26,7 @@ def _get_client() -> OpenAI:
 def classificar_item(item: dict) -> dict:
     # Só as 2 primeiras fotos (out/2026): no mini cada foto low custa ~2.833 tokens; no
     # gabarito tipo/aparência/brilho e a decisão ficaram iguais com 2, 3 e 5 fotos.
-    fotos = (item.get("fotos") or [])[:2]
+    fotos = (item.get("fotos") or [])[:llm.opcao("sundek:tipo", "max_fotos", 2)]
     if not fotos:
         return {"tipo": "indefinido", "justificativa": "sem fotos", "confianca": 0}
 
@@ -35,7 +36,8 @@ def classificar_item(item: dict) -> dict:
     ]
 
     pace_mini()
-    resp = _get_client().chat.completions.create(
+    resp = llm.create(
+        "sundek:tipo",
         model=IA["model"],
         messages=[
             {"role": "system", "content": prompt.SISTEMA},
@@ -62,5 +64,6 @@ def classificar_item(item: dict) -> dict:
     parsed["_usage"] = {
         "prompt_tokens": resp.usage.prompt_tokens,
         "completion_tokens": resp.usage.completion_tokens,
+        "model": resp.model,
     }
     return parsed

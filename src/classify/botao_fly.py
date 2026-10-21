@@ -6,6 +6,7 @@ import os
 from openai import OpenAI
 
 from ..config import IA
+from ..utils import llm
 from ..prompts import botao_fly as prompt
 from ..prompts import velcro_fly as prompt_velcro
 from .crop_fly import recortar_fly
@@ -35,7 +36,8 @@ def verificar_botao(item: dict) -> dict:
         conteudo.append({"type": "image_url", "image_url": {"url": cr["foto_frente_url"], "detail": "high"}})
     conteudo.append({"type": "text", "text": "Fotos gerais (contexto):"})
     conteudo += [{"type": "image_url", "image_url": {"url": u, "detail": "low"}} for u in fotos]
-    resp = _get_client().chat.completions.create(
+    resp = llm.create(
+        "sundek:botao",
         model=os.environ.get("BOTAO_MODEL", IA["model_detalhes"]),
         messages=[{"role": "system", "content": prompt.SISTEMA}, {"role": "user", "content": conteudo}],
         max_tokens=300, temperature=0.1, response_format={"type": "json_object"},
@@ -47,7 +49,7 @@ def verificar_botao(item: dict) -> dict:
     parsed["_crop_modo"] = cr.get("modo")
     parsed["_crop_foto"] = cr.get("foto_index")
     parsed["_crop"] = cr.get("crop") if (cr.get("crop") or "").startswith("data:") else None
-    parsed["_usage"] = {"prompt_tokens": resp.usage.prompt_tokens, "completion_tokens": resp.usage.completion_tokens}
+    parsed["_usage"] = {"prompt_tokens": resp.usage.prompt_tokens, "completion_tokens": resp.usage.completion_tokens, "model": resp.model}
     return parsed
 
 
@@ -62,7 +64,8 @@ def verificar_velcro(item: dict) -> dict:
     for i, u in enumerate(fotos):
         conteudo.append({"type": "text", "text": f"Foto {i}:"})
         conteudo.append({"type": "image_url", "image_url": {"url": u, "detail": "low"}})
-    resp = _get_client().chat.completions.create(
+    resp = llm.create(
+        "sundek:velcro",
         model=os.environ.get("BOTAO_MODEL", IA["model_detalhes"]),
         messages=[{"role": "system", "content": prompt_velcro.SISTEMA}, {"role": "user", "content": conteudo}],
         max_tokens=250, temperature=0.1, response_format={"type": "json_object"},
@@ -71,5 +74,5 @@ def verificar_velcro(item: dict) -> dict:
         parsed = json.loads(resp.choices[0].message.content or "{}")
     except json.JSONDecodeError:
         parsed = {"tem_velcro": None, "evidencia": "JSON inválido"}
-    parsed["_usage"] = {"prompt_tokens": resp.usage.prompt_tokens, "completion_tokens": resp.usage.completion_tokens}
+    parsed["_usage"] = {"prompt_tokens": resp.usage.prompt_tokens, "completion_tokens": resp.usage.completion_tokens, "model": resp.model}
     return parsed

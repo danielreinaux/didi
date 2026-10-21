@@ -5,6 +5,7 @@ import os
 from openai import OpenAI
 
 from ..config import IA
+from ..utils import llm
 from ..utils.ratelimit import pace_mini
 from ..prompts import cor_tier as prompt
 
@@ -76,7 +77,8 @@ def classificar_cor(item: dict) -> dict:
     ]
 
     pace_mini()
-    resp = _get_client().chat.completions.create(
+    resp = llm.create(
+        "sundek:cor",
         model=IA["model"],
         messages=[
             {"role": "system", "content": prompt.SISTEMA},
@@ -97,5 +99,6 @@ def classificar_cor(item: dict) -> dict:
     parsed["_usage"] = {
         "prompt_tokens": resp.usage.prompt_tokens,
         "completion_tokens": resp.usage.completion_tokens,
+        "model": resp.model,
     }
     return parsed

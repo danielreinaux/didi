@@ -20,6 +20,7 @@ from openai import OpenAI
 from PIL import Image
 
 from ..config import IA
+from ..utils import llm
 
 _client: OpenAI | None = None
 
@@ -73,7 +74,8 @@ def _localizar(fotos: list[str]) -> dict:
     for idx, u in enumerate(fotos):
         conteudo.append({"type": "text", "text": f"Foto {idx}:"})
         conteudo.append({"type": "image_url", "image_url": {"url": u, "detail": "low"}})
-    resp = _get_client().chat.completions.create(
+    resp = llm.create(
+        "sundek:crop_fly",
         model=modelo,
         messages=[{"role": "system", "content": _LOCALIZAR_SISTEMA},
                   {"role": "user", "content": conteudo}],
@@ -81,7 +83,7 @@ def _localizar(fotos: list[str]) -> dict:
     )
     try:
         from ..utils.cost_tracker import track as _track
-        _track("crop_fly_localizar", modelo, resp.usage.prompt_tokens, resp.usage.completion_tokens)
+        _track("crop_fly_localizar", resp.model, resp.usage.prompt_tokens, resp.usage.completion_tokens)
     except Exception:
         pass
     try:

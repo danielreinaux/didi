@@ -5,6 +5,7 @@ import os
 from openai import OpenAI
 
 from ..config import IA
+from ..utils import llm
 from ..prompts import elastico as prompt
 from ..utils.ratelimit import pace_gpt4o
 
@@ -39,7 +40,8 @@ def verificar_elastico(item: dict) -> dict:
     ]
 
     pace_gpt4o()
-    resp = _get_client().chat.completions.create(
+    resp = llm.create(
+        "sundek:elastico",
         model=IA["model_detalhes"],
         messages=[
             {"role": "system", "content": prompt.SISTEMA},
@@ -59,5 +61,6 @@ def verificar_elastico(item: dict) -> dict:
     parsed["_usage"] = {
         "prompt_tokens": resp.usage.prompt_tokens,
         "completion_tokens": resp.usage.completion_tokens,
+        "model": resp.model,
     }
     return parsed

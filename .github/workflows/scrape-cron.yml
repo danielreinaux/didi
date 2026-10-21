@@ -54,6 +54,9 @@ jobs:
       - name: Classify Sundek
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          # rotas por agente em config.IA_ROTAS (src/utils/llm.py) + 2º olhar do desbotado;
+          # sem o secret tudo fica na OpenAI como antes
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
         run: python -m src.classify.run --workers 2
 
       # Revisita itens do acervo que sumiram do scrape e marca os vendidos/removidos.

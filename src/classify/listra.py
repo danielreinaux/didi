@@ -5,6 +5,7 @@ import os
 from openai import OpenAI
 
 from ..config import IA, LISTRA_FAIXA_UNICA
+from ..utils import llm
 from ..prompts import listra_confirma
 from ..prompts import listra_sundek as prompt
 from ..utils.ratelimit import pace_gpt4o, pace_mini
@@ -42,7 +43,8 @@ def verificar_listra(item: dict) -> dict:
     # base, empate nos compráveis. Swap sem perda de qualidade e mais barato.
     # (Reverter pra IA["model_detalhes"] + pace_gpt4o se algum dia regredir.)
     pace_mini()
-    resp = _get_client().chat.completions.create(
+    resp = llm.create(
+        "sundek:listra",
         model=IA["model"],
         messages=[
             {"role": "system", "content": prompt.SISTEMA},
@@ -63,6 +65,7 @@ def verificar_listra(item: dict) -> dict:
     parsed["_usage"] = {
         "prompt_tokens": resp.usage.prompt_tokens,
         "completion_tokens": resp.usage.completion_tokens,
+        "model": resp.model,
     }
     return parsed
 
@@ -94,7 +97,8 @@ def confirmar_faixa_unica(item: dict) -> dict | None:
         return None
     try:
         pace_gpt4o()
-        resp = _get_client().chat.completions.create(
+        resp = llm.create(
+            "sundek:listra_confirma",
             model=IA["model_detalhes"],
             messages=[
                 {"role": "system", "content": listra_confirma.SISTEMA},
@@ -115,7 +119,7 @@ def confirmar_faixa_unica(item: dict) -> dict | None:
     conf["n_cores"] = n
     conf["rejeitada"] = n <= 1 and conf.get("forma") in _FORMAS_SEM_LISTRA_SE_1_COR
     conf["_usage"] = {
-        "model": IA["model_detalhes"],
+        "model": resp.model,
         "prompt_tokens": resp.usage.prompt_tokens,
         "completion_tokens": resp.usage.completion_tokens,
     }

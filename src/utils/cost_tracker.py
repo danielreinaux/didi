@@ -10,6 +10,17 @@ from collections import defaultdict
 PRECOS = {
     "gpt-4o-mini": {"in": 0.15, "out": 0.60},
     "gpt-4o":      {"in": 2.50, "out": 10.00},
+    # OpenRouter (out/2026) — rotas de config.IA_ROTAS (o tracker recebe o modelo REAL da rota)
+    "google/gemini-2.5-flash-lite": {"in": 0.10, "out": 0.40},
+    "google/gemini-3.5-flash-lite": {"in": 0.30, "out": 2.50},
+    "bytedance-seed/seed-2.0-mini": {"in": 0.10, "out": 0.40},
+    "bytedance-seed/seed-2.0-lite": {"in": 0.25, "out": 2.00},
+    "qwen/qwen3.7-flash":           {"in": 0.03, "out": 0.13},
+    "google/gemma-4-26b-a4b-it":    {"in": 0.10, "out": 0.30},
+    "anthropic/claude-haiku-5.5":   {"in": 0.10, "out": 0.50},
+    # reservas (só se a rota principal falhar)
+    "google/gemini-3.1-flash-lite": {"in": 0.25, "out": 1.50},
+    "google/gemma-4-31b-it":        {"in": 0.20, "out": 0.40},
 }
 
 _lock = threading.Lock()

@@ -57,6 +57,58 @@ IA = {
     "provider": "openai",
     "model": "gpt-4o-mini",      # padrão: liso/estampado, brand check, cor
     "model_detalhes": "gpt-4o",  # visão fina: elástico e etiqueta
+    # 2º olhar do "desbotado" (só nos lisos que o tipo marcou desbotado) — rota sundek:desbotado.
+    "model_desbotado": "anthropic/claude-haiku-5.5",
+    "desbotado_votos": 3,
+}
+
+# Roteamento POR AGENTE (src/utils/llm.py). gpt-4o e gpt-4o-mini saem da API da OpenAI em
+# 14/01/2027; estes substitutos empataram com a produção no gabarito (2 datasets, base prod20out,
+# bench modelos2 out/2026: acerto por critério + decisão falso descarte/falsa passagem).
+# Só entram em vigor com o secret OPENROUTER_API_KEY; sem ele (ou com IA_ROTAS_DESLIGADAS=1)
+# tudo segue na OpenAI como antes. Se o OpenRouter falhar, a chamada cai no modelo legado.
+# Agente sem rota aqui = OpenAI: cor (todos os substitutos leem o azul claro como médio →
+# precisa recalibrar o prompt antes de trocar) e marca_recheck/listra_confirma/velcro (raros,
+# ainda não medidos fora do gpt-4o).
+# Opções lidas pelos módulos (não vão para a API): "colagem" (marca), "max_fotos" (tipo/cor).
+_SEM_RACIOCINIO = {"reasoning": {"enabled": False}, "min_tokens": 2500}
+_GEMINI3 = {"reasoning": {"effort": "minimal"}, "min_tokens": 3000}
+IA_ROTAS = {
+    # marca: idêntico à produção em 2 rodadas (0 itens mudados), US$0,00019/chamada (mini: 0,0018)
+    # colagem DESLIGADA nesta rota: no flash-lite cada foto custa ~258 tokens (não 2.833) e a
+    # colagem baixou e_sundek de 91/92 para 89/92 no gabarito (21/10).
+    "sundek:marca": {"to": "openrouter:google/gemini-2.5-flash-lite", **_SEM_RACIOCINIO, "colagem": False,
+                     "reserva": {"to": "openrouter:bytedance-seed/seed-2.0-mini", **_SEM_RACIOCINIO}},
+    # tipo: +2/+1/0 em 3 rodadas, corrige 1 falso descarte (9280328167). Fixado no host CoreWeave
+    # (bf16): no OpenRouter o gemma-4 só tem hosts de terceiros, e o Google Vertex deu erro 400 em
+    # 25/93 itens. US$0,00022 (mini: 0,0019)
+    "sundek:tipo": {"to": "openrouter:google/gemma-4-26b-a4b-it", **_SEM_RACIOCINIO,
+                    "provider": {"order": ["coreweave"], "allow_fallbacks": False},
+                    # reserva: o mesmo gemma em qualquer host (rodada com hosts mistos: Δ0)
+                    "reserva": {"to": "openrouter:google/gemma-4-26b-a4b-it", **_SEM_RACIOCINIO}},
+    # 2º olhar do desbotado (só nos lisos marcados desbotado; 3 votos) — Claude Haiku 5.5.
+    # Sem a chave → não roda e vale o desbotado do tipo. Medição: reports/tipo_sundek.md.
+    "sundek:desbotado": {"to": "openrouter:anthropic/claude-haiku-5.5", "min_tokens": 1500},
+    # listra v3: +1 critério nas 2 rodadas, decisão igual; US$0,00065 (mini: 0,0023)
+    "sundek:listra": {"to": "openrouter:bytedance-seed/seed-2.0-mini", **_SEM_RACIOCINIO,
+                      # reserva +2 no gabarito, mas o Google tira o 3.1-flash-lite em 05/2027
+                      "reserva": {"to": "openrouter:google/gemini-3.1-flash-lite", **_GEMINI3}},
+    # elástico (prompt sem CoT): critério −2/−1/0 em 3 rodadas; decisão igual exceto 1 falsa passagem
+    # sistemática (9279834011, ver relatório). US$0,0016 (4o: ~0,006 faturado / 0,011 lista)
+    # (sem reserva: o gemini-3.5-flash-lite, −2 com o prompt antigo, desaba no prompt sem CoT:
+    #  −11 e +4 falsas passagens no gabarito, 21/10)
+    "sundek:elastico": {"to": "openrouter:bytedance-seed/seed-2.0-lite", **_SEM_RACIOCINIO},
+    # botão (localizador + detector): 19/21 votos "botão" do cliente (4o: 17/21), 0/35 FP;
+    # gabarito 2/2, 0/56 FP. US$0,0022/item (4o: ~0,0105)
+    "sundek:crop_fly": {"to": "openrouter:google/gemini-3.5-flash-lite", **_GEMINI3,
+                        "reserva": {"to": "openrouter:google/gemma-4-31b-it", **_SEM_RACIOCINIO}},
+    "sundek:botao": {"to": "openrouter:google/gemini-3.5-flash-lite", **_GEMINI3,
+                     "reserva": {"to": "openrouter:google/gemma-4-31b-it", **_SEM_RACIOCINIO}},
+    # bolso (localizador do patch + leitura): Δ0, decisão igual; US$0,0026/item (4o: ~0,011)
+    "sundek:crop_patch": {"to": "openrouter:google/gemini-3.5-flash-lite", **_GEMINI3},
+    "sundek:bolso": {"to": "openrouter:google/gemini-3.5-flash-lite", **_GEMINI3},
+    # etiqueta: Δ0, decisão igual; US$0,0001 (mini: 0,0016)
+    "sundek:etiqueta": {"to": "openrouter:qwen/qwen3.7-flash", **_SEM_RACIOCINIO},
 }
 
 # Listra Sundek — faixa de UMA cor só conta como listra?

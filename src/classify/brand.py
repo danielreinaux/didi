@@ -6,6 +6,7 @@ import re
 from openai import OpenAI
 
 from ..config import IA
+from ..utils import llm
 from ..prompts import verifica_sundek as prompt
 from ..utils.ratelimit import pace_gpt4o, pace_mini
 from ._colagem import colagem
@@ -71,7 +72,7 @@ def verificar_sundek(item: dict, model: str | None = None) -> dict:
     # ~2.833 por foto): mesmo acerto no gabarito e −2/3 do custo da etapa. O recheck 4o
     # (detail=high) continua com as fotos inteiras.
     imagens = fotos
-    if detail == "low" and len(fotos) > 1:
+    if detail == "low" and len(fotos) > 1 and llm.opcao("sundek:marca", "colagem", True):
         c = colagem(fotos)
         if c:
             imagens = [c]
@@ -84,7 +85,8 @@ def verificar_sundek(item: dict, model: str | None = None) -> dict:
         pace_gpt4o()  # só o double-check usa gpt-4o
     else:
         pace_mini()
-    resp = _get_client().chat.completions.create(
+    resp = llm.create(
+        "sundek:marca_recheck" if (model or IA["model"]) == IA["model_detalhes"] else "sundek:marca",
         model=model or IA["model"],
         messages=[
             {"role": "system", "content": prompt.SISTEMA},
@@ -104,6 +106,7 @@ def verificar_sundek(item: dict, model: str | None = None) -> dict:
     parsed["_usage"] = {
         "prompt_tokens": resp.usage.prompt_tokens,
         "completion_tokens": resp.usage.completion_tokens,
+        "model": resp.model,
     }
 
     # corrigir falsos negativos por OCR de baixa resolução

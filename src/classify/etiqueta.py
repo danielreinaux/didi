@@ -5,6 +5,7 @@ import os
 from openai import OpenAI
 
 from ..config import IA
+from ..utils import llm
 from ..utils.ratelimit import pace_mini
 from ..prompts import etiqueta as prompt
 
@@ -34,7 +35,8 @@ def verificar_etiqueta(item: dict) -> dict:
 
     # gpt-4o-mini — teste mostrou 97% concordância com gpt-4o (estratégia conservadora)
     pace_mini()
-    resp = _get_client().chat.completions.create(
+    resp = llm.create(
+        "sundek:etiqueta",
         model=IA["model"],
         messages=[
             {"role": "system", "content": prompt.SISTEMA},
@@ -54,5 +56,6 @@ def verificar_etiqueta(item: dict) -> dict:
     parsed["_usage"] = {
         "prompt_tokens": resp.usage.prompt_tokens,
         "completion_tokens": resp.usage.completion_tokens,
+        "model": resp.model,
     }
     return parsed

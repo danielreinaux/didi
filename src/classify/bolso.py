@@ -5,6 +5,7 @@ import os
 from openai import OpenAI
 
 from ..config import IA
+from ..utils import llm
 from .crop_bolso import recortar_bolso
 from ..prompts import bolso_traseiro as prompt
 from ..utils.ratelimit import pace_gpt4o
@@ -63,7 +64,8 @@ def verificar_bolso(item: dict) -> dict:
 
     # gpt-4o porque a decisão é crítica para exclusão e o detalhe do patch é sutil
     pace_gpt4o()
-    resp = _get_client().chat.completions.create(
+    resp = llm.create(
+        "sundek:bolso",
         model=IA["model_detalhes"],
         messages=[
             {"role": "system", "content": prompt.SISTEMA},
@@ -92,5 +94,6 @@ def verificar_bolso(item: dict) -> dict:
     parsed["_usage"] = {
         "prompt_tokens": resp.usage.prompt_tokens,
         "completion_tokens": resp.usage.completion_tokens,
+        "model": resp.model,
     }
     return parsed
