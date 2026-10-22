@@ -24,16 +24,17 @@ def _get_client() -> OpenAI:
 
 def verificar_elastico(item: dict) -> dict:
     """Retorna dict com tem_elastico, evidencia, confianca, _usage."""
-    fotos = (item.get("fotos") or [])[:4]
+    # 6 fotos (era 4): o close do cós por dentro/da traseira costuma ser a 5ª ou 6ª foto.
+    fotos = (item.get("fotos") or [])[:6]
     if not fotos:
-        return {"tem_elastico": True, "evidencia": "sem fotos", "confianca": 0}
+        return {"tem_elastico": None, "evidencia": "sem fotos", "confianca": 0}
 
     # Saída SEM os campos pensamento_* (out/2026): o system (com o protocolo e os exemplos)
     # continua igual — e cacheado —, só a resposta encolhe (~226 → ~48 tokens de saída,
     # −US$ 0,0018/chamada). Gabarito: tem_elastico/decisão dentro do ruído do v2 (2 rodadas).
     texto = (prompt.usuario(item.get("titulo") or "") +
              " IMPORTANTE: responda SOMENTE o JSON final com os campos tem_elastico, "
-             "tipo_fechamento e evidencia — NÃO escreva os campos pensamento_*.")
+             "foto_elastico, tipo_fechamento e evidencia — NÃO escreva os campos pensamento_*.")
     conteudo_usuario = [
         {"type": "text", "text": texto},
         *[{"type": "image_url", "image_url": {"url": u, "detail": "low"}} for u in fotos],
@@ -56,7 +57,7 @@ def verificar_elastico(item: dict) -> dict:
     try:
         parsed = json.loads(texto)
     except json.JSONDecodeError:
-        parsed = {"tem_elastico": True, "evidencia": "JSON inválido", "confianca": 0}
+        parsed = {"tem_elastico": None, "evidencia": "JSON inválido", "confianca": 0}
 
     parsed["_usage"] = {
         "prompt_tokens": resp.usage.prompt_tokens,

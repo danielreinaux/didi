@@ -96,11 +96,15 @@ IA_ROTAS = {
     "sundek:listra": {"to": "openrouter:bytedance-seed/seed-2.0-mini", **_SEM_RACIOCINIO,
                       # reserva +2 no gabarito, mas o Google tira o 3.1-flash-lite em 05/2027
                       "reserva": {"to": "openrouter:google/gemini-3.1-flash-lite", **_GEMINI3}},
-    # elástico (prompt sem CoT): critério −2/−1/0 em 3 rodadas; decisão igual exceto 1 falsa passagem
-    # sistemática (9279834011, ver relatório). US$0,0016 (4o: ~0,006 faturado / 0,011 lista)
-    # (sem reserva: o gemini-3.5-flash-lite, −2 com o prompt antigo, desaba no prompt sem CoT:
-    #  −11 e +4 falsas passagens no gabarito, 21/10)
-    "sundek:elastico": {"to": "openrouter:bytedance-seed/seed-2.0-lite", **_SEM_RACIOCINIO},
+    # elástico: DESLIGADO em 22/10 (volta ao gpt-4o, com o prompt v3). O seed-2.0-lite via
+    # "franzido de elástico" em boardshort clássico de cós reto (3 de 3 apontados pelo Daniel no
+    # app); com o prompt v3: gabarito sim 55/55 nos dois, não 21/23 (seed) × 22/23 (4o), os 3
+    # do Daniel 1/3 × 3/3, fechamento 72/78 × 74/78. Achar substituto vigente antes de 14/01/2027.
+    # # elástico (prompt sem CoT): critério −2/−1/0 em 3 rodadas; decisão igual exceto 1 falsa passagem
+    # # sistemática (9279834011, ver relatório). US$0,0016 (4o: ~0,006 faturado / 0,011 lista)
+    # # (sem reserva: o gemini-3.5-flash-lite, −2 com o prompt antigo, desaba no prompt sem CoT:
+    # #  −11 e +4 falsas passagens no gabarito, 21/10)
+    # "sundek:elastico": {"to": "openrouter:bytedance-seed/seed-2.0-lite", **_SEM_RACIOCINIO},
     # botão (localizador + detector): 19/21 votos "botão" do cliente (4o: 17/21), 0/35 FP;
     # gabarito 2/2, 0/56 FP. US$0,0022/item (4o: ~0,0105)
     "sundek:crop_fly": {"to": "openrouter:google/gemini-3.5-flash-lite", **_GEMINI3,

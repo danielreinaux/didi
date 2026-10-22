@@ -42,17 +42,17 @@ ao mesmo tempo.
 
 ## A) Elástico no cós
 
-### ⚠️ Padrão Sundek: elástico SÓ NA TRASEIRA (comum) — mas exija franzido REAL
-Muitos Sundek têm elástico só na METADE TRASEIRA do cós: a TRASEIRA franze, a FRENTE
-fica lisa. Se a TRASEIRA tem franzido REAL de elástico — ONDAS DENSAS E REGULARES,
-juntinhas, como um acordeão / franzido de saia — então `tem_elastico=true`, mesmo com
-a frente plana.
-⚠️ NÃO confunda com (ambos são `tem_elastico=false`):
-  (a) a ONDULAÇÃO SOLTA e irregular de um cós de tecido deitado/amassado na foto;
-  (b) o cós ESTRUTURADO e RETO de um boardshort firme — cós de prancha não tem
-      elástico, mesmo com uma ruga ou outra.
-Franzido de elástico é DENSO, apertado e REGULAR; ruga de tecido é solta e
-irregular. Na dúvida, se o cós parece firme/reto/estruturado → `tem_elastico=false`.
+### ⚠️ Boardshort CLÁSSICO Sundek = SEM elástico (é o erro nº1 — leia com atenção)
+O boardshort clássico Sundek tem: cós RETO e estruturado (faixa larga com pespontos),
+cordão passando por ILHÓS METÁLICOS na frente, forro de tela/rede por dentro e,
+muitas vezes, braguilha com aba. Esse modelo **NÃO tem elástico** — o ajuste é só o
+cordão. Não presuma elástico "atrás" só porque é Sundek: na foto deitada a traseira
+do boardshort costuma ter ondulações soltas do tecido, que NÃO são elástico.
+O short de banho com elástico é OUTRO modelo: cós franzido em ondas densas e regulares
+(tipo acordeão) — em geral na volta toda — com cordão saindo de dentro do cós
+(sem ilhós metálicos ou com ilhós pequenos).
+Só marque `tem_elastico=true` se você conseguir APONTAR a foto em que o franzido
+denso e regular (ou a banda elástica) aparece NÍTIDO. Sem essa foto → `tem_elastico=false`.
 
 ### Sinais REAIS de elástico (tem_elastico = true)
 - Cós comprimido/encolhido — dobras estruturais regulares comprimindo o tecido em
@@ -156,7 +156,7 @@ Olhe as fotos do fly (centro frontal):
 3) Senão, cós com elástico e SEM cordão visível? → tipo = elastico.
 4) Senão, cós plano/reto sem cordão e sem elástico? → tipo = sem.
 Lembre: `tem_elastico` é decidido À PARTE (Passo 2) e pode ser true junto com
-tipo=cordao (Sundek clássico: cordão na frente, elástico atrás).
+tipo=cordao — mas só com uma foto que MOSTRE o franzido (`foto_elastico`).
 
 ## Passo 5 — SELF-CHECK
 - Você confundiu nylon enrugado com elástico? Releia passo 2.
@@ -165,19 +165,27 @@ tipo=cordao (Sundek clássico: cordão na frente, elástico atrás).
 
 # EXEMPLOS RESOLVIDOS
 
-## Exemplo A — Sundek clássico: cordão + elástico traseiro (o caso MAIS comum)
-Fotos: traseira do cós franzida em ondas regulares (elástico atrás); frente do cós
-lisa com cordão branco atado, saindo por ilhós. Sem botão/velcro.
+## Exemplo A — Boardshort clássico Sundek: cordão por ilhós, cós reto → SEM elástico
+Fotos: cós largo e reto com pespontos; cordão branco passando por dois ilhós metálicos
+na frente; forro de tela. Na traseira deitada há ondulação solta do tecido, sem acordeão.
 ```json
 {
-  "pensamento_inspecao": "Foto 2 mostra a traseira do cós; foto 3 o fly frontal de perto",
-  "pensamento_cos": "Traseira do cós franzida em ondas regulares (elástico traseiro); frente lisa — padrão Sundek",
-  "pensamento_fly": "Cordão branco atado saindo por ilhós; sem botão circular nem velcro",
-  "pensamento_prioridade": "Sem botão/velcro; HÁ cordão funcional → tipo=cordao (mesmo com elástico). Elástico só atrás → tem_elastico=true",
-  "pensamento_self_check": "O cordão NOMEIA o fechamento; o elástico vai à parte em tem_elastico. Ilhó não é botão.",
-  "tem_elastico": true,
+  "tem_elastico": false,
+  "foto_elastico": null,
   "tipo_fechamento": "cordao",
-  "evidencia": "Cordão frontal (fechamento) + elástico só na traseira do cós — Sundek clássico"
+  "evidencia": "Boardshort clássico: cós reto com cordão por ilhós; nenhuma foto mostra franzido de elástico"
+}
+```
+
+## Exemplo A2 — Short de banho com cós elástico + cordão → COM elástico
+Fotos: foto 2 mostra o cós inteiro franzido em ondas densas e regulares; cordão saindo
+de dentro do cós na frente. Sem botão/velcro.
+```json
+{
+  "tem_elastico": true,
+  "foto_elastico": 2,
+  "tipo_fechamento": "cordao",
+  "evidencia": "Foto 2: cós franzido em acordeão (elástico) + cordão interno"
 }
 ```
 
@@ -254,6 +262,7 @@ Responda APENAS com JSON válido nesta ordem (pensamento ANTES da decisão):
   "pensamento_prioridade": "<regra aplicada>",
   "pensamento_self_check": "<revisão antes de finalizar>",
   "tem_elastico": true|false|null,
+  "foto_elastico": <número da foto em que o franzido de elástico aparece nítido, ou null>,
   "tipo_fechamento": "elastico"|"cordao"|"botao"|"velcro"|"sem"|"indefinido",
   "evidencia": "<resumo curto da decisão>"
 }"""
