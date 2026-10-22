@@ -45,8 +45,10 @@ def _checar_status(page, url: str) -> str:
     except Exception:
         return "ativo"  # erro de rede/timeout → não muda (evita falso vendido)
 
+    if resp is not None and resp.status in (404, 410):
+        return "removido"  # anúncio apagado
     if resp is not None and resp.status >= 400:
-        return "removido"  # 404/410 — anúncio apagado
+        return "ativo"  # 403/429/5xx = bloqueio/limite do Vinted, não apagado (22/10: 12 falsos)
 
     page.wait_for_timeout(800)
     try:
@@ -80,7 +82,9 @@ def _checar_status(page, url: str) -> str:
         return "ativo"
 
     if not info["temTitulo"]:
-        return "removido"
+        # Página sem título com HTTP 200 = tela de bloqueio/"rate limited"/captcha (22/10: 12
+        # anúncios ativos viraram "removido" assim). Na dúvida, mantém ativo.
+        return "ativo"
     selo = {re.sub(r"[¡!¿?.\s]", "", t) for t in info.get("selos") or []}
     if selo & _SELO_REMOVIDO:
         return "removido"
@@ -199,17 +203,26 @@ def main() -> None:
     agora = datetime.now(timezone.utc).isoformat()
     mudancas = {"vendido": 0, "removido": 0, "ativo": 0}
 
+    seguidos: list = []  # "removido" em sequência = sinal de bloqueio → desfaz e para a rodada
     with sync_playwright() as p:
         browser, _, page = abrir_sessao_vinted(p)
         for i, item in enumerate(candidatos):
             status = _checar_status(page, item["url"])
+            seguidos = seguidos + [item] if status == "removido" else []
+            if len(seguidos) >= 4:
+                for x in seguidos[:-1]:
+                    x["status"] = "ativo"
+                    mudancas["removido"] -= 1
+                    mudancas["ativo"] += 1
+                print(f"  {len(seguidos)} 'removido' seguidos — parece bloqueio do Vinted; desfeito e parando.")
+                break
             item["status"] = status if status != "ativo" else "ativo"
             item["verificado_em"] = agora
             mudancas[status] += 1
             extra = _atualizar_dados(page, item) if status == "ativo" else ""
             print(f"  [{i+1}/{len(candidatos)}] {status:<8} {(item.get('titulo') or '')[:45]}"
                   + (f"  ({extra})" if extra else ""))
-            time.sleep(0.4)
+            time.sleep(1.5)  # era 0,4s: com os do app revistos a cada 6h, o Vinted passou a limitar
         browser.close()
 
     caminho.write_text(json.dumps(acervo, indent=2, ensure_ascii=False))
