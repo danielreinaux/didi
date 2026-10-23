@@ -1,42 +1,6 @@
 {
- "gerado_em": "2026-10-22T21:17:13.740808-03:00",
+ "gerado_em": "2026-10-23T11:54:50.940244-03:00",
  "rodadas": [
-  {
-   "run_id": "36742024757",
-   "quando": "2026-09-30T13:26:14.552155-03:00",
-   "status": "ok",
-   "custo_brl": 3.92,
-   "custo_usd": 0.784195,
-   "calls": 122,
-   "tok_in": 1133026,
-   "tok_out": 10815,
-   "novos": 37,
-   "candidatos": 248,
-   "ativos": 8201,
-   "descartados": 7763,
-   "sundek_usd": 0.679939,
-   "ville_usd": 0.104256,
-   "etapas": {
-    "sundek:brand": 0.042937,
-    "sundek:classify_tipo": 0.039202,
-    "sundek:color": 0.021352,
-    "sundek:listra": 0.372425,
-    "sundek:elastico": 0.079237,
-    "sundek:crop_localizar": 0.010651,
-    "sundek:bolso": 0.061372,
-    "sundek:etiqueta": 0.009966,
-    "sundek:brand_4o_recheck": 0.007987,
-    "sundek:reclassify_gpt4o": 0.03481,
-    "ville:marca": 0.015425,
-    "ville:tartaruga": 0.046933,
-    "ville:cor": 0.003746,
-    "ville:etiqueta": 0.003608,
-    "ville:crop_localizar": 0.002199,
-    "ville:cordao": 0.003989,
-    "ville:autenticidade": 0.02054,
-    "ville:fecho": 0.007815
-   }
-  },
   {
    "run_id": "36744641472",
    "quando": "2026-09-30T13:39:49.888925-03:00",
@@ -5647,6 +5611,36 @@
     "sundek:color": 0.002049,
     "sundek:listra": 0.001382,
     "sundek:elastico": 0.023647
+   }
+  },
+  {
+   "run_id": "39970297484",
+   "quando": "2026-10-23T11:54:45.954456-03:00",
+   "status": "ok",
+   "custo_brl": 0.6,
+   "custo_usd": 0.12027,
+   "calls": 55,
+   "tok_in": 253998,
+   "tok_out": 9362,
+   "novos": 20,
+   "candidatos": 85,
+   "ativos": 6613,
+   "descartados": 6413,
+   "sundek_usd": 0.12027,
+   "ville_usd": 0.0,
+   "etapas": {
+    "sundek:brand": 0.003431,
+    "sundek:classify_tipo": 0.012827,
+    "sundek:color": 0.008181,
+    "sundek:listra": 0.005272,
+    "sundek:elastico": 0.08138,
+    "sundek:crop_fly_localizar": 0.000668,
+    "sundek:botao_fly": 0.001627,
+    "sundek:crop_localizar": 0.000644,
+    "sundek:bolso": 0.00175,
+    "sundek:etiqueta": 8.3e-05,
+    "sundek:velcro_fly": 0.002853,
+    "sundek:desbotado_aprovado": 0.001554
    }
   }
  ]
