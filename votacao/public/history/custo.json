@@ -1,41 +1,6 @@
 {
- "gerado_em": "2026-10-24T11:17:27.658384-03:00",
+ "gerado_em": "2026-10-24T11:47:55.830510-03:00",
  "rodadas": [
-  {
-   "run_id": "36932894464",
-   "quando": "2026-10-01T19:16:12.115606-03:00",
-   "status": "ok",
-   "custo_brl": 1.82,
-   "custo_usd": 0.364527,
-   "calls": 50,
-   "tok_in": 503952,
-   "tok_out": 4605,
-   "novos": 14,
-   "candidatos": 236,
-   "ativos": 8155,
-   "descartados": 7733,
-   "sundek_usd": 0.289022,
-   "ville_usd": 0.075505,
-   "etapas": {
-    "sundek:brand": 0.017382,
-    "sundek:classify_tipo": 0.017043,
-    "sundek:color": 0.007057,
-    "sundek:listra": 0.16152,
-    "sundek:elastico": 0.039525,
-    "sundek:crop_localizar": 0.00575,
-    "sundek:bolso": 0.031345,
-    "sundek:etiqueta": 0.004983,
-    "sundek:reclassify_gpt4o": 0.004417,
-    "ville:marca": 0.00894,
-    "ville:tartaruga": 0.03496,
-    "ville:crop_localizar": 0.0022,
-    "ville:autenticidade": 0.019887,
-    "ville:cor": 0.001872,
-    "ville:etiqueta": 0.001805,
-    "ville:cordao": 0.001998,
-    "ville:fecho": 0.003842
-   }
-  },
   {
    "run_id": "36937768494",
    "quando": "2026-10-01T20:02:10.564991-03:00",
@@ -5602,6 +5567,35 @@
     "sundek:classify_tipo": 0.005338,
     "sundek:color": 0.003057,
     "sundek:listra": 0.000664
+   }
+  },
+  {
+   "run_id": "40103173960",
+   "quando": "2026-10-24T11:47:48.126854-03:00",
+   "status": "ok",
+   "custo_brl": 0.11,
+   "custo_usd": 0.022002,
+   "calls": 14,
+   "tok_in": 56597,
+   "tok_out": 2575,
+   "novos": 21,
+   "candidatos": 86,
+   "ativos": 6671,
+   "descartados": 6471,
+   "sundek_usd": 0.022002,
+   "ville_usd": 0.0,
+   "etapas": {
+    "sundek:brand": 0.000649,
+    "sundek:classify_tipo": 0.002135,
+    "sundek:color": 0.001022,
+    "sundek:listra": 0.000611,
+    "sundek:elastico": 0.011385,
+    "sundek:crop_fly_localizar": 0.000592,
+    "sundek:botao_fly": 0.001504,
+    "sundek:crop_localizar": 0.000545,
+    "sundek:bolso": 0.002085,
+    "sundek:etiqueta": 6.8e-05,
+    "sundek:desbotado_aprovado": 0.001406
    }
   }
  ]
