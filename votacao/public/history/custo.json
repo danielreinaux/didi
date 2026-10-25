@@ -1,40 +1,6 @@
 {
- "gerado_em": "2026-10-25T11:43:55.064566-03:00",
+ "gerado_em": "2026-10-25T12:10:09.280975-03:00",
  "rodadas": [
-  {
-   "run_id": "37129642326",
-   "quando": "2026-10-03T11:37:59.484319-03:00",
-   "status": "ok",
-   "custo_brl": 4.01,
-   "custo_usd": 0.80263,
-   "calls": 102,
-   "tok_in": 1077984,
-   "tok_out": 10055,
-   "novos": 31,
-   "candidatos": 243,
-   "ativos": 8172,
-   "descartados": 7749,
-   "sundek_usd": 0.763204,
-   "ville_usd": 0.039426,
-   "etapas": {
-    "sundek:brand": 0.040593,
-    "sundek:classify_tipo": 0.031732,
-    "sundek:color": 0.02203,
-    "sundek:listra": 0.423533,
-    "sundek:elastico": 0.104105,
-    "sundek:crop_localizar": 0.014554,
-    "sundek:bolso": 0.07272,
-    "sundek:etiqueta": 0.012622,
-    "sundek:brand_4o_recheck": 0.014293,
-    "sundek:reclassify_gpt4o": 0.027022,
-    "ville:marca": 0.006258,
-    "ville:tartaruga": 0.023588,
-    "ville:cor": 0.001868,
-    "ville:etiqueta": 0.001803,
-    "ville:cordao": 0.002002,
-    "ville:fecho": 0.003908
-   }
-  },
   {
    "run_id": "37131322559",
    "quando": "2026-10-03T12:04:00.249333-03:00",
@@ -5543,6 +5509,36 @@
     "sundek:color": 0.005107,
     "sundek:listra": 0.001193,
     "sundek:elastico": 0.023223
+   }
+  },
+  {
+   "run_id": "40204651664",
+   "quando": "2026-10-25T12:10:01.516422-03:00",
+   "status": "ok",
+   "custo_brl": 0.55,
+   "custo_usd": 0.109866,
+   "calls": 54,
+   "tok_in": 246197,
+   "tok_out": 13242,
+   "novos": 37,
+   "candidatos": 87,
+   "ativos": 6760,
+   "descartados": 6559,
+   "sundek_usd": 0.109866,
+   "ville_usd": 0.0,
+   "etapas": {
+    "sundek:brand": 0.005707,
+    "sundek:classify_tipo": 0.014944,
+    "sundek:color": 0.007143,
+    "sundek:listra": 0.003837,
+    "sundek:elastico": 0.069575,
+    "sundek:velcro_fly": 0.002618,
+    "sundek:crop_fly_localizar": 0.000562,
+    "sundek:botao_fly": 0.001463,
+    "sundek:crop_localizar": 0.000533,
+    "sundek:bolso": 0.00214,
+    "sundek:etiqueta": 6.8e-05,
+    "sundek:desbotado_aprovado": 0.001276
    }
   }
  ]
