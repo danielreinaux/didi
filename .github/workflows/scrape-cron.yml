@@ -1,18 +1,20 @@
 name: Scrape + Classify (Sundek + Ville)
 
 # Horários em UTC. Brasil = UTC-3.
-# Cadência: a cada 40 min, das 07:00 às 19:40 BRT (a última do dia é 19:40 — a próxima
-# do ritmo cairia 20:20, já fora da janela). Cron não expressa "40 em 40" numa linha só
-# (40 não divide 60), então são 3 linhas agrupadas por minuto; o efeito é um ritmo
-# uniforme de 40 min. Todos os dias. Horários BRT que dispara:
-#   07:00 07:40 08:20 09:00 09:40 10:20 11:00 11:40 12:20 13:00
-#   13:40 14:20 15:00 15:40 16:20 17:00 17:40 18:20 19:00 19:40   (20 rodadas/dia)
+# Cadência (26/10/2026): a cada 5 min das 07:00 às 19:55 BRT. Uma rodada leva ~8-12 min e só
+# roda UMA por vez (concurrency do workflow abaixo: a pendente mais nova substitui as outras),
+# então na prática as rodadas emendam uma na outra (~1 a cada 10 min). O agendador do GitHub
+# perde/atrasa disparos — por isso o */5: sobram tentativas para não ficar buraco.
 on:
   schedule:
-    - cron: '0 10,12,14,16,18,20,22 * * *'   # :00 das horas ímpares BRT (07,09,11,13,15,17,19h)
-    - cron: '40 10,12,14,16,18,20,22 * * *'  # :40 das horas ímpares BRT (07:40 … 19:40)
-    - cron: '20 11,13,15,17,19,21 * * *'     # :20 das horas pares BRT (08:20 … 18:20)
+    - cron: '*/5 10-22 * * *'   # 07:00–19:55 BRT
   workflow_dispatch:        # permite disparar manual também
+
+# Uma rodada por vez no repositório inteiro: disparos novos esperam (só o mais novo fica na
+# fila) em vez de rodar em paralelo e cada um fazer seu deploy.
+concurrency:
+  group: scrape-cron
+  cancel-in-progress: false
 
 permissions:
   contents: write            # pra commitar os JSONs de dados de volta no repo
@@ -41,14 +43,23 @@ jobs:
           python-version: '3.12'
           cache: 'pip'
 
+      - name: Cache do Chromium (Playwright)
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('requirements.txt') }}
+
       - name: Install deps
         run: |
           pip install -r requirements.txt
           playwright install --with-deps chromium
 
+      # Rodando a cada ~10 min, os 30 mais novos do catálogo cobrem os anúncios novos
+      # (eram 60 quando rodava a cada 40 min).
       - name: Scrape Sundek
         env:
           HEADLESS: 'true'
+          MAX_ITEMS: '30'
         run: python -m src.scrape.sundek
 
       - name: Classify Sundek
@@ -65,11 +76,16 @@ jobs:
         if: always()
         env:
           HEADLESS: 'true'
-        run: python -m src.scrape.verifica_vendidos --max 80
+        run: python -m src.scrape.verifica_vendidos --max 25
 
       - name: Build analise.html
         if: always()
         run: |
+          # 1x por hora (rodada que começa nos primeiros 15 min da hora) ou disparo manual:
+          # são 2 cópias de 4 MB commitadas a cada vez.
+          if [ "$(date -u +%-M)" -ge 15 ] && [ "${{ github.event_name }}" != "workflow_dispatch" ]; then
+            echo "analise.html: só na rodada do começo da hora"; exit 0
+          fi
           python -m src.build.analise
           # Copia o analise.html fresco pra pasta publicada (antes isso era feito
           # dentro do passo de deploy, que foi removido — o deploy agora é único, no
@@ -263,17 +279,30 @@ jobs:
           # Token do próprio Actions — o history.py usa pra ler status + link dos
           # logs de cada job do run (rota /history). Precisa de `actions: read`.
           GH_TOKEN: ${{ github.token }}
-        run: python -m src.build.history
+        run: |
+          # produtos.json (busca global do /history, ~67 MB) só 1x por hora ou no manual.
+          if [ "$(date -u +%-M)" -lt 15 ] || [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            export HISTORY_PRODUTOS=1
+          else
+            export HISTORY_PRODUTOS=0
+          fi
+          python -m src.build.history
 
       # Commita o snapshot pra ele persistir no repo (dev local + próxima rodada leem
       # o index de lá). O deploy abaixo publica o working-tree, então mesmo sem commit
       # o Vercel já subiria; o commit é pra durar.
       - name: Commit do snapshot do histórico + items.json
+        id: commit_history
         if: always()
         run: |
           git config user.name "Didi Bot"
           git config user.email "bot@didi.local"
           git add -A votacao/public/history votacao/public/items.json
+          if git diff --cached --quiet -- votacao/public/items.json; then
+            echo "items_mudou=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "items_mudou=true" >> "$GITHUB_OUTPUT"
+          fi
           git diff --cached --quiet && echo "nada a commitar" && exit 0
           git commit -m "data: history+items $(date -u +'%Y-%m-%d %H:%M UTC')"
           for i in 1 2 3 4 5; do
@@ -295,6 +324,12 @@ jobs:
           VERCEL_ORG_ID: team_m72m6r8zJFJfCmPq0cUZrGbt
           VERCEL_PROJECT_ID: prj_FljhhdpJqaicpJ6ywAOfurCawmkQ
         run: |
+          # Com rodadas a cada ~10 min: deploy só quando a lista do app (items.json) mudou,
+          # 1x por hora (pro /history) ou no disparo manual — o plano da Vercel limita deploys/dia.
+          if [ "${{ steps.commit_history.outputs.items_mudou }}" != "true" ] \
+             && [ "$(date -u +%-M)" -ge 15 ] && [ "${{ github.event_name }}" != "workflow_dispatch" ]; then
+            echo "items.json igual e fora do começo da hora — sem deploy"; exit 0
+          fi
           cd votacao
           npx vercel --prod --token="$VERCEL_TOKEN" --yes
           # ↑ a env var ainda é VERCEL_TOKEN porque é o nome que a CLI espera;

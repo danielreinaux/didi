@@ -638,7 +638,8 @@ def snapshot(max_runs: int = MAX_RUNS_INDEX) -> None:
     resumos.append(_resumo_index(snap))
     index = _reescrever_index(resumos, max_runs)
     _prune_orfaos({r["run_id"] for r in index})
-    n_prod = _build_produtos()
+    # HISTORY_PRODUTOS=0: pula o índice global (~67 MB) — o cron só refaz 1x por hora.
+    n_prod = _build_produtos() if os.environ.get("HISTORY_PRODUTOS", "1") != "0" else -1
     n_custo = _build_custo()
 
     t = snap["metricas"]["total"]
@@ -699,7 +700,8 @@ def backfill(n: int, clean: bool, max_runs: int | None = None) -> None:
 
     index = _reescrever_index(resumos, cap)
     _prune_orfaos({r["run_id"] for r in index})
-    n_prod = _build_produtos()
+    # HISTORY_PRODUTOS=0: pula o índice global (~67 MB) — o cron só refaz 1x por hora.
+    n_prod = _build_produtos() if os.environ.get("HISTORY_PRODUTOS", "1") != "0" else -1
     print(f"\nhistory/backfill OK -> {len(index)} rodadas em {OUT_DIR}")
     print(f"busca global -> {n_prod} produtos em produtos.json")
 
