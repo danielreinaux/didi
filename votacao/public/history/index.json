@@ -1,5 +1,46 @@
 [
  {
+  "run_id": "40364299744",
+  "fonte": "deploy",
+  "quando": "2026-10-26T14:20:10.693562-03:00",
+  "marcas": [
+   "sundek"
+  ],
+  "run_url": "https://github.com/danielreinaux/didi/actions/runs/40364299744",
+  "status": "ok",
+  "jobs": [
+   {
+    "name": "ville",
+    "conclusion": "skipped",
+    "url": "https://github.com/danielreinaux/didi/actions/runs/40364299744/job/121717717462"
+   },
+   {
+    "name": "sundek",
+    "conclusion": "success",
+    "url": "https://github.com/danielreinaux/didi/actions/runs/40364299744/job/121717718225"
+   },
+   {
+    "name": "deploy",
+    "conclusion": null,
+    "url": "https://github.com/danielreinaux/didi/actions/runs/40364299744/job/121729225478"
+   }
+  ],
+  "resumo": {
+   "candidatos": 92,
+   "compraveis": 71,
+   "barganha": 21,
+   "descartados": 6609,
+   "nao_classificados": 114,
+   "novos": 34,
+   "ativos": 6815,
+   "custo_usd": 0.08741,
+   "custo_brl": 0.44,
+   "tok_in": 183205,
+   "tok_out": 6608,
+   "calls": 42
+  }
+ },
+ {
   "run_id": "40358265406",
   "fonte": "deploy",
   "quando": "2026-10-26T13:32:50.426010-03:00",
@@ -8286,48 +8327,6 @@
    "tok_in": 830069,
    "tok_out": 7225,
    "calls": 81
-  }
- },
- {
-  "run_id": "37213199410",
-  "fonte": "deploy",
-  "quando": "2026-10-04T12:38:53.778093-03:00",
-  "marcas": [
-   "sundek",
-   "vilebrequin"
-  ],
-  "run_url": "https://github.com/danielreinaux/didi/actions/runs/37213199410",
-  "status": "ok",
-  "jobs": [
-   {
-    "name": "ville",
-    "conclusion": "success",
-    "url": "https://github.com/danielreinaux/didi/actions/runs/37213199410/job/111468356035"
-   },
-   {
-    "name": "sundek",
-    "conclusion": "success",
-    "url": "https://github.com/danielreinaux/didi/actions/runs/37213199410/job/111468356162"
-   },
-   {
-    "name": "deploy",
-    "conclusion": null,
-    "url": "https://github.com/danielreinaux/didi/actions/runs/37213199410/job/111470034474"
-   }
-  ],
-  "resumo": {
-   "candidatos": 237,
-   "compraveis": 164,
-   "barganha": 73,
-   "descartados": 7751,
-   "nao_classificados": 180,
-   "novos": 67,
-   "ativos": 8168,
-   "custo_usd": 0.542859,
-   "custo_brl": 2.71,
-   "tok_in": 721564,
-   "tok_out": 6712,
-   "calls": 66
   }
  }
 ]
