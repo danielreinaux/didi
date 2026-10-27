@@ -93,11 +93,16 @@ def _negociacao(base: float | None, teto: float, ratio: float | None) -> dict:
             "oferta": oferta,
             "msg": f"💰 Ofereça €{oferta} (pedem €{pedem}). Se recusar, ainda vale pagar €{pedem}.",
         }
-    alvo = int(round(teto)) if teto else None
+    # O teto vale pro preço COM a taxa do Vinted (5% + €0,70); a oferta é sobre o preço base.
+    # Ex.: pedem €12 (€13,30 com taxa), teto €13 → ofereça €11 (€12,25 com taxa).
+    alvo = int(math.floor((teto - 0.70) / 1.05)) if teto and teto > 1.75 else None
+    if alvo is not None and alvo >= base:
+        alvo = max(1, math.ceil(base) - 1)
     return {
         "modo": "negociar",
         "oferta": alvo,
-        "msg": (f"🗨️ Pedem €{pedem}, vale até €{alvo}. Ofereça €{alvo} ou pergunte: \"¿Me lo dejas en {alvo} €?\""
+        "msg": (f"🗨️ Pedem €{pedem} — só vale até €{alvo} (com a taxa, ≈ €{_eur(alvo * 1.05 + 0.70)}). "
+                f"Ofereça €{alvo} ou pergunte: \"¿Me lo dejas en {alvo} €?\""
                 if alvo else f"🗨️ Pedem €{pedem}. Peça desconto: \"¿Cuál es tu mejor precio?\""),
     }
 
