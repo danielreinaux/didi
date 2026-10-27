@@ -118,6 +118,17 @@ IA_ROTAS = {
     "sundek:etiqueta": {"to": "openrouter:qwen/qwen3.7-flash", **_SEM_RACIOCINIO},
 }
 
+# Modelo da OpenAI por agente, para agente SEM rota no OpenRouter (src/utils/llm.py).
+# Na família gpt-5/6 o llm.py ajusta os parâmetros; effort = reasoning_effort; detail força o
+# detail das fotos. Agente fora daqui usa o `model` que o módulo passa (gpt-4o / gpt-4o-mini).
+IA_OPENAI = {
+    # elástico (27/10/2026): gpt-6.1-sol em high + raciocínio médio. No gabarito empata com o
+    # gpt-4o (com elástico 55/55, sem 25/26), mas acerta boardshorts clássicos que o 4o ainda
+    # lia "com elástico" no app (Daniel: 10533955620 branco, 9680308686 azul). Não sai da API em
+    # 14/01/2027. ~US$ 0,016/item (gpt-4o ~0,006). Em low ou com raciocínio baixo perde 6 "com".
+    "sundek:elastico": {"model": "gpt-6.1-sol", "detail": "high", "effort": "medium"},
+}
+
 # App (items.json) e e-mail só com anúncios RECENTES (Daniel, 26/10/2026): os 12 do e-mail de
 # 21/10/2026 15:50 BRT + o que apareceu pela 1ª vez depois dele. O acervo antigo continua
 # classificado (e no /history), só não aparece no app nem é avisado de novo — o ledger de

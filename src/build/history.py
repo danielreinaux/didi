@@ -47,6 +47,7 @@ OUT_DIR = ROOT / "votacao" / "public" / "history"
 PRECOS = {
     "gpt-4o-mini": {"in": 0.15, "out": 0.60},
     "gpt-4o":      {"in": 2.50, "out": 10.00},
+    "gpt-6.1-sol": {"in": 2.00, "out": 10.00},  # elástico (config.IA_OPENAI)
     # OpenAI vigentes (out/2026) — config.IA_OPENAI. Tabela padrão, sem cache nem flex (teto).
     "gpt-6-luna":    {"in": 0.10, "out": 0.50},
     "gpt-6-sol":     {"in": 2.00, "out": 10.00},

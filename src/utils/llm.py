@@ -27,7 +27,7 @@ import threading
 
 from openai import OpenAI
 
-from ..config import IA_ROTAS
+from ..config import IA_OPENAI, IA_ROTAS
 
 _lock = threading.Lock()
 _clients: dict[str, OpenAI] = {}
@@ -94,6 +94,45 @@ def _limpa_json(txt: str) -> str:
             pass
     j = t.rfind("}")
     return t[i:j + 1] if i != -1 and j > i else t
+
+
+_FAMILIA_RACIOCINIO = ("gpt-5", "gpt-6", "o1", "o3", "o4")
+
+
+def _forcar_detail(messages: list, detail: str) -> list:
+    msgs = []
+    for m in messages:
+        if isinstance(m.get("content"), list):
+            m = {**m, "content": [
+                {**p, "image_url": {**p["image_url"], "detail": detail}}
+                if p.get("type") == "image_url" else p for p in m["content"]]}
+        msgs.append(m)
+    return msgs
+
+
+def _chamar_openai(agente: str, kw: dict):
+    """Chamada direta na OpenAI. config.IA_OPENAI[agente] troca o modelo (ex.: gpt-6.1-sol no
+    elástico) e força o detail das fotos; na família gpt-5/6 ajusta os parâmetros
+    (max_completion_tokens, sem temperature, reasoning_effort)."""
+    c = IA_OPENAI.get(agente) or {}
+    kw = dict(kw)
+    if c.get("model"):
+        kw["model"] = c["model"]
+    if c.get("detail"):
+        kw["messages"] = _forcar_detail(kw["messages"], c["detail"])
+    modelo = kw.get("model") or ""
+    if modelo.startswith(_FAMILIA_RACIOCINIO):
+        esforco = c.get("effort", "none")
+        mt = kw.pop("max_tokens", None) or kw.pop("max_completion_tokens", None) or 800
+        # o raciocínio conta nos tokens de saída: folga grande quando o esforço não é "none"
+        kw["max_completion_tokens"] = max(mt, 1000 if esforco == "none" else 8000)
+        kw.pop("temperature", None)
+        kw["reasoning_effort"] = esforco
+    resp = _client("openai").chat.completions.create(**kw)
+    resp.model = modelo or resp.model
+    if resp.choices:
+        resp.choices[0].message.content = _limpa_json(resp.choices[0].message.content or "")
+    return resp
 
 
 def _chamar_rota(to: str, opts: dict, kw: dict):
@@ -167,9 +206,8 @@ def create(agente: str, fallback: bool = True, **kw):
                 erro = e
         if not fallback:
             raise erro
-        print(f"  [llm] {agente} via {to} falhou ({str(erro)[:120]}) → fallback OpenAI {kw.get('model')}")
+        print(f"  [llm] {agente} via {to} falhou ({str(erro)[:120]}) → fallback OpenAI "
+              f"{(IA_OPENAI.get(agente) or {}).get('model') or kw.get('model')}")
     elif not fallback:
         raise RuntimeError(f"{agente}: sem rota ativa (OPENROUTER_API_KEY?)")
-    resp = _client("openai").chat.completions.create(**kw)
-    resp.model = kw.get("model") or resp.model
-    return resp
+    return _chamar_openai(agente, kw)

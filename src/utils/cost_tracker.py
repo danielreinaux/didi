@@ -10,6 +10,7 @@ from collections import defaultdict
 PRECOS = {
     "gpt-4o-mini": {"in": 0.15, "out": 0.60},
     "gpt-4o":      {"in": 2.50, "out": 10.00},
+    "gpt-6.1-sol": {"in": 2.00, "out": 10.00},  # elástico (config.IA_OPENAI)
     # OpenRouter (out/2026) — rotas de config.IA_ROTAS (o tracker recebe o modelo REAL da rota)
     "google/gemini-2.5-flash-lite": {"in": 0.10, "out": 0.40},
     "google/gemini-3.5-flash-lite": {"in": 0.30, "out": 2.50},
