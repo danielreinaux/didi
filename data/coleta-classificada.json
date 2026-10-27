@@ -1154428,14 +1154428,16 @@
       }
     },
     "elastico": {
-      "pensamento_inspecao": "Foto 1 mostra o cós e o fly frontal; foto 2 mostra a traseira do cós.",
-      "pensamento_cos": "A traseira do cós parece ter um leve franzido, indicando possível elástico parcial. A frente está lisa.",
-      "pensamento_fly": "Cordão branco visível passando por ilhós, sem botão circular nem velcro no fly.",
-      "pensamento_prioridade": "Sem botão/velcro; há cordão funcional → tipo=cordao. Traseira com leve franzido → tem_elastico=true.",
-      "pensamento_self_check": "Confirmei que o cordão é funcional e não há botão/velcro. Franzido na traseira é regular, indicando elástico.",
-      "tem_elastico": true,
+      "pensamento_inspecao": "Fotos 1 e 2 mostram o cós; foto 1 mostra o fly; foto 3 mostra o bolso traseiro; foto 4 mostra o interior do cós.",
+      "pensamento_cos": "Cós largo e estruturado, sem franzido denso e regular nas vistas frontal, traseira e interna.",
+      "pensamento_fly": "Cordão funcional passando por ilhós; nenhum botão ou velcro visível no fly.",
+      "pensamento_prioridade": "Cordão funcional, sem botão ou velcro visível: fechamento por cordão.",
+      "pensamento_self_check": "Rugas do nylon não foram consideradas elástico; ilhós e detalhes do bolso não foram considerados botões de fly.",
+      "tem_elastico": false,
+      "foto_elastico": null,
       "tipo_fechamento": "cordao",
-      "evidencia": "Cordão funcional no fly e leve franzido na traseira do cós indicando elástico parcial."
+      "evidencia": "Cós plano e estruturado nas fotos 1, 2 e 4, sem franzido de elástico. Cordão frontal por ilhós, sem botão ou velcro visível no fly.",
+      "versao": "gpt-6.1-sol 27/10"
     },
     "etiqueta": {
       "tem_etiqueta": false,
@@ -1154445,25 +1154447,11 @@
     "ultimo_visto": "2026-08-16T23:01:21.711892+00:00",
     "status": "ativo",
     "score": {
-      "score": 72,
-      "teto": 13,
-      "preco_num": 4.9,
-      "decisao": "compravel",
-      "motivo": "elástico + anúncio ≤ €10",
-      "negociacao": {
-        "modo": "fechar",
-        "oferta": 3,
-        "msg": "💰 Oferecer €3 — \"por 3 aceita?\". Se recusar, ainda vale o preço pedido."
-      },
-      "breakdown": {
-        "tier": 8,
-        "tamanho": 4,
-        "elastico": 30,
-        "etiqueta": 0,
-        "listra_bonus": 0,
-        "preco": 30,
-        "ratio_preco_teto": 0.38
-      }
+      "score": 0,
+      "teto": 0,
+      "decisao": "descartado",
+      "motivo_exclusao": "sem_elastico_cor_fraca",
+      "breakdown": {}
     },
     "verificado_em": "2026-10-26T23:26:27.082864+00:00",
     "preco_inicial": "15,00 €"
@@ -1877209,10 +1877197,15 @@
       }
     },
     "elastico": {
+      "pensamento_inspecao": "Foto 1 mostra frente e fly; foto 2, traseira; foto 3, interior do cós.",
+      "pensamento_cos": "Franzido denso e regular no cós, nitidamente visível na foto 3.",
+      "pensamento_fly": "Cordão funcional passando por ilhós frontais; nenhum botão ou velcro visível no fly.",
+      "pensamento_prioridade": "Cordão nomeia o fechamento; elástico registrado separadamente.",
+      "pensamento_self_check": "Franzido regular confirmado; metais frontais são ilhós do cordão, não botões.",
       "tem_elastico": true,
-      "foto_elastico": 1,
+      "foto_elastico": 3,
       "tipo_fechamento": "cordao",
-      "evidencia": "Cós com franzido regular indicando elástico e cordão funcional visível na frente.",
+      "evidencia": "Cós elástico com franzido regular e cordão funcional frontal; sem botão ou velcro visível no fly.",
       "botao_fly": {
         "tem_botao": false,
         "tipo": "nenhum",
@@ -1877220,7 +1877213,7 @@
         "evidencia": "Apenas ilhós do cordão no centro, sem botão ou snap de fechamento",
         "_crop_modo": "faixa_central"
       },
-      "versao": "v3-22/10"
+      "versao": "gpt-6.1-sol 27/10"
     },
     "etiqueta": {
       "tem_etiqueta": false,
@@ -1892583,10 +1892576,15 @@
       }
     },
     "elastico": {
-      "tem_elastico": true,
-      "foto_elastico": 2,
+      "pensamento_inspecao": "Foto 1 mostra cós e fly frontal; foto 2 mostra o cós traseiro.",
+      "pensamento_cos": "Cós estruturado e relativamente reto nas duas fotos, sem franzido denso e regular visível.",
+      "pensamento_fly": "Cordão branco atado passando por ilhós; nenhum botão ou velcro visível no fly.",
+      "pensamento_prioridade": "Cordão funcional visível, sem botão ou velcro identificado: fechamento por cordão.",
+      "pensamento_self_check": "As ondulações do nylon não demonstram elástico; os metais atravessados pelo cordão são ilhós.",
+      "tem_elastico": false,
+      "foto_elastico": null,
       "tipo_fechamento": "cordao",
-      "evidencia": "Cós franzido em acordeão (elástico) + cordão funcional na frente",
+      "evidencia": "Cós estruturado sem franzido regular de elástico; cordão frontal por ilhós, sem botão ou velcro visível.",
       "botao_fly": {
         "tem_botao": false,
         "tipo": "nenhum",
@@ -1892594,7 +1892592,7 @@
         "evidencia": "apenas ilhós com cordão no centro da cintura",
         "_crop_modo": "faixa_central"
       },
-      "versao": "v3-22/10"
+      "versao": "gpt-6.1-sol 27/10"
     },
     "etiqueta": {
       "tem_etiqueta": false,
@@ -1892604,25 +1892602,11 @@
     "ultimo_visto": "2026-10-23T00:12:28.580453+00:00",
     "status": "ativo",
     "score": {
-      "score": 81,
-      "teto": 25,
-      "preco_num": 16.45,
-      "decisao": "compravel",
-      "motivo": "",
-      "negociacao": {
-        "modo": "fechar",
-        "oferta": 12,
-        "msg": "💰 Oferecer €12 — \"por 12 aceita?\". Se recusar, ainda vale o preço pedido."
-      },
-      "breakdown": {
-        "tier": 15,
-        "tamanho": 16,
-        "elastico": 30,
-        "etiqueta": 0,
-        "listra_bonus": 0,
-        "preco": 20,
-        "ratio_preco_teto": 0.66
-      }
+      "score": 0,
+      "teto": 0,
+      "decisao": "descartado",
+      "motivo_exclusao": "sem_elastico_cor_fraca",
+      "breakdown": {}
     },
     "verificado_em": "2026-10-26T23:26:27.082864+00:00"
   },
@@ -1896637,17 +1896621,23 @@
       }
     },
     "elastico": {
+      "pensamento_inspecao": "Fotos 1 e 2 mostram traseira e frente; foto 3 mostra o interior do cós.",
+      "pensamento_cos": "Na foto 3, a faixa inferior do cós apresenta franzido denso e regular.",
+      "pensamento_fly": "Foto 2: cordão funcional passando por ilhós, sem botão ou velcro visível.",
+      "pensamento_prioridade": "Cordão funcional identificado; elástico registrado separadamente.",
+      "pensamento_self_check": "Ilhós frontais e metal do bolso traseiro não foram classificados como botão de fly.",
       "tem_elastico": true,
-      "foto_elastico": 2,
+      "foto_elastico": 3,
       "tipo_fechamento": "cordao",
-      "evidencia": "Foto 2 mostra cós franzido em acordeão (elástico) e cordão funcional.",
+      "evidencia": "Foto 3 mostra franzido regular no cós; foto 2 mostra cordão por ilhós, sem botão ou velcro visível no fly.",
       "botao_fly": {
         "tem_botao": false,
         "tipo": "nenhum",
         "o_que_vi_no_centro": "Apenas ilhós metálicos com o cordão passando na cintura, sem botão sólido na braguilha.",
         "evidencia": "ilhós com cordão no centro, sem botão de pressão",
         "_crop_modo": "faixa_central"
-      }
+      },
+      "versao": "gpt-6.1-sol 27/10"
     },
     "etiqueta": {
       "tem_etiqueta": false,
@@ -1897137,17 +1897127,23 @@
       }
     },
     "elastico": {
+      "pensamento_inspecao": "Foto 1 mostra frente e cordão; fotos 2 e 3 mostram a traseira; foto 4 mostra o interior do cós.",
+      "pensamento_cos": "Franzido denso e regular no cós, claramente visível na foto 2.",
+      "pensamento_fly": "Cordão branco atado na frente; nenhum botão ou velcro visível no fly.",
+      "pensamento_prioridade": "Cordão funcional nomeia o fechamento; o elástico é registrado separadamente.",
+      "pensamento_self_check": "Franzido do cós distinto das rugas do nylon; ilhó do bolso traseiro não é botão de fly.",
       "tem_elastico": true,
-      "foto_elastico": 1,
+      "foto_elastico": 2,
       "tipo_fechamento": "cordao",
-      "evidencia": "Cós com franzido regular visível (elástico) e cordão funcional na frente.",
+      "evidencia": "Cós com elástico nitidamente franzido na foto 2 e cordão funcional na foto 1; sem botão ou velcro visível no fly.",
       "botao_fly": {
         "tem_botao": false,
         "tipo": "nenhum",
         "o_que_vi_no_centro": "cós elástico com cordão ajustável, sem botão, snap ou velcro na frente",
         "evidencia": "cós elástico sem botão ou snap central",
         "_crop_modo": "faixa_central"
-      }
+      },
+      "versao": "gpt-6.1-sol 27/10"
     },
     "etiqueta": {
       "tem_etiqueta": false,
@@ -1903277,17 +1903273,23 @@
       }
     },
     "elastico": {
-      "tem_elastico": true,
-      "foto_elastico": 1,
+      "pensamento_inspecao": "Foto 1 mostra cós e abertura frontal; foto 2 mostra o cós traseiro.",
+      "pensamento_cos": "Cós plano e estruturado nas duas fotos, sem franzido denso e regular.",
+      "pensamento_fly": "Cordão branco e ilhós metálicos na frente; nenhum botão ou velcro visível no fly.",
+      "pensamento_prioridade": "Fechamento identificado como cordão, sem botão ou velcro visível.",
+      "pensamento_self_check": "Rugas do nylon não foram consideradas elástico; ilhós frontais e metal do bolso traseiro não foram considerados botões de fly.",
+      "tem_elastico": false,
+      "foto_elastico": null,
       "tipo_fechamento": "cordao",
-      "evidencia": "Cós com franzido regular visível e cordão funcional presente.",
+      "evidencia": "As duas fotos mostram cós estruturado sem franzido de elástico; cordão frontal por ilhós, sem botão ou velcro visível.",
       "botao_fly": {
         "tem_botao": false,
         "tipo": "nenhum",
         "o_que_vi_no_centro": "Apenas ilhós metálicos com o cordão passando por eles, sem nenhum botão ou snap.",
         "evidencia": "presenca de ilhoes com cordao e ausencia de botao",
         "_crop_modo": "faixa_central"
-      }
+      },
+      "versao": "gpt-6.1-sol 27/10"
     },
     "etiqueta": {
       "tem_etiqueta": false,
@@ -1903297,25 +1903299,11 @@
     "ultimo_visto": "2026-10-23T23:58:14.924707+00:00",
     "status": "ativo",
     "score": {
-      "score": 74,
-      "teto": 18,
-      "preco_num": 10.15,
-      "decisao": "compravel",
-      "motivo": "elástico + anúncio ≤ €10",
-      "negociacao": {
-        "modo": "fechar",
-        "oferta": 7,
-        "msg": "💰 Oferecer €7 — \"por 7 aceita?\". Se recusar, ainda vale o preço pedido."
-      },
-      "breakdown": {
-        "tier": 8,
-        "tamanho": 16,
-        "elastico": 30,
-        "etiqueta": 0,
-        "listra_bonus": 0,
-        "preco": 20,
-        "ratio_preco_teto": 0.56
-      }
+      "score": 0,
+      "teto": 0,
+      "decisao": "descartado",
+      "motivo_exclusao": "sem_elastico_cor_fraca",
+      "breakdown": {}
     },
     "verificado_em": "2026-10-26T22:58:50.097456+00:00"
   },
@@ -1908974,17 +1908962,23 @@
       }
     },
     "elastico": {
+      "pensamento_inspecao": "Fotos 1 e 2 mostram o cós frontal e traseiro; foto 3 mostra o cós por dentro. O frontal aparece na foto 1.",
+      "pensamento_cos": "A foto 3 mostra franzido regular e comprimido nas bordas do cós, compatível com elástico.",
+      "pensamento_fly": "Cordão funcional passando por dois ilhós frontais; nenhum botão ou velcro visível no fly.",
+      "pensamento_prioridade": "Sem botão ou velcro visível, o cordão determina o fechamento, independentemente do elástico.",
+      "pensamento_self_check": "Ilhós frontais e ilhó do bolso traseiro não são botões; o franzido do cós é distinto das rugas soltas do nylon.",
       "tem_elastico": true,
-      "foto_elastico": 1,
+      "foto_elastico": 3,
       "tipo_fechamento": "cordao",
-      "evidencia": "Foto 1: cós franzido em acordeão (elástico) + cordão funcional",
+      "evidencia": "Foto 3 mostra cós com franzido regular de elástico; foto 1 mostra cordão funcional por ilhós, sem botão ou velcro visível no fly.",
       "botao_fly": {
         "tem_botao": false,
         "tipo": "nenhum",
         "o_que_vi_no_centro": "apenas dois ilhóis por onde passam os cordões de amarrar, sem botão ou snap de fechamento",
         "evidencia": "ilhóis com cordão no centro, sem botão",
         "_crop_modo": "faixa_central"
-      }
+      },
+      "versao": "gpt-6.1-sol 27/10"
     },
     "etiqueta": {
       "tem_etiqueta": false,
@@ -1918520,17 +1918514,23 @@
       }
     },
     "elastico": {
+      "pensamento_inspecao": "Foto 1: frente e cós; foto 2: interior do cós e cordão; foto 3: traseira e bolso.",
+      "pensamento_cos": "Franzido denso e regular no cós, nítido na foto 2 e também visível nas fotos 1 e 3.",
+      "pensamento_fly": "Cordão funcional passando por ilhós frontais; nenhum botão ou velcro visível no fly.",
+      "pensamento_prioridade": "Cordão funcional com elástico: tipo cordao e tem_elastico=true.",
+      "pensamento_self_check": "Franzido do cós distinto das rugas do nylon; ilhós frontais e metal do bolso traseiro não são botões de fly.",
       "tem_elastico": true,
-      "foto_elastico": 1,
+      "foto_elastico": 2,
       "tipo_fechamento": "cordao",
-      "evidencia": "Cós franzido em ondas regulares (elástico) e cordão visível na frente",
+      "evidencia": "Cós com franzido regular de elástico e cordão funcional por ilhós; sem botão ou velcro visível no fly.",
       "botao_fly": {
         "tem_botao": false,
         "tipo": "nenhum",
         "o_que_vi_no_centro": "dois ilhós metálicos com furos no cós frontal, por onde passa o cordão de ajuste",
         "evidencia": "apenas ilhós com cordão na cintura, sem botão ou snap",
         "_crop_modo": "faixa_central"
-      }
+      },
+      "versao": "gpt-6.1-sol 27/10"
     },
     "etiqueta": {
       "tem_etiqueta": false,
@@ -1921030,17 +1921030,23 @@
       }
     },
     "elastico": {
+      "pensamento_inspecao": "Foto 1 mostra a traseira e o cós; foto 2, o bolso traseiro; foto 3, o cós por dentro. O fly não aparece.",
+      "pensamento_cos": "Franzido denso e regular do cós nitidamente visível nas fotos 1 e 3.",
+      "pensamento_fly": "Sem vista frontal para verificar o fly. Nenhum cordão funcional aparece nas fotos.",
+      "pensamento_prioridade": "Classificação pelo mecanismo visível: elástico, sem cordão aparente.",
+      "pensamento_self_check": "O metal da foto 2 é ilhó do bolso traseiro, não botão de fly. O franzido do cós é regular, distinto das rugas do nylon.",
       "tem_elastico": true,
-      "foto_elastico": 1,
+      "foto_elastico": 3,
       "tipo_fechamento": "elastico",
-      "evidencia": "Cós visivelmente franzido em ondas regulares na foto 1, sem cordão ou botão/velcro visível.",
+      "evidencia": "Foto 3 confirma cós elástico com franzido regular. Não há cordão visível; botão ou velcro no fly não podem ser verificados porque a frente não foi fotografada.",
       "botao_fly": {
         "tem_botao": null,
         "tipo": "indefinido",
         "o_que_vi_no_centro": "Fotos mostram apenas a parte traseira, etiqueta interna e bolso traseiro, sem visibilidade da braguilha frontal",
         "evidencia": "A frente central da cintura não está visível nas fotos fornecidas.",
         "_crop_modo": "nao_localizado"
-      }
+      },
+      "versao": "gpt-6.1-sol 27/10"
     },
     "etiqueta": {
       "tem_etiqueta": false,
@@ -1921873,17 +1921879,23 @@
       }
     },
     "elastico": {
-      "tem_elastico": true,
-      "foto_elastico": 1,
+      "pensamento_inspecao": "Foto 1 mostra cós e fly; foto 2, cós traseiro; foto 3, interior do cós.",
+      "pensamento_cos": "Cós estruturado com ondulações soltas, sem franzido denso e regular de elástico.",
+      "pensamento_fly": "Cordão funcional passando por ilhós metálicos; nenhum botão ou velcro visível no fly.",
+      "pensamento_prioridade": "Cordão funcional sem botão ou velcro visível: fechamento por cordão.",
+      "pensamento_self_check": "Ilhós não são botões; rugas do nylon e forro de tela não comprovam elástico.",
+      "tem_elastico": false,
+      "foto_elastico": null,
       "tipo_fechamento": "cordao",
-      "evidencia": "Foto 1: cós franzido em acordeão (elástico) + cordão interno",
+      "evidencia": "Cós estruturado sem franzido regular nas três fotos; cordão por ilhós na frente, sem botão ou velcro visível.",
       "botao_fly": {
         "tem_botao": false,
         "tipo": "nenhum",
         "o_que_vi_no_centro": "dois ilhós metálicos pelos quais passa o cordão de amarrar, sem botão ou snap",
         "evidencia": "apenas ilhós do cordão no centro",
         "_crop_modo": "faixa_central"
-      }
+      },
+      "versao": "gpt-6.1-sol 27/10"
     },
     "etiqueta": {
       "tem_etiqueta": false,
@@ -1921893,25 +1921905,11 @@
     "ultimo_visto": "2026-10-25T23:44:32.401388+00:00",
     "status": "ativo",
     "score": {
-      "score": 100,
-      "teto": 40,
-      "preco_num": 5.95,
-      "decisao": "compravel",
-      "motivo": "elástico + anúncio ≤ €10 (perdoa: tecido_brilhoso, bolso_so_logo_colecao_antiga)",
-      "negociacao": {
-        "modo": "fechar",
-        "oferta": 4,
-        "msg": "💰 Oferecer €4 — \"por 4 aceita?\". Se recusar, ainda vale o preço pedido."
-      },
-      "breakdown": {
-        "tier": 30,
-        "tamanho": 16,
-        "elastico": 30,
-        "etiqueta": 0,
-        "listra_bonus": 0,
-        "preco": 30,
-        "ratio_preco_teto": 0.15
-      }
+      "score": 0,
+      "teto": 0,
+      "decisao": "descartado",
+      "motivo_exclusao": "tecido_brilhoso, bolso_so_logo_colecao_antiga, sem_elastico_cor_fraca",
+      "breakdown": {}
     },
     "verificado_em": "2026-10-26T22:58:50.097456+00:00"
   },
@@ -1923605,17 +1923603,29 @@
       }
     },
     "elastico": {
-      "tem_elastico": true,
-      "foto_elastico": 1,
+      "pensamento_inspecao": "Foto 1 mostra cós e fly frontais; foto 2 mostra cós traseiro e bolso.",
+      "pensamento_cos": "Cós estruturado e plano nas duas fotos, sem franzido denso e regular.",
+      "pensamento_fly": "Cordão funcional passando por ilhós; nenhum botão ou velcro visível no fly.",
+      "pensamento_prioridade": "Cordão funcional sem botão ou velcro visível: fechamento por cordão.",
+      "pensamento_self_check": "As ondulações são do tecido; os metais frontais são ilhós, e o metal traseiro pertence ao bolso.",
+      "tem_elastico": false,
+      "foto_elastico": null,
       "tipo_fechamento": "cordao",
-      "evidencia": "Foto 1: cós franzido em acordeão (elástico) + cordão visível",
+      "evidencia": "Cós reto na frente e atrás, sem elástico visível; cordão por ilhós, sem botão ou velcro visível no fly.",
       "botao_fly": {
         "tem_botao": false,
         "tipo": "nenhum",
         "o_que_vi_no_centro": "Apenas ilhós metálicos com o cordão passando por eles, sem nenhum botão ou snap de fechamento.",
         "evidencia": "presença exclusiva de ilhós com cordão na braguilha",
         "_crop_modo": "faixa_central"
-      }
+      },
+      "velcro_fly": {
+        "tem_velcro": false,
+        "foto_braguilha_aberta": -1,
+        "o_que_vi": "braguilha fechada",
+        "evidencia": "Braguilha fechada sem tira felpuda visível"
+      },
+      "versao": "gpt-6.1-sol 27/10"
     },
     "etiqueta": {
       "tem_etiqueta": false,
@@ -1923625,24 +1923635,20 @@
     "ultimo_visto": "2026-10-27T01:23:12.517139+00:00",
     "status": "ativo",
     "score": {
-      "score": 100,
-      "teto": 45,
+      "score": 65,
+      "teto": 37,
       "preco_num": 10.15,
-      "decisao": "compravel",
-      "motivo": "elástico + anúncio ≤ €10",
-      "negociacao": {
-        "modo": "fechar",
-        "oferta": 7,
-        "msg": "💰 Oferecer €7 — \"por 7 aceita?\". Se recusar, ainda vale o preço pedido."
-      },
+      "decisao": "descartado",
+      "motivo": "sem elástico, Branco acima de €10",
+      "negociacao": {},
       "breakdown": {
         "tier": 30,
         "tamanho": 20,
-        "elastico": 30,
+        "elastico": -15,
         "etiqueta": 0,
         "listra_bonus": 0,
         "preco": 30,
-        "ratio_preco_teto": 0.23
+        "ratio_preco_teto": 0.27
       }
     },
     "verificado_em": "2026-10-26T23:26:27.082864+00:00"
@@ -1927061,17 +1927067,23 @@
       }
     },
     "elastico": {
+      "pensamento_inspecao": "Fotos 1 e 2 mostram traseira e frente; fotos 3 e 4 mostram detalhes internos do cós.",
+      "pensamento_cos": "Franzido regular do cós visível nos detalhes das fotos 3 e 4.",
+      "pensamento_fly": "Cordão funcional passando por ilhós; nenhum botão ou velcro visível no fly.",
+      "pensamento_prioridade": "Fechamento identificado como cordão, com elástico no cós.",
+      "pensamento_self_check": "Ilhós do cordão e detalhe do bolso traseiro não são botões de fly; o franzido está no cós, não apenas no nylon.",
       "tem_elastico": true,
-      "foto_elastico": 2,
+      "foto_elastico": 3,
       "tipo_fechamento": "cordao",
-      "evidencia": "Foto 2: cós franzido em acordeão (elástico) + cordão interno",
+      "evidencia": "Fotos 3 e 4 mostram cós com franzido regular; cordão funcional por ilhós na frente, sem botão ou velcro visível no fly.",
       "botao_fly": {
         "tem_botao": false,
         "tipo": "nenhum",
         "o_que_vi_no_centro": "Apenas ilhós de passagem para o cordão na cintura elástica, sem nenhum botão ou snap de fechamento.",
         "evidencia": "apenas ilhós com cordão no centro",
         "_crop_modo": "faixa_central"
-      }
+      },
+      "versao": "gpt-6.1-sol 27/10"
     },
     "etiqueta": {
       "tem_etiqueta": false,
@@ -1928878,17 +1928890,23 @@
       }
     },
     "elastico": {
+      "pensamento_inspecao": "Fotos 1 e 2 mostram a frente e o cós; foto 3 mostra o interior; fotos 4 e 5 mostram a traseira.",
+      "pensamento_cos": "Franzido regular de elástico claramente visível no cós, especialmente na foto 2.",
+      "pensamento_fly": "Cordão branco atado passando por ilhós; nenhum botão ou velcro visível no fly.",
+      "pensamento_prioridade": "Cordão funcional identifica o fechamento; elástico registrado separadamente.",
+      "pensamento_self_check": "Franzido do cós distinto das rugas do nylon; ilhós frontais e traseiro não são botões de fechamento.",
       "tem_elastico": true,
-      "foto_elastico": 1,
+      "foto_elastico": 2,
       "tipo_fechamento": "cordao",
-      "evidencia": "Cós com franzido regular indicando elástico e cordão funcional visível na frente.",
+      "evidencia": "Foto 2 mostra cós com franzido regular e cordão funcional atado por ilhós, sem botão ou velcro visível no fly.",
       "botao_fly": {
         "tem_botao": false,
         "tipo": "nenhum",
         "o_que_vi_no_centro": "Apenas um ilhós com cordão na cintura, sem botão ou snap na braguilha",
         "evidencia": "existe apenas ilhós com cordão, sem botão ou snap",
         "_crop_modo": "faixa_central"
-      }
+      },
+      "versao": "gpt-6.1-sol 27/10"
     },
     "etiqueta": {
       "tem_etiqueta": true,
