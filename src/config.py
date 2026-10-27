@@ -118,6 +118,16 @@ IA_ROTAS = {
     "sundek:etiqueta": {"to": "openrouter:qwen/qwen3.7-flash", **_SEM_RACIOCINIO},
 }
 
+# App (items.json) e e-mail só com anúncios RECENTES (Daniel, 26/10/2026): os 12 do e-mail de
+# 21/10/2026 15:50 BRT + o que apareceu pela 1ª vez depois dele. O acervo antigo continua
+# classificado (e no /history), só não aparece no app nem é avisado de novo — o ledger de
+# notificados esquece depois de 30 dias e reenviava anúncio de julho/setembro como "novo".
+APP_DESDE = "2026-10-21T18:50:00+00:00"
+APP_TAMBEM_IDS = {
+    "10434663113", "10429799119", "10435012306", "10472979058", "10438420408", "10434556060",
+    "10468818456", "10467275521", "10381859411", "10433650344", "10454531920", "10441774590",
+}
+
 # Listra Sundek — faixa de UMA cor só conta como listra?
 #   "conta"     = regra de jun/2026 (o prompt v3 sozinho).
 #   "nao_conta" = decisão do CLIENTE (out/2026): faixa de UMA cor só na COSTURA LATERAL

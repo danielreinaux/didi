@@ -9,7 +9,7 @@ import argparse
 import json
 from pathlib import Path
 
-from ..config import VILLE_ATIVA
+from ..config import APP_DESDE, APP_TAMBEM_IDS, VILLE_ATIVA
 
 ROOT = Path(__file__).resolve().parent.parent.parent
 DATA = ROOT / "data"
@@ -90,6 +90,14 @@ def _por_que(it: dict) -> str:
     return f"score {s.get('score', 0)}" + (f" (teto €{teto})" if teto else "") + (f": {linha}" if linha else "")
 
 
+def _recente(it: dict) -> bool:
+    """Anúncio do e-mail de 21/10 ou visto pela 1ª vez depois dele (config.APP_DESDE)."""
+    if str(it.get("id") or "") in APP_TAMBEM_IDS:
+        return True
+    datas = [d for d in (it.get("primeiro_visto"), it.get("coletado_em")) if d]
+    return bool(datas) and min(datas) >= APP_DESDE
+
+
 def _carregar(path: Path, marca: str) -> list[dict]:
     if not path.exists():
         return []
@@ -100,6 +108,8 @@ def _carregar(path: Path, marca: str) -> list[dict]:
         if s.get("decisao") not in ("compravel", "medio"):
             continue
         if it.get("status") in ("vendido", "inativo", "removido"):
+            continue
+        if marca == "sundek" and not _recente(it):
             continue
         cor = it.get("cor") if isinstance(it.get("cor"), dict) else {}
         cl = it.get("classificacao") or {}
