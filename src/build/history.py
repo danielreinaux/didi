@@ -532,6 +532,16 @@ def _build_custo() -> int:
     Varre os <run_id>.json já gerados (mesmo padrão do _build_produtos). O `status` vem
     do que o backfill de status preencheu (só nas rodadas com run real).
     """
+    # Rodadas já registradas no custo.json anterior ficam (27/10/2026): com rodadas a cada ~5 min
+    # o index guarda só as últimas MAX_RUNS_INDEX (~1 dia) e os snapshots mais velhos são
+    # apagados — sem isso o /custo perdia o mês. Snapshot presente atualiza a linha da rodada.
+    anteriores: dict[str, dict] = {}
+    try:
+        for r in (_load_json((OUT_DIR / "custo.json").read_text(encoding="utf-8")) or {}).get("rodadas") or []:
+            if isinstance(r, dict) and r.get("run_id"):
+                anteriores[str(r["run_id"])] = r
+    except Exception:
+        pass
     rodadas: list[dict] = []
     for f in OUT_DIR.glob("*.json"):
         if f.name in ("index.json", "produtos.json", "custo.json"):
@@ -568,6 +578,8 @@ def _build_custo() -> int:
             "ville_usd": round(vl.get("custo_usd", 0.0), 6),
             "etapas": etapas,
         })
+    novos_ids = {str(r.get("run_id")) for r in rodadas}
+    rodadas += [r for rid, r in anteriores.items() if rid not in novos_ids]
     rodadas.sort(key=lambda r: r.get("quando") or "")
     doc = {"gerado_em": datetime.now(BRT).isoformat(), "rodadas": rodadas}
     OUT_DIR.mkdir(parents=True, exist_ok=True)
