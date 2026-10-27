@@ -49,10 +49,15 @@ jobs:
           path: ~/.cache/ms-playwright
           key: playwright-${{ runner.os }}-${{ hashFiles('requirements.txt') }}
 
+      # As bibliotecas de sistema do Chromium (apt, --with-deps) levavam de 30 s a 9,5 min por
+      # rodada; a imagem ubuntu do GitHub já traz quase todas (vem com o Chrome). Agora só
+      # instala se o Chromium não abrir.
       - name: Install deps
         run: |
           pip install -r requirements.txt
-          playwright install --with-deps chromium
+          playwright install chromium
+          python -c "from playwright.sync_api import sync_playwright as s; p = s().start(); p.chromium.launch().close(); p.stop()" \
+            || { echo "Chromium não abriu — instalando as dependências de sistema"; playwright install-deps chromium; }
 
       # Rodando a cada ~5 min, os 20 mais novos do catálogo cobrem os anúncios novos
       # (eram 60 quando rodava a cada 40 min).
