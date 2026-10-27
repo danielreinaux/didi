@@ -1,20 +1,15 @@
 name: Scrape + Classify (Sundek + Ville)
 
 # Horários em UTC. Brasil = UTC-3.
-# Cadência (26/10/2026): a cada 5 min das 07:00 às 19:55 BRT. Uma rodada leva ~8-12 min e só
-# roda UMA por vez (concurrency do workflow abaixo: a pendente mais nova substitui as outras),
-# então na prática as rodadas emendam uma na outra (~1 a cada 10 min). O agendador do GitHub
-# perde/atrasa disparos — por isso o */5: sobram tentativas para não ficar buraco.
+# Cadência (27/10/2026): a cada 5 min das 07:00 às 19:55 BRT (5 min é o mínimo do GitHub). O
+# job sundek roda UM por vez (concurrency do job: o pendente mais novo substitui os outros),
+# então as rodadas emendam uma na outra; o deploy de uma rodada corre em paralelo com o scrape
+# da seguinte (arquivos diferentes). Ciclo ≈ duração do job sundek (~4-5 min). O agendador do
+# GitHub perde/atrasa disparos — por isso o */5: sobram tentativas para não ficar buraco.
 on:
   schedule:
     - cron: '*/5 10-22 * * *'   # 07:00–19:55 BRT
   workflow_dispatch:        # permite disparar manual também
-
-# Uma rodada por vez no repositório inteiro: disparos novos esperam (só o mais novo fica na
-# fila) em vez de rodar em paralelo e cada um fazer seu deploy.
-concurrency:
-  group: scrape-cron
-  cancel-in-progress: false
 
 permissions:
   contents: write            # pra commitar os JSONs de dados de volta no repo
@@ -54,12 +49,12 @@ jobs:
           pip install -r requirements.txt
           playwright install --with-deps chromium
 
-      # Rodando a cada ~10 min, os 30 mais novos do catálogo cobrem os anúncios novos
+      # Rodando a cada ~5 min, os 20 mais novos do catálogo cobrem os anúncios novos
       # (eram 60 quando rodava a cada 40 min).
       - name: Scrape Sundek
         env:
           HEADLESS: 'true'
-          MAX_ITEMS: '30'
+          MAX_ITEMS: '20'
         run: python -m src.scrape.sundek
 
       - name: Classify Sundek
@@ -76,7 +71,7 @@ jobs:
         if: always()
         env:
           HEADLESS: 'true'
-        run: python -m src.scrape.verifica_vendidos --max 25
+        run: python -m src.scrape.verifica_vendidos --max 15
 
       - name: Build analise.html
         if: always()
@@ -240,7 +235,9 @@ jobs:
   # um resumo único, depois grava+commita o ledger data/notificados.json.
   deploy:
     needs: [sundek, ville]
-    if: always()           # publica o último estado commitado mesmo se um job falhar
+    # publica o último estado commitado mesmo se um job falhar — mas não quando o sundek foi
+    # CANCELADO (disparo pendente substituído por um mais novo: nada novo a publicar).
+    if: always() && needs.sundek.result != 'cancelled'
     runs-on: ubuntu-latest
     concurrency:
       group: deploy-votacao
