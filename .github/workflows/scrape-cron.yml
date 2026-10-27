@@ -10,10 +10,15 @@ on:
   schedule:
     - cron: '*/5 10-22 * * *'   # 07:00–19:55 BRT
   workflow_dispatch:        # permite disparar manual também
+    inputs:
+      automatico:
+        description: "Disparada pela rodada anterior (corrente das 07h–20h), não por uma pessoa"
+        type: boolean
+        default: false
 
 permissions:
   contents: write            # pra commitar os JSONs de dados de volta no repo
-  actions: read              # pro history.py ler status/logs dos jobs do run (/history)
+  actions: write             # history.py lê status/logs dos jobs; a rodada dispara a próxima
 
 jobs:
   sundek:
@@ -78,7 +83,7 @@ jobs:
         run: |
           # 1x por hora (rodada que começa nos primeiros 15 min da hora) ou disparo manual:
           # são 2 cópias de 4 MB commitadas a cada vez.
-          if [ "$(date -u +%-M)" -ge 15 ] && [ "${{ github.event_name }}" != "workflow_dispatch" ]; then
+          if [ "$(date -u +%-M)" -ge 15 ] && [ "${{ github.event_name == 'workflow_dispatch' && !inputs.automatico }}" != "true" ]; then
             echo "analise.html: só na rodada do começo da hora"; exit 0
           fi
           python -m src.build.analise
@@ -123,6 +128,23 @@ jobs:
           done
           echo "::error::não consegui empurrar os dados após 5 tentativas"
           exit 1
+
+      # Corrente (27/10/2026): o agendador do GitHub não disparou NENHUMA rodada do */5 na
+      # 1ª manhã. Então cada rodada, ao terminar, dispara a próxima enquanto for 07h–20h BRT
+      # (o job sundek só roda um por vez; a próxima espera este terminar). O */5 do schedule
+      # fica de reserva pra religar a corrente. Rodada que falhou espera 5 min antes (evita
+      # laço rápido de falhas). Pra pausar: variável do repositório RODADA_CONTINUA=false.
+      - name: Dispara a próxima rodada (corrente 07h–20h)
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          H=$(TZ=America/Sao_Paulo date +%-H)
+          if [ "${{ vars.RODADA_CONTINUA }}" = "false" ] || [ "$H" -lt 7 ] || [ "$H" -ge 20 ]; then
+            echo "fora da janela (ou pausado) — não dispara"; exit 0
+          fi
+          if [ "${{ job.status }}" != "success" ]; then echo "rodada com falha — esperando 5 min"; sleep 300; fi
+          gh workflow run scrape-cron.yml --repo "${{ github.repository }}" --ref main -f automatico=true
 
   # Vilebrequin: mesma cadência do Sundek, agora EM PARALELO com ele (sem needs).
   # Antes tinha `needs: sundek` pra não competir cota de OpenAI, mas a conta hoje está
@@ -278,7 +300,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           # produtos.json (busca global do /history, ~67 MB) só 1x por hora ou no manual.
-          if [ "$(date -u +%-M)" -lt 15 ] || [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+          if [ "$(date -u +%-M)" -lt 15 ] || [ "${{ github.event_name == 'workflow_dispatch' && !inputs.automatico }}" = "true" ]; then
             export HISTORY_PRODUTOS=1
           else
             export HISTORY_PRODUTOS=0
@@ -324,7 +346,7 @@ jobs:
           # Com rodadas a cada ~10 min: deploy só quando a lista do app (items.json) mudou,
           # 1x por hora (pro /history) ou no disparo manual — o plano da Vercel limita deploys/dia.
           if [ "${{ steps.commit_history.outputs.items_mudou }}" != "true" ] \
-             && [ "$(date -u +%-M)" -ge 15 ] && [ "${{ github.event_name }}" != "workflow_dispatch" ]; then
+             && [ "$(date -u +%-M)" -ge 15 ] && [ "${{ github.event_name == 'workflow_dispatch' && !inputs.automatico }}" != "true" ]; then
             echo "items.json igual e fora do começo da hora — sem deploy"; exit 0
           fi
           cd votacao
