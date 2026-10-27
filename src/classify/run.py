@@ -36,6 +36,7 @@ from ..utils.cost_tracker import track as _track, relatorio as _relatorio, dump_
 from ..utils.listra_tier import avaliar_combo, limao_salvavel
 from .prefilter import parece_short
 from .score import descarte_garantido
+from ..utils.acervo_io import salvar_lista
 
 ROOT = Path(__file__).resolve().parent.parent.parent
 DATA = ROOT / "data"
@@ -67,7 +68,7 @@ def _salvar(resultados: list, itens_orig: list, acervo_previo: dict, path: Path)
         novo["status"] = "ativo"  # reapareceu no scrape → ativo
         acervo[rid] = novo
     with _print_lock:
-        path.write_text(json.dumps(list(acervo.values()), indent=2, ensure_ascii=False))
+        salvar_lista(path, list(acervo.values()), enxuga=True)
 
 
 def _log(msg: str) -> None:
@@ -632,7 +633,7 @@ def main() -> None:
         print(f"  listra 2ª olhada (faixa de 1 cor): {n_confirma} item(ns) conferidos com gpt-4o")
     if n_desb:
         print(f"  desbotado/moletom 2º olhar em lisos aprovados: {n_desb} item(ns) conferidos")
-    checkpoint_path.write_text(json.dumps(final, indent=2, ensure_ascii=False))
+    salvar_lista(checkpoint_path, final, enxuga=True)
 
     # Auto-double-check com gpt-4o (reclassify_ambiguos) DESLIGADO (out/2026):
     #  - o prompt de tipo não devolve mais bicolor/cores_listras/tem_bolso_frontal, e o

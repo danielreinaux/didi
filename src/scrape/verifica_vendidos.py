@@ -27,6 +27,7 @@ from pathlib import Path
 from playwright.sync_api import sync_playwright
 
 from ..utils.browser import abrir_sessao_vinted
+from ..utils.acervo_io import salvar_lista
 
 ROOT = Path(__file__).resolve().parent.parent.parent
 DATA = ROOT / "data"
@@ -225,7 +226,7 @@ def main() -> None:
             time.sleep(1.5)  # era 0,4s: com os do app revistos a cada 6h, o Vinted passou a limitar
         browser.close()
 
-    caminho.write_text(json.dumps(acervo, indent=2, ensure_ascii=False))
+    salvar_lista(caminho, acervo, enxuga=True)
     print(f"\n=== Resumo ===")
     print(f"  vendido:  {mudancas['vendido']}")
     print(f"  removido: {mudancas['removido']}")

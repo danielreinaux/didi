@@ -20,6 +20,7 @@ Estrutura em data/historico.json:
 import json
 from datetime import datetime, timezone
 from pathlib import Path
+from .acervo_io import salvar_dict
 
 ROOT = Path(__file__).resolve().parent.parent.parent
 HISTORICO_PATH = ROOT / "data" / "historico.json"
@@ -39,7 +40,7 @@ def _carregar() -> dict:
 
 
 def _salvar(historico: dict) -> None:
-    HISTORICO_PATH.write_text(json.dumps(historico, indent=2, ensure_ascii=False))
+    salvar_dict(HISTORICO_PATH, historico)
 
 
 def atualizar_com_scrape(itens_scrape: list[dict]) -> dict:

@@ -36,6 +36,7 @@ from datetime import datetime, timezone, timedelta
 from pathlib import Path
 
 from ..config import VILLE_ATIVA
+from ..utils.acervo_io import salvar_lista
 
 ROOT = Path(__file__).resolve().parent.parent.parent
 DATA = ROOT / "data"
@@ -518,9 +519,7 @@ def _build_produtos() -> int:
     entries.sort(key=_ordem)
 
     OUT_DIR.mkdir(parents=True, exist_ok=True)
-    (OUT_DIR / "produtos.json").write_text(
-        json.dumps(entries, ensure_ascii=False, indent=1), encoding="utf-8"
-    )
+    salvar_lista(OUT_DIR / "produtos.json", entries)  # 1 produto por linha, sem espaços
     return len(entries)
 
 
