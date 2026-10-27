@@ -1,9 +1,12 @@
 "use client";
 
 import { useState, useRef } from "react";
+import { createPortal } from "react-dom";
 import Image from "next/image";
+import Lightbox from "@/components/Lightbox";
 import { Item, Reaction, REACTIONS } from "@/lib/types";
 import { CARD } from "@/lib/theme";
+import { eNovo, eur, haQuanto } from "@/lib/tempo";
 
 interface Props {
   item: Item;
@@ -12,6 +15,8 @@ interface Props {
   onReacao?: (id: string, r: Reaction | null) => void;
   arquivado?: boolean; // se true, o card está na visão de arquivados (botão vira "Desarquivar")
   onArquivar?: (id: string, arquivar: boolean) => void;
+  agora: number; // relógio da página (atualiza a cada minuto) — "no ar há X" e selo NOVO
+  destaque?: boolean; // aberto pelo link do e-mail (?id=): borda chamando atenção
 }
 
 // Rótulos amigáveis pras flags de aviso vindas do score (Ville).
@@ -20,11 +25,14 @@ const FLAG_LABELS: Record<string, string> = {
   rever_fotos: "rever fotos (padrão indefinido)",
 };
 
-export default function VotingCard({ item, reacaoInicial, obsInicial, onReacao, arquivado, onArquivar }: Props) {
+export default function VotingCard({ item, reacaoInicial, obsInicial, onReacao, arquivado, onArquivar, agora, destaque }: Props) {
   const [reacao, setReacao] = useState<Reaction | null>(reacaoInicial ?? null);
   const [obs, setObs] = useState(obsInicial ?? "");
   const [loading, setLoading] = useState(false);
   const [fotoIdx, setFotoIdx] = useState(0);
+  // Foto ampliada (toque/clique na foto). Abre fora do card (portal): o blur do card
+  // prenderia o modal dentro dele.
+  const [ampliada, setAmpliada] = useState(false);
   // Confirmação inline de 2 toques: o link vira "Confirmar?" por ~3s antes de arquivar.
   const [confirmando, setConfirmando] = useState(false);
   const confirmTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -118,11 +126,17 @@ export default function VotingCard({ item, reacaoInicial, obsInicial, onReacao, 
 
   const foto = item.fotos[fotoIdx] ?? item.fotos[0];
   const compravel = item.decisao === "compravel";
+  const novo = eNovo(item.primeiro_visto, agora);
+  const noAr = haQuanto(item.publicado_em || item.primeiro_visto, agora);
+  // Preço: o base em destaque (a oferta sugerida é sobre ele) + taxa + frete.
+  const base = item.preco_base ?? null;
+  const total = base != null ? base + (item.taxa ?? 0) + (item.frete ?? 0) : null;
 
   return (
     <div
+      id={`item-${item.id}`}
       className={`${CARD} overflow-hidden flex flex-col transition-all ${
-        reacao ? "ring-2 ring-[#00d9ff]" : ""
+        destaque ? "ring-2 ring-[#ff66e2] shadow-[0_0_24px_rgba(255,102,226,0.45)]" : reacao ? "ring-2 ring-[#00d9ff]" : ""
       }`}
     >
       {/* Foto */}
@@ -132,7 +146,16 @@ export default function VotingCard({ item, reacaoInicial, obsInicial, onReacao, 
         onTouchEnd={onTouchEnd}
       >
         {foto ? (
-          <Image src={foto} alt={item.titulo} fill className="object-cover" unoptimized />
+          <>
+            <Image src={foto} alt={item.titulo} fill className="object-cover" unoptimized />
+            {/* Toque/clique na foto abre ampliada (setas e pontos ficam por cima) */}
+            <button
+              onClick={() => setAmpliada(true)}
+              aria-label="Ampliar foto"
+              title="Ampliar foto"
+              className="absolute inset-0 w-full h-full cursor-zoom-in"
+            />
+          </>
         ) : (
           <div className="flex items-center justify-center h-full text-[#6b6b78] text-sm">Sem foto</div>
         )}
@@ -171,6 +194,11 @@ export default function VotingCard({ item, reacaoInicial, obsInicial, onReacao, 
         )}
         {/* Badge decisão + score */}
         <div className="absolute top-2 left-2 flex gap-1">
+          {novo && (
+            <span className="text-xs px-2 py-0.5 rounded-full bg-[#ff66e2] text-[#2a0622] font-semibold">
+              NOVO
+            </span>
+          )}
           <span
             className={`text-xs px-2 py-0.5 rounded-full ${
               compravel ? "bg-[#00ff88] text-[#07140a]" : "bg-[#ffaa00] text-[#1c1100]"
@@ -191,13 +219,32 @@ export default function VotingCard({ item, reacaoInicial, obsInicial, onReacao, 
         >
           {item.titulo}
         </a>
-        <div className="flex gap-1.5 text-xs text-[#b8b8c0] flex-wrap">
+        <div className="flex gap-1.5 text-xs text-[#b8b8c0] flex-wrap items-baseline">
+          <span className="text-sm font-semibold text-[#f5f5f7]">
+            {base != null ? `€${eur(base)}` : item.preco_total || item.preco}
+          </span>
+          <span>·</span>
           <span>{item.tamanho}</span>
           <span>·</span>
           <span>{item.estado}</span>
-          <span>·</span>
-          <span className="text-[#f5f5f7]">{item.preco_total || item.preco}</span>
+          {noAr && (
+            <>
+              <span>·</span>
+              <span title="Quando o anúncio foi publicado no Vinted">no ar {noAr}</span>
+            </>
+          )}
         </div>
+        {base != null && (item.taxa || item.frete) ? (
+          <div className="text-[11px] text-[#6b6b78] -mt-1">
+            {[
+              item.taxa ? `+ €${eur(item.taxa)} taxa` : null,
+              item.frete ? `frete desde €${eur(item.frete)}` : null,
+              total != null ? `total ≈ €${eur(total)}` : null,
+            ]
+              .filter(Boolean)
+              .join(" · ")}
+          </div>
+        ) : null}
 
         {/* Destaques (por que é candidato) */}
         {item.destaques?.length > 0 && (
@@ -294,7 +341,7 @@ export default function VotingCard({ item, reacaoInicial, obsInicial, onReacao, 
           onBlur={salvarObs}
           aria-label="Observação do item"
           placeholder="Observação (opcional)…"
-          className="w-full text-xs text-[#f5f5f7] bg-[rgba(255,255,255,0.03)] border border-[rgba(255,255,255,0.07)] rounded-lg px-2 py-1.5 resize-none focus:outline-none focus:ring-2 focus:ring-[rgba(0,217,255,0.4)] placeholder:text-[#6b6b78]"
+          className="w-full text-base sm:text-xs text-[#f5f5f7] bg-[rgba(255,255,255,0.03)] border border-[rgba(255,255,255,0.07)] rounded-lg px-2 py-1.5 resize-none focus:outline-none focus:ring-2 focus:ring-[rgba(0,217,255,0.4)] placeholder:text-[#6b6b78]"
           rows={2}
         />
         {/* Rodapé: status da observação à esquerda, Arquivar à direita — na mesma linha */}
@@ -330,6 +377,11 @@ export default function VotingCard({ item, reacaoInicial, obsInicial, onReacao, 
           </button>
         </div>
       </div>
+      {ampliada &&
+        createPortal(
+          <Lightbox fotos={item.fotos} inicial={fotoIdx} onClose={() => setAmpliada(false)} legenda={item.titulo} />,
+          document.body
+        )}
     </div>
   );
 }

@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import VotingCard from "@/components/VotingCard";
-import { Item, Reaction, REACTIONS } from "@/lib/types";
+import { Item, Reaction, REACTIONS, StatusLista } from "@/lib/types";
+import { hora, instante } from "@/lib/tempo";
 import Link from "next/link";
 import { Archive, ClipboardCheck, History, ListChecks, LineChart } from "lucide-react";
 import {
@@ -16,6 +17,10 @@ import {
 } from "@/lib/theme";
 
 type Filtro = "todos" | "compravel" | "medio" | "nao_votados";
+type Ordem = "recentes" | "melhores";
+
+// De quanto em quanto tempo a página confere se a lista mudou (o robô roda a cada ~5 min).
+const CHECAR_MS = 60_000;
 type Loja = "sundek" | "ville";
 
 const LOJAS: { key: Loja; label: string }[] = [
@@ -37,18 +42,76 @@ export default function Home() {
   const [carregando, setCarregando] = useState(true);
   // Falha ao carregar as ofertas — distingue "deu erro" de "lista vazia".
   const [erroCarregar, setErroCarregar] = useState(false);
+  // Atualização automática: horário da lista publicada + relógio pros "há X min".
+  const [status, setStatus] = useState<StatusLista | null>(null);
+  const statusRef = useRef<string | null>(null);
+  const [agora, setAgora] = useState(() => Date.now());
+  // Ids que chegaram na última atualização automática (aviso "N novas ofertas").
+  const [chegaram, setChegaram] = useState<string[]>([]);
+  const idsAtuais = useRef<Set<string>>(new Set());
+  // Ordem dos cards (fica salva no aparelho).
+  const [ordem, setOrdem] = useState<Ordem>("recentes");
+  // Link do e-mail (?id=…): rola até o card e destaca; aviso se o anúncio já saiu.
+  const [destaqueId, setDestaqueId] = useState<string | null>(null);
+  const [avisoLink, setAvisoLink] = useState<string | null>(null);
+  const linkTratado = useRef(false);
+  const linkId = useRef<string | null>(null);
+  const mainRef = useRef<HTMLDivElement>(null);
+  const headerRef = useRef<HTMLElement>(null);
 
   // Faz o fetch das ofertas. Os setState ficam em callbacks async (não disparam no corpo do effect).
-  function carregarItens() {
-    fetch("/items.json")
+  // `?t=` fura o cache do navegador/CDN; `silencioso` = atualização automática (sem spinner).
+  const carregarItens = useCallback((silencioso = false) => {
+    fetch(`/items.json?t=${Date.now()}`, { cache: "no-store" })
       .then((r) => {
         if (!r.ok) throw new Error("falha");
         return r.json();
       })
-      .then(setItems)
-      .catch(() => setErroCarregar(true))
+      .then((lista: Item[]) => {
+        const novos = lista.map((i) => i.id).filter((id) => !idsAtuais.current.has(id));
+        if (silencioso && idsAtuais.current.size > 0 && novos.length > 0) {
+          setChegaram((prev) => Array.from(new Set([...prev, ...novos])));
+        }
+        idsAtuais.current = new Set(lista.map((i) => i.id));
+        setItems(lista);
+        // Link do e-mail (?id=…): na 1ª carga, leva até o card ou avisa que já saiu.
+        const id = linkId.current;
+        if (!silencioso && id && !linkTratado.current) {
+          linkTratado.current = true;
+          if (lista.some((i) => i.id === id)) {
+            setFiltro("todos");
+            setDestaqueId(id);
+          } else {
+            setAvisoLink("Esse anúncio já saiu da lista (vendido, apagado ou não passa mais nos critérios).");
+          }
+        }
+      })
+      .catch(() => {
+        if (!silencioso) setErroCarregar(true);
+      })
       .finally(() => setCarregando(false));
-  }
+  }, []);
+
+  // Confere o status.json (pequeno); se a lista foi refeita desde a última vez, recarrega.
+  const checarAtualizacao = useCallback(() => {
+    fetch(`/status.json?t=${Date.now()}`, { cache: "no-store" })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((st: StatusLista | null) => {
+        if (!st?.gerado_em) return;
+        const anterior = statusRef.current;
+        statusRef.current = st.gerado_em;
+        setStatus(st);
+        if (anterior && anterior !== st.gerado_em) {
+          carregarItens(true);
+          fetch("/api/archive")
+            .then((r) => r.json())
+            .then((ids: string[]) => setArquivados(new Set(ids)))
+            .catch(() => {});
+        }
+      })
+      .catch(() => {})
+      .finally(() => setAgora(Date.now())); // relógio dos "há X min" / selo NOVO
+  }, [carregarItens]);
 
   // Reaproveitado pelo botão "Recarregar": reseta os estados e refaz o fetch.
   function recarregar() {
@@ -58,13 +121,44 @@ export default function Home() {
   }
 
   useEffect(() => {
+    linkId.current = new URLSearchParams(window.location.search).get("id");
     carregarItens();
-  }, []);
+    checarAtualizacao();
+    const timer = setInterval(checarAtualizacao, CHECAR_MS);
+    // Voltou pro app (trocou de aba / desbloqueou o celular): confere na hora.
+    const aoVoltar = () => {
+      if (document.visibilityState === "visible") checarAtualizacao();
+    };
+    document.addEventListener("visibilitychange", aoVoltar);
+    // Ordem salva no aparelho (aplicada fora do corpo do effect: lint react-hooks).
+    const aplicarOrdem = setTimeout(() => {
+      try {
+        const salva = localStorage.getItem("didi:ordem");
+        if (salva === "recentes" || salva === "melhores") setOrdem(salva);
+      } catch {}
+    }, 0);
+    return () => {
+      clearInterval(timer);
+      clearTimeout(aplicarOrdem);
+      document.removeEventListener("visibilitychange", aoVoltar);
+    };
+  }, [carregarItens, checarAtualizacao]);
+
+  function mudarOrdem(o: Ordem) {
+    setOrdem(o);
+    try {
+      localStorage.setItem("didi:ordem", o);
+    } catch {}
+  }
 
   useEffect(() => {
     fetch("/api/archive")
       .then((r) => r.json())
-      .then((ids: string[]) => setArquivados(new Set(ids)))
+      .then((ids: string[]) => {
+        setArquivados(new Set(ids));
+        // Short do link do e-mail está arquivado → abre a visão de arquivados pra ele aparecer.
+        if (linkId.current && ids.includes(linkId.current)) setVerArquivados(true);
+      })
       .catch(() => {});
   }, []);
 
@@ -125,6 +219,38 @@ export default function Home() {
     if (filtro === "nao_votados") return !reacoes[i.id];
     return true;
   });
+  // "Mais recentes": publicação no Vinted (senão, entrada na lista). "Melhores": a ordem do
+  // items.json (comprável primeiro, depois a nota).
+  if (ordem === "recentes") {
+    filtrados.sort(
+      (a, b) => instante(b.publicado_em, b.primeiro_visto) - instante(a.publicado_em, a.primeiro_visto)
+    );
+  }
+
+  useEffect(() => {
+    if (!destaqueId) return;
+    // Rola o container até o card, descontando o cabeçalho fixo (senão o topo do card fica atrás dele).
+    const raf = requestAnimationFrame(() => {
+      const el = document.getElementById(`item-${destaqueId}`);
+      const box = mainRef.current;
+      if (!el || !box) return;
+      const topo = el.getBoundingClientRect().top - box.getBoundingClientRect().top + box.scrollTop;
+      box.scrollTo({ top: topo - (headerRef.current?.offsetHeight ?? 0) - 12, behavior: "smooth" });
+    });
+    const t = setTimeout(() => setDestaqueId(null), 8000);
+    return () => {
+      cancelAnimationFrame(raf);
+      clearTimeout(t);
+    };
+  }, [destaqueId]);
+
+  function verChegaram() {
+    mudarOrdem("recentes");
+    setFiltro("todos");
+    setVerArquivados(false);
+    setChegaram([]);
+    mainRef.current?.scrollTo({ top: 0, behavior: "smooth" });
+  }
 
   const botao = (f: Filtro, label: string) => (
     <button
@@ -138,8 +264,8 @@ export default function Home() {
   );
 
   return (
-    <div className="h-full overflow-y-auto">
-      <header className={`sticky top-0 z-20 ${HEADER_BG}`}>
+    <div ref={mainRef} className="h-full overflow-y-auto">
+      <header ref={headerRef} className={`sticky top-0 z-20 ${HEADER_BG}`}>
         <div className="app-wrap py-3 flex flex-col gap-3">
           {/* Linha 1: seletor de loja + atalho de resultados */}
           <div className="flex items-center justify-between gap-3 flex-wrap">
@@ -229,12 +355,20 @@ export default function Home() {
           ) : (
             <div className="flex items-center gap-2 flex-wrap">
               <span className="text-xs px-2.5 py-1 rounded-full bg-[rgba(0,255,136,0.12)] text-[#00ff88]">
-                {compraveis} compráveis
+                {compraveis} {compraveis === 1 ? "comprável" : "compráveis"}
               </span>
               <span className="text-xs px-2.5 py-1 rounded-full bg-[rgba(255,170,0,0.12)] text-[#ffaa00]">
-                {barganhas} barganhas
+                {barganhas} {barganhas === 1 ? "barganha" : "barganhas"}
               </span>
               <span className={`text-xs ${TEXT_TERTIARY}`}>{votados}/{itensLoja.length} avaliados</span>
+              {hora(status?.gerado_em) && (
+                <span
+                  className={`text-xs ${TEXT_TERTIARY}`}
+                  title="A lista se atualiza sozinha. O robô procura anúncios novos a cada ~5 min, das 07h às 20h."
+                >
+                  · atualizado às {hora(status?.gerado_em)}
+                </span>
+              )}
             </div>
           )}
           <div className="w-full h-1.5 bg-[rgba(255,255,255,0.04)] rounded-full overflow-hidden">
@@ -248,7 +382,42 @@ export default function Home() {
             {botao("compravel", `Compráveis (${compraveis})`)}
             {botao("medio", `Barganha (${barganhas})`)}
             {botao("nao_votados", `Não avaliados (${itensLoja.length - votados})`)}
+            <div className="ml-auto inline-flex p-0.5 rounded-lg bg-[rgba(255,255,255,0.04)] border border-[rgba(255,255,255,0.07)]">
+              {(
+                [
+                  ["recentes", "Mais recentes"],
+                  ["melhores", "Melhores"],
+                ] as [Ordem, string][]
+              ).map(([o, label]) => (
+                <button
+                  key={o}
+                  onClick={() => mudarOrdem(o)}
+                  aria-pressed={ordem === o}
+                  className={`px-2.5 py-1 rounded-md text-xs transition-all ${
+                    ordem === o ? ACTIVE_GRADIENT : SEGMENTED_INACTIVE
+                  }`}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
           </div>
+          {chegaram.length > 0 && (
+            <button
+              onClick={verChegaram}
+              className="w-full text-sm rounded-lg px-3 py-2 bg-[rgba(255,102,226,0.14)] border border-[rgba(255,102,226,0.35)] text-[#ff66e2] hover:bg-[rgba(255,102,226,0.2)] transition-colors"
+            >
+              {chegaram.length === 1 ? "1 oferta nova chegou" : `${chegaram.length} ofertas novas chegaram`} — ver
+            </button>
+          )}
+          {avisoLink && (
+            <p className="text-xs rounded-lg px-3 py-2 bg-[rgba(255,170,0,0.1)] text-[#ffcc66] flex items-center gap-2">
+              {avisoLink}
+              <button onClick={() => setAvisoLink(null)} className="ml-auto underline">
+                ok
+              </button>
+            </p>
+          )}
         </div>
       </header>
 
@@ -283,6 +452,8 @@ export default function Home() {
                 onReacao={onReacao}
                 arquivado={verArquivados}
                 onArquivar={onArquivar}
+                agora={agora}
+                destaque={destaqueId === item.id}
               />
             ))}
           </div>

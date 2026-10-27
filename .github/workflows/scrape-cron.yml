@@ -316,7 +316,7 @@ jobs:
         run: |
           git config user.name "Didi Bot"
           git config user.email "bot@didi.local"
-          git add -A votacao/public/history votacao/public/items.json
+          git add -A votacao/public/history votacao/public/items.json votacao/public/status.json
           if git diff --cached --quiet -- votacao/public/items.json; then
             echo "items_mudou=false" >> "$GITHUB_OUTPUT"
           else

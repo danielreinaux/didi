@@ -37,6 +37,7 @@ from pathlib import Path
 
 from ..config import VILLE_ATIVA
 from ..utils.acervo_io import salvar_lista
+from .votacao_items import _recente
 
 ROOT = Path(__file__).resolve().parent.parent.parent
 DATA = ROOT / "data"
@@ -259,10 +260,14 @@ def _slim_produto(it: dict, marca: str, run_dt: datetime) -> dict:
     }
 
 
-def _metricas_marca(itens: list[dict], custo: dict, run_dt: datetime) -> dict:
-    """Métricas da marca: estado do acervo + números DESTA rodada (custo/novos)."""
+def _metricas_marca(itens: list[dict], custo: dict, run_dt: datetime, so_app: bool = False) -> dict:
+    """Métricas da marca: estado do acervo + números DESTA rodada (custo/novos).
+    so_app: compráveis/barganha contam só o que está NA LISTA DO APP (anúncios recentes,
+    config.APP_DESDE) — antes contavam o acervo inteiro e o /history dizia "67 compráveis"
+    com 8 no app."""
     ativos = [it for it in itens if _ativo(it)]
-    dec = Counter(_decisao(it) for it in ativos)
+    dec = Counter(_decisao(it) for it in ativos
+                  if not so_app or _decisao(it) not in ("compravel", "medio") or _recente(it))
     por_motivo: Counter = Counter()
     for it in ativos:
         if _decisao(it) == "descartado":
@@ -414,7 +419,7 @@ def _montar_snapshot(run_id: str, fonte: str, run_dt: datetime,
     if isinstance(sundek_itens, list) and sundek_itens:
         marcas.append("sundek")
         custo = _custo_sundek(custo_sundek_raw)
-        metricas["sundek"] = _metricas_marca(sundek_itens, custo, run_dt)
+        metricas["sundek"] = _metricas_marca(sundek_itens, custo, run_dt, so_app=True)
         p, info = _selecionar_produtos(sundek_itens, "sundek", run_dt)
         produtos += p
         produtos_info["sundek"] = info

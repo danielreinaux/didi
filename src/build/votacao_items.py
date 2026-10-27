@@ -7,6 +7,8 @@ e exporta os campos que o front usa, com os "destaques" (por que virou candidato
 """
 import argparse
 import json
+import re
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 from ..config import APP_DESDE, APP_TAMBEM_IDS, VILLE_ATIVA
@@ -14,6 +16,33 @@ from ..config import APP_DESDE, APP_TAMBEM_IDS, VILLE_ATIVA
 ROOT = Path(__file__).resolve().parent.parent.parent
 DATA = ROOT / "data"
 OUT = ROOT / "votacao" / "public" / "items.json"
+# Horário da última montagem da lista ("Atualizado às HH:MM" no app; o app consulta a cada minuto).
+STATUS = ROOT / "votacao" / "public" / "status.json"
+
+_MIN_POR = {"segundo": 0, "minuto": 1, "hora": 60, "dia": 1440, "semana": 10080, "mes": 43200, "año": 525600}
+
+
+def _publicado_em(it: dict) -> str | None:
+    """Quando o anúncio foi publicado no Vinted, estimado pelo "hace 2 horas" que a página
+    mostrava na coleta (campo `upload`, relativo a `coletado_em`)."""
+    up = (it.get("upload") or "").strip().lower()
+    try:
+        base = datetime.fromisoformat(it.get("coletado_em") or "")
+    except ValueError:
+        return None
+    if up in ("ahora mismo", "justo ahora"):
+        return base.isoformat()
+    m = re.match(r"hace\s+(un|una|unos|unas|\d+)\s+(segundo|minuto|hora|d[ií]a|semana|mes|año)", up)
+    if not m:
+        return None
+    n = 1 if m.group(1) in ("un", "una", "unos", "unas") else int(m.group(1))
+    return (base - timedelta(minutes=n * _MIN_POR[m.group(2).replace("í", "i")])).isoformat()
+
+
+def _num(txt) -> float | None:
+    """"10,00 €" / "desde 4,40 €" → 10.0 / 4.4."""
+    m = re.search(r"(\d+(?:[.,]\d{1,2})?)", str(txt or "").replace("\xa0", " "))
+    return float(m.group(1).replace(",", ".")) if m else None
 
 
 def _e_ville(it: dict) -> bool:
@@ -141,6 +170,15 @@ def _carregar(path: Path, marca: str) -> list[dict]:
             "por_que": _por_que(it),
             "evidencias": {k: v for k, v in evid.items() if v},
             "negociacao": s.get("negociacao") or {},
+            # Preço em partes (card e e-mail mostram base + taxa + frete; a oferta é sobre o base)
+            "preco_base": _num(it.get("preco")),
+            "taxa": (round(_num(it.get("preco_total")) - _num(it.get("preco")), 2)
+                     if _num(it.get("preco_total")) and _num(it.get("preco"))
+                     and _num(it.get("preco_total")) >= _num(it.get("preco")) else None),
+            "frete": _num(it.get("envio")),
+            # Selo NOVO / "no ar há X" / ordenar por mais recentes
+            "primeiro_visto": it.get("primeiro_visto") or it.get("coletado_em"),
+            "publicado_em": _publicado_em(it),
         })
     return cand
 
@@ -160,6 +198,12 @@ def main() -> None:
     # comprável primeiro, depois por score desc
     cand.sort(key=lambda x: (0 if x["decisao"] == "compravel" else 1, -x["score"]))
     OUT.write_text(json.dumps(cand, indent=2, ensure_ascii=False), encoding="utf-8")
+    STATUS.write_text(json.dumps({
+        "gerado_em": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+        "total": len(cand),
+        "compraveis": sum(1 for x in cand if x["decisao"] == "compravel"),
+        "barganhas": sum(1 for x in cand if x["decisao"] == "medio"),
+    }, ensure_ascii=False), encoding="utf-8")
     n_comp = sum(1 for x in cand if x["decisao"] == "compravel")
     n_ville = sum(1 for x in cand if x["marca"] == "vilebrequin")
     print(f"OK -> {OUT}  ({len(cand)} candidatos: {n_comp} compráveis, {len(cand) - n_comp} barganha; {n_ville} Ville)")

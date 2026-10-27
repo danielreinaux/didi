@@ -73,6 +73,11 @@ def _oferta_redonda(base: float) -> int:
     return max(int(alvo5), int(piso), 1)
 
 
+def _eur(v: float) -> str:
+    """13.0 → "13" · 9.99 → "9,99" (vírgula, como o Vinted mostra)."""
+    return f"{v:.0f}" if abs(v - round(v)) < 0.005 else f"{v:.2f}".replace(".", ",")
+
+
 def _negociacao(base: float | None, teto: float, ratio: float | None) -> dict:
     """Sugestão de como abordar o vendedor (oferta no Vinted é sobre o preço BASE).
     - preço já dentro do teto (ratio ≤ 1) → FECHAR: oferta concreta redonda.
@@ -80,19 +85,20 @@ def _negociacao(base: float | None, teto: float, ratio: float | None) -> dict:
     """
     if not base:
         return {}
+    pedem = _eur(base)
     if ratio is not None and ratio <= 1.0:
         oferta = _oferta_redonda(base)
         return {
             "modo": "fechar",
             "oferta": oferta,
-            "msg": f"💰 Oferecer €{oferta} — \"por {oferta} aceita?\". Se recusar, ainda vale o preço pedido.",
+            "msg": f"💰 Ofereça €{oferta} (pedem €{pedem}). Se recusar, ainda vale pagar €{pedem}.",
         }
     alvo = int(round(teto)) if teto else None
     return {
         "modo": "negociar",
         "oferta": alvo,
-        "msg": (f"🗨️ Pedir desconto: \"What's your best price?\" — alvo ≤ €{alvo}."
-                if alvo else "🗨️ Pedir: \"What's your best price?\""),
+        "msg": (f"🗨️ Pedem €{pedem}, vale até €{alvo}. Ofereça €{alvo} ou pergunte: \"¿Me lo dejas en {alvo} €?\""
+                if alvo else f"🗨️ Pedem €{pedem}. Peça desconto: \"¿Cuál es tu mejor precio?\""),
     }
 
 

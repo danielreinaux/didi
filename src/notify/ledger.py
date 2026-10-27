@@ -59,12 +59,16 @@ def registrar(ledger: dict, itens: list[dict], marca: str | None = None) -> None
         }
 
 
-def podar(ledger: dict, dias: int = 30) -> int:
-    """Remove entradas mais velhas que `dias` pro ledger não crescer pra sempre.
-    Retorna quantas foram removidas."""
+def podar(ledger: dict, dias: int = 30, manter: set[str] | None = None) -> int:
+    """Remove entradas mais velhas que `dias` pro ledger não crescer pra sempre — MENOS as
+    de `manter` (ids ainda na lista do app): esquecer um anúncio que segue à venda fazia o
+    e-mail reenviá-lo como "novo" 30 dias depois. Retorna quantas foram removidas."""
     limite = datetime.now(timezone.utc) - timedelta(days=dias)
+    manter = manter or set()
     removidas = 0
     for id_ in list(ledger):
+        if id_ in manter:
+            continue
         try:
             quando = datetime.fromisoformat(ledger[id_]["notificado_em"])
             if quando < limite:

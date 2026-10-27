@@ -54,7 +54,7 @@ def main() -> None:
     # 1ª vez pra essa marca (ou --seed): registra tudo sem enviar, evitando flood.
     if args.seed or not led.ja_viu_marca(ledger, args.marca):
         led.registrar(ledger, itens, args.marca)
-        led.podar(ledger)
+        led.podar(ledger, manter={str(it.get("id")) for it in itens})
         led.salvar(ledger)
         print(f"[seed {label}] {len(itens)} candidato(s) marcados sem enviar email.")
         return
@@ -70,7 +70,7 @@ def main() -> None:
     mailer.enviar(assunto, html)
     # Só registra DEPOIS de enviar com sucesso (se falhar, reenvía na próxima rodada).
     led.registrar(ledger, pendentes, args.marca)
-    led.podar(ledger)
+    led.podar(ledger, manter={str(it.get("id")) for it in itens})
     led.salvar(ledger)
     print(f"[{label}] email enviado com {len(pendentes)} oferta(s).")
 

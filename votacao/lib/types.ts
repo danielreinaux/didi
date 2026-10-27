@@ -20,6 +20,21 @@ export interface Item {
   por_que?: string;
   evidencias?: { listra?: string; bolso?: string; elastico?: string };
   negociacao?: { modo?: "fechar" | "negociar"; oferta?: number; msg?: string };
+  // Preço em partes: o card mostra o base (a oferta é sobre ele) + taxa + frete.
+  preco_base?: number | null;
+  taxa?: number | null;
+  frete?: number | null;
+  // Quando entrou na lista (selo NOVO) e quando foi publicado no Vinted ("no ar há X").
+  primeiro_visto?: string | null;
+  publicado_em?: string | null;
+}
+
+// votacao/public/status.json — escrito a cada montagem da lista.
+export interface StatusLista {
+  gerado_em: string;
+  total: number;
+  compraveis: number;
+  barganhas: number;
 }
 
 export type Reaction = "gostei" | "nao_gostei" | "discordo";

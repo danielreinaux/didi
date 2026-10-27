@@ -17,7 +17,7 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  maximumScale: 1,
+  // Sem maximumScale: no celular dá pra ampliar a foto com pinça (antes o zoom era bloqueado).
 };
 
 export default function RootLayout({
