@@ -32,6 +32,7 @@ from .elastico import verificar_elastico
 from .botao_fly import verificar_botao, verificar_velcro
 from .etiqueta import verificar_etiqueta
 from .listra import verificar_listra, precisa_confirmar, confirmar_faixa_unica
+from .premiado import checar as checar_premiado, precisa_checar as precisa_checar_premiado
 from ..utils.cost_tracker import track as _track, relatorio as _relatorio, dump_json as _dump_cost
 from ..utils.listra_tier import avaliar_combo, limao_salvavel
 from .prefilter import parece_short
@@ -430,6 +431,22 @@ def _precisa_confirmar_listra(it: dict) -> bool:
 # Teto de 2ºs olhares do desbotado em lisos APROVADOS por rodada (Haiku, 3 votos ≈ US$ 0,002).
 DESBOTADO_CHECK_MAX_POR_RODADA = 60
 
+# Teto de checagens de "short premiado" por rodada (gpt-6.1-sol ≈ US$ 0,012 cada; normal: 0–2).
+PREMIADO_MAX_POR_RODADA = 20
+
+
+def _checar_premiado(it: dict) -> None:
+    """Comprável com elástico e corpo escuro: é um dos 3 favoritos do cliente? (classify/premiado.py)"""
+    chk = checar_premiado(it)
+    if chk is None:  # falhou → tenta de novo na próxima rodada
+        return
+    u = chk.pop("_usage")
+    _track("premiado", u["model"], u["prompt_tokens"], u["completion_tokens"])
+    it["premiado"] = chk
+    if chk["modelo"]:
+        _log(f"  ⭐ PREMIADO modelo {chk['modelo']}: {it.get('id')} {it.get('preco')} "
+             f"{it.get('tamanho')} — {chk['motivo'][:80]}")
+
 
 def _checar_aprovado(it: dict, calcular_score) -> None:
     """Liso que vai aparecer no app sem ter tido o 2º olhar do desbotado (classify/desbotado.py)."""
@@ -600,6 +617,7 @@ def main() -> None:
     final = json.loads(checkpoint_path.read_text())
     n_confirma = 0
     n_desb = 0
+    n_prem = 0
     for it in final:
         cor = it.get("cor")
         if isinstance(cor, dict) and cor.get("tier"):
@@ -629,6 +647,12 @@ def main() -> None:
             if n_desb < DESBOTADO_CHECK_MAX_POR_RODADA and precisa_checar_aprovado(it):
                 n_desb += 1
                 _checar_aprovado(it, calcular_score)
+            # Depois de todas as conferências (o item pode ter deixado de ser comprável).
+            if n_prem < PREMIADO_MAX_POR_RODADA and precisa_checar_premiado(it):
+                n_prem += 1
+                _checar_premiado(it)
+    if n_prem:
+        print(f"  short premiado: {n_prem} comprável(is) comparado(s) com os 3 modelos do cliente")
     if n_confirma:
         print(f"  listra 2ª olhada (faixa de 1 cor): {n_confirma} item(ns) conferidos com gpt-4o")
     if n_desb:

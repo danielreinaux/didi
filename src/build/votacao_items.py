@@ -11,7 +11,7 @@ import re
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
-from ..config import APP_DESDE, APP_TAMBEM_IDS, VILLE_ATIVA
+from ..config import APP_DESDE, APP_TAMBEM_IDS, PREMIADO_URGENTE_ATE, VILLE_ATIVA
 
 ROOT = Path(__file__).resolve().parent.parent.parent
 DATA = ROOT / "data"
@@ -119,6 +119,17 @@ def _por_que(it: dict) -> str:
     return f"score {s.get('score', 0)}" + (f" (teto €{teto})" if teto else "") + (f": {linha}" if linha else "")
 
 
+def _premiado(it: dict) -> dict | None:
+    """Um dos 3 modelos favoritos do cliente (classify/premiado.py), só se ainda é comprável.
+    urgente = preço do anúncio até config.PREMIADO_URGENTE_ATE."""
+    p = it.get("premiado") or {}
+    if not p.get("modelo") or (it.get("score") or {}).get("decisao") != "compravel":
+        return None
+    base = _num(it.get("preco"))
+    return {"modelo": p["modelo"], "nome": p.get("nome"),
+            "urgente": base is not None and base <= PREMIADO_URGENTE_ATE}
+
+
 def _recente(it: dict) -> bool:
     """Anúncio do e-mail de 21/10 ou visto pela 1ª vez depois dele (config.APP_DESDE)."""
     if str(it.get("id") or "") in APP_TAMBEM_IDS:
@@ -179,6 +190,8 @@ def _carregar(path: Path, marca: str) -> list[dict]:
             # Selo NOVO / "no ar há X" / ordenar por mais recentes
             "primeiro_visto": it.get("primeiro_visto") or it.get("coletado_em"),
             "publicado_em": _publicado_em(it),
+            # Um dos 3 favoritos do cliente → selo no card e destaque no e-mail
+            "premiado": _premiado(it),
         })
     return cand
 
@@ -204,6 +217,10 @@ def main() -> None:
         "compraveis": sum(1 for x in cand if x["decisao"] == "compravel"),
         "barganhas": sum(1 for x in cand if x["decisao"] == "medio"),
     }, ensure_ascii=False), encoding="utf-8")
+    # Aba "Descartados" do app (o que a IA cortou nos últimos dias, com o motivo).
+    if not args.so_ville:
+        from .descartados import main as descartados
+        descartados()
     n_comp = sum(1 for x in cand if x["decisao"] == "compravel")
     n_ville = sum(1 for x in cand if x["marca"] == "vilebrequin")
     print(f"OK -> {OUT}  ({len(cand)} candidatos: {n_comp} compráveis, {len(cand) - n_comp} barganha; {n_ville} Ville)")

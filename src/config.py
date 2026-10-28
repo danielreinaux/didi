@@ -127,7 +127,16 @@ IA_OPENAI = {
     # lia "com elástico" no app (Daniel: 10533955620 branco, 9680308686 azul). Não sai da API em
     # 14/01/2027. ~US$ 0,016/item (gpt-4o ~0,006). Em low ou com raciocínio baixo perde 6 "com".
     "sundek:elastico": {"model": "gpt-6.1-sol", "detail": "high", "effort": "medium"},
+    # short premiado (28/10/2026): compara as fotos com os 3 modelos favoritos do cliente. Só
+    # roda em comprável com elástico e corpo escuro (poucos por dia). ~US$ 0,012/item (medido).
+    "sundek:premiado": {"model": "gpt-6.1-sol", "detail": "high", "effort": "medium"},
 }
+
+# Short premiado (classify/premiado.py): preço do ANÚNCIO (sem a taxa) até este valor →
+# "🚨 COMPRA URGENTE" no e-mail e no app; acima → "⭐ short premiado disponível".
+# Cliente (27/10/2026): "15 ou 20 euros" — €20 porque o teto desses shorts fica perto de €40 e
+# o premiado de €20 de 27/10 vendeu em minutos.
+PREMIADO_URGENTE_ATE = 20.0
 
 # App (items.json) e e-mail só com anúncios RECENTES (Daniel, 26/10/2026): os 12 do e-mail de
 # 21/10/2026 15:50 BRT + o que apareceu pela 1ª vez depois dele. O acervo antigo continua

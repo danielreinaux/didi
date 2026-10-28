@@ -1,0 +1,51 @@
+name: Despertador (religa as rodadas às 07h)
+
+# A corrente de rodadas (scrape-cron.yml) para às 20h BRT e precisa ser religada às 07h. O
+# agendador do GitHub NÃO é confiável pra isso: em 27/10 e 28/10/2026 nenhum dos */5 das 07h às
+# 09h disparou e o robô ficou parado até alguém disparar à mão. Agora a última rodada do dia
+# dispara este workflow, que DORME até 07:00 BRT e dispara a 1ª rodada. Um job do GitHub dura
+# no máximo 6 h: quem acorda antes das 07h dispara outro despertador. Repositório público →
+# minutos de Actions grátis (dormir não custa nada).
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '17 9 * * *'     # reserva: 06:17 BRT (se a corrente da noite não chamou)
+
+permissions:
+  actions: write             # dispara o scrape-cron.yml (e o próximo despertador)
+
+concurrency:
+  group: despertador
+  cancel-in-progress: false  # o que está dormindo termina; um pendente novo substitui o antigo
+
+jobs:
+  espera:
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    steps:
+      - name: Dorme até 07:00 BRT e dispara a 1ª rodada
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if [ "${{ vars.RODADA_CONTINUA }}" = "false" ]; then echo "rodadas pausadas — nada a fazer"; exit 0; fi
+          read ACAO ESPERA < <(python3 - <<'EOF'
+          from datetime import datetime, timedelta, timezone
+          agora = datetime.now(timezone(timedelta(hours=-3)))  # BRT (sem horário de verão)
+          if 7 <= agora.hour < 20:
+              print("rodada 0")  # já é horário de rodada: dispara agora
+          else:
+              alvo = agora.replace(hour=7, minute=0, second=0, microsecond=0)
+              if agora.hour >= 20:
+                  alvo += timedelta(days=1)
+              falta = int((alvo - agora).total_seconds())
+              limite = 5 * 3600 + 30 * 60  # o job morre em 6 h
+              print(f"despertador {limite}" if falta > limite else f"rodada {falta}")
+          EOF
+          )
+          echo "ação: $ACAO depois de ${ESPERA}s ($(TZ=America/Sao_Paulo date '+%d/%m %H:%M') BRT)"
+          sleep "$ESPERA"
+          if [ "$ACAO" = "rodada" ]; then
+            gh workflow run scrape-cron.yml --repo "${{ github.repository }}" --ref main -f automatico=true
+          else
+            gh workflow run despertador.yml --repo "${{ github.repository }}" --ref main
+          fi

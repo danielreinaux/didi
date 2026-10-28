@@ -127,6 +127,7 @@ export default function VotingCard({ item, reacaoInicial, obsInicial, onReacao, 
   const foto = item.fotos[fotoIdx] ?? item.fotos[0];
   const compravel = item.decisao === "compravel";
   const novo = eNovo(item.primeiro_visto, agora);
+  const premiado = item.premiado ?? null;
   const noAr = haQuanto(item.publicado_em || item.primeiro_visto, agora);
   // Preço: o base em destaque (a oferta sugerida é sobre ele) + taxa + frete.
   const base = item.preco_base ?? null;
@@ -136,7 +137,13 @@ export default function VotingCard({ item, reacaoInicial, obsInicial, onReacao, 
     <div
       id={`item-${item.id}`}
       className={`${CARD} overflow-hidden flex flex-col transition-all ${
-        destaque ? "ring-2 ring-[#ff66e2] shadow-[0_0_24px_rgba(255,102,226,0.45)]" : reacao ? "ring-2 ring-[#00d9ff]" : ""
+        destaque
+          ? "ring-2 ring-[#ff66e2] shadow-[0_0_24px_rgba(255,102,226,0.45)]"
+          : premiado
+            ? "ring-2 ring-[#ffc94d] shadow-[0_0_20px_rgba(255,201,77,0.3)]"
+            : reacao
+              ? "ring-2 ring-[#00d9ff]"
+              : ""
       }`}
     >
       {/* Foto */}
@@ -193,7 +200,16 @@ export default function VotingCard({ item, reacaoInicial, obsInicial, onReacao, 
           </>
         )}
         {/* Badge decisão + score */}
-        <div className="absolute top-2 left-2 flex gap-1">
+        <div className="absolute top-2 left-2 right-12 flex flex-wrap gap-1">
+          {premiado && (
+            <span
+              className={`text-xs px-2 py-0.5 rounded-full font-semibold ${
+                premiado.urgente ? "bg-[#ff3b5c] text-white" : "bg-[#ffc94d] text-[#2b1d00]"
+              }`}
+            >
+              {premiado.urgente ? "🚨 PREMIADO · URGENTE" : "⭐ PREMIADO"}
+            </span>
+          )}
           {novo && (
             <span className="text-xs px-2 py-0.5 rounded-full bg-[#ff66e2] text-[#2a0622] font-semibold">
               NOVO
@@ -245,6 +261,19 @@ export default function VotingCard({ item, reacaoInicial, obsInicial, onReacao, 
               .join(" · ")}
           </div>
         ) : null}
+
+        {premiado && (
+          <div
+            className={`text-xs rounded-lg px-2.5 py-1.5 ${
+              premiado.urgente
+                ? "bg-[rgba(255,59,92,0.14)] text-[#ff8da0]"
+                : "bg-[rgba(255,201,77,0.12)] text-[#ffd77a]"
+            }`}
+          >
+            {premiado.urgente ? "Compra urgente: " : ""}um dos seus 3 favoritos
+            {premiado.nome ? ` (${premiado.nome})` : ""}.
+          </div>
+        )}
 
         {/* Destaques (por que é candidato) */}
         {item.destaques?.length > 0 && (

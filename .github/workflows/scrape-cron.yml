@@ -145,8 +145,13 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           H=$(TZ=America/Sao_Paulo date +%-H)
-          if [ "${{ vars.RODADA_CONTINUA }}" = "false" ] || [ "$H" -lt 7 ] || [ "$H" -ge 20 ]; then
-            echo "fora da janela (ou pausado) — não dispara"; exit 0
+          if [ "${{ vars.RODADA_CONTINUA }}" = "false" ]; then echo "pausado — não dispara"; exit 0; fi
+          if [ "$H" -lt 7 ] || [ "$H" -ge 20 ]; then
+            # Fim do dia: o despertador dorme até 07:00 BRT e religa a corrente (o */5 do
+            # schedule não disparou nenhuma vez de manhã em 27 e 28/10).
+            echo "fora da janela — chamando o despertador das 07h"
+            gh workflow run despertador.yml --repo "${{ github.repository }}" --ref main
+            exit 0
           fi
           if [ "${{ job.status }}" != "success" ]; then echo "rodada com falha — esperando 5 min"; sleep 300; fi
           gh workflow run scrape-cron.yml --repo "${{ github.repository }}" --ref main -f automatico=true
@@ -321,7 +326,7 @@ jobs:
         run: |
           git config user.name "Didi Bot"
           git config user.email "bot@didi.local"
-          git add -A votacao/public/history votacao/public/items.json votacao/public/status.json
+          git add -A votacao/public/history votacao/public/items.json votacao/public/status.json votacao/public/descartados.json
           if git diff --cached --quiet -- votacao/public/items.json; then
             echo "items_mudou=false" >> "$GITHUB_OUTPUT"
           else

@@ -5,7 +5,7 @@ import VotingCard from "@/components/VotingCard";
 import { Item, Reaction, REACTIONS, StatusLista } from "@/lib/types";
 import { hora, instante } from "@/lib/tempo";
 import Link from "next/link";
-import { Archive, ClipboardCheck, History, ListChecks, LineChart } from "lucide-react";
+import { Archive, ClipboardCheck, History, ListChecks, LineChart, ListX } from "lucide-react";
 import {
   ACTIVE_GRADIENT,
   PILL_NEUTRAL,
@@ -226,6 +226,9 @@ export default function Home() {
       (a, b) => instante(b.publicado_em, b.primeiro_visto) - instante(a.publicado_em, a.primeiro_visto)
     );
   }
+  // Short premiado (um dos 3 favoritos do cliente) fica sempre no topo; o urgente antes.
+  const pesoPremiado = (i: Item) => (i.premiado?.urgente ? 0 : i.premiado ? 1 : 2);
+  filtrados.sort((a, b) => pesoPremiado(a) - pesoPremiado(b));
 
   useEffect(() => {
     if (!destaqueId) return;
@@ -317,6 +320,14 @@ export default function Home() {
                   </span>
                 )}
               </button>
+              <Link
+                href="/descartados"
+                aria-label="Descartados"
+                title="Descartados — o que a IA cortou nos últimos dias"
+                className="w-9 h-9 flex items-center justify-center rounded-lg bg-[rgba(255,255,255,0.04)] border border-[rgba(255,255,255,0.07)] text-[#b8b8c0] hover:text-[#f5f5f7] transition-colors"
+              >
+                <ListX size={17} strokeWidth={1.5} aria-hidden />
+              </Link>
               <a
                 href="/history"
                 aria-label="Histórico"

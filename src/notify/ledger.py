@@ -6,7 +6,9 @@ data/notificados.json:
     "notificado_em": "<iso>",
     "marca":         "sundek" | "vilebrequin",
     "decisao":       "compravel" | "medio",
-    "preco":         "64,00 €"
+    "preco":         "64,00 €",
+    "premiado":      1 | 2 | 3 | null,   # avisado como short premiado (modelo)
+    "urgente":       true | false        # avisado como premiado "compra urgente"
   }
 }
 """
@@ -56,6 +58,8 @@ def registrar(ledger: dict, itens: list[dict], marca: str | None = None) -> None
             "marca": it.get("marca") or marca,
             "decisao": it.get("decisao"),
             "preco": it.get("preco"),
+            "premiado": (it.get("premiado") or {}).get("modelo"),
+            "urgente": bool((it.get("premiado") or {}).get("urgente")),
         }
 
 

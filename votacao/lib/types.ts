@@ -27,6 +27,53 @@ export interface Item {
   // Quando entrou na lista (selo NOVO) e quando foi publicado no Vinted ("no ar há X").
   primeiro_visto?: string | null;
   publicado_em?: string | null;
+  // Um dos 3 shorts favoritos do cliente (urgente = anúncio até €20). Ver src/classify/premiado.py.
+  premiado?: Premiado | null;
+}
+
+export interface Premiado {
+  modelo: 1 | 2 | 3;
+  nome: string | null;
+  urgente: boolean;
+}
+
+// votacao/public/descartados.json — o que a IA cortou nos últimos dias (aba Descartados).
+export interface Descartado {
+  id: string;
+  url: string;
+  titulo: string;
+  tamanho: string;
+  estado: string;
+  preco_base: number | null;
+  taxa: number | null;
+  frete: number | null;
+  fotos: string[];
+  primeiro_visto: string | null;
+  publicado_em: string | null;
+  status: string;
+  score: number;
+  grupo: GrupoDescarte;
+  obvio: boolean;
+  motivos: string[];
+  cor: string;
+  listras: string[];
+  elastico: boolean | null;
+}
+
+export type GrupoDescarte =
+  | "nao_e_short"
+  | "tamanho"
+  | "estampa"
+  | "cor"
+  | "detalhe"
+  | "elastico"
+  | "preco"
+  | "outro";
+
+export interface ListaDescartados {
+  gerado_em: string;
+  horas: number;
+  itens: Descartado[];
 }
 
 // votacao/public/status.json — escrito a cada montagem da lista.

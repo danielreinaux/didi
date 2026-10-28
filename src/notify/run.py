@@ -46,8 +46,12 @@ def main() -> None:
     if args.dry_run:
         modo = "seed (1ª vez — não enviaria)" if not led.ja_viu_marca(ledger, args.marca) else "envio"
         print(f"[dry-run {label}] modo={modo} · {len(itens)} candidatos · {len(pendentes)} novo(s):")
+        if pendentes:
+            print("  assunto:", mailer.assunto_premiado(pendentes) or "(oferta comum)")
         for it in pendentes:
             urg = " ⚡" if (it.get("negociacao") or {}).get("comprar_ja") else ""
+            if (it.get("premiado") or {}).get("modelo"):
+                urg += " 🚨 PREMIADO URGENTE" if it["premiado"].get("urgente") else " ⭐ PREMIADO"
             print(f"  - {it.get('decisao', ''):9} {it.get('preco', ''):>10}  {it.get('titulo', '')[:55]}{urg}")
         return
 
@@ -64,7 +68,8 @@ def main() -> None:
         return
 
     n_urg = sum(1 for it in pendentes if (it.get("negociacao") or {}).get("comprar_ja"))
-    assunto = f"🛍️ {len(pendentes)} nova(s) oferta(s) {label}" + (f" ({n_urg} ⚡)" if n_urg else "")
+    assunto = (mailer.assunto_premiado(pendentes)
+               or f"🛍️ {len(pendentes)} nova(s) oferta(s) {label}" + (f" ({n_urg} ⚡)" if n_urg else ""))
     html = mailer.corpo_html(label, pendentes)
 
     mailer.enviar(assunto, html)
