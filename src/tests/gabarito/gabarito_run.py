@@ -48,7 +48,7 @@ except Exception:
 from ...classify.ville_brand import verificar_ville
 from ...classify.tartaruga import classificar_tartaruga
 from ...classify.autenticidade_ville import verificar_autenticidade
-from ...classify.cor import classificar_cor
+from ...classify.cor_fundo_ville import classificar_cor_fundo
 from ...classify.cordao_ville import verificar_cordao
 from ...classify.fecho_ville import verificar_fecho
 from ...classify.etiqueta import verificar_etiqueta
@@ -75,7 +75,7 @@ FN = {
     "marca": verificar_ville,
     "tartaruga": classificar_tartaruga,
     "autenticidade": verificar_autenticidade,
-    "cor": classificar_cor,
+    "cor": classificar_cor_fundo,
     "etiqueta": verificar_etiqueta,
     "cordao": verificar_cordao,
     "fecho": verificar_fecho,
@@ -84,7 +84,7 @@ ARQUIVOS = {
     "marca": ["prompts/verifica_ville.py"],
     "tartaruga": ["prompts/tartaruga.py"],
     "autenticidade": ["prompts/autenticidade_ville.py"],
-    "cor": ["prompts/cor_tier.py", "classify/cor_ville.py"],
+    "cor": ["prompts/cor_fundo_ville.py", "classify/cor_fundo_ville.py", "classify/cor_ville.py"],
     "etiqueta": ["prompts/etiqueta.py"],
     "cordao": ["prompts/cordao_ville.py"],
     "fecho": ["prompts/fecho_ville.py"],

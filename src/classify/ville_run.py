@@ -36,8 +36,8 @@ except Exception:
 from .ville_brand import verificar_ville
 from .tartaruga import classificar_tartaruga
 from .autenticidade_ville import verificar_autenticidade
-from .cor import classificar_cor
 from .cordao_ville import verificar_cordao
+from .cor_fundo_ville import classificar_cor_fundo
 from .fecho_ville import verificar_fecho
 from .etiqueta import verificar_etiqueta
 from .score_ville import calcular_score, _tamanho_key
@@ -259,14 +259,19 @@ def _processar(item: dict, idx: str, total: int) -> tuple[dict, int, int]:
 
     cor = etiqueta = cordao = None
 
-    # 4. Cor (sempre — Ville não tem critério de listras)
+    # 4. Cor de FUNDO (sempre — Ville não tem critério de listras). Agente próprio da Ville
+    #    (o do Sundek lia azul claríssimo como branco e não marcava multicolor/neon).
     try:
-        cor = classificar_cor(item)
+        cor = classificar_cor_fundo(item)
         u = cor.pop("_usage", {})
         in_tok += u.get("prompt_tokens", 0)
         out_tok += u.get("completion_tokens", 0)
-        _track("cor", IA["model"], u.get("prompt_tokens", 0), u.get("completion_tokens", 0))
-        linha += f" | cor={cor.get('cor_principal')} [{cor.get('tier')}]"
+        _track("cor", u.get("model") or IA["model"], u.get("prompt_tokens", 0), u.get("completion_tokens", 0))
+        u2 = u.get("segunda_olhada") or {}
+        if u2:  # Haiku conferindo um "branco"
+            _track("cor_branco", u2.get("model") or "anthropic/claude-haiku-5.5",
+                   u2.get("prompt_tokens", 0), u2.get("completion_tokens", 0))
+        linha += f" | cor={cor.get('cor_principal')}"
     except Exception as e:
         cor = {"tier": "erro", "erro": str(e)}
 

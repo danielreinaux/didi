@@ -29,6 +29,10 @@ _PENALIZA_RE = re.compile(
     re.IGNORECASE,
 )
 
+# Fundo de várias cores (listras largas, arco-íris, degradê): o cliente marca como penalizada no
+# gabarito (30/10/2026) — mesma regra do fundo multicolor/gradiente do tartaruga (bucket_cor_item).
+_MULTICOLOR_RE = re.compile(r"multicolor|multicor|arco[\s-]?[íi]ris|listrad", re.IGNORECASE)
+
 # Cores preferidas ("muito bonitas") — liberam as faixas altas.
 _PRETO_RE = re.compile(r"\bpreto\b|\bnoir\b|\bblack\b|\bnegro\b", re.I)
 _BRANCO_RE = re.compile(r"\bbranco\b|\bblanc\b|\bwhite\b|\bbianco\b", re.I)
@@ -56,7 +60,7 @@ def bucket_cor(nome: str | None) -> str:
     if not n:
         return "aceitavel"
 
-    if _PENALIZA_RE.search(n):
+    if _PENALIZA_RE.search(n) or _MULTICOLOR_RE.search(n):
         return "penalizada"
 
     # Vermelho preferido só se NÃO for alaranjado/coral/salmão.

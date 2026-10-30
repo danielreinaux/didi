@@ -126,6 +126,10 @@ IA_ROTAS = {
     # Flash-Lite 92%, US$0,0015/item (4o: 0,0037). O erro que sobra é fivela↔botão (os dois excluem).
     "ville:fecho": {"to": "openrouter:google/gemini-3.5-flash-lite", **_GEMINI3,
                     "reserva": {"to": "openrouter:anthropic/claude-haiku-5.5", "min_tokens": 1500}},
+    # cor de fundo da Ville: o principal fica no gpt-4o-mini (sem rota = OpenAI; com o prompt
+    # cor_fundo_ville deu 91% vs 84–89% dos outros). Quando ele diz "branco", o Haiku 5.5 confere
+    # (classify/cor_fundo_ville.py): o mini lia azul claríssimo como branco.
+    "ville:cor_fundo_branco": {"to": "openrouter:anthropic/claude-haiku-5.5", "min_tokens": 1500},
 }
 
 # Modelo da OpenAI por agente, para agente SEM rota no OpenRouter (src/utils/llm.py).
