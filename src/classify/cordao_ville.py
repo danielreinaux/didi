@@ -10,6 +10,7 @@ import os
 from openai import OpenAI
 
 from ..config import IA
+from ..utils import llm
 from ..prompts import cordao_ville as prompt
 from ..utils.ratelimit import pace_mini
 
@@ -28,7 +29,9 @@ def _get_client() -> OpenAI:
 
 def verificar_cordao(item: dict) -> dict:
     """Retorna dict com cordao_cor, evidencia, confianca, _usage."""
-    fotos = (item.get("fotos") or [])[:4]
+    # 8 fotos em high (era 4 em low): o cordão/fecho costuma estar numa foto de detalhe e
+    # fino demais pra baixa resolução. Gabarito Ville 30/10/2026 → ver config.IA_ROTAS.
+    fotos = (item.get("fotos") or [])[:8]
     if not fotos:
         return {
             "cordao_cor": "indefinido",
@@ -39,11 +42,13 @@ def verificar_cordao(item: dict) -> dict:
 
     conteudo = [
         {"type": "text", "text": prompt.usuario(item.get("titulo") or "")},
-        *[{"type": "image_url", "image_url": {"url": u, "detail": "low"}} for u in fotos],
+        *[{"type": "image_url", "image_url": {"url": u, "detail": "high"}} for u in fotos],
     ]
 
-    pace_mini()
-    resp = _get_client().chat.completions.create(
+    if not llm.tem_rota("ville:cordao"):
+        pace_mini()
+    resp = llm.create(
+        "ville:cordao",
         model=IA["model"],
         messages=[
             {"role": "system", "content": prompt.SISTEMA},
@@ -68,5 +73,6 @@ def verificar_cordao(item: dict) -> dict:
     parsed["_usage"] = {
         "prompt_tokens": resp.usage.prompt_tokens,
         "completion_tokens": resp.usage.completion_tokens,
+        "model": resp.model,
     }
     return parsed

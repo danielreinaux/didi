@@ -116,6 +116,16 @@ IA_ROTAS = {
     "sundek:bolso": {"to": "openrouter:google/gemini-3.5-flash-lite", **_GEMINI3},
     # etiqueta: Δ0, decisão igual; US$0,0001 (mini: 0,0016)
     "sundek:etiqueta": {"to": "openrouter:qwen/qwen3.7-flash", **_SEM_RACIOCINIO},
+    # Ville (gabarito ville + compráveis ville, 77 itens com resposta, 30/10/2026; 8 fotos em high):
+    # cordão: gpt-4o-mini low/4 fotos 78% (achava 2 de 11 cordões CINZA = coleção antiga) →
+    # Gemini 3.5 Flash-Lite 94% nas 2 rodadas (10 de 11 cinzas), US$0,0017/item (mini: 0,0015).
+    # Haiku 5.5 deu 91–92% (reserva). gpt-6.1-sol 95% a US$0,0096.
+    "ville:cordao": {"to": "openrouter:google/gemini-3.5-flash-lite", **_GEMINI3,
+                     "reserva": {"to": "openrouter:anthropic/claude-haiku-5.5", "min_tokens": 1500}},
+    # fecho: gpt-4o low/4 fotos 83% (6 cordões e 4 fivelas viravam "indefinido") → Gemini 3.5
+    # Flash-Lite 92%, US$0,0015/item (4o: 0,0037). O erro que sobra é fivela↔botão (os dois excluem).
+    "ville:fecho": {"to": "openrouter:google/gemini-3.5-flash-lite", **_GEMINI3,
+                    "reserva": {"to": "openrouter:anthropic/claude-haiku-5.5", "min_tokens": 1500}},
 }
 
 # Modelo da OpenAI por agente, para agente SEM rota no OpenRouter (src/utils/llm.py).

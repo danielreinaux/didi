@@ -18,7 +18,7 @@ except Exception:
 
 from .gabarito_diff import (
     _arg, _norm, _carregar, _graded, _item_100,
-    CRITERIOS, LABELS, REG, PUBLIC,
+    CRITERIOS, LABELS, REG, PUBLIC, GATE_CRITS,
 )
 
 
@@ -54,8 +54,14 @@ def main() -> None:
             t = truth[iid]
             if not _graded(t, c):
                 continue
+            ia = R.get(iid, {})
+            # Item barrado no portão pelo título (polo, camisa…) não responde o OUTRO critério do
+            # portão; se a verdade também manda excluir, não é erro — é pergunta não feita.
+            if (c in GATE_CRITS and _norm(ia.get(c)) == "n_a" and ia.get("_gate") in ("nao_ville", "nao_short")
+                    and (t.get("e_vilebrequin") == "nao" or t.get("e_short") == "nao")):
+                continue
             n += 1
-            if _norm(R.get(iid, {}).get(c)) == _norm(t.get(c)):
+            if _norm(ia.get(c)) == _norm(t.get(c)):
                 ok += 1
             else:
                 erros.append(iid)

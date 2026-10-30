@@ -290,7 +290,7 @@ def _processar(item: dict, idx: str, total: int) -> tuple[dict, int, int]:
         u = cordao.pop("_usage", {})
         in_tok += u.get("prompt_tokens", 0)
         out_tok += u.get("completion_tokens", 0)
-        _track("cordao", IA["model"], u.get("prompt_tokens", 0), u.get("completion_tokens", 0))
+        _track("cordao", u.get("model") or IA["model"], u.get("prompt_tokens", 0), u.get("completion_tokens", 0))
         cc = cordao.get("cordao_cor")
         if cc == "cinza":
             linha += " | cordão=cinza (antiga)"
@@ -306,7 +306,7 @@ def _processar(item: dict, idx: str, total: int) -> tuple[dict, int, int]:
         u = fecho.pop("_usage", {})
         in_tok += u.get("prompt_tokens", 0)
         out_tok += u.get("completion_tokens", 0)
-        _track("fecho", IA["model_detalhes"], u.get("prompt_tokens", 0), u.get("completion_tokens", 0))
+        _track("fecho", u.get("model") or IA["model_detalhes"], u.get("prompt_tokens", 0), u.get("completion_tokens", 0))
         tf = fecho.get("tipo_fechamento")
         if tf in ("botao", "fivela", "velcro"):
             linha += f" | fecho={tf}✗"

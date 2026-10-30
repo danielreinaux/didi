@@ -81,6 +81,11 @@ def _item_100(ia_item: dict, truth_item: dict) -> bool | None:
         return None
     excluir_no_gate = truth_item.get("e_vilebrequin") == "nao" or truth_item.get("e_short") == "nao"
     if excluir_no_gate:
+        # O pipeline excluiu o item no portão (pelo título ou pela IA de marca): a decisão está
+        # certa mesmo que o outro critério do portão tenha ficado sem resposta (polo "Vilebrequin"
+        # barrado como não-short não responde e_vilebrequin).
+        if ia_item.get("_gate") in ("nao_ville", "nao_short"):
+            return True
         alvos = [c for c in GATE_CRITS if truth_item.get(c) == "nao"]
     else:
         alvos = graded

@@ -13,6 +13,7 @@ import os
 from openai import OpenAI
 
 from ..config import IA
+from ..utils import llm
 from ..prompts import fecho_ville as prompt
 from ..utils.ratelimit import pace_gpt4o
 
@@ -31,7 +32,9 @@ def _get_client() -> OpenAI:
 
 def verificar_fecho(item: dict) -> dict:
     """Retorna dict com tipo_fechamento, evidencia, confianca, _usage."""
-    fotos = (item.get("fotos") or [])[:4]
+    # 8 fotos em high (era 4 em low): o cordão/fecho costuma estar numa foto de detalhe e
+    # fino demais pra baixa resolução. Gabarito Ville 30/10/2026 → ver config.IA_ROTAS.
+    fotos = (item.get("fotos") or [])[:8]
     if not fotos:
         return {
             "tipo_fechamento": "indefinido",
@@ -42,11 +45,13 @@ def verificar_fecho(item: dict) -> dict:
 
     conteudo = [
         {"type": "text", "text": prompt.usuario(item.get("titulo") or "")},
-        *[{"type": "image_url", "image_url": {"url": u, "detail": "low"}} for u in fotos],
+        *[{"type": "image_url", "image_url": {"url": u, "detail": "high"}} for u in fotos],
     ]
 
-    pace_gpt4o()
-    resp = _get_client().chat.completions.create(
+    if not llm.tem_rota("ville:fecho"):
+        pace_gpt4o()
+    resp = llm.create(
+        "ville:fecho",
         model=IA["model_detalhes"],
         messages=[
             {"role": "system", "content": prompt.SISTEMA},
@@ -71,5 +76,6 @@ def verificar_fecho(item: dict) -> dict:
     parsed["_usage"] = {
         "prompt_tokens": resp.usage.prompt_tokens,
         "completion_tokens": resp.usage.completion_tokens,
+        "model": resp.model,
     }
     return parsed
