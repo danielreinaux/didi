@@ -2,19 +2,9 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import VotingCard from "@/components/VotingCard";
-import { Item, Reaction, REACTIONS, StatusLista } from "@/lib/types";
-import { hora, instante } from "@/lib/tempo";
-import Link from "next/link";
-import { Archive, ClipboardCheck, History, ListChecks, LineChart, ListX } from "lucide-react";
-import {
-  ACTIVE_GRADIENT,
-  PILL_NEUTRAL,
-  HEADER_BG,
-  TEXT_SECONDARY,
-  TEXT_TERTIARY,
-  SEGMENTED_BTN,
-  SEGMENTED_INACTIVE,
-} from "@/lib/theme";
+import { Item, Reaction, StatusLista } from "@/lib/types";
+import { instante } from "@/lib/tempo";
+import { Archive, ArrowLeft } from "lucide-react";
 
 type Filtro = "todos" | "compravel" | "medio" | "nao_votados";
 type Ordem = "recentes" | "melhores";
@@ -23,18 +13,14 @@ type Ordem = "recentes" | "melhores";
 const CHECAR_MS = 60_000;
 type Loja = "sundek" | "ville";
 
-const LOJAS: { key: Loja; label: string }[] = [
-  { key: "sundek", label: "Sundek" },
-  // Ville desligada em 20/10/2026 (foco 100% Sundek) — volta descomentando:
-  // { key: "ville", label: "Ville" },
-];
+// Ville desligada em 20/10/2026 (foco 100% Sundek): a loja fica fixa em "sundek".
 
 export default function Home() {
   const [items, setItems] = useState<Item[]>([]);
   const [reacoes, setReacoes] = useState<Record<string, Reaction>>({});
   const [obs, setObs] = useState<Record<string, string>>({});
   const [filtro, setFiltro] = useState<Filtro>("todos");
-  const [loja, setLoja] = useState<Loja>("sundek");
+  const [loja] = useState<Loja>("sundek");
   // Ids arquivados (global, vindos do Redis) e se estamos na visão de arquivados.
   const [arquivados, setArquivados] = useState<Set<string>>(new Set());
   const [verArquivados, setVerArquivados] = useState(false);
@@ -43,7 +29,7 @@ export default function Home() {
   // Falha ao carregar as ofertas — distingue "deu erro" de "lista vazia".
   const [erroCarregar, setErroCarregar] = useState(false);
   // Atualização automática: horário da lista publicada + relógio pros "há X min".
-  const [status, setStatus] = useState<StatusLista | null>(null);
+  const [, setStatus] = useState<StatusLista | null>(null);
   const statusRef = useRef<string | null>(null);
   const [agora, setAgora] = useState(() => Date.now());
   // Ids que chegaram na última atualização automática (aviso "N novas ofertas").
@@ -57,7 +43,7 @@ export default function Home() {
   const linkTratado = useRef(false);
   const linkId = useRef<string | null>(null);
   const mainRef = useRef<HTMLDivElement>(null);
-  const headerRef = useRef<HTMLElement>(null);
+  const headerRef = useRef<HTMLDivElement>(null);
 
   // Faz o fetch das ofertas. Os setState ficam em callbacks async (não disparam no corpo do effect).
   // `?t=` fura o cache do navegador/CDN; `silencioso` = atualização automática (sem spinner).
@@ -203,6 +189,13 @@ export default function Home() {
   // Quantos arquivados existem nessa loja (pro badge do botão "Ver arquivados").
   const nArquivados = itensDaMarca.filter((i) => arquivados.has(i.id)).length;
 
+  // Número do menu lateral = ofertas não arquivadas (mesmo número da tela base).
+  const nNaoArquivados = itensDaMarca.length - nArquivados;
+  useEffect(() => {
+    if (carregando) return;
+    window.dispatchEvent(new CustomEvent("didi:ofertas", { detail: nNaoArquivados }));
+  }, [nNaoArquivados, carregando]);
+
   // Tela base = só não-arquivados; visão de arquivados = só os arquivados.
   const itensLoja = itensDaMarca.filter((i) =>
     verArquivados ? arquivados.has(i.id) : !arquivados.has(i.id)
@@ -211,7 +204,6 @@ export default function Home() {
   const compraveis = itensLoja.filter((i) => i.decisao === "compravel").length;
   const barganhas = itensLoja.filter((i) => i.decisao === "medio").length;
   const votados = itensLoja.filter((i) => reacoes[i.id]).length;
-  const progresso = itensLoja.length ? Math.round((votados / itensLoja.length) * 100) : 0;
 
   const filtrados = itensLoja.filter((i) => {
     if (filtro === "compravel") return i.decisao === "compravel";
@@ -255,232 +247,144 @@ export default function Home() {
     mainRef.current?.scrollTo({ top: 0, behavior: "smooth" });
   }
 
-  const botao = (f: Filtro, label: string) => (
-    <button
-      onClick={() => setFiltro(f)}
-      className={`px-3 py-1.5 rounded-lg text-xs transition-all ${
-        filtro === f ? ACTIVE_GRADIENT : PILL_NEUTRAL
-      }`}
-    >
-      {label}
-    </button>
-  );
+  const FILTROS: { f: Filtro; label: string; n: number }[] = [
+    { f: "todos", label: "Todas", n: itensLoja.length },
+    { f: "compravel", label: "Compráveis", n: compraveis },
+    { f: "medio", label: "Barganhas", n: barganhas },
+    { f: "nao_votados", label: "Para avaliar", n: itensLoja.length - votados },
+  ];
+
+  // Frase de resumo no topo (o que importa: quanto tem pra comprar agora).
+  const resumo = verArquivados
+    ? `${itensLoja.length} ${itensLoja.length === 1 ? "anúncio arquivado" : "anúncios arquivados"}. Desarquive para trazer de volta à lista.`
+    : itensLoja.length === 0
+      ? "Nenhuma oferta à venda agora. O robô avisa por e-mail quando aparecer uma."
+      : `${compraveis} ${compraveis === 1 ? "comprável" : "compráveis"} e ${barganhas} ${
+          barganhas === 1 ? "barganha" : "barganhas"
+        } à venda agora. Você avaliou ${votados} de ${itensLoja.length}.`;
 
   return (
     <div ref={mainRef} className="h-full overflow-y-auto">
-      <header ref={headerRef} className={`sticky top-0 z-20 ${HEADER_BG}`}>
-        <div className="app-wrap py-3 flex flex-col gap-3">
-          {/* Linha 1: seletor de loja + atalho de resultados */}
-          <div className="flex items-center justify-between gap-3 flex-wrap">
-            <div className="flex items-center gap-2">
-              <div className="inline-flex p-1 rounded-xl bg-[rgba(255,255,255,0.04)] border border-[rgba(255,255,255,0.07)]">
-                {LOJAS.map((l) => (
-                  <button
-                    key={l.key}
-                    onClick={() => setLoja(l.key)}
-                    className={`${SEGMENTED_BTN} ${
-                      loja === l.key ? ACTIVE_GRADIENT : SEGMENTED_INACTIVE
-                    }`}
-                  >
-                    {l.label}
-                  </button>
-                ))}
-              </div>
-              {/* Decisões pendentes do cliente (regras de compra + rótulos do gabarito).
-                  Fica ao lado do seletor de loja pra não empurrar o cluster de ações
-                  pra uma 3ª linha no celular. */}
-              <Link
-                href="/decisoes"
-                title="Decisões pendentes — regras de compra e rótulos do gabarito"
-                className="h-9 px-3 flex items-center gap-1.5 rounded-lg text-xs bg-[rgba(255,102,226,0.1)] border border-[rgba(255,102,226,0.3)] text-[#ff66e2] hover:bg-[rgba(255,102,226,0.16)] transition-colors"
-              >
-                <ClipboardCheck size={16} strokeWidth={1.5} aria-hidden />
-                Decisões
-              </Link>
+      <div className="app-wrap pt-6 lg:pt-10 pb-12">
+        <div className="max-w-[1180px]">
+          <div className="flex items-start justify-between gap-4">
+            <div className="min-w-0">
+              <h1 className="text-[32px] lg:text-[40px] font-bold leading-none text-ink">
+                {verArquivados ? "Arquivadas" : "Ofertas"}
+              </h1>
+              <p className="mt-2 text-[15px] text-ink-2 max-w-[60ch]">{resumo}</p>
             </div>
-            {/* Ações — Arquivar/Histórico como ícones secundários; "Ver resultados"
-                em destaque (pill com o gradiente ativo). O contador foi pro cluster
-                da esquerda, junto da barra de progresso. */}
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => setVerArquivados((v) => !v)}
-                aria-pressed={verArquivados}
-                aria-label={verArquivados ? "Voltar à lista" : "Ver arquivados"}
-                title={verArquivados ? "Voltar à lista" : `Ver arquivados${nArquivados ? ` (${nArquivados})` : ""}`}
-                className={`relative w-9 h-9 flex items-center justify-center rounded-lg border transition-colors ${
-                  verArquivados
-                    ? "bg-[rgba(0,217,255,0.15)] text-[#00d9ff] border-[rgba(0,217,255,0.3)]"
-                    : "bg-[rgba(255,255,255,0.04)] text-[#b8b8c0] border-[rgba(255,255,255,0.07)] hover:text-[#f5f5f7]"
-                }`}
-              >
-                <Archive size={17} strokeWidth={1.5} aria-hidden />
-                {!verArquivados && nArquivados > 0 && (
-                  <span className="absolute -top-0.5 -right-0.5 min-w-[16px] h-4 px-1 flex items-center justify-center text-[10px] rounded-full bg-[#00d9ff] text-[#032630]">
-                    {nArquivados}
-                  </span>
-                )}
-              </button>
-              <Link
-                href="/descartados"
-                aria-label="Descartados"
-                title="Descartados — o que a IA cortou nos últimos dias"
-                className="w-9 h-9 flex items-center justify-center rounded-lg bg-[rgba(255,255,255,0.04)] border border-[rgba(255,255,255,0.07)] text-[#b8b8c0] hover:text-[#f5f5f7] transition-colors"
-              >
-                <ListX size={17} strokeWidth={1.5} aria-hidden />
-              </Link>
-              <a
-                href="/history"
-                aria-label="Histórico"
-                title="Histórico"
-                className="w-9 h-9 flex items-center justify-center rounded-lg bg-[rgba(255,255,255,0.04)] border border-[rgba(255,255,255,0.07)] text-[#b8b8c0] hover:text-[#f5f5f7] transition-colors"
-              >
-                <History size={17} strokeWidth={1.5} aria-hidden />
-              </a>
-              <a
-                href="/custo"
-                aria-label="Dashboard de custo"
-                title="Dashboard de custo"
-                className="w-9 h-9 flex items-center justify-center rounded-lg bg-[rgba(255,255,255,0.04)] border border-[rgba(255,255,255,0.07)] text-[#b8b8c0] hover:text-[#f5f5f7] transition-colors"
-              >
-                <LineChart size={17} strokeWidth={1.5} aria-hidden />
-              </a>
-              <a
-                href="/resultados"
-                className={`h-9 px-3.5 flex items-center gap-1.5 rounded-lg text-xs ${ACTIVE_GRADIENT}`}
-              >
-                <ListChecks size={16} strokeWidth={1.5} aria-hidden />
-                Ver resultados
-              </a>
-            </div>
+            <button
+              onClick={() => setVerArquivados((v) => !v)}
+              aria-pressed={verArquivados}
+              aria-label={verArquivados ? "Voltar às ofertas" : `Arquivadas (${nArquivados})`}
+              className="flex-none h-9 px-2.5 sm:px-3 inline-flex items-center gap-2 rounded-lg text-sm bg-surface border border-line text-ink-2 hover:text-ink hover:border-line-strong transition-colors"
+            >
+              {verArquivados ? <ArrowLeft size={16} aria-hidden /> : <Archive size={16} aria-hidden />}
+              <span className="hidden sm:inline">{verArquivados ? "Voltar às ofertas" : "Arquivadas"}</span>
+              {!verArquivados && nArquivados > 0 && (
+                <span className="num text-xs px-1.5 rounded bg-sunken text-ink-2">{nArquivados}</span>
+              )}
+            </button>
           </div>
 
-          {/* Linha 2: contexto. O segmented acima já nomeia a loja — o h1 fica só
-              pra leitor de tela / route announcer; a leitura visual são os chips. */}
-          <h1 className="sr-only">
-            {loja === "ville" ? "Ville" : "Sundek"}{verArquivados ? " · Arquivados" : ""}
-          </h1>
-          {verArquivados ? (
-            <p className={`text-xs ${TEXT_SECONDARY}`}>
-              Itens arquivados — use “↩ Desarquivar” pra trazer de volta pra tela base.
-            </p>
-          ) : (
-            <div className="flex items-center gap-2 flex-wrap">
-              <span className="text-xs px-2.5 py-1 rounded-full bg-[rgba(0,255,136,0.12)] text-[#00ff88]">
-                {compraveis} {compraveis === 1 ? "comprável" : "compráveis"}
-              </span>
-              <span className="text-xs px-2.5 py-1 rounded-full bg-[rgba(255,170,0,0.12)] text-[#ffaa00]">
-                {barganhas} {barganhas === 1 ? "barganha" : "barganhas"}
-              </span>
-              <span className={`text-xs ${TEXT_TERTIARY}`}>{votados}/{itensLoja.length} avaliados</span>
-              {hora(status?.gerado_em) && (
-                <span
-                  className={`text-xs ${TEXT_TERTIARY}`}
-                  title="A lista se atualiza sozinha. O robô procura anúncios novos a cada ~5 min, das 07h às 20h."
-                >
-                  · atualizado às {hora(status?.gerado_em)}
-                </span>
-              )}
-            </div>
-          )}
-          <div className="w-full h-1.5 bg-[rgba(255,255,255,0.04)] rounded-full overflow-hidden">
-            <div
-              className="h-full rounded-full bg-[#00d9ff] transition-all"
-              style={{ width: `${progresso}%` }}
-            />
-          </div>
-          <div className="flex gap-2 flex-wrap items-center">
-            {botao("todos", `Todos (${itensLoja.length})`)}
-            {botao("compravel", `Compráveis (${compraveis})`)}
-            {botao("medio", `Barganha (${barganhas})`)}
-            {botao("nao_votados", `Não avaliados (${itensLoja.length - votados})`)}
-            <div className="ml-auto inline-flex p-0.5 rounded-lg bg-[rgba(255,255,255,0.04)] border border-[rgba(255,255,255,0.07)]">
-              {(
-                [
-                  ["recentes", "Mais recentes"],
-                  ["melhores", "Melhores"],
-                ] as [Ordem, string][]
-              ).map(([o, label]) => (
+          {/* Filtros: fixos no topo ao rolar (o deep link desconta a altura deles) */}
+          <div
+            ref={headerRef}
+            className="sticky top-0 z-20 -mx-4 px-4 sm:mx-0 sm:px-0 mt-5 py-3 bg-canvas/95 backdrop-blur-sm flex items-center gap-2"
+          >
+            <div className="flex-1 min-w-0 flex gap-1.5 overflow-x-auto [scrollbar-width:none]" role="group" aria-label="Filtrar ofertas">
+              {FILTROS.map(({ f, label, n }) => (
                 <button
-                  key={o}
-                  onClick={() => mudarOrdem(o)}
-                  aria-pressed={ordem === o}
-                  className={`px-2.5 py-1 rounded-md text-xs transition-all ${
-                    ordem === o ? ACTIVE_GRADIENT : SEGMENTED_INACTIVE
+                  key={f}
+                  onClick={() => setFiltro(f)}
+                  aria-pressed={filtro === f}
+                  className={`h-9 px-3 flex-none inline-flex items-center gap-1.5 rounded-full text-sm transition-colors ${
+                    filtro === f ? "bg-ink text-white" : "bg-surface border border-line text-ink-2 hover:text-ink hover:border-line-strong"
                   }`}
                 >
                   {label}
+                  <span className={`num text-xs ${filtro === f ? "text-white/70" : "text-ink-3"}`}>{n}</span>
                 </button>
               ))}
             </div>
+            <label className="flex-none flex items-center gap-2 text-sm text-ink-2">
+              <span className="sr-only lg:not-sr-only">Ordenar por</span>
+              <select
+                value={ordem}
+                onChange={(e) => mudarOrdem(e.target.value as Ordem)}
+                className="h-9 pl-3 pr-8 rounded-lg bg-surface border border-line text-sm text-ink appearance-none bg-[url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2212%22 height=%2212%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%234b5462%22 stroke-width=%222.5%22><path d=%22m6 9 6 6 6-6%22/></svg>')] bg-no-repeat bg-[right_0.7rem_center]"
+              >
+                <option value="recentes">Recentes</option>
+                <option value="melhores">Melhor nota</option>
+              </select>
+            </label>
           </div>
+
           {chegaram.length > 0 && (
             <button
               onClick={verChegaram}
-              className="w-full text-sm rounded-lg px-3 py-2 bg-[rgba(255,102,226,0.14)] border border-[rgba(255,102,226,0.35)] text-[#ff66e2] hover:bg-[rgba(255,102,226,0.2)] transition-colors"
+              className="mt-2 w-full flex items-center justify-between gap-3 text-sm rounded-lg px-4 py-3 bg-info text-white hover:bg-[#244bb4] transition-colors"
             >
-              {chegaram.length === 1 ? "1 oferta nova chegou" : `${chegaram.length} ofertas novas chegaram`} — ver
+              <span className="font-medium">
+                {chegaram.length === 1 ? "Chegou 1 oferta nova" : `Chegaram ${chegaram.length} ofertas novas`}
+              </span>
+              <span className="text-white/85">Mostrar</span>
             </button>
           )}
           {avisoLink && (
-            <p className="text-xs rounded-lg px-3 py-2 bg-[rgba(255,170,0,0.1)] text-[#ffcc66] flex items-center gap-2">
+            <p className="mt-2 text-sm rounded-lg px-4 py-3 bg-deal-soft text-[#7a4600] flex items-center gap-3" role="status">
               {avisoLink}
-              <button onClick={() => setAvisoLink(null)} className="ml-auto underline">
-                ok
+              <button onClick={() => setAvisoLink(null)} className="ml-auto font-medium underline underline-offset-2">
+                Entendi
               </button>
             </p>
           )}
+
+          <main className="mt-4">
+            {carregando ? (
+              <div className="flex flex-col items-center gap-3 py-24 text-sm text-ink-3" role="status">
+                <span className="w-6 h-6 rounded-full border-2 border-line border-t-ink animate-spin" aria-hidden />
+                Carregando ofertas…
+              </div>
+            ) : erroCarregar ? (
+              <div className="flex flex-col items-center gap-3 py-24 text-sm text-ink-2" role="alert">
+                A lista de ofertas não carregou. Confira a conexão e tente de novo.
+                <button onClick={recarregar} className="h-9 px-4 rounded-lg text-sm font-semibold bg-ink text-white">
+                  Tentar de novo
+                </button>
+              </div>
+            ) : filtrados.length === 0 ? (
+              <div className="py-20 text-center">
+                <p className="text-ink font-medium">
+                  {verArquivados ? "Nada arquivado aqui." : filtro === "nao_votados" ? "Tudo avaliado." : "Nenhuma oferta neste filtro."}
+                </p>
+                <p className="mt-1 text-sm text-ink-3">
+                  {verArquivados
+                    ? "Os anúncios que você arquivar aparecem aqui."
+                    : "Quando o robô achar um anúncio que passa nas regras, ele aparece aqui e chega por e-mail."}
+                </p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {filtrados.map((item) => (
+                  <VotingCard
+                    key={item.id}
+                    item={item}
+                    reacaoInicial={reacoes[item.id]}
+                    obsInicial={obs[item.id]}
+                    onReacao={onReacao}
+                    arquivado={verArquivados}
+                    onArquivar={onArquivar}
+                    agora={agora}
+                    destaque={destaqueId === item.id}
+                  />
+                ))}
+              </div>
+            )}
+          </main>
         </div>
-      </header>
-
-      <main className="app-wrap py-6">
-        {carregando ? (
-          <div className={`flex flex-col items-center gap-3 mt-24 text-sm ${TEXT_TERTIARY}`}>
-            <span className="w-6 h-6 rounded-full border-2 border-[rgba(255,255,255,0.15)] border-t-[#00d9ff] animate-spin" />
-            Carregando ofertas…
-          </div>
-        ) : erroCarregar ? (
-          <div className={`flex flex-col items-center gap-3 mt-24 text-sm ${TEXT_TERTIARY}`}>
-            Não consegui carregar as ofertas.
-            <button
-              onClick={recarregar}
-              className={`px-3 py-1.5 rounded-lg text-xs ${PILL_NEUTRAL}`}
-            >
-              Recarregar
-            </button>
-          </div>
-        ) : filtrados.length === 0 ? (
-          <p className={`text-center mt-20 text-sm ${TEXT_TERTIARY}`}>
-            {verArquivados ? "Nenhum item arquivado aqui." : "Nenhum item aqui."}
-          </p>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {filtrados.map((item) => (
-              <VotingCard
-                key={item.id}
-                item={item}
-                reacaoInicial={reacoes[item.id]}
-                obsInicial={obs[item.id]}
-                onReacao={onReacao}
-                arquivado={verArquivados}
-                onArquivar={onArquivar}
-                agora={agora}
-                destaque={destaqueId === item.id}
-              />
-            ))}
-          </div>
-        )}
-
-        <footer className={`flex flex-wrap items-center justify-center gap-x-5 gap-y-1 text-xs ${TEXT_TERTIARY} mt-8 pb-8`}>
-          {REACTIONS.map((r) => {
-            const Icon = r.icon;
-            return (
-              <span key={r.key} className="inline-flex items-center gap-1.5">
-                <Icon size={14} strokeWidth={1.5} aria-hidden /> {r.label}
-              </span>
-            );
-          })}
-        </footer>
-      </main>
+      </div>
     </div>
   );
 }

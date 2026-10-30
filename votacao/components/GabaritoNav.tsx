@@ -1,8 +1,8 @@
 "use client";
 
-// Seletor de navegação entre os 3 gabaritos (só aparece nas telas de gabarito).
-// Destaca o atual e leva pros outros dois.
-import { ACTIVE_GRADIENT, SEGMENTED_BTN, SEGMENTED_INACTIVE } from "@/lib/theme";
+// Seletor de navegação entre os gabaritos (só aparece nas telas de gabarito).
+// Destaca o atual e leva pros outros.
+import { SEGMENTED_ACTIVE, SEGMENTED_BTN, SEGMENTED_GROUP, SEGMENTED_INACTIVE } from "@/lib/theme";
 
 const GABARITOS: { href: string; label: string }[] = [
   // Ville desligada em 20/10/2026 (foco 100% Sundek):
@@ -14,18 +14,17 @@ const GABARITOS: { href: string; label: string }[] = [
 
 export default function GabaritoNav({ atual }: { atual: string }) {
   return (
-    <div className="inline-flex p-1 rounded-xl bg-[rgba(255,255,255,0.04)] border border-[rgba(255,255,255,0.07)] flex-wrap">
+    <nav aria-label="Conjuntos do gabarito" className={`${SEGMENTED_GROUP} flex-wrap w-fit`}>
       {GABARITOS.map((g) => (
         <a
           key={g.href}
           href={g.href}
-          className={`${SEGMENTED_BTN} ${
-            g.href === atual ? ACTIVE_GRADIENT : SEGMENTED_INACTIVE
-          }`}
+          aria-current={g.href === atual ? "page" : undefined}
+          className={`${SEGMENTED_BTN} ${g.href === atual ? SEGMENTED_ACTIVE : SEGMENTED_INACTIVE}`}
         >
           {g.label}
         </a>
       ))}
-    </div>
+    </nav>
   );
 }

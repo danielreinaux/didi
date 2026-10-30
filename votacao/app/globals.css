@@ -1,65 +1,131 @@
 @import "tailwindcss";
 
-:root {
-  --background: #0a0a0c;
-  --foreground: #f5f5f7;
+/* Didi — radar de revenda. Paleta clara de "algodão + nanquim + kraft":
+   o kraft (etiqueta de preço de brechó) é o único elemento marcante; o resto é quieto.
+   Cores de sinal (comprar, barganha, urgente, premiado) só aparecem com significado. */
+@theme {
+  --color-canvas: #f2f3f1;      /* fundo: algodão cru, frio (não creme) */
+  --color-surface: #ffffff;     /* cartões, painéis */
+  --color-sunken: #e8eae6;      /* trilho de controles, campos */
+  --color-line: #dcdfd8;        /* divisórias */
+  --color-line-strong: #c4c8c0;
+  --color-ink: #1b2433;         /* texto principal: azul-nanquim */
+  --color-ink-2: #4b5462;       /* texto secundário */
+  --color-ink-3: #7b828c;       /* texto de apoio */
 
-  /* Carbon — paleta única */
-  --carbon-cyan: #00d9ff;
-  --carbon-green: #00ff88;
-  --carbon-amber: #ffaa00;
-  --carbon-magenta: #ff66e2;
-  --carbon-neutral: #6b6b78;
+  --color-kraft: #dcc596;       /* etiqueta de preço */
+  --color-kraft-deep: #b89a62;
+  --color-kraft-ink: #3d2f14;
 
-  --text-primary: #f5f5f7;
-  --text-secondary: #b8b8c0;
-  --text-tertiary: #6b6b78;
+  --color-buy: #13784a;         /* comprável */
+  --color-buy-soft: #e2f1e9;
+  --color-deal: #a65f00;        /* barganha */
+  --color-deal-soft: #fbefd9;
+  --color-urgent: #c4302b;      /* compra urgente / erro */
+  --color-urgent-soft: #fbe7e5;
+  --color-gold: #8a6400;        /* short premiado */
+  --color-gold-soft: #fff1c4;
+  --color-info: #2d5bd7;        /* links, foco, dados neutros */
+  --color-info-soft: #e7edfb;
 
-  --card-bg: rgba(255,255,255,0.025);
-  --card-border: rgba(255,255,255,0.07);
-  --pill-bg: rgba(255,255,255,0.04);
+  --font-sans: var(--font-instrument), "Instrument Sans", system-ui, sans-serif;
+  --font-display: var(--font-bricolage), "Bricolage Grotesque", var(--font-instrument), system-ui, sans-serif;
+
+  --radius-tag: 6px;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-poppins), "Poppins", system-ui, sans-serif;
+:root {
+  color-scheme: light;
+  --background: var(--color-canvas);
+  --foreground: var(--color-ink);
 }
 
 html {
   height: 100%;
+  -webkit-tap-highlight-color: rgba(27, 36, 51, 0.08);
 }
 
 body {
   height: 100%;
-  background: var(--background);
-  background-image: radial-gradient(ellipse at top, #1a1a1e 0%, #0a0a0c 60%);
-  background-attachment: fixed;
-  color: var(--foreground);
-  font-family: var(--font-poppins), "Poppins", system-ui, sans-serif;
+  background: var(--color-canvas);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  font-feature-settings: "ss01";
+  touch-action: manipulation;
 }
 
-/* Container padrão de TODAS as rotas: largura única e responsiva. Preenche a tela
-   (com respiro nas laterais) e cresce o teto em telas grandes, pra não sobrar
-   espaço morto no notebook. Trocou os antigos max-w-5xl/6xl/7xl espalhados. */
+h1, h2, h3, .font-display {
+  font-family: var(--font-display);
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+
+/* Números de dinheiro e contagens alinhados (preço, score, custo). */
+.num { font-variant-numeric: tabular-nums; }
+
+:focus-visible {
+  outline: 2px solid var(--color-info);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+
+/* Container padrão de TODAS as rotas (dentro da área principal do shell). */
 .app-wrap {
   width: 100%;
   margin-inline: auto;
-  padding-inline: 1rem; /* px-4 */
-  max-width: 1600px;
+  padding-inline: 1rem;
+  max-width: 1280px;
 }
 @media (min-width: 640px) {
-  .app-wrap { padding-inline: 1.5rem; } /* sm:px-6 */
+  .app-wrap { padding-inline: 1.75rem; }
 }
 @media (min-width: 1536px) {
-  .app-wrap { max-width: 1800px; } /* telas grandes usam mais largura */
+  .app-wrap { max-width: 1440px; }
 }
+
+/* Etiqueta de preço de brechó: o veredito da IA em cada anúncio. Ponta cortada à
+   esquerda com o furo do barbante. */
+.tag {
+  --tag-bg: var(--color-kraft);
+  --tag-fg: var(--color-kraft-ink);
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.3rem 0.65rem 0.3rem 1.35rem;
+  background: var(--tag-bg);
+  color: var(--tag-fg);
+  border-radius: 3px var(--radius-tag) var(--radius-tag) 3px;
+  clip-path: polygon(0.7rem 0, 100% 0, 100% 100%, 0.7rem 100%, 0 50%);
+  font-weight: 600;
+  line-height: 1.1;
+  white-space: nowrap;
+}
+.tag::before {
+  content: "";
+  position: absolute;
+  left: 0.62rem;
+  top: 50%;
+  width: 0.36rem;
+  height: 0.36rem;
+  margin-top: -0.18rem;
+  border-radius: 999px;
+  background: var(--color-surface);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.18);
+}
+.tag-buy { --tag-bg: var(--color-kraft); --tag-fg: var(--color-kraft-ink); }
+.tag-deal { --tag-bg: #ecdcbc; --tag-fg: #5a4214; }
+.tag-premium { --tag-bg: var(--color-gold-soft); --tag-fg: var(--color-gold); }
+.tag-urgent { --tag-bg: var(--color-urgent); --tag-fg: #ffffff; }
+.tag-out { --tag-bg: var(--color-sunken); --tag-fg: var(--color-ink-2); }
 
 /* Ícones de lixeira: sempre âmbar de alerta */
 .trash-icon,
 [data-icon="trash"],
 svg.trash-icon {
-  color: var(--carbon-amber) !important;
-  fill: var(--carbon-amber) !important;
-  stroke: var(--carbon-amber) !important;
+  color: var(--color-deal) !important;
+  stroke: var(--color-deal) !important;
 }

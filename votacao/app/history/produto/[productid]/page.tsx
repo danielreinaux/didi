@@ -5,6 +5,7 @@
 // delega o layout pro mesmo componente da visão por rodada.
 
 import { use, useEffect, useMemo, useState } from "react";
+import Link from "next/link";
 import { Produto } from "@/lib/history";
 import HistoryProdutoDetalhe, { CentroHistory } from "@/components/HistoryProdutoDetalhe";
 
@@ -37,16 +38,18 @@ export default function ProdutoDetalheBusca({
   if (carregando) {
     return (
       <CentroHistory>
-        <span className="w-6 h-6 rounded-full border-2 border-[rgba(255,255,255,0.15)] border-t-[#00d9ff] animate-spin" />
-        Carregando produto…
+        <span className="w-6 h-6 rounded-full border-2 border-line border-t-ink animate-spin" aria-hidden />
+        Carregando anúncio…
       </CentroHistory>
     );
   }
   if (erro || !produto) {
     return (
       <CentroHistory>
-        <span>Não encontrei esse produto no acervo.</span>
-        <a href="/history" className="text-xs text-[#00d9ff] hover:underline">← Voltar ao histórico</a>
+        <span className="text-ink font-medium">Esse anúncio não está no acervo.</span>
+        <Link href="/history" className="mt-2 h-9 px-4 inline-flex items-center rounded-lg text-sm font-semibold bg-ink text-white">
+          Voltar ao histórico
+        </Link>
       </CentroHistory>
     );
   }
@@ -54,13 +57,8 @@ export default function ProdutoDetalheBusca({
   return (
     <HistoryProdutoDetalhe
       produto={produto}
-      crumbs={[
-        { label: "Histórico", href: "/history" },
-        { label: "busca" },
-        { label: "produto" },
-      ]}
       voltarHref="/history"
-      voltarLabel="← Histórico"
+      voltarLabel="Histórico"
     />
   );
 }

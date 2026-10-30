@@ -16,17 +16,7 @@ import {
   fmtNum,
 } from "@/lib/history";
 import { RunLinks, RunErroBadge } from "@/components/RunLinks";
-import { ArrowLeft } from "lucide-react";
-import {
-  CARD,
-  HEADER_BG,
-  TEXT_TERTIARY,
-  PILL_NEUTRAL,
-  ACTIVE_GRADIENT,
-  SEGMENTED_BTN,
-  SEGMENTED_INACTIVE,
-  NAV_BTN,
-} from "@/lib/theme";
+import { Search, X } from "lucide-react";
 
 // Período: atalhos rápidos, "custom" (intervalo de/até) ou um mês específico "YYYY-MM".
 type Periodo = "mes" | "ano" | "tudo" | "custom" | string;
@@ -38,10 +28,17 @@ const MAX_RESULTADOS = 90; // teto de cards de busca renderizados por vez
 // extremos de custo e produtividade. "caras" usa o P90 do custo (top 10% histórico).
 type QuickKey = "erro" | "caras" | "sem_novos" | "gratis";
 const QUICK: { key: QuickKey; label: string; cor: string; dica: string }[] = [
-  { key: "erro", label: "Com erro", cor: "#ffaa00", dica: "Rodadas em que algum job do Actions falhou" },
-  { key: "caras", label: "Caras (≥ P90)", cor: "#00d9ff", dica: "As 10% mais caras (custo ≥ P90 histórico)" },
-  { key: "sem_novos", label: "Sem novos", cor: "#ff66e2", dica: "Rodadas que não trouxeram nenhum item novo ao acervo" },
-  { key: "gratis", label: "Grátis (R$ 0)", cor: "#9a9aa6", dica: "Rodadas sem custo de IA (nada novo pra classificar)" },
+  { key: "erro", label: "Com erro", cor: "#a65f00", dica: "Rodadas em que algum job do Actions falhou" },
+  { key: "caras", label: "Mais caras (10%)", cor: "#2d5bd7", dica: "As 10% mais caras (custo ≥ P90 histórico)" },
+  { key: "sem_novos", label: "Nada novo na última hora", cor: "#7a4cc9", dica: "Rodadas sem nenhum anúncio visto pela 1ª vez na hora anterior" },
+  { key: "gratis", label: "Sem custo", cor: "#7b828c", dica: "Rodadas em que os anúncios do topo do Vinted já tinham sido avaliados: a IA não foi chamada" },
+];
+
+const PERIODOS: [Periodo, string][] = [
+  ["mes", "Mês atual"],
+  ["ano", "Ano atual"],
+  ["tudo", "Tudo"],
+  ["custom", "Personalizado"],
 ];
 
 function chaveMes(iso: string): string {
@@ -53,6 +50,34 @@ function chaveMes(iso: string): string {
 function rotuloMes(chave: string): string {
   const [ano, mes] = chave.split("-");
   return `${MESES[Number(mes) - 1]} ${ano}`;
+}
+
+// Dia da rodada (agrupa o log) e hora "14:22".
+function chaveDia(iso: string): string {
+  const d = new Date(iso);
+  if (isNaN(d.getTime())) return "";
+  return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
+}
+
+function rotuloDia(iso: string): string {
+  const d = new Date(iso);
+  if (isNaN(d.getTime())) return iso;
+  const hoje = new Date();
+  const ontem = new Date(hoje.getFullYear(), hoje.getMonth(), hoje.getDate() - 1);
+  if (chaveDia(iso) === chaveDia(hoje.toISOString())) return "Hoje";
+  if (chaveDia(iso) === chaveDia(ontem.toISOString())) return "Ontem";
+  const t = new Intl.DateTimeFormat("pt-BR", { weekday: "long", day: "numeric", month: "long" }).format(d);
+  return t.charAt(0).toUpperCase() + t.slice(1);
+}
+
+function horaRodada(iso: string): string {
+  const d = new Date(iso);
+  if (isNaN(d.getTime())) return "—";
+  return `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
+}
+
+function plural(n: number, um: string, varios: string): string {
+  return `${fmtNum(n)} ${n === 1 ? um : varios}`;
 }
 
 export default function HistoryLista() {
@@ -184,83 +209,93 @@ export default function HistoryLista() {
   const agg = useMemo(() => {
     const rs = rodadasVisiveis;
     const custo = rs.reduce((a, r) => a + (r.resumo.custo_brl || 0), 0);
-    const novos = rs.reduce((a, r) => a + (r.resumo.novos || 0), 0);
+    // "novos" de cada rodada é a janela da última hora (history.py JANELA_NOVOS_MIN): somar entre
+    // rodadas contaria o mesmo anúncio ~13 vezes. O resumo mostra as rodadas que custaram zero.
+    const gratis = rs.filter((r) => (r.resumo.custo_brl || 0) === 0).length;
     const n = rs.length;
-    return { custo, novos, n, medio: n ? custo / n : 0 };
+    return { custo, gratis, n, medio: n ? custo / n : 0 };
   }, [rodadasVisiveis]);
+
+  // Log agrupado por dia (as rodadas já vêm da mais nova pra mais antiga).
+  const dias = useMemo(() => {
+    const grupos: { chave: string; rotulo: string; rodadas: RodadaIndex[] }[] = [];
+    for (const r of rodadasVisiveis) {
+      const k = chaveDia(r.quando);
+      const ultimo = grupos[grupos.length - 1];
+      if (ultimo && ultimo.chave === k) ultimo.rodadas.push(r);
+      else grupos.push({ chave: k, rotulo: rotuloDia(r.quando), rodadas: [r] });
+    }
+    return grupos;
+  }, [rodadasVisiveis]);
+
+  const rotuloPeriodo =
+    periodo === "mes" ? "neste mês" : periodo === "ano" ? "neste ano" : periodo === "tudo" ? "no total" : periodo === "custom" ? "no intervalo" : `em ${rotuloMes(periodo)}`;
+  const resumo = carregando || erro
+    ? "Cada rodada do robô: o que achou, o que custou e se deu erro."
+    : buscando
+      ? `${plural(resultados.length, "produto encontrado", "produtos encontrados")} no acervo.`
+      : `${plural(agg.n, "rodada", "rodadas")} ${rotuloPeriodo}${quick.size ? " com esses filtros" : ""}, de ${fmtNum(rodadas.length)} guardadas. Custaram ${fmtBRL(agg.custo)}; ${plural(agg.gratis, "rodada não precisou", "rodadas não precisaram")} da IA porque não havia anúncio novo.`;
 
   return (
     <div className="h-full overflow-y-auto">
-      <header className={`sticky top-0 z-20 ${HEADER_BG}`}>
-        <div className="app-wrap py-3 flex flex-col gap-3">
-          <div className="flex items-center justify-between gap-3 flex-wrap">
-            <h1 className="text-2xl text-[#f5f5f7] leading-tight">Histórico de rodadas</h1>
-            <div className="flex items-center gap-3">
-              <span className={`text-xs ${TEXT_TERTIARY}`}>
-                {buscando ? `${resultados.length} produtos` : `${rodadasVisiveis.length} de ${rodadas.length} rodadas`}
-              </span>
-              <a href="/" className={NAV_BTN}>
-                <ArrowLeft size={16} strokeWidth={1.5} aria-hidden />
-                Voltar
-              </a>
-            </div>
-          </div>
+      <div className="app-wrap pt-6 lg:pt-10 pb-12">
+        <div className="max-w-[1040px]">
+          <h1 className="text-[32px] lg:text-[40px] font-bold leading-none text-ink">Histórico</h1>
+          <p className="mt-2 text-[15px] text-ink-2 max-w-[68ch]">{resumo}</p>
 
           {/* Busca global de produtos */}
-          <div className="relative">
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#6b6b78] text-sm">⌕</span>
+          <div className="relative mt-6">
+            <Search size={17} strokeWidth={1.75} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-ink-3 pointer-events-none" aria-hidden />
             <input
               type="search"
-              aria-label="Buscar produto"
+              name="busca"
+              autoComplete="off"
+              aria-label="Buscar produto no acervo"
               value={busca}
               onFocus={garantirProdutos}
               onChange={(e) => { garantirProdutos(); setBusca(e.target.value); }}
-              placeholder="Buscar produto por título, descrição ou link do anúncio…"
-              className="w-full pl-9 pr-9 py-2.5 rounded-xl text-sm text-[#f5f5f7] outline-none
-                         bg-[rgba(255,255,255,0.04)] border border-[rgba(255,255,255,0.08)]
-                         placeholder:text-[#6b6b78] focus:border-[rgba(0,217,255,0.4)]"
+              placeholder="Buscar no acervo por título, descrição ou link do anúncio…"
+              className="w-full h-11 pl-10 pr-10 rounded-lg text-base sm:text-sm text-ink bg-surface border border-line placeholder:text-ink-3 outline-none focus-visible:border-info focus-visible:ring-2 focus-visible:ring-info/25"
             />
             {busca && (
               <button
                 onClick={() => setBusca("")}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#6b6b78] hover:text-[#f5f5f7] text-sm"
+                className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center rounded-md text-ink-3 hover:text-ink hover:bg-canvas"
                 aria-label="Limpar busca"
               >
-                ✕
+                <X size={16} aria-hidden />
               </button>
             )}
           </div>
 
-          {/* Filtro de período — some durante a busca */}
+          {/* Período + filtros rápidos — somem durante a busca */}
           {!buscando && (
-            <div className="flex flex-col gap-2">
-              <div className="flex items-center gap-2 flex-wrap">
-                <div className="inline-flex p-1 rounded-xl bg-[rgba(255,255,255,0.04)] border border-[rgba(255,255,255,0.07)]">
-                  {([
-                    ["mes", "Mês atual"],
-                    ["ano", "Ano atual"],
-                    ["tudo", "Tudo"],
-                    ["custom", "Personalizado"],
-                  ] as [Periodo, string][]).map(([p, label]) => (
-                    <button
-                      key={p}
-                      onClick={() => setPeriodo(p)}
-                      className={`${SEGMENTED_BTN} ${
-                        periodo === p ? ACTIVE_GRADIENT : SEGMENTED_INACTIVE
-                      }`}
-                    >
-                      {label}
-                    </button>
-                  ))}
-                </div>
+            <div className="mt-4 flex flex-col gap-3">
+              <div className="flex items-center gap-1.5 flex-wrap" role="group" aria-label="Período">
+                {PERIODOS.map(([p, label]) => (
+                  <button
+                    key={p}
+                    onClick={() => setPeriodo(p)}
+                    aria-pressed={periodo === p}
+                    className={`h-9 px-3 rounded-full text-sm transition-colors ${
+                      periodo === p ? "bg-ink text-white" : "bg-surface border border-line text-ink-2 hover:text-ink hover:border-line-strong"
+                    }`}
+                  >
+                    {label}
+                  </button>
+                ))}
                 {mesesDisponiveis.length > 0 && (
                   <select
                     aria-label="Filtrar por mês"
                     value={["mes", "ano", "tudo", "custom"].includes(periodo) ? "" : periodo}
                     onChange={(e) => setPeriodo(e.target.value || "tudo")}
-                    className={`px-3 py-1.5 rounded-lg text-xs cursor-pointer outline-none ${PILL_NEUTRAL} [&>option]:bg-[#141418] [&>option]:text-[#f5f5f7]`}
+                    className={`h-9 pl-3 pr-8 rounded-full text-sm cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-info/30 appearance-none bg-no-repeat bg-[right_0.75rem_center] bg-[url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2212%22 height=%2212%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%234b5462%22 stroke-width=%222.5%22><path d=%22m6 9 6 6 6-6%22/></svg>')] ${
+                      ["mes", "ano", "tudo", "custom"].includes(periodo)
+                        ? "bg-surface border border-line text-ink-2 hover:border-line-strong"
+                        : "bg-ink border border-ink text-white"
+                    }`}
                   >
-                    <option value="">Mês específico…</option>
+                    <option value="">Outro mês…</option>
                     {mesesDisponiveis.map((m) => (
                       <option key={m} value={m}>{rotuloMes(m)}</option>
                     ))}
@@ -270,41 +305,38 @@ export default function HistoryLista() {
 
               {/* Intervalo de/até — só no modo personalizado. Vazio = ponta aberta. */}
               {periodo === "custom" && (
-                <div className="flex items-center gap-2 flex-wrap text-xs text-[#b8b8c0]">
-                  <label className="flex items-center gap-1.5">
+                <div className="flex items-center gap-3 flex-wrap text-sm text-ink-2">
+                  <label className="flex items-center gap-2">
                     De
                     <input
                       type="date"
                       value={de}
                       max={ate || undefined}
                       onChange={(e) => setDe(e.target.value)}
-                      className="px-2.5 py-1.5 rounded-lg outline-none bg-[rgba(255,255,255,0.04)] border border-[rgba(255,255,255,0.08)] text-[#f5f5f7] [color-scheme:dark] focus:border-[rgba(0,217,255,0.4)]"
+                      className="h-9 px-2.5 rounded-lg outline-none bg-surface border border-line text-ink focus-visible:border-info"
                     />
                   </label>
-                  <label className="flex items-center gap-1.5">
+                  <label className="flex items-center gap-2">
                     até
                     <input
                       type="date"
                       value={ate}
                       min={de || undefined}
                       onChange={(e) => setAte(e.target.value)}
-                      className="px-2.5 py-1.5 rounded-lg outline-none bg-[rgba(255,255,255,0.04)] border border-[rgba(255,255,255,0.08)] text-[#f5f5f7] [color-scheme:dark] focus:border-[rgba(0,217,255,0.4)]"
+                      className="h-9 px-2.5 rounded-lg outline-none bg-surface border border-line text-ink focus-visible:border-info"
                     />
                   </label>
                   {(de || ate) && (
-                    <button
-                      onClick={() => { setDe(""); setAte(""); }}
-                      className="text-[11px] text-[#6b6b78] hover:text-[#f5f5f7] underline"
-                    >
-                      limpar
+                    <button onClick={() => { setDe(""); setAte(""); }} className="text-sm text-ink-3 hover:text-ink underline underline-offset-2">
+                      Limpar datas
                     </button>
                   )}
                 </div>
               )}
 
-              {/* Quick filters — refinam a lista DENTRO do período e combinam entre si.
-                  O nº no chip é quantas rodadas do período passam aquele filtro. */}
-              <div className="flex items-center gap-1.5 flex-wrap">
+              {/* Filtros rápidos — refinam DENTRO do período e combinam entre si.
+                  O nº é quantas rodadas do período passam aquele filtro. */}
+              <div className="flex items-center gap-1.5 flex-wrap" role="group" aria-label="Filtros rápidos">
                 {QUICK.map((q) => {
                   const ativo = quick.has(q.key);
                   const n = quickCounts[q.key];
@@ -315,74 +347,88 @@ export default function HistoryLista() {
                       aria-pressed={ativo}
                       title={q.dica}
                       disabled={!ativo && n === 0}
-                      className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs border transition-all ${
-                        ativo ? "text-[#f5f5f7]" : `border-transparent ${PILL_NEUTRAL} disabled:opacity-40 disabled:cursor-default disabled:hover:bg-transparent`
+                      className={`h-8 px-3 inline-flex items-center gap-2 rounded-full text-[13px] border transition-colors disabled:opacity-40 disabled:cursor-default ${
+                        ativo ? "bg-surface text-ink border-ink" : "bg-transparent border-line text-ink-2 hover:text-ink hover:border-line-strong"
                       }`}
-                      style={ativo ? { borderColor: q.cor, background: `${q.cor}22`, color: q.cor } : undefined}
                     >
-                      <span className="w-1.5 h-1.5 rounded-full" style={{ background: q.cor }} aria-hidden />
+                      <span className="w-2 h-2 rounded-full" style={{ background: q.cor }} aria-hidden />
                       {q.label}
-                      <span className="opacity-70">{n}</span>
+                      <span className="num text-xs text-ink-3">{n}</span>
                     </button>
                   );
                 })}
                 {quick.size > 0 && (
-                  <button
-                    onClick={() => setQuick(new Set())}
-                    className="text-[11px] text-[#6b6b78] hover:text-[#f5f5f7] underline ml-1"
-                  >
-                    limpar filtros
+                  <button onClick={() => setQuick(new Set())} className="ml-1 text-sm text-ink-3 hover:text-ink underline underline-offset-2">
+                    Limpar filtros
                   </button>
                 )}
               </div>
             </div>
           )}
-        </div>
-      </header>
 
-      <main className="app-wrap py-6">
-        {buscando ? (
-          <BuscaResultados
-            carregando={carregandoProdutos}
-            temIndice={produtos != null}
-            resultados={resultados}
-          />
-        ) : (
-          <>
-            {!carregando && !erro && (
-              <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
-                <StatCard v={fmtBRL(agg.custo)} l="Custo total no período" cor="#00d9ff" destaque />
-                <StatCard v={String(agg.n)} l="Rodadas no período" />
-                <StatCard v={fmtNum(agg.novos)} l="Novos itens (soma)" cor="#00ff88" />
-                <StatCard v={fmtBRL(agg.medio)} l="Custo médio / rodada" />
-              </div>
-            )}
-
-            {carregando ? (
-              <div className={`flex flex-col items-center gap-3 mt-24 text-sm ${TEXT_TERTIARY}`}>
-                <span className="w-6 h-6 rounded-full border-2 border-[rgba(255,255,255,0.15)] border-t-[#00d9ff] animate-spin" />
-                Carregando histórico…
-              </div>
-            ) : erro ? (
-              <p className={`text-center mt-20 text-sm ${TEXT_TERTIARY}`}>
-                Não consegui carregar o histórico. Ele é gerado a cada rodada — se ainda não rodou nenhuma, aparece aqui depois.
-              </p>
-            ) : rodadas.length === 0 ? (
-              <p className={`text-center mt-20 text-sm ${TEXT_TERTIARY}`}>Nenhuma rodada no histórico ainda.</p>
-            ) : rodadasVisiveis.length === 0 ? (
-              <p className={`text-center mt-20 text-sm ${TEXT_TERTIARY}`}>
-                {quick.size ? "Nenhuma rodada com esses filtros no período." : "Nenhuma rodada nesse período."}
-              </p>
+          <main className="mt-6">
+            {buscando ? (
+              <BuscaResultados
+                carregando={carregandoProdutos}
+                temIndice={produtos != null}
+                resultados={resultados}
+              />
             ) : (
-              <div className="flex flex-col gap-3">
-                {rodadasVisiveis.map((r) => (
-                  <RodadaCard key={r.run_id} r={r} />
-                ))}
-              </div>
+              <>
+                {!carregando && !erro && rodadas.length > 0 && (
+                  <dl className="grid grid-cols-2 md:grid-cols-4 bg-surface border border-line rounded-xl overflow-hidden mb-6">
+                    <Resumo v={fmtBRL(agg.custo)} l="Custo no período" />
+                    <Resumo v={fmtNum(agg.n)} l="Rodadas" />
+                    <Resumo v={fmtNum(agg.gratis)} l="Rodadas sem custo" />
+                    <Resumo v={fmtBRL(agg.medio)} l="Custo médio por rodada" />
+                  </dl>
+                )}
+
+                {carregando ? (
+                  <div className="flex flex-col items-center gap-3 py-24 text-sm text-ink-3" role="status">
+                    <span className="w-6 h-6 rounded-full border-2 border-line border-t-ink animate-spin" aria-hidden />
+                    Carregando histórico…
+                  </div>
+                ) : erro ? (
+                  <Vazio titulo="O histórico não carregou." texto="Ele é gerado a cada rodada do robô. Se nenhuma rodou ainda, aparece aqui depois da primeira." />
+                ) : rodadas.length === 0 ? (
+                  <Vazio titulo="Nenhuma rodada guardada ainda." texto="Cada busca do robô vira uma linha aqui, com o que achou e quanto custou." />
+                ) : rodadasVisiveis.length === 0 ? (
+                  <Vazio
+                    titulo={quick.size ? "Nenhuma rodada com esses filtros no período." : "Nenhuma rodada nesse período."}
+                    texto="Troque o período ou limpe os filtros rápidos."
+                  />
+                ) : (
+                  <div className="flex flex-col gap-6">
+                    {dias.map((g) => (
+                      <section key={g.chave} aria-label={g.rotulo}>
+                        <h2 className="text-base font-semibold text-ink mb-2 flex items-baseline gap-2">
+                          {g.rotulo}
+                          <span className="font-sans text-xs font-normal text-ink-3">{plural(g.rodadas.length, "rodada", "rodadas")}</span>
+                        </h2>
+                        <ul className="bg-surface border border-line rounded-xl divide-y divide-line overflow-hidden">
+                          {g.rodadas.map((r) => (
+                            <RodadaLinha key={r.run_id} r={r} />
+                          ))}
+                        </ul>
+                      </section>
+                    ))}
+                  </div>
+                )}
+              </>
             )}
-          </>
-        )}
-      </main>
+          </main>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function Vazio({ titulo, texto }: { titulo: string; texto: string }) {
+  return (
+    <div className="py-20 text-center">
+      <p className="text-ink font-medium">{titulo}</p>
+      <p className="mt-1 text-sm text-ink-3">{texto}</p>
     </div>
   );
 }
@@ -398,22 +444,22 @@ function BuscaResultados({
 }) {
   if (carregando && !temIndice) {
     return (
-      <div className={`flex flex-col items-center gap-3 mt-24 text-sm ${TEXT_TERTIARY}`}>
-        <span className="w-6 h-6 rounded-full border-2 border-[rgba(255,255,255,0.15)] border-t-[#00d9ff] animate-spin" />
-        Carregando índice de busca…
+      <div className="flex flex-col items-center gap-3 py-24 text-sm text-ink-3" role="status">
+        <span className="w-6 h-6 rounded-full border-2 border-line border-t-ink animate-spin" aria-hidden />
+        Carregando o índice de busca…
       </div>
     );
   }
   if (resultados.length === 0) {
-    return <p className={`text-center mt-20 text-sm ${TEXT_TERTIARY}`}>Nenhum produto encontrado. Tente outro título, palavra da descrição ou o link do anúncio.</p>;
+    return <Vazio titulo="Nenhum produto encontrado." texto="Tente outro título, uma palavra da descrição ou cole o link do anúncio." />;
   }
   const mostrados = resultados.slice(0, MAX_RESULTADOS);
   return (
     <>
-      <p className={`text-[11px] mb-3 ${TEXT_TERTIARY}`}>
-        {resultados.length} produtos no acervo.{resultados.length > MAX_RESULTADOS && ` Mostrando os ${MAX_RESULTADOS} primeiros — refine a busca.`}
-      </p>
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+      {resultados.length > MAX_RESULTADOS && (
+        <p className="text-sm mb-3 text-ink-3">Mostrando os {MAX_RESULTADOS} primeiros. Refine a busca para ver os outros.</p>
+      )}
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
         {mostrados.map((p) => (
           <ResultadoCard key={`${p.marca}-${p.id}`} p={p} />
         ))}
@@ -428,103 +474,99 @@ function ResultadoCard({ p }: { p: Produto }) {
   return (
     <a
       href={`/history/produto/${p.id}`}
-      className={`${CARD} overflow-hidden flex flex-col hover:border-[rgba(0,217,255,0.4)] transition-colors`}
+      className="bg-surface border border-line rounded-xl overflow-hidden flex flex-col hover:border-line-strong transition-colors"
     >
-      <div className="relative w-full aspect-square bg-[rgba(255,255,255,0.03)]">
+      <div className="relative w-full aspect-square bg-sunken">
         {foto ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={foto} alt={p.titulo} loading="lazy" className="w-full h-full object-cover" />
+          <img src={foto} alt={p.titulo} loading="lazy" width={300} height={300} className="w-full h-full object-cover" />
         ) : (
-          <div className="flex items-center justify-center h-full text-[#6b6b78] text-xs">Sem foto</div>
+          <div className="flex items-center justify-center h-full text-ink-3 text-xs">Sem foto</div>
         )}
-        <span
-          className="absolute top-2 left-2 text-[10px] px-2 py-0.5 rounded-full font-medium"
-          style={{ background: meta.bg, color: meta.cor, border: `1px solid ${meta.borda}` }}
-        >
-          {meta.label}
-        </span>
+        <span className={`tag ${meta.tag} absolute top-2.5 left-0 text-xs`}>{meta.label}</span>
       </div>
-      <div className="p-2.5 flex flex-col gap-1">
-        <span className="text-xs text-[#f5f5f7] line-clamp-2 leading-snug">{p.titulo}</span>
-        <div className="flex items-center justify-between text-[11px] text-[#b8b8c0]">
-          <span>{MARCA_LABEL[p.marca]} · {p.preco_total || p.preco || "—"}</span>
-          <span className="font-semibold" style={{ color: meta.cor }}>{p.score}pts</span>
+      <div className="p-3 flex flex-col gap-1.5 flex-1">
+        <span className="text-sm text-ink line-clamp-2 leading-snug">{p.titulo}</span>
+        <div className="mt-auto flex items-center justify-between gap-2 text-xs text-ink-2">
+          <span className="num truncate">{p.preco_total || p.preco || "—"}</span>
+          <span className="num font-semibold" style={{ color: meta.cor }}>{p.score} pts</span>
         </div>
+        {p.marca !== "sundek" && <span className="text-[11px] text-ink-3">{MARCA_LABEL[p.marca]}</span>}
       </div>
     </a>
   );
 }
 
-function StatCard({ v, l, cor, destaque }: { v: string; l: string; cor?: string; destaque?: boolean }) {
+// Uma célula da faixa de resumo do período (sem cartão próprio: divisórias finas).
+function Resumo({ v, l }: { v: string; l: string }) {
   return (
-    <div className={`${CARD} p-4 ${destaque ? "border-[rgba(0,217,255,0.25)]" : ""}`}>
-      <div className="text-2xl font-semibold" style={{ color: cor || "#f5f5f7" }}>{v}</div>
-      <div className="text-[11px] text-[#b8b8c0] mt-1">{l}</div>
+    <div className="px-4 py-3.5 -ml-px -mt-px border-l border-t border-line">
+      <dt className="text-xs text-ink-3">{l}</dt>
+      <dd className="mt-0.5 font-display num text-xl font-semibold text-ink">{v}</dd>
     </div>
   );
 }
 
-function RodadaCard({ r }: { r: RodadaIndex }) {
+const COR_STATUS: Record<string, { cor: string; dica: string }> = {
+  ok: { cor: "bg-buy", dica: "Rodada terminou sem erro" },
+  erro: { cor: "bg-deal", dica: "Algum job da rodada falhou" },
+  desconhecido: { cor: "bg-ink-3", dica: "Sem informação do GitHub Actions" },
+};
+
+function RodadaLinha({ r }: { r: RodadaIndex }) {
   const s = r.resumo;
-  // Card clicável COM botões internos independentes: um link "esticado" cobre o
-  // card (navega pro detalhe) e o conteúdo fica com pointer-events-none, exceto os
-  // botões do GitHub (pointer-events-auto). Evita <a> dentro de <a> (HTML inválido).
+  const st = COR_STATUS[r.status === "ok" ? "ok" : r.status === "erro" ? "erro" : "desconhecido"];
+  // Linha clicável COM botões internos independentes: um link "esticado" cobre a linha
+  // (navega pro detalhe) e o conteúdo fica com pointer-events-none, exceto os botões do
+  // GitHub (pointer-events-auto). Evita <a> dentro de <a> (HTML inválido).
   return (
-    <div className={`${CARD} relative p-4 hover:border-[rgba(0,217,255,0.4)] transition-colors`}>
+    <li className="relative hover:bg-canvas/60 transition-colors">
       <a
         href={`/history/${r.run_id}`}
         aria-label={`Abrir rodada de ${fmtDataHora(r.quando)}`}
-        className="absolute inset-0 z-0 rounded-xl"
+        className="absolute inset-0 z-0"
       />
-      <div className="relative z-10 pointer-events-none flex items-start justify-between gap-3 flex-wrap">
-        <div className="flex flex-col gap-1">
-          <div className="flex items-center gap-2 flex-wrap">
-            <span className="text-sm font-medium text-[#f5f5f7]">{fmtDataHora(r.quando)}</span>
-            {r.marcas.map((m) => (
-              <span
-                key={m}
-                className="text-[10px] px-2 py-0.5 rounded-full bg-[rgba(255,255,255,0.05)] text-[#b8b8c0]"
-              >
-                {MARCA_LABEL[m]}
-              </span>
-            ))}
-            {r.fonte === "backfill" && (
-              <span className="text-[10px] px-2 py-0.5 rounded-full bg-[rgba(255,255,255,0.04)] text-[#6b6b78]">
-                histórico
-              </span>
-            )}
-            <RunErroBadge meta={r} />
-          </div>
-          <span className={`text-[11px] ${TEXT_TERTIARY}`}>run {r.run_id}</span>
-        </div>
-        <div className="flex flex-col items-end gap-2">
-          <div className="text-right">
-            <div className="text-lg font-semibold text-[#f5f5f7]">{fmtBRL(s.custo_brl)}</div>
-            <div className={`text-[11px] ${TEXT_TERTIARY}`}>{fmtNum(s.tok_in)} tok in · {s.calls} chamadas</div>
-          </div>
-          <div className="pointer-events-auto"><RunLinks meta={r} /></div>
-        </div>
-      </div>
+      <div className="relative z-10 pointer-events-none px-4 py-3 grid grid-cols-[auto_1fr_auto_auto] sm:grid-cols-[3.5rem_1fr_auto_auto] gap-x-3 gap-y-1.5 items-center">
+        <span className="col-start-1 row-start-1 flex items-center gap-2">
+          <span role="img" className={`w-2 h-2 rounded-full flex-none ${st.cor}`} title={st.dica} aria-label={st.dica} />
+          <span className="num font-semibold text-ink">{horaRodada(r.quando)}</span>
+        </span>
 
-      <div className="relative z-10 pointer-events-none flex gap-2 flex-wrap mt-3">
-        <Chip valor={s.compraveis} label="compráveis" cor="#00ff88" />
-        <Chip valor={s.barganha} label="barganha" cor="#ffaa00" />
-        <Chip valor={s.novos} label="novos" cor="#00d9ff" />
-        <Chip valor={s.descartados} label="descartados" cor="#ff7a7a" muted />
-        <Chip valor={s.ativos} label="ativos no acervo" cor="#b8b8c0" muted />
+        <span className="min-w-0 flex items-center gap-x-3 gap-y-1 flex-wrap text-sm text-ink-2 col-start-1 col-span-4 row-start-2 sm:col-span-1 sm:col-start-2 sm:row-start-1">
+          <Contagem n={s.compraveis} um="comprável" varios="compráveis" cor="text-buy" />
+          <Contagem n={s.barganha} um="barganha" varios="barganhas" cor="text-deal" />
+          <Contagem n={s.novos} um="novo na última hora" varios="novos na última hora" cor="text-info" />
+          <span className="hidden md:inline text-ink-3 num">{plural(s.descartados, "descartado", "descartados")}</span>
+          {r.marcas.length > 1 || r.marcas[0] !== "sundek" ? (
+            <span className="text-xs text-ink-3">{r.marcas.map((m) => MARCA_LABEL[m]).join(" e ")}</span>
+          ) : null}
+          {r.fonte === "backfill" && (
+            <span className="text-xs text-ink-3" title="Rodada reconstruída do histórico do git (sem run no GitHub Actions)">
+              reconstruída
+            </span>
+          )}
+          <RunErroBadge meta={r} />
+        </span>
+
+        <span className="col-start-3 row-start-1 text-right">
+          <span className="block num font-semibold text-ink">{fmtBRL(s.custo_brl)}</span>
+          <span className="hidden sm:block text-[11px] text-ink-3 num">
+            {plural(s.calls, "chamada", "chamadas")}, {fmtNum(s.tok_in)} tokens
+          </span>
+        </span>
+
+        <span className="col-start-4 row-start-1 pointer-events-auto justify-self-end">
+          <RunLinks meta={r} />
+        </span>
       </div>
-    </div>
+    </li>
   );
 }
 
-function Chip({ valor, label, cor, muted }: { valor: number; label: string; cor: string; muted?: boolean }) {
+function Contagem({ n, um, varios, cor }: { n: number; um: string; varios: string; cor: string }) {
   return (
-    <span
-      className="inline-flex items-baseline gap-1 px-2.5 py-1 rounded-lg text-xs"
-      style={{ background: muted ? "rgba(255,255,255,0.03)" : `${cor}1f` }}
-    >
-      <b className="font-semibold" style={{ color: muted ? "#b8b8c0" : cor }}>{valor}</b>
-      <span className="text-[#b8b8c0]">{label}</span>
+    <span className={n ? "" : "text-ink-3"}>
+      <b className={`num font-semibold ${n ? cor : "text-ink-3"}`}>{fmtNum(n)}</b> {n === 1 ? um : varios}
     </span>
   );
 }

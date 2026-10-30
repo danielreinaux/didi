@@ -4,7 +4,8 @@
 // Carrega o snapshot da rodada e delega o layout pro componente compartilhado.
 
 import { use, useEffect, useMemo, useState } from "react";
-import { Rodada, Produto, fmtDataHora } from "@/lib/history";
+import Link from "next/link";
+import { Rodada, Produto, MESES } from "@/lib/history";
 import HistoryProdutoDetalhe, { CentroHistory } from "@/components/HistoryProdutoDetalhe";
 
 export default function ProdutoDetalheRodada({
@@ -36,16 +37,18 @@ export default function ProdutoDetalheRodada({
   if (carregando) {
     return (
       <CentroHistory>
-        <span className="w-6 h-6 rounded-full border-2 border-[rgba(255,255,255,0.15)] border-t-[#00d9ff] animate-spin" />
-        Carregando produto…
+        <span className="w-6 h-6 rounded-full border-2 border-line border-t-ink animate-spin" aria-hidden />
+        Carregando anúncio…
       </CentroHistory>
     );
   }
   if (erro || !rodada || !produto) {
     return (
       <CentroHistory>
-        <span>Não encontrei esse produto nesta rodada.</span>
-        <a href={`/history/${historyid}`} className="text-xs text-[#00d9ff] hover:underline">← Voltar à rodada</a>
+        <span className="text-ink font-medium">Esse anúncio não está nesta rodada.</span>
+        <Link href={`/history/${historyid}`} className="mt-2 h-9 px-4 inline-flex items-center rounded-lg text-sm font-semibold bg-ink text-white">
+          Voltar à rodada
+        </Link>
       </CentroHistory>
     );
   }
@@ -53,13 +56,15 @@ export default function ProdutoDetalheRodada({
   return (
     <HistoryProdutoDetalhe
       produto={produto}
-      crumbs={[
-        { label: "Histórico", href: "/history" },
-        { label: fmtDataHora(rodada.quando), href: `/history/${historyid}` },
-        { label: "produto" },
-      ]}
       voltarHref={`/history/${historyid}`}
-      voltarLabel="← Rodada"
+      voltarLabel={`Rodada de ${tituloRodada(rodada.quando)}`}
     />
   );
+}
+
+// "28 out, 14:22" (rótulo do link de volta).
+function tituloRodada(iso: string): string {
+  const d = new Date(iso);
+  if (isNaN(d.getTime())) return iso;
+  return `${d.getDate()} ${MESES[d.getMonth()]}, ${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
 }

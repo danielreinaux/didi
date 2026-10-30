@@ -5,8 +5,8 @@ import { createPortal } from "react-dom";
 import Image from "next/image";
 import Lightbox from "@/components/Lightbox";
 import { Item, Reaction, REACTIONS } from "@/lib/types";
-import { CARD } from "@/lib/theme";
 import { eNovo, eur, haQuanto } from "@/lib/tempo";
+import { Archive, ArchiveRestore, Check, ChevronRight, ExternalLink, HandCoins, TriangleAlert } from "lucide-react";
 
 interface Props {
   item: Item;
@@ -133,29 +133,36 @@ export default function VotingCard({ item, reacaoInicial, obsInicial, onReacao, 
   const base = item.preco_base ?? null;
   const total = base != null ? base + (item.taxa ?? 0) + (item.frete ?? 0) : null;
 
+  // "cor Azul marinho (maravilhoso)" → "Cor azul marinho (maravilhoso)": a lista do que a IA conferiu.
+  const conferido = (item.destaques ?? []).map((d) => {
+    const t = d.replace(/_/g, " ");
+    return t.charAt(0).toUpperCase() + t.slice(1);
+  });
+  const veredito = compravel ? "Comprável" : "Barganha";
+
   return (
-    <div
+    <article
       id={`item-${item.id}`}
-      className={`${CARD} overflow-hidden flex flex-col transition-all ${
+      aria-label={`${veredito}: ${item.titulo}`}
+      className={`bg-surface rounded-xl border overflow-hidden flex flex-col scroll-mt-4 ${
         destaque
-          ? "ring-2 ring-[#ff66e2] shadow-[0_0_24px_rgba(255,102,226,0.45)]"
+          ? "border-info ring-2 ring-info/40"
           : premiado
-            ? "ring-2 ring-[#ffc94d] shadow-[0_0_20px_rgba(255,201,77,0.3)]"
-            : reacao
-              ? "ring-2 ring-[#00d9ff]"
-              : ""
+            ? premiado.urgente
+              ? "border-urgent ring-1 ring-urgent/30"
+              : "border-gold ring-1 ring-gold/25"
+            : "border-line"
       }`}
     >
-      {/* Foto */}
+      {/* Foto: a etiqueta do veredito fica "pendurada" no canto, como no brechó */}
       <div
-        className="relative w-full aspect-square bg-[rgba(255,255,255,0.03)] select-none"
+        className="relative w-full aspect-square sm:aspect-[4/3] bg-sunken select-none"
         onTouchStart={onTouchStart}
         onTouchEnd={onTouchEnd}
       >
         {foto ? (
           <>
-            <Image src={foto} alt={item.titulo} fill className="object-cover" unoptimized />
-            {/* Toque/clique na foto abre ampliada (setas e pontos ficam por cima) */}
+            <Image src={foto} alt={item.titulo} fill sizes="(max-width: 768px) 100vw, 50vw" className="object-cover" unoptimized />
             <button
               onClick={() => setAmpliada(true)}
               aria-label="Ampliar foto"
@@ -164,246 +171,236 @@ export default function VotingCard({ item, reacaoInicial, obsInicial, onReacao, 
             />
           </>
         ) : (
-          <div className="flex items-center justify-center h-full text-[#6b6b78] text-sm">Sem foto</div>
+          <div className="flex items-center justify-center h-full text-ink-3 text-sm">Sem foto</div>
         )}
+        <div className="absolute top-3 left-0 flex flex-col items-start gap-1.5 pointer-events-none">
+          <span className={`tag ${compravel ? "tag-buy" : "tag-deal"} text-sm shadow-[0_2px_6px_rgba(27,36,51,0.18)]`}>
+            {veredito}
+            <span className="font-display num text-base leading-none">{item.score}</span>
+          </span>
+          {premiado && (
+            <span className={`tag ${premiado.urgente ? "tag-urgent" : "tag-premium"} text-xs shadow-[0_2px_6px_rgba(27,36,51,0.18)]`}>
+              {premiado.urgente ? "Premiado, compra urgente" : "Premiado"}
+            </span>
+          )}
+        </div>
         {nFotos > 1 && (
           <>
-            {/* Setas (toque/clique) */}
             <button
               onClick={() => irFoto(-1)}
-              aria-label="foto anterior"
-              className="absolute left-1.5 top-1/2 -translate-y-1/2 w-9 h-9 flex items-center justify-center rounded-full bg-black/45 text-white text-xl leading-none active:bg-black/70 hover:bg-black/60"
+              aria-label="Foto anterior"
+              className="absolute left-2 top-1/2 -translate-y-1/2 w-9 h-9 flex items-center justify-center rounded-full bg-white/85 text-ink text-xl leading-none shadow-sm hover:bg-white"
             >
               ‹
             </button>
             <button
               onClick={() => irFoto(1)}
-              aria-label="próxima foto"
-              className="absolute right-1.5 top-1/2 -translate-y-1/2 w-9 h-9 flex items-center justify-center rounded-full bg-black/45 text-white text-xl leading-none active:bg-black/70 hover:bg-black/60"
+              aria-label="Próxima foto"
+              className="absolute right-2 top-1/2 -translate-y-1/2 w-9 h-9 flex items-center justify-center rounded-full bg-white/85 text-ink text-xl leading-none shadow-sm hover:bg-white"
             >
               ›
             </button>
-            {/* Contador + dots */}
-            <span className="absolute top-2 right-2 bg-black/50 text-white text-[10px] px-1.5 py-0.5 rounded-full">
+            <span className="absolute top-3 right-3 bg-ink/70 text-white text-[11px] num px-2 py-0.5 rounded-full">
               {fotoIdx + 1}/{nFotos}
             </span>
-            <div className="absolute bottom-2 left-0 right-0 flex justify-center gap-1">
+            <div className="absolute bottom-3 left-0 right-0 flex justify-center gap-1.5">
               {item.fotos.map((_, i) => (
                 <button
                   key={i}
                   onClick={() => setFotoIdx(i)}
-                  aria-label={`foto ${i + 1}`}
-                  className={`w-2 h-2 rounded-full ${i === fotoIdx ? "bg-white" : "bg-white/50"}`}
+                  aria-label={`Foto ${i + 1}`}
+                  className={`w-2 h-2 rounded-full shadow-sm ${i === fotoIdx ? "bg-white" : "bg-white/55"}`}
                 />
               ))}
             </div>
           </>
         )}
-        {/* Badge decisão + score */}
-        <div className="absolute top-2 left-2 right-12 flex flex-wrap gap-1">
-          {premiado && (
-            <span
-              className={`text-xs px-2 py-0.5 rounded-full font-semibold ${
-                premiado.urgente ? "bg-[#ff3b5c] text-white" : "bg-[#ffc94d] text-[#2b1d00]"
-              }`}
-            >
-              {premiado.urgente ? "🚨 PREMIADO · URGENTE" : "⭐ PREMIADO"}
-            </span>
-          )}
-          {novo && (
-            <span className="text-xs px-2 py-0.5 rounded-full bg-[#ff66e2] text-[#2a0622] font-semibold">
-              NOVO
-            </span>
-          )}
-          <span
-            className={`text-xs px-2 py-0.5 rounded-full ${
-              compravel ? "bg-[#00ff88] text-[#07140a]" : "bg-[#ffaa00] text-[#1c1100]"
-            }`}
-          >
-            {compravel ? "✓ Comprável" : "~ Barganha"} · {item.score}
-          </span>
-        </div>
       </div>
 
-      {/* Info */}
-      <div className="p-3 flex flex-col gap-2 flex-1">
-        <a
-          href={item.url}
-          target="_blank"
-          rel="noreferrer"
-          className="text-sm text-[#f5f5f7] line-clamp-2 hover:underline"
-        >
-          {item.titulo}
-        </a>
-        <div className="flex gap-1.5 text-xs text-[#b8b8c0] flex-wrap items-baseline">
-          <span className="text-sm font-semibold text-[#f5f5f7]">
-            {base != null ? `€${eur(base)}` : item.preco_total || item.preco}
-          </span>
-          <span>·</span>
-          <span>{item.tamanho}</span>
-          <span>·</span>
-          <span>{item.estado}</span>
-          {noAr && (
-            <>
-              <span>·</span>
-              <span title="Quando o anúncio foi publicado no Vinted">no ar {noAr}</span>
-            </>
-          )}
-        </div>
-        {base != null && (item.taxa || item.frete) ? (
-          <div className="text-[11px] text-[#6b6b78] -mt-1">
-            {[
-              item.taxa ? `+ €${eur(item.taxa)} taxa` : null,
-              item.frete ? `frete desde €${eur(item.frete)}` : null,
-              total != null ? `total ≈ €${eur(total)}` : null,
-            ]
-              .filter(Boolean)
-              .join(" · ")}
+      {/* Ficha */}
+      <div className="flex-1 p-4 md:p-5 flex flex-col gap-4 min-w-0">
+        <div className="flex flex-col gap-1.5">
+          <div className="flex items-center gap-2 text-xs text-ink-3">
+            {novo && <span className="px-1.5 py-0.5 rounded bg-info text-white font-semibold">Nova</span>}
+            {noAr && <span title="Quando o anúncio foi publicado no Vinted">No ar {noAr}</span>}
           </div>
-        ) : null}
+          <a
+            href={item.url}
+            target="_blank"
+            rel="noreferrer"
+            className="text-[15px] font-medium text-ink leading-snug line-clamp-2 hover:underline underline-offset-2"
+          >
+            {item.titulo}
+          </a>
+        </div>
+
+        {/* Preço: o pedido em destaque (a oferta é sobre ele) e o total com taxa e frete */}
+        <div className="flex items-end gap-x-4 gap-y-1 flex-wrap">
+          <p className="font-display num text-[34px] font-bold leading-none text-ink">
+            {base != null ? `€${eur(base)}` : item.preco_total || item.preco}
+          </p>
+          {base != null && (item.taxa || item.frete) ? (
+            <p className="text-xs text-ink-3 leading-snug pb-0.5">
+              {total != null && <span className="block text-ink-2 font-medium num">Total ≈ €{eur(total)}</span>}
+              <span className="num">
+                {[item.taxa ? `+€${eur(item.taxa)} de taxa` : null, item.frete ? `frete desde €${eur(item.frete)}` : null]
+                  .filter(Boolean)
+                  .join(", ")}
+              </span>
+            </p>
+          ) : null}
+        </div>
+
+        <dl className="grid grid-cols-3 gap-2 text-sm">
+          <div className="rounded-lg bg-canvas px-2.5 py-2">
+            <dt className="text-[11px] text-ink-3">Tamanho</dt>
+            <dd className="font-semibold text-ink">{item.tamanho}</dd>
+          </div>
+          <div className="rounded-lg bg-canvas px-2.5 py-2 min-w-0">
+            <dt className="text-[11px] text-ink-3">Estado</dt>
+            <dd className="font-semibold text-ink truncate">{item.estado || "—"}</dd>
+          </div>
+          <div className="rounded-lg bg-canvas px-2.5 py-2 min-w-0">
+            <dt className="text-[11px] text-ink-3" title="Até quanto vale pagar, pelas suas regras">Vale até</dt>
+            <dd className="font-semibold text-ink num">{item.teto ? `€${eur(item.teto)}` : "—"}</dd>
+          </div>
+        </dl>
 
         {premiado && (
-          <div
-            className={`text-xs rounded-lg px-2.5 py-1.5 ${
-              premiado.urgente
-                ? "bg-[rgba(255,59,92,0.14)] text-[#ff8da0]"
-                : "bg-[rgba(255,201,77,0.12)] text-[#ffd77a]"
+          <p
+            className={`text-sm rounded-lg px-3 py-2 ${
+              premiado.urgente ? "bg-urgent-soft text-urgent" : "bg-gold-soft text-gold"
             }`}
           >
-            {premiado.urgente ? "Compra urgente: " : ""}um dos seus 3 favoritos
+            {premiado.urgente ? "Compra urgente: " : ""}é um dos seus 3 favoritos
             {premiado.nome ? ` (${premiado.nome})` : ""}.
-          </div>
+          </p>
         )}
 
-        {/* Destaques (por que é candidato) */}
-        {item.destaques?.length > 0 && (
-          <div className="flex flex-wrap gap-1">
-            {item.destaques.map((d, i) => (
-              <span
-                key={i}
-                className="bg-[rgba(0,217,255,0.12)] text-[#00d9ff] text-[11px] px-2 py-0.5 rounded-full"
-              >
-                {d}
-              </span>
+        {conferido.length > 0 && (
+          <ul className="flex flex-col gap-1 text-sm text-ink-2" aria-label="O que a IA conferiu">
+            {conferido.map((d, i) => (
+              <li key={i} className="flex gap-2 items-start">
+                <Check size={16} strokeWidth={2.2} className="text-buy flex-none mt-0.5" aria-hidden />
+                <span className="min-w-0">{d}</span>
+              </li>
             ))}
-          </div>
+          </ul>
         )}
 
-        {/* Flags / avisos (Ville): ex. verificar autenticidade, rever fotos */}
+        {/* Avisos (Ville): ex. verificar autenticidade, rever fotos */}
         {item.flags && item.flags.length > 0 && (
-          <div className="flex flex-wrap gap-1">
+          <ul className="flex flex-col gap-1 text-sm text-deal">
             {item.flags.map((f, i) => (
-              <span
-                key={i}
-                className="bg-[rgba(255,170,0,0.14)] text-[#ffcc66] text-[11px] px-2 py-0.5 rounded-full"
-              >
-                ⚑ {FLAG_LABELS[f] ?? f.replace(/_/g, " ")}
-              </span>
+              <li key={i} className="flex gap-2 items-start">
+                <TriangleAlert size={15} strokeWidth={2} className="flex-none mt-0.5" aria-hidden />
+                {FLAG_LABELS[f] ?? f.replace(/_/g, " ")}
+              </li>
             ))}
-          </div>
+          </ul>
         )}
 
         {/* Sugestão de negociação — a ação prática */}
         {item.negociacao?.msg && (
           <div
-            className={`text-xs rounded-lg px-2 py-1.5 leading-snug border ${
-              item.negociacao.modo === "fechar"
-                ? "bg-[rgba(0,255,136,0.1)] text-[#00ff88] border-[rgba(0,255,136,0.25)]"
-                : "bg-[rgba(255,170,0,0.1)] text-[#ffcc66] border-[rgba(255,170,0,0.25)]"
+            className={`flex gap-2.5 text-sm rounded-lg px-3 py-2.5 leading-snug ${
+              item.negociacao.modo === "fechar" ? "bg-buy-soft text-[#0d5c38]" : "bg-deal-soft text-[#7a4600]"
             }`}
           >
-            {item.negociacao.msg}
+            <HandCoins size={18} strokeWidth={1.75} className="flex-none mt-px" aria-hidden />
+            <span>{item.negociacao.msg.replace(/^[^\p{L}\p{N}€]+/u, "")}</span>
           </div>
         )}
 
-        {/* Por quê — como o score/preço foi formado */}
-        {item.por_que && (
-          <div className="text-[11px] text-[#ff66e2] bg-[rgba(255,102,226,0.1)] rounded-lg px-2 py-1 leading-snug">
-            {item.por_que}
-          </div>
-        )}
-        {item.evidencias && (item.evidencias.listra || item.evidencias.bolso || item.evidencias.elastico) && (
-          <details className="text-[11px] text-[#b8b8c0]">
-            <summary className="cursor-pointer text-[#b8b8c0] select-none">Por quê? (análise da IA)</summary>
-            <div className="mt-1 flex flex-col gap-0.5 border-l-2 border-[rgba(255,255,255,0.07)] pl-2">
-              {item.evidencias.listra && <div><b className="font-medium text-[#f5f5f7]">listra:</b> {item.evidencias.listra}</div>}
-              {item.evidencias.bolso && <div><b className="font-medium text-[#f5f5f7]">bolso:</b> {item.evidencias.bolso}</div>}
-              {item.evidencias.elastico && <div><b className="font-medium text-[#f5f5f7]">elástico:</b> {item.evidencias.elastico}</div>}
+        {(item.por_que || item.evidencias) && (
+          <details className="group text-xs text-ink-2">
+            <summary className="cursor-pointer select-none text-ink-2 hover:text-ink list-none flex items-center gap-1">
+              <ChevronRight size={14} className="transition-transform group-open:rotate-90" aria-hidden />
+              Como a nota foi calculada
+            </summary>
+            <div className="mt-2 flex flex-col gap-1 border-l-2 border-line pl-3 leading-relaxed">
+              {item.por_que && <p className="num">{item.por_que}</p>}
+              {item.evidencias?.listra && <p><b className="font-medium text-ink">Listra:</b> {item.evidencias.listra}</p>}
+              {item.evidencias?.bolso && <p><b className="font-medium text-ink">Bolso:</b> {item.evidencias.bolso}</p>}
+              {item.evidencias?.elastico && <p><b className="font-medium text-ink">Elástico:</b> {item.evidencias.elastico}</p>}
             </div>
           </details>
         )}
 
-        {/* Botões de reação — ícone vetorial (lucide), alvo de 44px, estado sem deslocar layout */}
-        <div className="mt-auto grid grid-cols-3 gap-1.5 pt-2">
-          {REACTIONS.map((r) => {
-            const Icon = r.icon;
-            return (
-              <button
-                key={r.key}
-                onClick={() => reagir(r.key)}
-                disabled={loading}
-                className={`min-h-11 flex flex-col items-center justify-center gap-1 rounded-xl text-xs leading-none transition-colors ${
-                  reacao === r.key ? r.selected : r.base
-                } ${loading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
+        {/* Avaliação: o voto alimenta o ajuste das regras */}
+        <div className="mt-auto flex flex-col gap-2 pt-1 border-t border-line">
+          <p className="pt-3 text-xs text-ink-3">Sua avaliação</p>
+          <div className="grid grid-cols-3 gap-2" role="group" aria-label="Sua avaliação">
+            {REACTIONS.map((r) => {
+              const Icon = r.icon;
+              const on = reacao === r.key;
+              return (
+                <button
+                  key={r.key}
+                  onClick={() => reagir(r.key)}
+                  disabled={loading}
+                  aria-pressed={on}
+                  className={`h-10 flex items-center justify-center gap-1.5 rounded-lg text-sm transition-colors ${
+                    on ? r.selected : r.base
+                  } ${loading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
+                >
+                  <Icon size={16} strokeWidth={1.75} aria-hidden />
+                  {r.label}
+                </button>
+              );
+            })}
+          </div>
+
+          {erro && (
+            <p className="text-xs text-urgent bg-urgent-soft rounded-lg px-3 py-2" role="alert">
+              {erro}
+            </p>
+          )}
+
+          <textarea
+            value={obs}
+            onChange={(e) => {
+              setObs(e.target.value);
+              if (obsStatus !== "idle") setObsStatus("idle");
+            }}
+            onBlur={salvarObs}
+            aria-label="Observação sobre o anúncio"
+            name="observacao"
+            autoComplete="off"
+            placeholder="Observação (opcional)…"
+            className="w-full text-base sm:text-sm text-ink bg-canvas border border-line rounded-lg px-3 py-2 resize-none focus:outline-none focus-visible:border-info focus-visible:ring-2 focus-visible:ring-info/25 placeholder:text-ink-3"
+            rows={2}
+          />
+
+          <div className="flex items-center gap-3 flex-wrap">
+            <a
+              href={item.url}
+              target="_blank"
+              rel="noreferrer"
+              className="h-10 px-4 inline-flex items-center gap-2 rounded-lg text-sm font-semibold bg-ink text-white hover:bg-[#2a3547] transition-colors"
+            >
+              Abrir no Vinted
+              <ExternalLink size={15} strokeWidth={1.75} aria-hidden />
+            </a>
+            {obsStatus !== "idle" && (
+              <span
+                aria-live="polite"
+                title={obsStatus === "erro" ? "Edite e saia do campo pra tentar de novo" : undefined}
+                className={`text-xs ${obsStatus === "erro" ? "text-urgent" : "text-ink-3"}`}
               >
-                <Icon size={20} strokeWidth={1.5} aria-hidden />
-                {r.label}
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Erro de escrita (voto/arquivar) — feedback inline em vez de falha silenciosa */}
-        {erro && (
-          <p className="text-[11px] text-[#ffaa00] bg-[rgba(255,170,0,0.1)] rounded-lg px-2 py-1 leading-snug">
-            {erro}
-          </p>
-        )}
-
-        {/* Observação */}
-        <textarea
-          value={obs}
-          onChange={(e) => {
-            setObs(e.target.value);
-            if (obsStatus !== "idle") setObsStatus("idle"); // volta ao neutro ao editar
-          }}
-          onBlur={salvarObs}
-          aria-label="Observação do item"
-          placeholder="Observação (opcional)…"
-          className="w-full text-base sm:text-xs text-[#f5f5f7] bg-[rgba(255,255,255,0.03)] border border-[rgba(255,255,255,0.07)] rounded-lg px-2 py-1.5 resize-none focus:outline-none focus:ring-2 focus:ring-[rgba(0,217,255,0.4)] placeholder:text-[#6b6b78]"
-          rows={2}
-        />
-        {/* Rodapé: status da observação à esquerda, Arquivar à direita — na mesma linha */}
-        <div className="flex items-center gap-2">
-          {obsStatus !== "idle" && (
-            <span
-              title={
-                obsStatus === "erro"
-                  ? "Edite e saia do campo pra tentar de novo"
-                  : undefined
-              }
-              className={`text-[10px] ${
-                obsStatus === "erro" ? "text-[#ffaa00]" : "text-[#6b6b78]"
+                {obsStatus === "salvando" ? "Salvando…" : obsStatus === "salvo" ? "Observação salva" : "Não salvou a observação"}
+              </span>
+            )}
+            <button
+              onClick={onClickArquivar}
+              className={`ml-auto h-10 px-3 inline-flex items-center gap-1.5 rounded-lg text-sm transition-colors ${
+                confirmando ? "text-urgent bg-urgent-soft" : "text-ink-3 hover:text-ink hover:bg-canvas"
               }`}
             >
-              {obsStatus === "salvando"
-                ? "salvando…"
-                : obsStatus === "salvo"
-                  ? "salvo ✓"
-                  : "erro ao salvar"}
-            </span>
-          )}
-          {/* Arquivar / Desarquivar — fixo à direita (ml-auto). Arquivar pede confirmação inline. */}
-          <button
-            onClick={onClickArquivar}
-            className={`ml-auto text-[11px] transition-colors ${
-              confirmando
-                ? "text-[#ffaa00] hover:text-[#ffcc66]"
-                : "text-[#6b6b78] hover:text-[#b8b8c0]"
-            }`}
-          >
-            {arquivado ? "↩ Desarquivar" : confirmando ? "Confirmar arquivar?" : "Arquivar"}
-          </button>
+              {arquivado ? <ArchiveRestore size={16} aria-hidden /> : <Archive size={16} aria-hidden />}
+              {arquivado ? "Desarquivar" : confirmando ? "Confirmar" : "Arquivar"}
+            </button>
+          </div>
         </div>
       </div>
       {ampliada &&
@@ -411,6 +408,6 @@ export default function VotingCard({ item, reacaoInicial, obsInicial, onReacao, 
           <Lightbox fotos={item.fotos} inicial={fotoIdx} onClose={() => setAmpliada(false)} legenda={item.titulo} />,
           document.body
         )}
-    </div>
+    </article>
   );
 }

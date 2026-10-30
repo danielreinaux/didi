@@ -118,11 +118,13 @@ export const MARCA_LABEL: Record<Marca, string> = {
   vilebrequin: "Ville",
 };
 
-export const DECISAO_META: Record<Decisao, { label: string; cor: string; bg: string; borda: string }> = {
-  compravel: { label: "Comprável", cor: "#00ff88", bg: "rgba(0,255,136,0.12)", borda: "rgba(0,255,136,0.4)" },
-  medio: { label: "Barganha", cor: "#ffaa00", bg: "rgba(255,170,0,0.12)", borda: "rgba(255,170,0,0.4)" },
-  descartado: { label: "Descartado", cor: "#ff7a7a", bg: "rgba(255,90,90,0.10)", borda: "rgba(255,90,90,0.35)" },
-  nao_classificado: { label: "Não classificado", cor: "#9a9aa6", bg: "rgba(255,255,255,0.05)", borda: "rgba(255,255,255,0.12)" },
+// Cores do veredito na paleta do app (globals.css): buy / deal / urgent / neutro.
+// `tag` = classe da etiqueta kraft (.tag-*) usada nos cartões do histórico.
+export const DECISAO_META: Record<Decisao, { label: string; cor: string; bg: string; borda: string; tag: string }> = {
+  compravel: { label: "Comprável", cor: "#13784a", bg: "#e2f1e9", borda: "rgba(19,120,74,0.3)", tag: "tag-buy" },
+  medio: { label: "Barganha", cor: "#a65f00", bg: "#fbefd9", borda: "rgba(166,95,0,0.3)", tag: "tag-deal" },
+  descartado: { label: "Descartado", cor: "#c4302b", bg: "#fbe7e5", borda: "rgba(196,48,43,0.28)", tag: "tag-out" },
+  nao_classificado: { label: "Não classificado", cor: "#7b828c", bg: "#e8eae6", borda: "rgba(27,36,51,0.12)", tag: "tag-out" },
 };
 
 // Componentes da pontuação (score.py / score_ville.py) → rótulo legível.
@@ -159,7 +161,7 @@ export const CRITERIO_META: Record<string, { label: string; principal?: string }
 const MOTIVO_LABEL: Record<string, string> = {
   // Sundek
   estampado: "Estampado (padrão gráfico)",
-  logo_grande: "Logo SUNDEK gigante",
+  logo_grande: "Logo Sundek gigante",
   desbotado: "Desbotado / muito usado",
   nao_short: "Não é short",
   nao_sundek: "Não é da marca Sundek",

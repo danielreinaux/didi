@@ -1,23 +1,32 @@
 import type { Metadata, Viewport } from "next";
-import { Poppins } from "next/font/google";
+import { Bricolage_Grotesque, Instrument_Sans } from "next/font/google";
+import AppShell from "@/components/AppShell";
 import "./globals.css";
 
-const poppins = Poppins({
-  variable: "--font-poppins",
+// Bricolage Grotesque: títulos, preços e a marca. Instrument Sans: interface e texto.
+const bricolage = Bricolage_Grotesque({
+  variable: "--font-bricolage",
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
+  weight: ["500", "600", "700"],
+  display: "swap",
+});
+const instrument = Instrument_Sans({
+  variable: "--font-instrument",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
   display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: "Scrapping Didi",
-  description: "Radar Sundek/Vilebrequin — votação e gabarito da IA",
+  title: { default: "Didi — radar de revenda", template: "%s · Didi" },
+  description: "Encontra no Vinted os anúncios que valem a revenda, avalia cada um com IA e avisa o que comprar e por quanto.",
 };
 
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  // Sem maximumScale: no celular dá pra ampliar a foto com pinça (antes o zoom era bloqueado).
+  themeColor: "#ffffff",
+  // Sem maximumScale: no celular dá pra ampliar a foto com pinça.
 };
 
 export default function RootLayout({
@@ -26,8 +35,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="pt-BR" className={`${poppins.variable} h-full`}>
-      <body className={`${poppins.className} h-full antialiased`}>{children}</body>
+    <html lang="pt-BR" className={`${bricolage.variable} ${instrument.variable} h-full`}>
+      <body className="h-full antialiased">
+        <AppShell>{children}</AppShell>
+      </body>
     </html>
   );
 }

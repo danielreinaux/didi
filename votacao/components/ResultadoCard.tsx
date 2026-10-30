@@ -2,8 +2,9 @@
 
 import { useRef, useState } from "react";
 import Image from "next/image";
+import { ExternalLink, Undo2 } from "lucide-react";
 import { Item, Reaction, REACTIONS } from "@/lib/types";
-import { CARD, TEXT_SECONDARY } from "@/lib/theme";
+import { eur } from "@/lib/tempo";
 
 interface Props {
   item: Item;
@@ -23,6 +24,8 @@ export default function ResultadoCard({ item, reaction, observacao, onCancelado 
   const meta = REACTIONS.find((x) => x.key === reaction)!;
   const Icon = meta.icon;
   const foto = item.fotos[0];
+  const compravel = item.decisao === "compravel";
+  const preco = item.preco_base != null ? `€${eur(item.preco_base)}` : item.preco_total || item.preco;
 
   async function cancelar() {
     if (confirmTimer.current) clearTimeout(confirmTimer.current);
@@ -39,7 +42,7 @@ export default function ResultadoCard({ item, reaction, observacao, onCancelado 
       if (!res.ok) throw new Error("falha");
       onCancelado(item.id);
     } catch {
-      setErro("Não consegui cancelar o voto. Tente de novo.");
+      setErro("O voto não foi cancelado. Tente de novo.");
     } finally {
       setLoading(false);
     }
@@ -54,44 +57,97 @@ export default function ResultadoCard({ item, reaction, observacao, onCancelado 
   }
 
   return (
-    <div className={`${CARD} overflow-hidden flex flex-col`}>
-      <div className="relative w-full aspect-square bg-[rgba(255,255,255,0.03)]">
+    <article
+      aria-label={`${meta.label}: ${item.titulo}`}
+      className="bg-surface rounded-xl border border-line overflow-hidden flex flex-col"
+    >
+      <div className="relative w-full aspect-square bg-sunken">
         {foto ? (
-          <Image src={foto} alt={item.titulo} fill className="object-cover" unoptimized />
+          <Image
+            src={foto}
+            alt={item.titulo}
+            fill
+            sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
+            className="object-cover"
+            unoptimized
+          />
         ) : (
-          <div className="flex items-center justify-center h-full text-[#6b6b78] text-sm">Sem foto</div>
+          <div className="flex items-center justify-center h-full text-ink-3 text-sm">Sem foto</div>
         )}
-        <span className={`absolute top-2 left-2 inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full ${meta.selected}`}>
-          <Icon size={14} strokeWidth={1.5} aria-hidden /> {meta.label}
+        {/* Etiqueta do veredito da IA, a mesma das Ofertas */}
+        <div className="absolute top-3 left-0">
+          <span className={`tag ${compravel ? "tag-buy" : "tag-deal"} text-sm shadow-[0_2px_6px_rgba(27,36,51,0.18)]`}>
+            {compravel ? "Comprável" : "Barganha"}
+            <span className="font-display num text-base leading-none">{item.score}</span>
+          </span>
+        </div>
+        {/* O seu voto */}
+        <span
+          className={`absolute bottom-3 left-3 inline-flex items-center gap-1.5 text-sm font-medium h-8 px-3 rounded-full ${meta.selected}`}
+        >
+          <Icon size={15} strokeWidth={1.9} aria-hidden />
+          {meta.label}
         </span>
       </div>
-      <div className="p-3 flex flex-col gap-1.5">
-        <a href={item.url} target="_blank" rel="noreferrer" className="text-sm text-[#f5f5f7] line-clamp-2 hover:underline">
+
+      <div className="p-4 flex flex-col gap-3 flex-1 min-w-0">
+        <a
+          href={item.url}
+          target="_blank"
+          rel="noreferrer"
+          className="text-[15px] font-medium text-ink leading-snug line-clamp-2 hover:underline underline-offset-2"
+        >
           {item.titulo}
         </a>
-        <div className={`text-xs ${TEXT_SECONDARY}`}>
-          {item.tamanho} · {item.preco_total || item.preco} · {item.cor_ia}
-        </div>
+
+        <p className="font-display num text-[28px] font-bold leading-none text-ink">{preco}</p>
+
+        <dl className="grid grid-cols-2 gap-2 text-sm">
+          <div className="rounded-lg bg-canvas px-2.5 py-2">
+            <dt className="text-[11px] text-ink-3">Tamanho</dt>
+            <dd className="font-semibold text-ink">{item.tamanho}</dd>
+          </div>
+          <div className="rounded-lg bg-canvas px-2.5 py-2 min-w-0">
+            <dt className="text-[11px] text-ink-3">Cor</dt>
+            <dd className="font-semibold text-ink truncate first-letter:uppercase">{item.cor_ia || "—"}</dd>
+          </div>
+        </dl>
+
         {observacao && (
-          <div className="text-xs text-[#b8b8c0] bg-[rgba(255,255,255,0.03)] rounded-lg px-2 py-1 italic">“{observacao}”</div>
+          <figure className="rounded-lg bg-canvas px-3 py-2">
+            <figcaption className="text-[11px] text-ink-3">Sua observação</figcaption>
+            <blockquote className="text-sm text-ink-2 break-words">“{observacao}”</blockquote>
+          </figure>
         )}
 
-        {/* Rodapé: erro à esquerda, "Cancelar voto" à direita — confirmação inline de 2 toques */}
-        <div className="flex items-center gap-2 pt-1">
-          {erro && <span className="text-[10px] text-[#ffaa00]">{erro}</span>}
+        {erro && (
+          <p className="text-xs text-urgent bg-urgent-soft rounded-lg px-3 py-2" role="alert">
+            {erro}
+          </p>
+        )}
+
+        <div className="mt-auto pt-3 border-t border-line flex items-center gap-2">
+          <a
+            href={item.url}
+            target="_blank"
+            rel="noreferrer"
+            className="h-10 px-3 inline-flex items-center gap-1.5 rounded-lg text-sm text-ink-2 border border-line hover:text-ink hover:border-line-strong transition-colors"
+          >
+            Abrir no Vinted
+            <ExternalLink size={15} strokeWidth={1.75} aria-hidden />
+          </a>
           <button
             onClick={onClickCancelar}
             disabled={loading}
-            className={`ml-auto text-[11px] transition-colors ${
-              confirmando
-                ? "text-[#ffaa00] hover:text-[#ffcc66]"
-                : "text-[#6b6b78] hover:text-[#b8b8c0]"
+            className={`ml-auto h-10 px-3 inline-flex items-center gap-1.5 rounded-lg text-sm transition-colors ${
+              confirmando ? "text-urgent bg-urgent-soft" : "text-ink-3 hover:text-ink hover:bg-canvas"
             } ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
           >
-            {confirmando ? "Confirmar cancelar?" : "Cancelar voto"}
+            <Undo2 size={16} aria-hidden />
+            {loading ? "Cancelando…" : confirmando ? "Confirmar" : "Cancelar voto"}
           </button>
         </div>
       </div>
-    </div>
+    </article>
   );
 }

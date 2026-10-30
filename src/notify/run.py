@@ -69,7 +69,7 @@ def main() -> None:
 
     n_urg = sum(1 for it in pendentes if (it.get("negociacao") or {}).get("comprar_ja"))
     assunto = (mailer.assunto_premiado(pendentes)
-               or f"🛍️ {len(pendentes)} nova(s) oferta(s) {label}" + (f" ({n_urg} ⚡)" if n_urg else ""))
+               or mailer.assunto_comum(pendentes, label) + (f" ({n_urg} ⚡)" if n_urg else ""))
     html = mailer.corpo_html(label, pendentes)
 
     mailer.enviar(assunto, html)

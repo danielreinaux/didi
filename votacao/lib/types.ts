@@ -101,22 +101,22 @@ export const REACTIONS: {
     key: "gostei",
     label: "Gostei",
     icon: ThumbsUp,
-    base: "bg-[rgba(0,255,136,0.14)] text-[#8fffc4] hover:bg-[rgba(0,255,136,0.22)]",
-    selected: "bg-[#00ff88] text-[#063b22]",
+    base: "bg-surface text-ink-2 border border-line hover:border-buy hover:text-buy",
+    selected: "bg-buy text-white border border-buy",
   },
   {
     key: "nao_gostei",
     label: "Não gostei",
     icon: ThumbsDown,
-    base: "bg-[rgba(255,170,0,0.14)] text-[#ffd27a] hover:bg-[rgba(255,170,0,0.22)]",
-    selected: "bg-[#ffaa00] text-[#1c1100]",
+    base: "bg-surface text-ink-2 border border-line hover:border-deal hover:text-deal",
+    selected: "bg-deal text-white border border-deal",
   },
   {
     key: "discordo",
     label: "Discordo",
     icon: TriangleAlert,
-    base: "bg-[rgba(255,255,255,0.07)] text-[#cfcfd8] hover:bg-[rgba(255,255,255,0.12)]",
-    selected: "bg-[#7c7c8a] text-[#0a0a0c]",
+    base: "bg-surface text-ink-2 border border-line hover:border-ink hover:text-ink",
+    selected: "bg-ink text-white border border-ink",
   },
 ];
 

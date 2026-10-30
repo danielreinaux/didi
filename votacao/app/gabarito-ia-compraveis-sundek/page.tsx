@@ -3,11 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   CARD,
-  HEADER_BG,
-  TEXT_SECONDARY,
   TEXT_TERTIARY,
-  PILL_NEUTRAL,
-  ACTIVE_GRADIENT,
 } from "@/lib/theme";
 import GabaritoNav from "@/components/GabaritoNav";
 
@@ -72,10 +68,10 @@ function rotuloOpt(crit: Criterio, valor: string | null | undefined): string {
 function Carrossel({ fotos, onOpen }: { fotos: string[]; onOpen: (i: number) => void }) {
   const [i, setI] = useState(0);
   if (!fotos.length)
-    return <div className="w-full aspect-square bg-[rgba(255,255,255,0.03)] grid place-items-center text-xs text-[#6b6b78]">sem foto</div>;
+    return <div className="w-full aspect-square bg-sunken grid place-items-center text-xs text-ink-3">sem foto</div>;
   const n = fotos.length;
   return (
-    <div className="relative w-full aspect-square bg-[rgba(255,255,255,0.03)]">
+    <div className="relative w-full aspect-square bg-sunken">
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={fotos[i]}
@@ -87,9 +83,9 @@ function Carrossel({ fotos, onOpen }: { fotos: string[]; onOpen: (i: number) => 
       />
       {n > 1 && (
         <>
-          <button onClick={() => setI((i - 1 + n) % n)} aria-label="Foto anterior" className="absolute left-2 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-black/45 text-white text-xl">‹</button>
-          <button onClick={() => setI((i + 1) % n)} aria-label="Próxima foto" className="absolute right-2 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-black/45 text-white text-xl">›</button>
-          <span className="absolute top-2 right-2 text-[11px] bg-black/50 text-white px-2 py-0.5 rounded-full">{i + 1}/{n}</span>
+          <button onClick={() => setI((i - 1 + n) % n)} aria-label="Foto anterior" className="absolute left-2 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/85 text-ink text-xl shadow-sm hover:bg-white">‹</button>
+          <button onClick={() => setI((i + 1) % n)} aria-label="Próxima foto" className="absolute right-2 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/85 text-ink text-xl shadow-sm hover:bg-white">›</button>
+          <span className="absolute top-2 right-2 text-[11px] num bg-ink/70 text-white px-2 py-0.5 rounded-full">{i + 1}/{n}</span>
         </>
       )}
     </div>
@@ -252,42 +248,53 @@ export default function GabaritoIACompraveisSundek() {
   const progresso = itens.length ? Math.round((totalCompletos / itens.length) * 100) : 0;
 
   const btn = (f: typeof filtro, label: string) => (
-    <button onClick={() => setFiltro(f)} className={`px-3 py-1.5 rounded-lg text-xs transition-all ${filtro === f ? ACTIVE_GRADIENT : PILL_NEUTRAL}`}>
+    <button onClick={() => setFiltro(f)} aria-pressed={filtro === f} className={`h-9 px-3 flex-none rounded-full text-sm transition-colors ${filtro === f ? "bg-ink text-white" : "bg-surface border border-line text-ink-2 hover:text-ink hover:border-line-strong"}`}>
       {label}
     </button>
   );
 
   return (
     <div className="h-full overflow-y-auto">
-      <header className={`sticky top-0 z-20 ${HEADER_BG}`}>
-        <div className="app-wrap py-3 flex flex-col gap-3">
-          <div className="flex items-center justify-between gap-3 flex-wrap">
-            <h1 className="text-2xl text-[#f5f5f7] leading-tight">Gabarito da IA · Sundek (compráveis)</h1>
-            <div className="flex items-center gap-3 flex-wrap">
-              <GabaritoNav atual="/gabarito-ia-compraveis-sundek" />
-              <a href="/" className="text-xs text-[#00d9ff] hover:underline">← Votação</a>
+      <div className="app-wrap pt-6 lg:pt-10 pb-12">
+        <div className="flex flex-col gap-4">
+          <div>
+            <h1 className="text-[32px] lg:text-[40px] font-bold leading-none text-ink">Gabarito da IA</h1>
+            <p className="mt-2 text-[15px] text-ink-2 max-w-[75ch]">
+              <b className="font-semibold text-ink">Sundek (compráveis).</b> 43 shorts compráveis (2 fotos cada — um lado com listra/logo, o outro liso). Pra cada critério, escolha <b className="text-ink">a resposta correta</b>.
+            O palpite atual da IA aparece ao lado (use “Tudo igual à IA” quando concordar com tudo).
+            </p>
+          </div>
+          <GabaritoNav atual="/gabarito-ia-compraveis-sundek" />
+        </div>
+
+        {/* Progresso + filtros: fixos no topo ao rolar */}
+        <div className="sticky top-0 z-20 -mx-4 px-4 sm:mx-0 sm:px-0 mt-5 py-3 bg-canvas/95 backdrop-blur-sm flex flex-col gap-2.5">
+          <div className="flex items-center gap-3">
+            <span className="text-sm text-ink-2 flex-none">
+              <b className="font-semibold text-ink num">{totalCompletos}</b> de <span className="num">{itens.length}</span> completos
+            </span>
+            <div
+              className="flex-1 h-1.5 bg-sunken rounded-full overflow-hidden"
+              role="progressbar"
+              aria-label="Itens completos"
+              aria-valuemin={0}
+              aria-valuemax={itens.length}
+              aria-valuenow={totalCompletos}
+            >
+              <div className="h-full rounded-full bg-buy transition-[width]" style={{ width: `${progresso}%` }} />
             </div>
           </div>
-          <p className={`text-xs ${TEXT_SECONDARY}`}>
-            43 shorts compráveis (2 fotos cada — um lado com listra/logo, o outro liso). Pra cada critério, escolha <b className="text-[#f5f5f7]">a resposta correta</b>.
-            O palpite atual da IA aparece ao lado (use “Tudo = IA” quando concordar com tudo).
-          </p>
-          <div className="w-full h-1.5 bg-[rgba(255,255,255,0.04)] rounded-full overflow-hidden">
-            <div className="h-full rounded-full bg-[#00d9ff] transition-all" style={{ width: `${progresso}%` }} />
-          </div>
-          <div className="flex gap-2 flex-wrap items-center">
-            <span className={`text-xs ${TEXT_TERTIARY} mr-1`}>{totalCompletos}/{itens.length} completos</span>
+          <div className="flex gap-1.5 overflow-x-auto [scrollbar-width:none]" role="group" aria-label="Filtrar itens">
             {btn("todos", `Todos (${itens.length})`)}
             {btn("pendentes", `Pendentes (${itens.length - totalCompletos})`)}
             {btn("completos", `Completos (${totalCompletos})`)}
           </div>
         </div>
-      </header>
 
-      <main className="app-wrap py-6">
+      <main className="mt-3">
         {carregando ? (
           <div className={`flex flex-col items-center gap-3 mt-24 text-sm ${TEXT_TERTIARY}`}>
-            <span className="w-6 h-6 rounded-full border-2 border-[rgba(255,255,255,0.15)] border-t-[#00d9ff] animate-spin" />
+            <span className="w-6 h-6 rounded-full border-2 border-line border-t-ink animate-spin" />
             Carregando gabarito…
           </div>
         ) : erro ? (
@@ -303,29 +310,29 @@ export default function GabaritoIACompraveisSundek() {
                   <div className="flex flex-col">
                     <Carrossel fotos={item.fotos} onOpen={(idx) => setLightbox({ fotos: item.fotos, i: idx })} />
                     <div className="p-3 flex flex-col gap-1.5">
-                      <span className="text-sm text-[#f5f5f7] leading-snug">{item.titulo} <span className={TEXT_TERTIARY}>· {item.id}</span></span>
+                      <span className="text-sm text-ink leading-snug">{item.titulo} <span className={TEXT_TERTIARY}>· {item.id}</span></span>
                       <div className="flex items-center gap-2 flex-wrap">
-                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-[rgba(255,102,226,0.12)] text-[#ff66e2]">{item.bucket}</span>
-                        <span className={`text-[10px] ${feitos >= TOTAL_CRITERIOS ? "text-[#00ff88]" : TEXT_TERTIARY}`}>{feitos}/{TOTAL_CRITERIOS}</span>
+                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-sunken text-ink-2">{item.bucket}</span>
+                        <span className={`text-[10px] ${feitos >= TOTAL_CRITERIOS ? "text-buy" : TEXT_TERTIARY}`}>{feitos}/{TOTAL_CRITERIOS}</span>
                       </div>
                     </div>
                   </div>
 
                   {/* Coluna critérios */}
-                  <div className="p-3 border-t md:border-t-0 md:border-l border-[rgba(255,255,255,0.07)]">
+                  <div className="p-3 border-t md:border-t-0 md:border-l border-line">
                     <div className="flex items-center justify-between mb-2">
                       <span className="text-xs">
                         {status[item.id] === "saving" ? (
-                          <span className="text-[#6b6b78]">salvando…</span>
+                          <span className="text-ink-3">Salvando…</span>
                         ) : status[item.id] === "error" ? (
-                          <span className="text-[#ffaa00]">⚠ não salvou — tente de novo</span>
+                          <span className="text-urgent">Não salvou. Escolha de novo para tentar.</span>
                         ) : status[item.id] === "saved" ? (
-                          <span className="text-[#00ff88]">salvo no servidor ✓</span>
+                          <span className="text-buy">Salvo</span>
                         ) : (
-                          <span className={TEXT_TERTIARY}>respostas esperadas</span>
+                          <span className={TEXT_TERTIARY}>Respostas esperadas</span>
                         )}
                       </span>
-                      <button onClick={() => tudoIgualIA(item)} className={`text-[11px] px-2.5 py-1 rounded-lg ${PILL_NEUTRAL}`}>✓ Tudo = IA</button>
+                      <button onClick={() => tudoIgualIA(item)} className="h-8 px-3 rounded-lg text-xs font-medium bg-surface border border-line text-ink-2 hover:text-ink hover:border-line-strong transition-colors">Tudo igual à IA</button>
                     </div>
                     <div className="grid sm:grid-cols-2 gap-x-4 gap-y-2">
                       {CRITERIOS.map((c) => {
@@ -337,18 +344,18 @@ export default function GabaritoIACompraveisSundek() {
                         const igualIA = atual && iaVal && atual === iaVal;
                         return (
                           <label key={c.key} className="flex flex-col gap-0.5">
-                            <span className="text-[11px] text-[#b8b8c0] flex items-center gap-1.5">
+                            <span className="text-[11px] text-ink-2 flex items-center gap-1.5">
                               {c.label}
                               <span className={`text-[10px] ${TEXT_TERTIARY}`}>IA: {iaLabel}{corNome}</span>
                             </span>
                             <select
                               value={atual}
                               onChange={(e) => salvar(item.id, c.key, e.target.value)}
-                              className={`text-xs rounded-lg px-2 py-1.5 bg-[rgba(255,255,255,0.04)] border outline-none ${
-                                atual ? (igualIA ? "border-[rgba(0,255,136,0.35)] text-[#f5f5f7]" : "border-[#00d9ff] text-[#f5f5f7]") : "border-[rgba(255,255,255,0.12)] text-[#6b6b78]"
+                              className={`text-xs rounded-lg px-2 py-1.5 bg-canvas border outline-none focus-visible:ring-2 focus-visible:ring-info/30 ${
+                                atual ? (igualIA ? "border-buy/40 text-ink" : "border-info text-ink") : "border-line-strong text-ink-3"
                               }`}
                             >
-                              <option value="">— escolher —</option>
+                              <option value="">Escolher…</option>
                               {c.opts.map(([v, l]) => (
                                 <option key={v} value={v}>{l}{v === iaVal ? "  (IA)" : ""}</option>
                               ))}
@@ -361,9 +368,9 @@ export default function GabaritoIACompraveisSundek() {
                     {/* Observação livre — só pra humano ler. Vai no mesmo hash do
                         Redis sob "observacao" (não conta como critério). */}
                     <div className="mt-3">
-                      <label htmlFor={`obs-${item.id}`} className="text-[11px] text-[#b8b8c0] flex items-center gap-1.5 mb-1">
+                      <label htmlFor={`obs-${item.id}`} className="text-[11px] text-ink-2 flex items-center gap-1.5 mb-1">
                         Observação
-                        <span className="text-[10px] text-[#6b6b78]">(só pra você ler)</span>
+                        <span className="text-[10px] text-ink-3">(só pra você ler)</span>
                       </label>
                       <textarea
                         id={`obs-${item.id}`}
@@ -374,7 +381,7 @@ export default function GabaritoIACompraveisSundek() {
                         }}
                         rows={2}
                         placeholder="Anotação livre…"
-                        className="w-full text-xs rounded-lg px-2 py-1.5 bg-[rgba(255,255,255,0.04)] border border-[rgba(255,255,255,0.12)] text-[#f5f5f7] outline-none focus:border-[#00d9ff] resize-y"
+                        className="w-full text-xs rounded-lg px-2 py-1.5 bg-canvas border border-line-strong text-ink outline-none focus:border-info resize-y"
                       />
                     </div>
                   </div>
@@ -384,6 +391,7 @@ export default function GabaritoIACompraveisSundek() {
           </div>
         )}
       </main>
+      </div>
 
       {lightbox && (
         <Lightbox fotos={lightbox.fotos} inicial={lightbox.i} onClose={() => setLightbox(null)} />

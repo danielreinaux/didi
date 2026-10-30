@@ -13,22 +13,15 @@ import {
   MARCA_LABEL,
   DECISAO_META,
   labelMotivo,
-  fmtDataHora,
+  MESES,
   fmtBRL,
   fmtUSD,
   fmtNum,
   fmtDuracao,
 } from "@/lib/history";
+import Link from "next/link";
+import { ChevronLeft } from "lucide-react";
 import { RunLinks, RunErroBadge } from "@/components/RunLinks";
-import {
-  CARD,
-  HEADER_BG,
-  TEXT_TERTIARY,
-  PILL_NEUTRAL,
-  ACTIVE_GRADIENT,
-  SEGMENTED_BTN,
-  SEGMENTED_INACTIVE,
-} from "@/lib/theme";
 
 type Escopo = "total" | Marca;
 type FiltroDec = "candidatos" | Decisao;
@@ -75,7 +68,7 @@ export default function RodadaDetalhe({ params }: { params: Promise<{ historyid:
   if (carregando) {
     return (
       <Centro>
-        <span className="w-6 h-6 rounded-full border-2 border-[rgba(255,255,255,0.15)] border-t-[#00d9ff] animate-spin" />
+        <span className="w-6 h-6 rounded-full border-2 border-line border-t-ink animate-spin" aria-hidden />
         Carregando rodada…
       </Centro>
     );
@@ -83,8 +76,11 @@ export default function RodadaDetalhe({ params }: { params: Promise<{ historyid:
   if (erro || !rodada || !metricasEscopo) {
     return (
       <Centro>
-        <span>Não encontrei essa rodada.</span>
-        <a href="/history" className="text-xs text-[#00d9ff] hover:underline">← Voltar ao histórico</a>
+        <span className="text-ink font-medium">Essa rodada não está mais no histórico.</span>
+        <span className="text-ink-3">O histórico guarda só as rodadas mais recentes.</span>
+        <Link href="/history" className="mt-2 h-9 px-4 inline-flex items-center rounded-lg text-sm font-semibold bg-ink text-white">
+          Ver as rodadas
+        </Link>
       </Centro>
     );
   }
@@ -93,181 +89,214 @@ export default function RodadaDetalhe({ params }: { params: Promise<{ historyid:
   const m = metricasEscopo;
   const contagemDec = (d: Decisao) => rodada.produtos.filter((p) => (escopo === "total" || p.marca === escopo) && p.decisao === d).length;
   const nCandidatos = m.compraveis + m.barganha;
+  const maxMotivo = Math.max(1, ...Object.values(m.por_motivo));
+
+  const FILTROS: [FiltroDec, string, number][] = [
+    ["candidatos", "Candidatos", nCandidatos],
+    ["compravel", "Compráveis", contagemDec("compravel")],
+    ["medio", "Barganhas", contagemDec("medio")],
+    ["descartado", "Descartados", contagemDec("descartado")],
+    ["nao_classificado", "Não classificados", contagemDec("nao_classificado")],
+  ];
 
   return (
     <div className="h-full overflow-y-auto">
-      <header className={`sticky top-0 z-20 ${HEADER_BG}`}>
-        <div className="app-wrap py-3 flex flex-col gap-2">
-          <div className="flex items-center justify-between gap-3 flex-wrap">
-            <div className="flex flex-col gap-1">
-              <nav className={`text-[11px] ${TEXT_TERTIARY}`}>
-                <a href="/history" className="hover:underline">Histórico</a> / rodada
-              </nav>
-              <div className="flex items-center gap-2 flex-wrap">
-                <h1 className="text-2xl text-[#f5f5f7] leading-tight">{fmtDataHora(rodada.quando)}</h1>
+      <div className="app-wrap pt-6 lg:pt-10 pb-12">
+        <div className="max-w-[1040px]">
+          <Link href="/history" className="inline-flex items-center gap-1 text-sm text-ink-2 hover:text-ink -ml-1">
+            <ChevronLeft size={16} aria-hidden />
+            Rodadas
+          </Link>
+          <div className="mt-3 flex items-start justify-between gap-4 flex-wrap">
+            <div className="min-w-0">
+              <h1 className="text-[32px] lg:text-[40px] font-bold leading-none text-ink">
+                Rodada de {tituloRodada(rodada.quando)}
+              </h1>
+              <p className="mt-2 text-[15px] text-ink-2 max-w-[68ch]">
+                Custou {fmtBRL(m.custo_brl)}{m.calls ? "" : " (os anúncios do topo do Vinted já tinham sido avaliados)"}. Na última hora apareceram {m.novos === 1 ? "1 anúncio novo" : `${fmtNum(m.novos)} anúncios novos`}. Depois dela,
+                o acervo tinha {m.compraveis === 1 ? "1 comprável" : `${fmtNum(m.compraveis)} compráveis`} e{" "}
+                {m.barganha === 1 ? "1 barganha" : `${fmtNum(m.barganha)} barganhas`} à venda.
+              </p>
+              <div className="mt-3 flex items-center gap-2 flex-wrap">
                 <RunErroBadge meta={rodada} />
+                {rodada.fonte === "backfill" && (
+                  <span className="text-xs text-ink-3">Reconstruída do histórico do git (sem run no GitHub Actions).</span>
+                )}
               </div>
             </div>
-            <div className="flex items-center gap-3 flex-wrap">
-              <RunLinks meta={rodada} tamanho="md" />
-              <a href="/history" className="text-xs text-[#00d9ff] hover:underline">← Histórico</a>
-            </div>
+            <RunLinks meta={rodada} tamanho="md" />
           </div>
 
-          {/* Escopo: total / marca */}
-          <div className="inline-flex p-1 rounded-xl bg-[rgba(255,255,255,0.04)] border border-[rgba(255,255,255,0.07)] self-start">
-            {(["total", ...marcasDisponiveis] as Escopo[]).map((e) => (
-              <button
-                key={e}
-                onClick={() => setEscopo(e)}
-                disabled={!temDuasMarcas && e === "total"}
-                className={`${SEGMENTED_BTN} ${
-                  escopo === e ? ACTIVE_GRADIENT : SEGMENTED_INACTIVE
-                } ${!temDuasMarcas && e === "total" ? "opacity-40 cursor-default" : ""}`}
-              >
-                {e === "total" ? "Total" : MARCA_LABEL[e as Marca]}
-              </button>
-            ))}
-          </div>
-        </div>
-      </header>
-
-      <main className="app-wrap py-6 flex flex-col gap-6">
-        {/* ── Desta rodada ── */}
-        <section>
-          <h2 className={`text-xs uppercase tracking-wide mb-2 ${TEXT_TERTIARY}`}>Desta rodada</h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-            <Stat v={fmtBRL(m.custo_brl)} l="Custo (R$)" cor="#00d9ff" />
-            <Stat v={fmtUSD(m.custo_usd)} l={m.custo_piso ? "Custo (USD, piso)" : "Custo (USD)"} />
-            <Stat v={fmtNum(m.tok_in)} l="Tokens IN" />
-            <Stat v={fmtNum(m.tok_out)} l="Tokens OUT" />
-            <Stat v={fmtNum(m.calls)} l="Chamadas API" />
-            <Stat v={String(m.novos)} l="Novos itens" cor="#00ff88" />
-          </div>
-          {escopo === "total" && (
-            <p className={`text-[11px] mt-2 ${TEXT_TERTIARY}`}>
-              Total combinado Sundek + Ville. {t.custo_usd ? `O custo em dólar do dia é contabilizado separadamente.` : ""}
-            </p>
-          )}
-          {"duracao_s" in m && (m as MetricasMarca).duracao_s != null && (
-            <p className={`text-[11px] mt-2 ${TEXT_TERTIARY}`}>Tempo de análise da IA (Ville): {fmtDuracao((m as MetricasMarca).duracao_s)}</p>
-          )}
-        </section>
-
-        {/* ── Estado do acervo ── */}
-        <section>
-          <h2 className={`text-xs uppercase tracking-wide mb-2 ${TEXT_TERTIARY}`}>
-            Estado do acervo {escopo !== "total" ? `· ${MARCA_LABEL[escopo as Marca]}` : ""}
-          </h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-            <Stat v={String(nCandidatos)} l="Candidatos" cor="#00d9ff" />
-            <Stat v={String(m.compraveis)} l="Compráveis" cor="#00ff88" />
-            <Stat v={String(m.barganha)} l="Barganha" cor="#ffaa00" />
-            <Stat v={fmtNum(m.descartados)} l="Descartados" cor="#ff7a7a" />
-            <Stat v={fmtNum(m.nao_classificados)} l="Não classif." />
-            <Stat v={fmtNum(m.ativos)} l="Ativos à venda" />
-          </div>
-          <p className={`text-[11px] mt-2 ${TEXT_TERTIARY}`}>
-            Acervo acumulado ainda à venda (não só o que foi coletado nesta rodada). Vendidos: {fmtNum(m.vendidos)} · removidos: {fmtNum(m.removidos)}.
-          </p>
-        </section>
-
-        {/* ── Por motivo de exclusão ── */}
-        {Object.keys(m.por_motivo).length > 0 && (
-          <section>
-            <h2 className={`text-xs uppercase tracking-wide mb-2 ${TEXT_TERTIARY}`}>Por que a IA descartou (acervo ativo)</h2>
-            <div className={`${CARD} p-4`}>
-              <div className="flex flex-col gap-1.5">
-                {Object.entries(m.por_motivo).slice(0, 10).map(([mot, n]) => {
-                  const max = Math.max(...Object.values(m.por_motivo));
-                  return (
-                    <div key={mot} className="flex items-center gap-3">
-                      <span className="text-xs text-[#b8b8c0] w-52 shrink-0 truncate" title={labelMotivo(mot)}>{labelMotivo(mot)}</span>
-                      <div className="flex-1 h-2 rounded-full bg-[rgba(255,255,255,0.04)] overflow-hidden">
-                        <div className="h-full rounded-full bg-[#ff7a7a]/60" style={{ width: `${(n / max) * 100}%` }} />
-                      </div>
-                      <span className="text-xs text-[#b8b8c0] w-10 text-right">{fmtNum(n)}</span>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          </section>
-        )}
-
-        {/* ── Custo por etapa (Sundek) ── */}
-        {Object.keys(m.por_etapa || {}).length > 0 && (
-          <section>
-            <h2 className={`text-xs uppercase tracking-wide mb-2 ${TEXT_TERTIARY}`}>Custo por etapa</h2>
-            <div className={`${CARD} p-4 overflow-x-auto`}>
-              <table className="w-full text-xs">
-                <thead>
-                  <tr className={TEXT_TERTIARY}>
-                    <th className="text-left font-medium py-1">Etapa</th>
-                    <th className="text-right font-medium py-1">Chamadas</th>
-                    <th className="text-right font-medium py-1">Tok IN</th>
-                    <th className="text-right font-medium py-1">Tok OUT</th>
-                    <th className="text-right font-medium py-1">Custo</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {Object.entries(m.por_etapa).sort((a, b) => b[1].custo_usd - a[1].custo_usd).map(([et, v]) => (
-                    <tr key={et} className="border-t border-[rgba(255,255,255,0.05)]">
-                      <td className="py-1.5 text-[#b8b8c0]">{et}</td>
-                      <td className="py-1.5 text-right text-[#b8b8c0]">{fmtNum(v.calls)}</td>
-                      <td className="py-1.5 text-right text-[#b8b8c0]">{fmtNum(v.tok_in)}</td>
-                      <td className="py-1.5 text-right text-[#b8b8c0]">{fmtNum(v.tok_out)}</td>
-                      <td className="py-1.5 text-right text-[#f5f5f7]">{fmtUSD(v.custo_usd)}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </section>
-        )}
-
-        {/* ── Produtos ── */}
-        <section>
-          <div className="flex items-center justify-between gap-3 flex-wrap mb-3">
-            <h2 className={`text-xs uppercase tracking-wide ${TEXT_TERTIARY}`}>Produtos achados</h2>
-            <div className="flex gap-2 flex-wrap">
-              {([
-                ["candidatos", `Candidatos (${nCandidatos})`],
-                ["compravel", `Compráveis (${contagemDec("compravel")})`],
-                ["medio", `Barganha (${contagemDec("medio")})`],
-                ["descartado", `Descartados (${contagemDec("descartado")})`],
-                ["nao_classificado", `Não classif. (${contagemDec("nao_classificado")})`],
-              ] as [FiltroDec, string][]).map(([f, label]) => (
+          {/* Escopo: total / marca (só faz diferença com mais de uma marca na rodada) */}
+          {temDuasMarcas && (
+            <div className="mt-5 flex items-center gap-1.5 flex-wrap" role="group" aria-label="Marca">
+              {(["total", ...marcasDisponiveis] as Escopo[]).map((e) => (
                 <button
-                  key={f}
-                  onClick={() => setFiltroDec(f)}
-                  className={`px-3 py-1.5 rounded-lg text-xs transition-all ${filtroDec === f ? ACTIVE_GRADIENT : PILL_NEUTRAL}`}
+                  key={e}
+                  onClick={() => setEscopo(e)}
+                  aria-pressed={escopo === e}
+                  className={`h-9 px-3 rounded-full text-sm transition-colors ${
+                    escopo === e ? "bg-ink text-white" : "bg-surface border border-line text-ink-2 hover:text-ink hover:border-line-strong"
+                  }`}
                 >
-                  {label}
+                  {e === "total" ? "Todas as marcas" : MARCA_LABEL[e as Marca]}
                 </button>
               ))}
             </div>
-          </div>
+          )}
 
-          {produtosFiltrados.length === 0 ? (
-            <p className={`text-center mt-10 text-sm ${TEXT_TERTIARY}`}>Nenhum produto nesse filtro.</p>
-          ) : (
-            <>
-              <p className={`text-[11px] mb-3 ${TEXT_TERTIARY}`}>
-                {produtosFiltrados.length} produtos.
-                {filtroDec === "descartado" && amostrado(rodada, escopo) && " Amostra dos descartados de maior score do acervo (o total está nas métricas acima)."}
-              </p>
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
-                {produtosFiltrados.map((p) => (
-                  <ProdutoCard key={`${p.marca}-${p.id}`} p={p} runId={historyid} />
+          <main className="mt-8 flex flex-col gap-8">
+            {/* ── Desta rodada ── */}
+            <section>
+              <Titulo>Nesta rodada</Titulo>
+              <dl className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 bg-surface border border-line rounded-xl overflow-hidden">
+                <Stat v={fmtBRL(m.custo_brl)} l="Custo" />
+                <Stat v={fmtUSD(m.custo_usd)} l={m.custo_piso ? "Custo em dólar (piso)" : "Custo em dólar"} />
+                <Stat v={fmtNum(m.tok_in)} l="Tokens de entrada" />
+                <Stat v={fmtNum(m.tok_out)} l="Tokens de saída" />
+                <Stat v={fmtNum(m.calls)} l="Chamadas à IA" />
+                <Stat v={fmtNum(m.novos)} l="Novos na última hora" cor="text-info" />
+              </dl>
+              {escopo === "total" && temDuasMarcas && (
+                <Nota>
+                  Soma de todas as marcas. {t.custo_usd ? "O custo em dólar do dia é contabilizado separadamente." : ""}
+                </Nota>
+              )}
+              {"duracao_s" in m && (m as MetricasMarca).duracao_s != null && (
+                <Nota>Tempo de análise da IA (Ville): {fmtDuracao((m as MetricasMarca).duracao_s)}.</Nota>
+              )}
+            </section>
+
+            {/* ── Estado do acervo ── */}
+            <section>
+              <Titulo>
+                Acervo à venda depois da rodada{escopo !== "total" ? `, ${MARCA_LABEL[escopo as Marca]}` : ""}
+              </Titulo>
+              <dl className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 bg-surface border border-line rounded-xl overflow-hidden">
+                <Stat v={fmtNum(nCandidatos)} l="Candidatos" />
+                <Stat v={fmtNum(m.compraveis)} l="Compráveis" cor="text-buy" />
+                <Stat v={fmtNum(m.barganha)} l="Barganhas" cor="text-deal" />
+                <Stat v={fmtNum(m.descartados)} l="Descartados" cor="text-urgent" />
+                <Stat v={fmtNum(m.nao_classificados)} l="Não classificados" />
+                <Stat v={fmtNum(m.ativos)} l="Anúncios à venda" />
+              </dl>
+              <Nota>
+                Conta todo o acervo ainda à venda, não só o que entrou nesta rodada. Vendidos: {fmtNum(m.vendidos)}. Removidos:{" "}
+                {fmtNum(m.removidos)}.
+              </Nota>
+            </section>
+
+            {/* ── Por motivo de exclusão ── */}
+            {Object.keys(m.por_motivo).length > 0 && (
+              <section>
+                <Titulo>Por que a IA descartou</Titulo>
+                <div className="bg-surface border border-line rounded-xl p-4">
+                  <ul className="flex flex-col gap-2">
+                    {Object.entries(m.por_motivo).slice(0, 10).map(([mot, n]) => (
+                      <li key={mot} className="grid grid-cols-[minmax(0,10rem)_1fr_3rem] sm:grid-cols-[minmax(0,15rem)_1fr_3.5rem] items-center gap-3">
+                        <span className="text-sm text-ink-2 truncate" title={labelMotivo(mot)}>{labelMotivo(mot)}</span>
+                        <span className="h-2 rounded-full bg-sunken overflow-hidden" aria-hidden>
+                          <span className="block h-full rounded-full bg-urgent/55" style={{ width: `${(n / maxMotivo) * 100}%` }} />
+                        </span>
+                        <span className="text-sm text-ink num text-right">{fmtNum(n)}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <p className="mt-3 text-xs text-ink-3">Anúncios do acervo ativo por motivo (um anúncio pode ter mais de um).</p>
+                </div>
+              </section>
+            )}
+
+            {/* ── Custo por etapa ── */}
+            {Object.keys(m.por_etapa || {}).length > 0 && (
+              <section>
+                <Titulo>Custo por etapa da IA</Titulo>
+                <div className="bg-surface border border-line rounded-xl overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="text-ink-3 text-xs">
+                        <th scope="col" className="text-left font-medium px-4 py-2.5">Etapa</th>
+                        <th scope="col" className="text-right font-medium px-4 py-2.5">Chamadas</th>
+                        <th scope="col" className="text-right font-medium px-4 py-2.5">Tokens de entrada</th>
+                        <th scope="col" className="text-right font-medium px-4 py-2.5">Tokens de saída</th>
+                        <th scope="col" className="text-right font-medium px-4 py-2.5">Custo</th>
+                      </tr>
+                    </thead>
+                    <tbody className="num">
+                      {Object.entries(m.por_etapa).sort((a, b) => b[1].custo_usd - a[1].custo_usd).map(([et, v]) => (
+                        <tr key={et} className="border-t border-line">
+                          <td className="px-4 py-2 text-ink">{et.replace(/_/g, " ")}</td>
+                          <td className="px-4 py-2 text-right text-ink-2">{fmtNum(v.calls)}</td>
+                          <td className="px-4 py-2 text-right text-ink-2">{fmtNum(v.tok_in)}</td>
+                          <td className="px-4 py-2 text-right text-ink-2">{fmtNum(v.tok_out)}</td>
+                          <td className="px-4 py-2 text-right text-ink font-medium">{fmtUSD(v.custo_usd)}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </section>
+            )}
+
+            {/* ── Produtos ── */}
+            <section>
+              <Titulo>Anúncios desta rodada</Titulo>
+              <div className="flex gap-1.5 overflow-x-auto [scrollbar-width:none] -mx-4 px-4 sm:mx-0 sm:px-0 sm:flex-wrap" role="group" aria-label="Filtrar anúncios">
+                {FILTROS.map(([f, label, n]) => (
+                  <button
+                    key={f}
+                    onClick={() => setFiltroDec(f)}
+                    aria-pressed={filtroDec === f}
+                    className={`h-9 px-3 flex-none inline-flex items-center gap-1.5 rounded-full text-sm transition-colors ${
+                      filtroDec === f ? "bg-ink text-white" : "bg-surface border border-line text-ink-2 hover:text-ink hover:border-line-strong"
+                    }`}
+                  >
+                    {label}
+                    <span className={`num text-xs ${filtroDec === f ? "text-white/70" : "text-ink-3"}`}>{n}</span>
+                  </button>
                 ))}
               </div>
-            </>
-          )}
-        </section>
-      </main>
+
+              {produtosFiltrados.length === 0 ? (
+                <div className="py-14 text-center">
+                  <p className="text-ink font-medium">Nenhum anúncio neste filtro.</p>
+                  <p className="mt-1 text-sm text-ink-3">Escolha outro filtro acima.</p>
+                </div>
+              ) : (
+                <>
+                  {filtroDec === "descartado" && amostrado(rodada, escopo) && (
+                    <Nota>Amostra dos descartados de maior nota do acervo. O total está em “Acervo à venda”, acima.</Nota>
+                  )}
+                  <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+                    {produtosFiltrados.map((p) => (
+                      <ProdutoCard key={`${p.marca}-${p.id}`} p={p} runId={historyid} />
+                    ))}
+                  </div>
+                </>
+              )}
+            </section>
+          </main>
+        </div>
+      </div>
     </div>
   );
+}
+
+// "28 out, 14:22" (título da rodada).
+function tituloRodada(iso: string): string {
+  const d = new Date(iso);
+  if (isNaN(d.getTime())) return iso;
+  const hh = String(d.getHours()).padStart(2, "0");
+  const mm = String(d.getMinutes()).padStart(2, "0");
+  return `${d.getDate()} ${MESES[d.getMonth()]}, ${hh}:${mm}`;
+}
+
+function Titulo({ children }: { children: React.ReactNode }) {
+  return <h2 className="text-lg font-semibold text-ink mb-3">{children}</h2>;
+}
+
+function Nota({ children }: { children: React.ReactNode }) {
+  return <p className="mt-2 text-xs text-ink-3 leading-relaxed">{children}</p>;
 }
 
 // Combina Sundek + Ville numa métrica "total" com por_motivo/por_etapa mesclados.
@@ -319,47 +348,43 @@ function ProdutoCard({ p, runId }: { p: Produto; runId: string }) {
   return (
     <a
       href={`/history/${runId}/${p.id}`}
-      className={`${CARD} overflow-hidden flex flex-col hover:border-[rgba(0,217,255,0.4)] transition-colors`}
+      className="bg-surface border border-line rounded-xl overflow-hidden flex flex-col hover:border-line-strong transition-colors"
     >
-      <div className="relative w-full aspect-square bg-[rgba(255,255,255,0.03)]">
+      <div className="relative w-full aspect-square bg-sunken">
         {foto ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={foto} alt={p.titulo} loading="lazy" className="w-full h-full object-cover" />
+          <img src={foto} alt={p.titulo} loading="lazy" width={300} height={300} className="w-full h-full object-cover" />
         ) : (
-          <div className="flex items-center justify-center h-full text-[#6b6b78] text-xs">Sem foto</div>
+          <div className="flex items-center justify-center h-full text-ink-3 text-xs">Sem foto</div>
         )}
-        <span
-          className="absolute top-2 left-2 text-[10px] px-2 py-0.5 rounded-full font-medium"
-          style={{ background: meta.bg, color: meta.cor, border: `1px solid ${meta.borda}` }}
-        >
-          {meta.label}
-        </span>
+        <span className={`tag ${meta.tag} absolute top-2.5 left-0 text-xs`}>{meta.label}</span>
         {p.novo && (
-          <span className="absolute top-2 right-2 text-[10px] px-2 py-0.5 rounded-full font-semibold bg-[#00d9ff] text-[#032630]">NOVO</span>
+          <span className="absolute top-2.5 right-2.5 text-[11px] px-1.5 py-0.5 rounded bg-info text-white font-semibold">Novo</span>
         )}
       </div>
-      <div className="p-2.5 flex flex-col gap-1">
-        <span className="text-xs text-[#f5f5f7] line-clamp-2 leading-snug">{p.titulo}</span>
-        <div className="flex items-center justify-between text-[11px] text-[#b8b8c0]">
-          <span>{p.preco_total || p.preco || "—"}</span>
-          <span className="font-semibold" style={{ color: meta.cor }}>{p.score}pts</span>
+      <div className="p-3 flex flex-col gap-1.5 flex-1">
+        <span className="text-sm text-ink line-clamp-2 leading-snug">{p.titulo}</span>
+        <div className="mt-auto flex items-center justify-between gap-2 text-xs text-ink-2">
+          <span className="num truncate">{p.preco_total || p.preco || "—"}</span>
+          <span className="num font-semibold" style={{ color: meta.cor }}>{p.score} pts</span>
         </div>
       </div>
     </a>
   );
 }
 
+// Célula de uma faixa de números (sem cartão próprio: divisórias finas entre as células).
 function Stat({ v, l, cor }: { v: string; l: string; cor?: string }) {
   return (
-    <div className={`${CARD} p-3`}>
-      <div className="text-xl font-semibold" style={{ color: cor || "#f5f5f7" }}>{v}</div>
-      <div className="text-[11px] text-[#b8b8c0] mt-0.5">{l}</div>
+    <div className="px-4 py-3 -ml-px -mt-px border-l border-t border-line">
+      <dt className="text-xs text-ink-3">{l}</dt>
+      <dd className={`mt-0.5 font-display num text-xl font-semibold ${cor || "text-ink"}`}>{v}</dd>
     </div>
   );
 }
 
 function Centro({ children }: { children: React.ReactNode }) {
   return (
-    <div className="h-full flex flex-col items-center justify-center gap-3 text-sm text-[#b8b8c0]">{children}</div>
+    <div className="h-full flex flex-col items-center justify-center gap-1 px-6 text-center text-sm text-ink-2">{children}</div>
   );
 }

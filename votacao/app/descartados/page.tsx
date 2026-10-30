@@ -6,21 +6,11 @@
 // Dados: votacao/public/descartados.json (src/build/descartados.py); marcações: /api/contestar.
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import Link from "next/link";
 import { createPortal } from "react-dom";
-import { ArrowLeft, Check, ExternalLink } from "lucide-react";
+import { Check, ExternalLink, X } from "lucide-react";
 import Lightbox from "@/components/Lightbox";
 import { Descartado, GrupoDescarte, ListaDescartados } from "@/lib/types";
 import { eur, haQuanto, hora } from "@/lib/tempo";
-import {
-  ACTIVE_GRADIENT,
-  CARD,
-  HEADER_BG,
-  NAV_BTN,
-  PILL_NEUTRAL,
-  TEXT_SECONDARY,
-  TEXT_TERTIARY,
-} from "@/lib/theme";
 
 interface Contestacao {
   em: string;
@@ -32,7 +22,7 @@ type Filtro = "todos" | "marcados" | GrupoDescarte;
 // Grupos de motivo (o principal de cada anúncio), na ordem dos chips.
 const GRUPOS: { key: GrupoDescarte; label: string }[] = [
   { key: "elastico", label: "Sem elástico" },
-  { key: "estampa", label: "Estampa / logo" },
+  { key: "estampa", label: "Estampa ou logo" },
   { key: "cor", label: "Cor" },
   { key: "detalhe", label: "Detalhes" },
   { key: "preco", label: "Preço" },
@@ -40,6 +30,18 @@ const GRUPOS: { key: GrupoDescarte; label: string }[] = [
   { key: "nao_e_short", label: "Não é short" },
   { key: "tamanho", label: "Tamanho" },
 ];
+
+// Texto da etiqueta pendurada na foto (o motivo principal do corte).
+const ETIQUETA: Record<GrupoDescarte, string> = {
+  elastico: "Sem elástico",
+  estampa: "Estampa ou logo",
+  cor: "Cor",
+  detalhe: "Detalhe",
+  preco: "Preço",
+  outro: "Outro motivo",
+  nao_e_short: "Não é short",
+  tamanho: "Tamanho fora",
+};
 
 const POR_PAGINA = 40;
 
@@ -108,95 +110,108 @@ export default function Descartados() {
       key={f}
       onClick={() => escolher(f)}
       aria-pressed={filtro === f}
-      className={`px-3 py-1.5 rounded-lg text-xs transition-all ${filtro === f ? ACTIVE_GRADIENT : PILL_NEUTRAL}`}
+      className={`h-9 px-3 flex-none inline-flex items-center gap-1.5 rounded-full text-sm transition-colors ${
+        filtro === f
+          ? "bg-ink text-white"
+          : "bg-surface border border-line text-ink-2 hover:text-ink hover:border-line-strong"
+      }`}
     >
-      {label} ({n})
+      {label}
+      <span className={`num text-xs ${filtro === f ? "text-white/70" : "text-ink-3"}`}>{n}</span>
     </button>
   );
 
+  // Frase de resumo: quanto foi cortado e o que fazer com isso.
+  const resumo = !lista
+    ? "O que a IA cortou nos últimos dias, mais novos primeiro."
+    : `A IA cortou ${base.length} ${base.length === 1 ? "anúncio" : "anúncios"} nas últimas ${lista.horas} h. Marque os que deviam ter passado: as marcações ajustam as regras.`;
+
   return (
     <div className="h-full overflow-y-auto">
-      {/* Cabeçalho NÃO fixo: com os filtros ele ocupava metade da tela do celular ao rolar. */}
-      <header className={HEADER_BG}>
-        <div className="app-wrap py-3 flex flex-col gap-3">
-          <div>
-            <div className="flex items-center justify-between gap-2">
-              <h1 className="text-2xl text-[#f5f5f7] leading-tight">Descartados</h1>
-              <Link href="/" className={NAV_BTN}>
-                <ArrowLeft size={16} strokeWidth={1.5} aria-hidden />
-                Voltar
-              </Link>
-            </div>
-            <p className={`text-xs ${TEXT_TERTIARY} mt-1`}>
-              O que a IA cortou {lista ? `nas últimas ${lista.horas} h` : "nos últimos dias"}, mais novos primeiro
-              {lista?.gerado_em ? ` · atualizado às ${hora(lista.gerado_em)}` : ""}
-            </p>
-          </div>
-          <div className="flex gap-2 flex-wrap">
+      <div className="app-wrap pt-6 lg:pt-10 pb-12">
+        <h1 className="text-[32px] lg:text-[40px] font-bold leading-none text-ink">Descartados</h1>
+        <p className="mt-2 text-[15px] text-ink-2 max-w-[64ch]">
+          {resumo}
+          {lista?.gerado_em ? <span className="text-ink-3"> Lista de {hora(lista.gerado_em)}.</span> : null}
+        </p>
+
+        {nObvios > 0 && (
+          <label className="mt-4 inline-flex items-center gap-2.5 text-sm text-ink-2 cursor-pointer select-none">
+            <input
+              type="checkbox"
+              checked={verObvios}
+              onChange={(e) => {
+                setVerObvios(e.target.checked);
+                setLimite(POR_PAGINA);
+              }}
+              className="accent-[#1b2433] w-4 h-4"
+            />
+            Mostrar também os que não são short ou têm tamanho fora
+            <span className="num text-xs text-ink-3">{nObvios}</span>
+          </label>
+        )}
+
+        {/* Filtros por motivo: fixos no topo ao rolar, numa linha que rola de lado no celular */}
+        <div className="sticky top-0 z-20 -mx-4 px-4 sm:mx-0 sm:px-0 mt-4 py-3 bg-canvas/95 backdrop-blur-sm">
+          <div className="flex gap-1.5 overflow-x-auto [scrollbar-width:none]" role="group" aria-label="Filtrar por motivo">
             {chip("todos", "Todos", base.length)}
             {GRUPOS.filter((g) => contagem(g.key) > 0).map((g) => chip(g.key, g.label, contagem(g.key)))}
             {nMarcados > 0 && chip("marcados", "Marcados", nMarcados)}
           </div>
-          {nObvios > 0 && (
-            <label className={`flex items-center gap-2 text-xs ${TEXT_SECONDARY} cursor-pointer select-none w-fit`}>
-              <input
-                type="checkbox"
-                checked={verObvios}
-                onChange={(e) => {
-                  setVerObvios(e.target.checked);
-                  setLimite(POR_PAGINA);
-                }}
-                className="accent-[#00d9ff] w-4 h-4"
-              />
-              Mostrar também os que não são short ou têm tamanho fora ({nObvios})
-            </label>
-          )}
         </div>
-      </header>
 
-      <main className="app-wrap py-4">
-        <p className={`text-xs ${TEXT_SECONDARY} mb-4 leading-relaxed`}>
-          Viu algum que devia ter passado? Toque em <b className="text-[#f5f5f7]">Devia ter passado</b> e, se
-          quiser, diga o porquê. As marcações são usadas para ajustar as regras.
-        </p>
-        {erro ? (
-          <p className={`text-center mt-20 text-sm ${TEXT_TERTIARY}`}>Não consegui carregar a lista agora.</p>
-        ) : !lista ? (
-          <div className={`flex flex-col items-center gap-3 mt-24 text-sm ${TEXT_TERTIARY}`}>
-            <span className="w-6 h-6 rounded-full border-2 border-[rgba(255,255,255,0.15)] border-t-[#00d9ff] animate-spin" />
-            Carregando descartados…
-          </div>
-        ) : filtrados.length === 0 ? (
-          <p className={`text-center mt-20 text-sm ${TEXT_TERTIARY}`}>Nenhum anúncio aqui.</p>
-        ) : (
-          <>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              {visiveis.map((d) => (
-                <CardDescartado
-                  key={d.id}
-                  d={d}
-                  agora={agora}
-                  contestado={contestados[d.id]}
-                  onMarcar={marcar}
-                  onAmpliar={(i) => setAmpliada({ fotos: d.fotos, i })}
-                />
-              ))}
+        <main className="mt-3">
+          {erro ? (
+            <div className="py-24 text-center" role="alert">
+              <p className="text-ink font-medium">A lista de descartados não carregou.</p>
+              <p className="mt-1 text-sm text-ink-3">Confira a conexão e recarregue a página.</p>
             </div>
-            {filtrados.length > limite && (
-              <div className="flex justify-center mt-6">
-                <button
-                  onClick={() => setLimite((l) => l + POR_PAGINA)}
-                  className={`px-4 py-2 rounded-lg text-xs ${PILL_NEUTRAL}`}
-                >
-                  Mostrar mais ({filtrados.length - limite})
-                </button>
+          ) : !lista ? (
+            <div className="flex flex-col items-center gap-3 py-24 text-sm text-ink-3" role="status">
+              <span className="w-6 h-6 rounded-full border-2 border-line border-t-ink animate-spin" aria-hidden />
+              Carregando descartados…
+            </div>
+          ) : filtrados.length === 0 ? (
+            <div className="py-20 text-center">
+              <p className="text-ink font-medium">
+                {filtro === "marcados" ? "Nenhum anúncio marcado." : "Nenhum anúncio neste filtro."}
+              </p>
+              <p className="mt-1 text-sm text-ink-3">
+                {filtro === "marcados"
+                  ? "Toque em “Devia ter passado” num anúncio para ele aparecer aqui."
+                  : "Escolha outro motivo ou mostre também os que não são short."}
+              </p>
+            </div>
+          ) : (
+            <>
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                {visiveis.map((d) => (
+                  <CardDescartado
+                    key={d.id}
+                    d={d}
+                    agora={agora}
+                    contestado={contestados[d.id]}
+                    onMarcar={marcar}
+                    onAmpliar={(i) => setAmpliada({ fotos: d.fotos, i })}
+                  />
+                ))}
               </div>
-            )}
-          </>
-        )}
-      </main>
+              {filtrados.length > limite && (
+                <div className="flex justify-center mt-8">
+                  <button
+                    onClick={() => setLimite((l) => l + POR_PAGINA)}
+                    className="h-10 px-5 rounded-lg text-sm bg-surface border border-line text-ink-2 hover:text-ink hover:border-line-strong transition-colors"
+                  >
+                    Mostrar mais <span className="num text-ink-3">({filtrados.length - limite})</span>
+                  </button>
+                </div>
+              )}
+            </>
+          )}
+        </main>
+      </div>
 
-      {/* Fora dos cards: o backdrop-blur do card prenderia um modal fixed dentro dele. */}
+      {/* Fora dos cards: modal fixed num portal, pra nada do card prender o overlay. */}
       {ampliada &&
         createPortal(
           <Lightbox fotos={ampliada.fotos} inicial={ampliada.i} onClose={() => setAmpliada(null)} />,
@@ -228,13 +243,29 @@ function CardDescartado({
   const vendido = d.status === "vendido";
   const fora = d.status !== "ativo";
   const total = d.preco_base != null ? d.preco_base + (d.taxa ?? 0) + (d.frete ?? 0) : null;
+  const detalhes = [d.cor && `Cor ${d.cor.toLowerCase()}`, d.listras.length ? `listra ${d.listras.join(", ")}` : null]
+    .filter(Boolean)
+    .join("; ");
+  const idNota = `nota-${d.id}`;
 
   return (
-    <div className={`${CARD} overflow-hidden flex flex-col ${contestado ? "ring-2 ring-[#00ff88]" : ""}`}>
-      <div className={`relative w-full aspect-square bg-[rgba(255,255,255,0.03)] select-none ${fora ? "opacity-60" : ""}`}>
+    <article
+      aria-label={`Descartado: ${d.titulo || "sem título"}`}
+      className={`bg-surface rounded-xl border overflow-hidden flex flex-col ${
+        contestado ? "border-buy ring-1 ring-buy/30" : "border-line"
+      }`}
+    >
+      <div className="relative w-full aspect-square bg-sunken select-none">
         {foto ? (
           <>
-            <Image src={foto} alt={d.titulo} fill sizes="(max-width: 640px) 100vw, 25vw" className="object-cover" unoptimized />
+            <Image
+              src={foto}
+              alt={d.titulo}
+              fill
+              sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
+              className={`object-cover ${fora ? "opacity-60" : ""}`}
+              unoptimized
+            />
             <button
               onClick={() => onAmpliar(fotoIdx)}
               aria-label="Ampliar foto"
@@ -243,89 +274,93 @@ function CardDescartado({
             />
           </>
         ) : (
-          <div className="flex items-center justify-center h-full text-[#6b6b78] text-sm">Sem foto</div>
+          <div className="flex items-center justify-center h-full text-ink-3 text-sm">Sem foto</div>
         )}
+        {/* Etiqueta cinza com o motivo principal, pendurada como a do veredito nas Ofertas */}
+        <div className="absolute top-3 left-0 pointer-events-none">
+          <span className="tag tag-out text-sm shadow-[0_2px_6px_rgba(27,36,51,0.18)]">{ETIQUETA[d.grupo]}</span>
+        </div>
         {n > 1 && (
           <>
             <button
               onClick={() => setFotoIdx((i) => (i - 1 + n) % n)}
-              aria-label="foto anterior"
-              className="absolute left-1.5 top-1/2 -translate-y-1/2 w-9 h-9 flex items-center justify-center rounded-full bg-black/45 text-white text-xl leading-none hover:bg-black/60"
+              aria-label="Foto anterior"
+              className="absolute left-2 top-1/2 -translate-y-1/2 w-9 h-9 flex items-center justify-center rounded-full bg-white/85 text-ink text-xl leading-none shadow-sm hover:bg-white"
             >
               ‹
             </button>
             <button
               onClick={() => setFotoIdx((i) => (i + 1) % n)}
-              aria-label="próxima foto"
-              className="absolute right-1.5 top-1/2 -translate-y-1/2 w-9 h-9 flex items-center justify-center rounded-full bg-black/45 text-white text-xl leading-none hover:bg-black/60"
+              aria-label="Próxima foto"
+              className="absolute right-2 top-1/2 -translate-y-1/2 w-9 h-9 flex items-center justify-center rounded-full bg-white/85 text-ink text-xl leading-none shadow-sm hover:bg-white"
             >
               ›
             </button>
-            <span className="absolute top-2 right-2 bg-black/50 text-white text-[10px] px-1.5 py-0.5 rounded-full">
+            <span className="absolute top-3 right-3 bg-ink/70 text-white text-[11px] num px-2 py-0.5 rounded-full">
               {fotoIdx + 1}/{n}
             </span>
           </>
         )}
         {fora && (
-          <span className="absolute top-2 left-2 text-xs px-2 py-0.5 rounded-full bg-black/70 text-white">
-            {vendido ? "vendido" : "saiu do ar"}
+          <span className="absolute bottom-3 left-3 text-xs font-medium px-2 py-0.5 rounded-full bg-ink/80 text-white">
+            {vendido ? "Vendido" : "Saiu do ar"}
           </span>
         )}
       </div>
 
-      <div className="p-3 flex flex-col gap-2 flex-1">
-        <div className="flex gap-1.5 text-xs text-[#b8b8c0] flex-wrap items-baseline">
-          <span className="text-sm font-semibold text-[#f5f5f7]">
-            {d.preco_base != null ? `€${eur(d.preco_base)}` : "?"}
-          </span>
-          <span>·</span>
-          <span>{d.tamanho}</span>
-          {d.estado && (
-            <>
-              <span>·</span>
-              <span>{d.estado}</span>
-            </>
-          )}
-          {visto && (
-            <>
-              <span>·</span>
-              <span title="Quando o robô viu o anúncio pela 1ª vez">visto {visto}</span>
-            </>
-          )}
-        </div>
-        {total != null && (d.taxa || d.frete) ? (
-          <div className="text-[11px] text-[#6b6b78] -mt-1">total ≈ €{eur(total)} com taxa e frete</div>
-        ) : null}
-        <a
-          href={d.url}
-          target="_blank"
-          rel="noreferrer"
-          className="text-sm text-[#f5f5f7] line-clamp-2 hover:underline"
-        >
-          {d.titulo || "(sem título)"}
-        </a>
-
+      <div className="p-4 flex flex-col gap-3 flex-1 min-w-0">
         <div className="flex flex-col gap-1">
+          {visto && (
+            <p className="text-xs text-ink-3" title="Quando o robô viu o anúncio pela primeira vez">
+              Visto {visto}
+            </p>
+          )}
+          <a
+            href={d.url}
+            target="_blank"
+            rel="noreferrer"
+            className="text-[15px] font-medium text-ink leading-snug line-clamp-2 hover:underline underline-offset-2"
+          >
+            {d.titulo || "(sem título)"}
+          </a>
+        </div>
+
+        <div className="flex items-end gap-x-3 gap-y-1 flex-wrap">
+          <p className="font-display num text-[28px] font-bold leading-none text-ink">
+            {d.preco_base != null ? `€${eur(d.preco_base)}` : "?"}
+          </p>
+          {total != null && (d.taxa || d.frete) ? (
+            <p className="text-xs text-ink-3 num pb-0.5">Total ≈ €{eur(total)} com taxa e frete</p>
+          ) : null}
+        </div>
+
+        <dl className="grid grid-cols-2 gap-2 text-sm">
+          <div className="rounded-lg bg-canvas px-2.5 py-2">
+            <dt className="text-[11px] text-ink-3">Tamanho</dt>
+            <dd className="font-semibold text-ink">{d.tamanho}</dd>
+          </div>
+          <div className="rounded-lg bg-canvas px-2.5 py-2 min-w-0">
+            <dt className="text-[11px] text-ink-3">Estado</dt>
+            <dd className="font-semibold text-ink truncate">{d.estado || "—"}</dd>
+          </div>
+        </dl>
+
+        <ul className="flex flex-col gap-1.5 text-sm" aria-label="Por que foi cortado">
           {d.motivos.map((m, i) => (
-            <span
+            <li
               key={i}
-              className={`text-xs rounded-lg px-2 py-1 ${
-                i === 0 ? "bg-[rgba(255,170,0,0.14)] text-[#ffd27a]" : "bg-[rgba(255,255,255,0.05)] text-[#b8b8c0]"
+              className={`flex gap-2 items-start rounded-lg ${
+                i === 0 ? "bg-deal-soft text-[#7a4600] px-2.5 py-1.5" : "text-ink-2 px-2.5"
               }`}
             >
-              ✕ {m}
-            </span>
+              <X size={15} strokeWidth={2.2} className="flex-none mt-0.5" aria-hidden />
+              <span className="min-w-0">{m.charAt(0).toUpperCase() + m.slice(1)}</span>
+            </li>
           ))}
-        </div>
-        {(d.cor || d.listras.length > 0) && (
-          <div className={`text-[11px] ${TEXT_TERTIARY}`}>
-            {[d.cor && `cor ${d.cor.toLowerCase()}`, d.listras.length ? `listra ${d.listras.join(", ")}` : null]
-              .filter(Boolean)
-              .join(" · ")}
-          </div>
-        )}
+        </ul>
+        {detalhes && <p className="text-xs text-ink-3">{detalhes}</p>}
 
-        <div className="mt-auto pt-1 flex flex-col gap-2">
+        <div className="mt-auto pt-3 border-t border-line flex flex-col gap-2.5">
           <div className="flex gap-2">
             <button
               onClick={() => {
@@ -333,50 +368,63 @@ function CardDescartado({
                 setNotaSalva(false);
               }}
               aria-pressed={!!contestado}
-              className={`flex-1 h-9 px-3 inline-flex items-center justify-center gap-1.5 rounded-lg text-xs transition-colors ${
+              className={`flex-1 h-10 px-3 inline-flex items-center justify-center gap-1.5 rounded-lg text-sm font-medium transition-colors ${
                 contestado
-                  ? "bg-[#00ff88] text-[#063b22] font-semibold"
-                  : "bg-[rgba(0,255,136,0.12)] text-[#8fffc4] hover:bg-[rgba(0,255,136,0.2)]"
+                  ? "bg-buy text-white border border-buy"
+                  : "bg-surface text-ink border border-line hover:border-buy hover:text-buy"
               }`}
             >
-              {contestado && <Check size={14} strokeWidth={2} aria-hidden />}
+              <Check size={16} strokeWidth={2.2} aria-hidden />
               {contestado ? "Marcado: devia ter passado" : "Devia ter passado"}
             </button>
             <a
               href={d.url}
               target="_blank"
               rel="noreferrer"
-              aria-label="Abrir no Vinted"
-              title="Abrir no Vinted"
-              className="h-9 w-9 inline-flex items-center justify-center rounded-lg bg-[rgba(255,255,255,0.04)] border border-[rgba(255,255,255,0.07)] text-[#b8b8c0] hover:text-[#f5f5f7]"
+              className="h-10 px-3 inline-flex items-center gap-1.5 rounded-lg text-sm text-ink-2 border border-line hover:text-ink hover:border-line-strong transition-colors"
             >
-              <ExternalLink size={15} strokeWidth={1.5} aria-hidden />
+              <span className="hidden sm:inline">Abrir no Vinted</span>
+              <span className="sm:hidden">Vinted</span>
+              <ExternalLink size={15} strokeWidth={1.75} aria-hidden />
             </a>
           </div>
           {contestado && (
-            <div className="flex gap-2">
-              <input
-                value={nota}
-                onChange={(e) => {
-                  setNota(e.target.value);
-                  setNotaSalva(false);
-                }}
-                placeholder="Por quê? (opcional)"
-                className="flex-1 min-w-0 h-9 px-2.5 rounded-lg bg-[rgba(255,255,255,0.05)] border border-[rgba(255,255,255,0.08)] text-base sm:text-xs text-[#f5f5f7] placeholder:text-[#6b6b78] outline-none focus:border-[#00d9ff]"
-              />
-              <button
-                onClick={() => {
-                  onMarcar(d, true, nota.trim());
-                  setNotaSalva(true);
-                }}
-                className={`h-9 px-3 rounded-lg text-xs ${PILL_NEUTRAL}`}
-              >
-                {notaSalva ? "Salvo" : "Salvar"}
-              </button>
+            <div className="flex flex-col gap-1.5">
+              <label htmlFor={idNota} className="text-xs text-ink-3">
+                Por que devia ter passado? (opcional)
+              </label>
+              <div className="flex gap-2">
+                <input
+                  id={idNota}
+                  name="nota"
+                  autoComplete="off"
+                  value={nota}
+                  onChange={(e) => {
+                    setNota(e.target.value);
+                    setNotaSalva(false);
+                  }}
+                  placeholder="Ex.: a cor é linda e tem elástico…"
+                  className="flex-1 min-w-0 h-10 px-3 rounded-lg bg-canvas border border-line text-base sm:text-sm text-ink placeholder:text-ink-3 focus:outline-none focus-visible:border-info focus-visible:ring-2 focus-visible:ring-info/25"
+                />
+                <button
+                  onClick={() => {
+                    onMarcar(d, true, nota.trim());
+                    setNotaSalva(true);
+                  }}
+                  className="h-10 px-4 rounded-lg text-sm font-semibold bg-ink text-white hover:bg-[#2a3547] transition-colors"
+                >
+                  {notaSalva ? "Salvo" : "Salvar"}
+                </button>
+              </div>
+              {notaSalva && (
+                <p className="text-xs text-buy" aria-live="polite">
+                  Nota salva.
+                </p>
+              )}
             </div>
           )}
         </div>
       </div>
-    </div>
+    </article>
   );
 }

@@ -9,10 +9,9 @@
 // observacao: <comentário> }. Ao abrir, o GET /api/reactions preenche o que já foi
 // respondido (só as chaves com prefixo "decisao:").
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import Link from "next/link";
-import { ArrowDown, ArrowLeft, Check, ExternalLink } from "lucide-react";
+import { ArrowDown, Check, ExternalLink } from "lucide-react";
 import Lightbox from "@/components/Lightbox";
-import { CARD, HEADER_BG, NAV_BTN, PILL_NEUTRAL, TEXT_SECONDARY, TEXT_TERTIARY } from "@/lib/theme";
+import { CARD } from "@/lib/theme";
 
 // ── Tipos do decisoes.json ───────────────────────────────────────────────────
 type ItemFoto = {
@@ -53,7 +52,7 @@ type AbrirFoto = (item: ItemFoto, indice: number) => void;
 function Foto({ src, alt, className }: { src: string; alt: string; className?: string }) {
   const [falhou, setFalhou] = useState(false);
   if (falhou)
-    return <span className={`grid place-items-center text-[10px] text-[#6b6b78] text-center p-1 ${className ?? ""}`}>foto indisponível</span>;
+    return <span className={`grid place-items-center text-[11px] text-ink-3 text-center p-1 ${className ?? ""}`}>Foto indisponível</span>;
   return (
     // eslint-disable-next-line @next/next/no-img-element
     <img src={src} alt={alt} loading="lazy" decoding="async" onError={() => setFalhou(true)} className={`object-cover ${className ?? ""}`} />
@@ -75,11 +74,11 @@ function ItemCard({ item, onAbrir, compacto = false }: { item: ItemFoto; onAbrir
         type="button"
         onClick={() => onAbrir(item, 0)}
         aria-label={`Ampliar fotos do item ${item.id}${n > 1 ? ` (${n} fotos)` : ""}`}
-        className="relative block w-full aspect-square overflow-hidden rounded-lg bg-[rgba(255,255,255,0.03)] border border-[rgba(255,255,255,0.07)] cursor-zoom-in focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00d9ff]"
+        className="relative block w-full aspect-square overflow-hidden rounded-lg bg-sunken border border-line cursor-zoom-in"
       >
         <Foto src={item.fotos[0]} alt="" className="w-full h-full" />
         {n > 1 && (
-          <span className="absolute bottom-1.5 right-1.5 text-[10px] bg-black/65 text-white px-1.5 py-0.5 rounded-full">{n} fotos</span>
+          <span className="absolute bottom-1.5 right-1.5 text-[11px] num bg-ink/75 text-white px-1.5 py-0.5 rounded-full">{n} fotos</span>
         )}
       </button>
       {extras.length > 0 && (
@@ -90,31 +89,31 @@ function ItemCard({ item, onAbrir, compacto = false }: { item: ItemFoto; onAbrir
               type="button"
               onClick={() => onAbrir(item, k + 1)}
               aria-label={`Ampliar foto ${k + 2} de ${n} do item ${item.id}`}
-              className="block aspect-square overflow-hidden rounded-md bg-[rgba(255,255,255,0.03)] cursor-zoom-in focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-[#00d9ff]"
+              className="block aspect-square overflow-hidden rounded-md bg-sunken cursor-zoom-in"
             >
               <Foto src={f} alt="" className="w-full h-full" />
             </button>
           ))}
         </div>
       )}
-      <figcaption className="flex flex-col gap-0.5 text-[11px] leading-snug">
-        <span className={TEXT_TERTIARY}>
-          <span className={TEXT_SECONDARY}>{item.id}</span>
-          {item.preco ? ` · ${item.preco}` : ""}
+      <figcaption className="flex flex-col gap-0.5 text-xs leading-snug">
+        <span className="text-ink-3 num">
+          {item.id}
+          {item.preco ? <span className="text-ink-2">, {item.preco}</span> : null}
         </span>
         {item.legenda ? (
-          <span className="text-xs text-[#f5f5f7]">{item.legenda}</span>
+          <span className="text-xs text-ink">{item.legenda}</span>
         ) : item.titulo && !compacto ? (
-          <span className={`${TEXT_SECONDARY} line-clamp-2`}>{item.titulo}</span>
+          <span className="text-ink-2 line-clamp-2">{item.titulo}</span>
         ) : null}
         {item.url && (
           <a
             href={item.url}
             target="_blank"
             rel="noreferrer"
-            className="inline-flex items-center gap-1 text-[#00d9ff] hover:underline w-fit py-0.5"
+            className="inline-flex items-center gap-1 text-info hover:underline underline-offset-2 w-fit py-0.5"
           >
-            ver no Vinted <ExternalLink size={11} strokeWidth={1.75} aria-hidden />
+            Ver no Vinted <ExternalLink size={12} strokeWidth={1.75} aria-hidden />
             <span className="sr-only">(item {item.id}, abre em nova aba)</span>
           </a>
         )}
@@ -150,9 +149,9 @@ function GaleriaGrupos({ grupos, onAbrir }: { grupos: Grupo[]; onAbrir: AbrirFot
         <section
           key={g.rotulo}
           aria-label={g.rotulo}
-          className="min-w-0 rounded-xl border border-[rgba(255,102,226,0.25)] bg-[rgba(255,102,226,0.04)] p-2 sm:p-3 flex flex-col gap-2"
+          className="min-w-0 rounded-lg border border-line bg-canvas p-2 sm:p-3 flex flex-col gap-2"
         >
-          <h4 className="text-[11px] sm:text-xs text-[#ff66e2] leading-snug">{g.rotulo}</h4>
+          <h4 className="font-sans tracking-normal text-xs font-semibold text-ink-2 leading-snug">{g.rotulo}</h4>
           <div
             className="grid gap-2 sm:gap-3 grid-cols-1 md:grid-cols-[repeat(var(--k),minmax(0,1fr))]"
             style={{ "--k": Math.min(g.itens.length, 3) } as React.CSSProperties}
@@ -170,18 +169,18 @@ function GaleriaGrupos({ grupos, onAbrir }: { grupos: Grupo[]; onAbrir: AbrirFot
 function BadgeStatus({ status }: { status?: Pergunta["status"] }) {
   if (status === "ja_aplicado")
     return (
-      <span className="inline-flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-full bg-[rgba(0,255,136,0.12)] text-[#00ff88] border border-[rgba(0,255,136,0.25)]">
-        <Check size={11} strokeWidth={2} aria-hidden /> Já aplicado — confirme
+      <span className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-buy-soft text-buy">
+        <Check size={12} strokeWidth={2} aria-hidden /> Já aplicado, confirme
       </span>
     );
   if (status === "pendente")
     return (
-      <span className="inline-flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-full bg-[rgba(255,170,0,0.12)] text-[#ffaa00] border border-[rgba(255,170,0,0.3)]">
+      <span className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-deal-soft text-deal">
         Pendente
       </span>
     );
   return (
-    <span className="inline-flex items-center text-[11px] px-2 py-0.5 rounded-full bg-[rgba(255,102,226,0.12)] text-[#ff66e2]">
+    <span className="inline-flex items-center text-xs px-2 py-0.5 rounded-full bg-sunken text-ink-2">
       Rótulo do gabarito
     </span>
   );
@@ -273,28 +272,26 @@ function PerguntaCard({
       id={p.id}
       aria-labelledby={idTitulo}
       data-pergunta={p.id}
-      className={`${CARD} scroll-mt-40 sm:scroll-mt-32 p-4 sm:p-5 transition-shadow ${
-        respondida ? "ring-1 ring-[rgba(0,217,255,0.45)]" : ""
-      }`}
+      className={`${CARD} scroll-mt-28 p-4 sm:p-6 ${respondida ? "border-buy/40" : ""}`}
     >
       <div className="grid gap-4 lg:gap-x-6 lg:grid-cols-[minmax(320px,440px)_minmax(0,1fr)] lg:grid-rows-[auto_auto_auto_1fr]">
         {/* Título + contexto */}
         <div className="flex flex-col gap-2 lg:col-start-1 lg:row-start-1">
           <div className="flex items-center gap-2 flex-wrap">
-            <span className={`text-[11px] ${TEXT_TERTIARY}`}>
+            <span className="text-xs text-ink-3 num">
               Pergunta {numero} de {total}
             </span>
             <BadgeStatus status={p.status} />
             {respondida && (
-              <span className="inline-flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-full bg-[rgba(0,217,255,0.12)] text-[#00d9ff]">
-                <Check size={11} strokeWidth={2} aria-hidden /> Respondida
+              <span className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-buy text-white">
+                <Check size={12} strokeWidth={2.2} aria-hidden /> Respondida
               </span>
             )}
           </div>
-          <h3 id={idTitulo} tabIndex={-1} className="text-base sm:text-lg text-[#f5f5f7] leading-snug outline-none">
+          <h3 id={idTitulo} tabIndex={-1} className="text-lg sm:text-xl font-semibold text-ink leading-snug">
             {p.titulo}
           </h3>
-          {p.contexto && <p className={`text-sm ${TEXT_SECONDARY} leading-relaxed`}>{p.contexto}</p>}
+          {p.contexto && <p className="text-sm text-ink-2 leading-relaxed max-w-[70ch]">{p.contexto}</p>}
         </div>
 
         {/* Fotos (coluna da direita no desktop) */}
@@ -308,10 +305,10 @@ function PerguntaCard({
 
         {/* Opções — rádios grandes; escolher já salva */}
         <fieldset className="flex flex-col gap-2 lg:col-start-1 lg:row-start-2 min-w-0">
-          <legend className={`text-xs ${TEXT_SECONDARY} mb-2`}>Sua resposta</legend>
+          <legend className="text-xs text-ink-3 mb-2">Sua resposta</legend>
           {respostaOrfa && (
-            <p className="text-xs text-[#ffaa00] mb-1">
-              Resposta salva antes: “{respostaOrfa}” — essa opção mudou, escolha de novo.
+            <p className="text-xs text-deal mb-1">
+              Resposta salva antes: “{respostaOrfa}”. Essa opção mudou; escolha de novo.
             </p>
           )}
           {p.opcoes.map((op) => {
@@ -319,10 +316,10 @@ function PerguntaCard({
             return (
               <label
                 key={op}
-                className={`flex items-center gap-3 min-h-12 px-4 py-3 rounded-xl border cursor-pointer select-none transition-all text-sm leading-snug has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-[#00d9ff] ${
+                className={`flex items-center gap-3 min-h-12 px-4 py-3 rounded-lg border cursor-pointer select-none transition-colors text-sm leading-snug has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-info ${
                   sel
-                    ? "border-[rgba(0,217,255,0.6)] bg-gradient-to-r from-[rgba(0,217,255,0.5)] to-[rgba(0,255,170,0.3)] text-[#f5f5f7] shadow-[0_1px_3px_rgba(0,0,0,0.4)]"
-                    : "border-[rgba(255,255,255,0.1)] bg-[rgba(255,255,255,0.04)] text-[#b8b8c0] hover:bg-[rgba(255,255,255,0.08)] hover:text-[#f5f5f7]"
+                    ? "border-ink bg-ink text-white"
+                    : "border-line bg-surface text-ink hover:border-line-strong hover:bg-canvas"
                 }`}
               >
                 <input
@@ -336,10 +333,10 @@ function PerguntaCard({
                 <span
                   aria-hidden
                   className={`w-5 h-5 shrink-0 rounded-full border-2 grid place-items-center ${
-                    sel ? "border-[#f5f5f7]" : "border-[#6b6b78]"
+                    sel ? "border-white" : "border-line-strong"
                   }`}
                 >
-                  {sel && <span className="w-2.5 h-2.5 rounded-full bg-[#f5f5f7]" />}
+                  {sel && <span className="w-2.5 h-2.5 rounded-full bg-white" />}
                 </span>
                 <span>{op}</span>
               </label>
@@ -349,11 +346,11 @@ function PerguntaCard({
 
         {/* Comentário + status de salvamento */}
         <div className="flex flex-col gap-2 lg:col-start-1 lg:row-start-3 min-w-0">
-          <label htmlFor={idObs} className={`text-xs ${TEXT_SECONDARY}`}>
-            Comentário <span className={TEXT_TERTIARY}>(opcional)</span>
+          <label htmlFor={idObs} className="text-xs text-ink-3">
+            Comentário (opcional)
           </label>
           {pedeComentario && (
-            <p className="text-xs text-[#ffaa00]" id={`${idObs}-dica`}>
+            <p className="text-xs text-deal" id={`${idObs}-dica`}>
               Explique no comentário abaixo o que é diferente.
             </p>
           )}
@@ -365,34 +362,36 @@ function PerguntaCard({
             rows={2}
             placeholder="Se quiser, explique ou corrija item a item…"
             aria-describedby={pedeComentario ? `${idObs}-dica` : undefined}
-            className={`w-full text-sm rounded-lg px-3 py-2 bg-[rgba(255,255,255,0.04)] border text-[#f5f5f7] placeholder:text-[#6b6b78] outline-none focus:border-[#00d9ff] resize-y ${
-              pedeComentario ? "border-[rgba(255,170,0,0.5)]" : "border-[rgba(255,255,255,0.12)]"
+            name={idObs}
+            autoComplete="off"
+            className={`w-full text-base sm:text-sm rounded-lg px-3 py-2 bg-canvas border text-ink placeholder:text-ink-3 focus-visible:border-info resize-y ${
+              pedeComentario ? "border-deal" : "border-line"
             }`}
           />
           <div className="flex items-center justify-between gap-3 flex-wrap min-h-8">
             <span className="text-xs" role="status" aria-live="polite">
               {status === "salvando" ? (
-                <span className={TEXT_TERTIARY}>Salvando…</span>
+                <span className="text-ink-3">Salvando…</span>
               ) : status === "erro" ? (
-                <span className="text-[#ffaa00] inline-flex items-center gap-2 flex-wrap">
-                  ⚠ Não salvou.
-                  <button type="button" onClick={tentarDeNovo} className={`px-2.5 py-1 rounded-lg text-xs ${PILL_NEUTRAL} text-[#ffaa00]`}>
+                <span className="text-urgent inline-flex items-center gap-2 flex-wrap">
+                  Não salvou.
+                  <button type="button" onClick={tentarDeNovo} className="h-8 px-3 rounded-lg text-xs font-medium bg-urgent-soft text-urgent">
                     Tentar de novo
                   </button>
                 </span>
               ) : obsSuja ? (
-                <span className={TEXT_TERTIARY}>Comentário ainda não salvo</span>
+                <span className="text-ink-3">Comentário ainda não salvo</span>
               ) : status === "salvo" ? (
-                <span className="text-[#00ff88]">Salvo ✓</span>
+                <span className="text-buy">Salvo</span>
               ) : (
-                <span className={TEXT_TERTIARY}>{escolha ? "Resposta salva" : "Escolha uma opção — salva na hora"}</span>
+                <span className="text-ink-3">{escolha ? "Resposta salva" : "Escolha uma opção; ela salva na hora"}</span>
               )}
             </span>
             <button
               type="button"
               onClick={salvarObs}
               disabled={!obsSuja || status === "salvando"}
-              className={`px-3 py-1.5 rounded-lg text-xs transition-all disabled:opacity-40 disabled:cursor-not-allowed ${PILL_NEUTRAL}`}
+              className="h-8 px-3 rounded-lg text-xs font-medium bg-surface border border-line text-ink-2 hover:text-ink hover:border-line-strong transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
             >
               Salvar comentário
             </button>
@@ -483,103 +482,110 @@ export default function Decisoes() {
 
   return (
     <div className="h-full overflow-y-auto">
-      <header className={`sticky top-0 z-20 ${HEADER_BG}`}>
-        <div className="app-wrap py-3 flex flex-col gap-2.5">
-          <div className="flex items-center justify-between gap-3">
-            <h1 className="text-lg sm:text-2xl text-[#f5f5f7] leading-tight">{doc?.titulo ?? "Decisões"}</h1>
-            <Link href="/" className={`${NAV_BTN} shrink-0`}>
-              <ArrowLeft size={15} strokeWidth={1.5} aria-hidden />
-              Votação
-            </Link>
-          </div>
+      <div className="app-wrap pt-6 lg:pt-10 pb-16">
+        <div className="max-w-[1180px]">
+          <header>
+            <h1 className="text-[32px] lg:text-[40px] font-bold leading-none text-ink">Decisões</h1>
+            <p className="mt-2 text-[15px] text-ink-2 max-w-[65ch]">
+              Perguntas em aberto sobre as suas regras de compra. Escolha uma opção em cada uma; a resposta salva na
+              hora e pode ser mudada depois.
+            </p>
+          </header>
+
           {total > 0 && (
-            <div className="flex items-center gap-3 flex-wrap">
-              <div className="flex-1 min-w-[160px] flex flex-col gap-1.5">
-                <span className={`text-xs ${nRespondidas === total ? "text-[#00ff88]" : TEXT_SECONDARY}`} aria-live="polite">
-                  <b className="font-normal text-[#f5f5f7]">{nRespondidas} de {total}</b> respondidas
-                  {nRespondidas === total ? " — tudo respondido, obrigado!" : ""}
+            <div className="sticky top-0 z-20 -mx-4 px-4 sm:mx-0 sm:px-0 mt-5 py-3 bg-canvas/95 backdrop-blur-sm flex items-center gap-3 flex-wrap">
+              <div className="flex-1 min-w-[180px] flex items-center gap-3">
+                <span
+                  className={`text-sm flex-none ${nRespondidas === total ? "text-buy" : "text-ink-2"}`}
+                  aria-live="polite"
+                >
+                  <b className="font-semibold text-ink num">{nRespondidas}</b> de <span className="num">{total}</span> respondidas
                 </span>
                 <div
-                  className="w-full h-1.5 bg-[rgba(255,255,255,0.06)] rounded-full overflow-hidden"
+                  className="flex-1 h-1.5 bg-sunken rounded-full overflow-hidden"
                   role="progressbar"
                   aria-label="Perguntas respondidas"
                   aria-valuemin={0}
                   aria-valuemax={total}
                   aria-valuenow={nRespondidas}
                 >
-                  <div className="h-full rounded-full bg-[#00d9ff] transition-all" style={{ width: `${progresso}%` }} />
+                  <div className="h-full rounded-full bg-buy transition-[width]" style={{ width: `${progresso}%` }} />
                 </div>
               </div>
               {proxima && (
-                <button type="button" onClick={irParaProxima} className={`h-9 px-3 inline-flex items-center gap-1.5 rounded-lg text-xs ${PILL_NEUTRAL} border border-[rgba(255,255,255,0.07)]`}>
-                  <ArrowDown size={14} strokeWidth={1.5} aria-hidden />
+                <button
+                  type="button"
+                  onClick={irParaProxima}
+                  className="h-9 px-3 inline-flex items-center gap-1.5 rounded-lg text-sm bg-surface border border-line text-ink-2 hover:text-ink hover:border-line-strong transition-colors"
+                >
+                  <ArrowDown size={15} strokeWidth={1.75} aria-hidden />
                   Próxima sem resposta
                 </button>
               )}
             </div>
           )}
-        </div>
-      </header>
 
-      <main className="app-wrap py-5 sm:py-6 flex flex-col gap-6 pb-16">
-        {carregando ? (
-          <div className={`flex flex-col items-center gap-3 mt-24 text-sm ${TEXT_TERTIARY}`}>
-            <span className="w-6 h-6 rounded-full border-2 border-[rgba(255,255,255,0.15)] border-t-[#00d9ff] animate-spin" />
-            Carregando perguntas…
-          </div>
-        ) : erro || !doc ? (
-          <div className={`flex flex-col items-center gap-3 mt-24 text-sm ${TEXT_TERTIARY}`}>
-            Não consegui carregar as perguntas.
-            <button type="button" onClick={recarregar} className={`px-3 py-1.5 rounded-lg text-xs ${PILL_NEUTRAL}`}>
-              Recarregar
-            </button>
-          </div>
-        ) : (
-          <>
-            {erroRespostas && (
-              <p role="alert" className="text-xs text-[#ffaa00] rounded-lg border border-[rgba(255,170,0,0.3)] bg-[rgba(255,170,0,0.08)] px-3 py-2">
-                Não consegui carregar as respostas que você já deu. O que você responder agora é salvo normalmente —
-                atualize a página para ver as anteriores.
-              </p>
+          <main className="mt-4 flex flex-col gap-8">
+            {carregando ? (
+              <div className="flex flex-col items-center gap-3 py-24 text-sm text-ink-3" role="status">
+                <span className="w-6 h-6 rounded-full border-2 border-line border-t-ink animate-spin" aria-hidden />
+                Carregando perguntas…
+              </div>
+            ) : erro || !doc ? (
+              <div className="flex flex-col items-center gap-3 py-24 text-sm text-ink-2" role="alert">
+                As perguntas não carregaram. Confira a conexão e tente de novo.
+                <button type="button" onClick={recarregar} className="h-9 px-4 rounded-lg text-sm font-semibold bg-ink text-white">
+                  Tentar de novo
+                </button>
+              </div>
+            ) : (
+              <>
+                {erroRespostas && (
+                  <p role="alert" className="text-sm text-[#7a4600] rounded-lg bg-deal-soft px-4 py-3">
+                    As respostas que você já deu não carregaram. O que responder agora é salvo normalmente; atualize a página
+                    para ver as anteriores.
+                  </p>
+                )}
+
+                {doc.secoes.map((s) => {
+                  const feitas = s.perguntas.filter((p) => respondida(p.id)).length;
+                  return (
+                    <section key={s.id} aria-labelledby={`secao-${s.id}`} className="flex flex-col gap-4">
+                      <div className="flex flex-col gap-1">
+                        <div className="flex items-baseline justify-between gap-3 flex-wrap">
+                          <h2 id={`secao-${s.id}`} className="text-xl sm:text-2xl font-bold text-ink">{s.titulo}</h2>
+                          <span className={`text-sm num ${feitas === s.perguntas.length ? "text-buy" : "text-ink-3"}`}>
+                            {feitas} de {s.perguntas.length} respondidas
+                          </span>
+                        </div>
+                        {s.intro && <p className="text-sm text-ink-2 max-w-[75ch] leading-relaxed">{s.intro}</p>}
+                      </div>
+                      {s.perguntas.map((p) => (
+                        <PerguntaCard
+                          key={p.id}
+                          p={p}
+                          numero={numeroDe.get(p.id) ?? 0}
+                          total={total}
+                          inicial={respostas[p.id]}
+                          respondida={respondida(p.id)}
+                          onSalvo={onSalvo}
+                          onAbrir={onAbrir}
+                        />
+                      ))}
+                    </section>
+                  );
+                })}
+
+                <p className="text-center text-sm text-ink-3 num">
+                  {nRespondidas === total
+                    ? "Tudo respondido. Você ainda pode mudar qualquer resposta."
+                    : `Faltam ${total - nRespondidas} de ${total}. As respostas ficam salvas; pode continuar depois.`}
+                </p>
+              </>
             )}
-
-            {doc.secoes.map((s) => {
-              const feitas = s.perguntas.filter((p) => respondida(p.id)).length;
-              return (
-                <section key={s.id} aria-labelledby={`secao-${s.id}`} className="flex flex-col gap-4">
-                  <div className="flex flex-col gap-1 pt-2">
-                    <div className="flex items-baseline justify-between gap-3 flex-wrap">
-                      <h2 id={`secao-${s.id}`} className="text-lg sm:text-xl text-[#f5f5f7]">{s.titulo}</h2>
-                      <span className={`text-xs ${feitas === s.perguntas.length ? "text-[#00ff88]" : TEXT_TERTIARY}`}>
-                        {feitas} de {s.perguntas.length} respondidas
-                      </span>
-                    </div>
-                    {s.intro && <p className={`text-sm ${TEXT_SECONDARY} max-w-4xl leading-relaxed`}>{s.intro}</p>}
-                  </div>
-                  {s.perguntas.map((p) => (
-                    <PerguntaCard
-                      key={p.id}
-                      p={p}
-                      numero={numeroDe.get(p.id) ?? 0}
-                      total={total}
-                      inicial={respostas[p.id]}
-                      respondida={respondida(p.id)}
-                      onSalvo={onSalvo}
-                      onAbrir={onAbrir}
-                    />
-                  ))}
-                </section>
-              );
-            })}
-
-            <p className={`text-center text-xs ${TEXT_TERTIARY}`}>
-              {nRespondidas === total
-                ? "Tudo respondido — obrigado! Você ainda pode mudar qualquer resposta."
-                : `Faltam ${total - nRespondidas} de ${total}. As respostas ficam salvas — pode continuar depois.`}
-            </p>
-          </>
-        )}
-      </main>
+          </main>
+        </div>
+      </div>
 
       {lightbox && (
         <Lightbox fotos={lightbox.fotos} inicial={lightbox.i} legenda={lightbox.legenda} onClose={fecharLightbox} />

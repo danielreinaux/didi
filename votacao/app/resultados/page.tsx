@@ -3,8 +3,6 @@
 import { useEffect, useState } from "react";
 import ResultadoCard from "@/components/ResultadoCard";
 import { Item, Reaction, REACTION_LABELS } from "@/lib/types";
-import { ACTIVE_GRADIENT, PILL_NEUTRAL, HEADER_BG, TEXT_TERTIARY, SEGMENTED_BTN, SEGMENTED_INACTIVE, NAV_BTN } from "@/lib/theme";
-import { ArrowLeft } from "lucide-react";
 
 interface Reacao {
   reaction?: Reaction;
@@ -13,18 +11,14 @@ interface Reacao {
 
 const ORDER: Reaction[] = ["gostei", "nao_gostei", "discordo"];
 
+// Ville desligada em 20/10/2026 (foco 100% Sundek): a loja fica fixa em "sundek".
 type Loja = "sundek" | "ville";
-const LOJAS: { key: Loja; label: string }[] = [
-  { key: "sundek", label: "Sundek" },
-  // Ville desligada em 20/10/2026 (foco 100% Sundek) — volta descomentando:
-  // { key: "ville", label: "Ville" },
-];
 
 export default function Resultados() {
   const [items, setItems] = useState<Item[]>([]);
   const [reacoes, setReacoes] = useState<Record<string, Reacao>>({});
   const [filtro, setFiltro] = useState<Reaction | "todos">("todos");
-  const [loja, setLoja] = useState<Loja>("sundek");
+  const [loja] = useState<Loja>("sundek");
   // Enquanto os dois fetches não resolvem, mostramos loading (antes caía em "Nenhum voto ainda").
   const [carregando, setCarregando] = useState(true);
 
@@ -45,7 +39,7 @@ export default function Resultados() {
     .filter((v) => v.item && v.reaction && v.item.marca === marcaDaLoja)
     .sort((a, b) => ORDER.indexOf(a.reaction!) - ORDER.indexOf(b.reaction!));
 
-  // Contagens por loja, pra os chips e o "N votos" baterem com a loja selecionada.
+  // Contagens por loja, pra os chips e o resumo baterem com a loja selecionada.
   const contagem = ORDER.reduce((acc, r) => {
     acc[r] = votados.filter((v) => v.reaction === r).length;
     return acc;
@@ -63,82 +57,74 @@ export default function Resultados() {
     });
   }
 
+  const resumo =
+    totalVotos === 0
+      ? "Você ainda não avaliou nenhuma oferta à venda. Avalie na aba Ofertas: os votos ajudam a ajustar as regras."
+      : `${totalVotos} ${totalVotos === 1 ? "oferta avaliada" : "ofertas avaliadas"}: ${contagem.gostei} gostei, ${
+          contagem.nao_gostei
+        } não gostei e ${contagem.discordo} discordo.`;
+
+  const chip = (f: Reaction | "todos", label: string, n: number) => (
+    <button
+      key={f}
+      onClick={() => setFiltro(f)}
+      aria-pressed={filtro === f}
+      className={`h-9 px-3 flex-none inline-flex items-center gap-1.5 rounded-full text-sm transition-colors ${
+        filtro === f
+          ? "bg-ink text-white"
+          : "bg-surface border border-line text-ink-2 hover:text-ink hover:border-line-strong"
+      }`}
+    >
+      {label}
+      <span className={`num text-xs ${filtro === f ? "text-white/70" : "text-ink-3"}`}>{n}</span>
+    </button>
+  );
+
   return (
     <div className="h-full overflow-y-auto">
-      <header className={`sticky top-0 z-20 ${HEADER_BG}`}>
-        <div className="app-wrap py-3 flex flex-col gap-3">
-          <div className="flex items-center justify-between flex-wrap gap-2">
-            <div className="flex items-center gap-3 flex-wrap">
-              <h1 className="text-2xl text-[#f5f5f7] leading-tight">Resultados</h1>
-              {/* Seletor de loja — mesmo controle da Home, pra os votos baterem por loja */}
-              <div className="inline-flex p-1 rounded-xl bg-[rgba(255,255,255,0.04)] border border-[rgba(255,255,255,0.07)]">
-                {LOJAS.map((l) => (
-                  <button
-                    key={l.key}
-                    onClick={() => setLoja(l.key)}
-                    className={`${SEGMENTED_BTN} ${
-                      loja === l.key ? ACTIVE_GRADIENT : SEGMENTED_INACTIVE
-                    }`}
-                  >
-                    {l.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-            <div className="flex items-center gap-3">
-              <span className={`text-xs ${TEXT_TERTIARY}`}>{totalVotos} votos</span>
-              <a href="/" className={NAV_BTN}>
-                <ArrowLeft size={16} strokeWidth={1.5} aria-hidden />
-                Voltar
-              </a>
-            </div>
-          </div>
-          <div className="flex gap-2 flex-wrap">
-            <button
-              onClick={() => setFiltro("todos")}
-              className={`px-3 py-1.5 rounded-lg text-xs transition-all ${
-                filtro === "todos" ? ACTIVE_GRADIENT : PILL_NEUTRAL
-              }`}
-            >
-              Todos ({totalVotos})
-            </button>
-            {ORDER.map((r) => (
-              <button
-                key={r}
-                onClick={() => setFiltro(r)}
-                className={`px-3 py-1.5 rounded-lg text-xs transition-all ${
-                  filtro === r ? ACTIVE_GRADIENT : PILL_NEUTRAL
-                }`}
-              >
-                {REACTION_LABELS[r]} ({contagem[r]})
-              </button>
-            ))}
+      <div className="app-wrap pt-6 lg:pt-10 pb-12">
+        <h1 className="text-[32px] lg:text-[40px] font-bold leading-none text-ink">Votos</h1>
+        <p className="mt-2 text-[15px] text-ink-2 max-w-[64ch]">{resumo}</p>
+
+        <div className="sticky top-0 z-20 -mx-4 px-4 sm:mx-0 sm:px-0 mt-5 py-3 bg-canvas/95 backdrop-blur-sm">
+          <div className="flex gap-1.5 overflow-x-auto [scrollbar-width:none]" role="group" aria-label="Filtrar votos">
+            {chip("todos", "Todos", totalVotos)}
+            {ORDER.map((r) => chip(r, REACTION_LABELS[r], contagem[r]))}
           </div>
         </div>
-      </header>
 
-      <main className="app-wrap py-6">
-        {carregando ? (
-          <div className={`flex flex-col items-center gap-3 mt-24 text-sm ${TEXT_TERTIARY}`}>
-            <span className="w-6 h-6 rounded-full border-2 border-[rgba(255,255,255,0.15)] border-t-[#00d9ff] animate-spin" />
-            Carregando resultados…
-          </div>
-        ) : filtrados.length === 0 ? (
-          <p className={`text-center mt-20 text-sm ${TEXT_TERTIARY}`}>Nenhum voto ainda.</p>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {filtrados.map(({ id, item, reaction, observacao }) => (
-              <ResultadoCard
-                key={id}
-                item={item}
-                reaction={reaction!}
-                observacao={observacao}
-                onCancelado={onCancelado}
-              />
-            ))}
-          </div>
-        )}
-      </main>
+        <main className="mt-3">
+          {carregando ? (
+            <div className="flex flex-col items-center gap-3 py-24 text-sm text-ink-3" role="status">
+              <span className="w-6 h-6 rounded-full border-2 border-line border-t-ink animate-spin" aria-hidden />
+              Carregando votos…
+            </div>
+          ) : filtrados.length === 0 ? (
+            <div className="py-20 text-center">
+              <p className="text-ink font-medium">
+                {totalVotos === 0 ? "Nenhum voto ainda." : "Nenhum voto neste filtro."}
+              </p>
+              <p className="mt-1 text-sm text-ink-3">
+                {totalVotos === 0
+                  ? "Na aba Ofertas, toque em Gostei, Não gostei ou Discordo em cada anúncio."
+                  : "Escolha outro filtro para ver os demais votos."}
+              </p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+              {filtrados.map(({ id, item, reaction, observacao }) => (
+                <ResultadoCard
+                  key={id}
+                  item={item}
+                  reaction={reaction!}
+                  observacao={observacao}
+                  onCancelado={onCancelado}
+                />
+              ))}
+            </div>
+          )}
+        </main>
+      </div>
     </div>
   );
 }
