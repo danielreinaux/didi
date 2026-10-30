@@ -1,5 +1,46 @@
 [
  {
+  "run_id": "41070567924",
+  "fonte": "deploy",
+  "quando": "2026-10-30T11:21:59.237249-03:00",
+  "marcas": [
+   "sundek"
+  ],
+  "run_url": "https://github.com/danielreinaux/didi/actions/runs/41070567924",
+  "status": "erro",
+  "jobs": [
+   {
+    "name": "sundek",
+    "conclusion": "failure",
+    "url": "https://github.com/danielreinaux/didi/actions/runs/41070567924/job/124113237126"
+   },
+   {
+    "name": "ville",
+    "conclusion": "skipped",
+    "url": "https://github.com/danielreinaux/didi/actions/runs/41070567924/job/124113239213"
+   },
+   {
+    "name": "deploy",
+    "conclusion": null,
+    "url": "https://github.com/danielreinaux/didi/actions/runs/41070567924/job/124115253423"
+   }
+  ],
+  "resumo": {
+   "candidatos": 13,
+   "compraveis": 8,
+   "barganha": 5,
+   "descartados": 6552,
+   "nao_classificados": 111,
+   "novos": 8,
+   "ativos": 6761,
+   "custo_usd": 0.002617,
+   "custo_brl": 0.01,
+   "tok_in": 17557,
+   "tok_out": 373,
+   "calls": 4
+  }
+ },
+ {
   "run_id": "41069875290",
   "fonte": "deploy",
   "quando": "2026-10-30T11:17:53.632649-03:00",
@@ -8156,47 +8197,6 @@
    "tok_in": 0,
    "tok_out": 0,
    "calls": 0
-  }
- },
- {
-  "run_id": "40900608159",
-  "fonte": "deploy",
-  "quando": "2026-10-29T12:25:10.091129-03:00",
-  "marcas": [
-   "sundek"
-  ],
-  "run_url": "https://github.com/danielreinaux/didi/actions/runs/40900608159",
-  "status": "ok",
-  "jobs": [
-   {
-    "name": "sundek",
-    "conclusion": "success",
-    "url": "https://github.com/danielreinaux/didi/actions/runs/40900608159/job/123541535029"
-   },
-   {
-    "name": "ville",
-    "conclusion": "skipped",
-    "url": "https://github.com/danielreinaux/didi/actions/runs/40900608159/job/123541536722"
-   },
-   {
-    "name": "deploy",
-    "conclusion": null,
-    "url": "https://github.com/danielreinaux/didi/actions/runs/40900608159/job/123543985143"
-   }
-  ],
-  "resumo": {
-   "candidatos": 13,
-   "compraveis": 8,
-   "barganha": 5,
-   "descartados": 6532,
-   "nao_classificados": 112,
-   "novos": 3,
-   "ativos": 6742,
-   "custo_usd": 0.020122,
-   "custo_brl": 0.1,
-   "tok_in": 27438,
-   "tok_out": 1044,
-   "calls": 5
   }
  }
 ]
