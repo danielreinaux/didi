@@ -144,17 +144,20 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          # O GitHub às vezes responde HTTP 500 no dispatch (30/10 11:21 a corrente parou assim):
+          # tenta de novo por ~2 min antes de desistir.
+          disparar() { for i in 1 2 3 4 5 6; do gh workflow run "$@" && return 0; echo "dispatch falhou ($i/6) — de novo em 20 s"; sleep 20; done; return 1; }
           H=$(TZ=America/Sao_Paulo date +%-H)
           if [ "${{ vars.RODADA_CONTINUA }}" = "false" ]; then echo "pausado — não dispara"; exit 0; fi
           if [ "$H" -lt 7 ] || [ "$H" -ge 20 ]; then
             # Fim do dia: o despertador dorme até 07:00 BRT e religa a corrente (o */5 do
             # schedule não disparou nenhuma vez de manhã em 27 e 28/10).
             echo "fora da janela — chamando o despertador das 07h"
-            gh workflow run despertador.yml --repo "${{ github.repository }}" --ref main
+            disparar despertador.yml --repo "${{ github.repository }}" --ref main
             exit 0
           fi
           if [ "${{ job.status }}" != "success" ]; then echo "rodada com falha — esperando 5 min"; sleep 300; fi
-          gh workflow run scrape-cron.yml --repo "${{ github.repository }}" --ref main -f automatico=true
+          disparar scrape-cron.yml --repo "${{ github.repository }}" --ref main -f automatico=true
 
   # Vilebrequin: mesma cadência do Sundek, agora EM PARALELO com ele (sem needs).
   # Antes tinha `needs: sundek` pra não competir cota de OpenAI, mas a conta hoje está
