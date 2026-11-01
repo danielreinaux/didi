@@ -381,6 +381,75 @@
           ]
         }
       ]
+    },
+    {
+      "id": "ville_padrao",
+      "titulo": "Ville — padrão da estampa no gabarito",
+      "perguntas": [
+        {
+          "id": "ville_tartaruga_localizada",
+          "titulo": "Short liso com UMA tartaruga grande aplicada na perna: é 'liso' ou 'outro'?",
+          "contexto": "O 9231852295 está marcado como 'outro', mas a sua observação diz \"Tem só uma tartaruga grande, mas o padrão é liso\". O 9266776930, parecido, está como 'liso'. Hoje a IA chama o primeiro de tartaruga grande e o segundo de liso.",
+          "grupos": [
+            {
+              "rotulo": "Marcado 'outro' (obs.: \"o padrão é liso\")",
+              "itens": [
+                "9231852295"
+              ]
+            },
+            {
+              "rotulo": "Marcado 'liso'",
+              "itens": [
+                "9266776930"
+              ]
+            }
+          ],
+          "opcoes": [
+            "Os dois são liso",
+            "Os dois são outro",
+            "São diferentes (explique no comentário)"
+          ]
+        },
+        {
+          "id": "ville_tom_sobre_tom",
+          "titulo": "Tartaruga tom sobre tom (desenho da mesma cor do tecido): é tartaruga grande ou 'outro'?",
+          "contexto": "O cv36 (navy com tartarugas navy) está como 'tartaruga grande'. O 9225147020 (azul com tartarugas azuis) está como 'outro', com a observação \"tartaruga média\".",
+          "grupos": [
+            {
+              "rotulo": "Marcado 'tartaruga grande'",
+              "itens": [
+                "cv36"
+              ]
+            },
+            {
+              "rotulo": "Marcado 'outro' (obs.: \"tartaruga média\")",
+              "itens": [
+                "9225147020"
+              ]
+            }
+          ],
+          "opcoes": [
+            "Os dois são tartaruga grande",
+            "Os dois são outro",
+            "São diferentes (explique no comentário)"
+          ]
+        },
+        {
+          "id": "ville_falso_padrao",
+          "titulo": "Neste short falso de tartarugas amarelas, o padrão é 'tartaruga grande' ou 'outro'?",
+          "contexto": "Você marcou o padrão como 'outro' e a autenticidade como 'falso'. A IA vê tartarugas grandes. Se o 'outro' foi por ser falso, o padrão pode ficar 'tartaruga grande': a autenticidade já descarta o short.",
+          "itens": [
+            {
+              "id": "9230799224"
+            }
+          ],
+          "opcoes": [
+            "Padrão é tartaruga grande (marquei 'outro' por ser falso)",
+            "Padrão é 'outro' mesmo",
+            "Não sei"
+          ]
+        }
+      ]
     }
   ]
 }
