@@ -57,6 +57,18 @@ def _norm(v) -> str:
     return str(v)
 
 
+# Valores que o cliente não distingue no gabarito: "sem_foto_bolso" é um caso de "indefinido"
+# (não dá pra confirmar pelo bolso). Ele marca "indefinido" até quando o bolso não aparece nas
+# fotos (gabarito Ville, 01/11/2026). Os dois impedem a compra direta no score_ville.
+EQUIVALENTES = {"autenticidade": {"sem_foto_bolso": "indefinido"}}
+
+
+def _igual(criterio: str, ia, verdade) -> bool:
+    a, b = _norm(ia), _norm(verdade)
+    eq = EQUIVALENTES.get(criterio, {})
+    return eq.get(a, a) == eq.get(b, b)
+
+
 def _carregar(p: Path, oque: str) -> dict:
     if not p.exists():
         print(f"Faltando: {p} ({oque}).")
@@ -89,7 +101,7 @@ def _item_100(ia_item: dict, truth_item: dict) -> bool | None:
         alvos = [c for c in GATE_CRITS if truth_item.get(c) == "nao"]
     else:
         alvos = graded
-    return all(_norm(ia_item.get(c)) == _norm(truth_item.get(c)) for c in alvos)
+    return all(_igual(c, ia_item.get(c), truth_item.get(c)) for c in alvos)
 
 
 def main() -> None:

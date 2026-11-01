@@ -18,7 +18,7 @@ except Exception:
 
 from .gabarito_diff import (
     _arg, _norm, _carregar, _graded, _item_100,
-    CRITERIOS, LABELS, REG, PUBLIC, GATE_CRITS,
+    CRITERIOS, LABELS, REG, PUBLIC, GATE_CRITS, _igual,
 )
 
 
@@ -61,7 +61,7 @@ def main() -> None:
                     and (t.get("e_vilebrequin") == "nao" or t.get("e_short") == "nao")):
                 continue
             n += 1
-            if _norm(ia.get(c)) == _norm(t.get(c)):
+            if _igual(c, ia.get(c), t.get(c)):
                 ok += 1
             else:
                 erros.append(iid)
