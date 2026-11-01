@@ -188,6 +188,11 @@ TARTARUGA_PEQUENA: SÓ o caso do MICRO-PRINT — tartarugas MINÚSCULAS e MUITO
 
 LISO: short sem estampa, em cor sólida. Pode ter:
   - bordado discreto (logo Vilebrequin, tartaruga bordada no bolso)
+  - UMA tartaruga grande (ou duas) estampada num ponto só — na perna, no quadril — num
+    short de cor lisa, sem outras tartarugas espalhadas pelo tecido. É "liso" (o dono:
+    "tem só uma tartaruga grande, mas o padrão é liso"); padrao_identificado =
+    "tartaruga localizada". Se há VÁRIAS tartarugas espalhadas pelo tecido (grandes,
+    médias ou até tom sobre tom), NÃO é isto: é tartaruga_grande.
   - detalhe de fita ou cordão colorido na cintura
   O corpo do tecido não tem padrão repetido.
 
@@ -197,6 +202,8 @@ OUTRO: qualquer outro padrão que não seja tartaruga nem liso. Exemplos:
   - peixes, estrelas do mar, cavalos-marinhos, âncoras, flores, plantas, corais
   - listras, xadrez, geométrico
   - personagens, mapas, fogos de artifício
+  - TIE-DYE, aquarela, tingimento em manchas, mesclado sem motivos → "outro" (NÃO liso:
+    liso é cor sólida, sem manchas de tingimento)
   Incluir o nome do padrão identificado no campo "padrao_identificado".
 
 ⚠️  CUIDADO — ANIMAIS PARECIDOS COM TARTARUGA (erro comum):
