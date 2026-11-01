@@ -29,6 +29,11 @@ Olhar TODAS as fotos e responder UMA pergunta: qual a cor predominante do CORDÃ
   (cós liso, sem cordão) — o cordão mora na FRENTE, então não conclua "sem cordão"
   olhando só as costas.
 - NÃO confunda com:
+  - O cordão do SAQUINHO/bolsa da Vilebrequin (o saco de tecido escuro com o nome,
+    que às vezes aparece na foto ao lado do short): ele tem um cordão BRANCO próprio.
+    Só vale o cordão preso no CÓS do short.
+  - Short de ALFAIATARIA (cós reto e liso, plaquinha metálica no centro, zíper no fly):
+    esse modelo NÃO tem cordão → "sem_cordao".
   - Etiqueta de tecido interna (fica DENTRO do cós, costurada)
   - Faixa elástica do cós (é o tecido da cintura, não é cordão)
   - Costura/pesponto do cós (é linha de costura fina, não é cordão grosso)

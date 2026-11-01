@@ -23,10 +23,15 @@ Olhe TODAS as fotos e responda UMA pergunta: como o short FECHA/ajusta na cintur
                elástico atrás). É o padrão da Vilebrequin. → COMPRA
 - "elastico" → cós franzido só com ELÁSTICO, sem cordão visível, e SEM botão/fivela.
                → COMPRA
-- "botao"    → BOTÃO (metálico/plástico) no fly (abertura frontal central) ou no
-               cós como fecho. Estilo boardshort antigo. → DESCARTE
+- "botao"    → BOTÃO REDONDO (metálico/plástico, com furinhos ou relevo) no fly
+               (abertura frontal central) ou no cós como fecho. Estilo boardshort
+               antigo. → DESCARTE
 - "fivela"   → FIVELA / clipe / engate de cinto plástico ou metálico fechando a
                cintura (parece fecho de mochila/cinto). → DESCARTE
+               ⚠️ INCLUI o modelo de ALFAIATARIA da Vilebrequin: cós RETO e liso (sem
+               franzido, sem cordão), com uma PLAQUINHA metálica retangular pequena
+               (prateada) no centro da frente do cós, e zíper no fly. Isso é "fivela",
+               NÃO "botao" — a plaquinha é chata e retangular, não um botão redondo.
 - "velcro"   → tira de VELCRO fechando o fly/cintura. → DESCARTE
 - "indefinido" → não dá pra ver o cós/fly de perto em nenhuma foto, ou está
                  escondido/borrado. → NÃO exclui (na dúvida, indefinido)
