@@ -3,7 +3,7 @@
   "fonte": "src/build/decisoes_spec.json",
   "chave_voto": "decisao:<id_da_pergunta>",
   "titulo": "Decisões pendentes — Ville",
-  "total_perguntas": 5,
+  "total_perguntas": 12,
   "secoes": [
     {
       "id": "ville_padrao",
@@ -197,6 +197,254 @@
                 "/gabarito_fotos/9254096268/2.webp",
                 "/gabarito_fotos/9254096268/3.webp",
                 "/gabarito_fotos/9254096268/4.webp"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ville_falsos",
+      "titulo": "Ville — como você reconhece um falso",
+      "perguntas": [
+        {
+          "id": "falso_turquesa",
+          "titulo": "No short turquesa de tartaruguinhas (9285441926), o que te fez marcar como falso?",
+          "contexto": "A IA aprovou como original. Se mais de um detalhe pesou, escolha o principal e cite os outros no comentário.",
+          "opcoes": [
+            "A etiquetinha interna (número, tartaruga e tamanho)",
+            "O cordão ou a ponteira",
+            "O desenho ou as cores das tartarugas",
+            "O tecido (brilho, toque)",
+            "Preço ou jeito do anúncio",
+            "Outro (explique no comentário)"
+          ],
+          "itens": [
+            {
+              "id": "9285441926",
+              "origem": "gabarito",
+              "titulo": "Short de bain vilebrequin turquoise - Taille M",
+              "url": "https://www.vinted.es/items/9285441926-short-de-bain-vilebrequin-turquoise-taille-m",
+              "preco": "58,45 €",
+              "fotos": [
+                "/gabarito_fotos/9285441926/0.webp",
+                "/gabarito_fotos/9285441926/1.webp",
+                "/gabarito_fotos/9285441926/2.webp",
+                "/gabarito_fotos/9285441926/3.webp"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "falso_degrade",
+          "titulo": "No short marinho de tartarugas laranja em degradê (9230799224), o que entregou o falso?",
+          "contexto": "Esse anúncio não tem foto da etiqueta interna; a etiqueta de trás, a ponteira e o bolso parecem de original.",
+          "opcoes": [
+            "Essa estampa não existe na Vilebrequin",
+            "O ® na etiqueta de trás",
+            "O bolso ou a aba desalinhados",
+            "A ponteira do cordão",
+            "O tecido",
+            "Outro (explique no comentário)"
+          ],
+          "itens": [
+            {
+              "id": "9230799224",
+              "origem": "gabarito",
+              "titulo": "Costume Vilebrequin L",
+              "url": "https://www.vinted.es/items/9230799224-costume-vilebrequin-l",
+              "preco": "95,20 €",
+              "fotos": [
+                "/gabarito_fotos/9230799224/0.webp",
+                "/gabarito_fotos/9230799224/1.webp",
+                "/gabarito_fotos/9230799224/2.webp",
+                "/gabarito_fotos/9230799224/3.webp",
+                "/gabarito_fotos/9230799224/4.webp"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "falso_etiqueta_numero",
+          "titulo": "A etiquetinha interna com o número \"00.001.4?8.778\" e o tamanho no mesmo pedaço é sinal de falso?",
+          "contexto": "Três dos quatro falsos (9285441926, 9287586211, 9256957502) têm a MESMA etiquetinha com esse número, a tartaruga mal desenhada e o tamanho nela. Nos originais vistos, o número muda de short pra short e o tamanho fica numa etiqueta separada.",
+          "opcoes": [
+            "Sim, já vi esse número ou essa etiquetinha em vários falsos",
+            "A etiqueta pesou, mas decidi por outra coisa (explique no comentário)",
+            "Não olho etiqueta, decidi por outro motivo (explique no comentário)",
+            "Não sei"
+          ],
+          "itens": [
+            {
+              "id": "9287586211",
+              "origem": "gabarito",
+              "titulo": "Maillot de bain vilebrequin taille M excellent état",
+              "url": "https://www.vinted.es/items/9287586211-maillot-de-bain-vilebrequin-taille-m-excellent-etat",
+              "preco": "58,45 €",
+              "fotos": [
+                "/gabarito_fotos/9287586211/0.webp",
+                "/gabarito_fotos/9287586211/1.webp",
+                "/gabarito_fotos/9287586211/2.webp"
+              ]
+            },
+            {
+              "id": "9256957502",
+              "origem": "gabarito",
+              "titulo": "Maillot de bains vilebrequin",
+              "url": "https://www.vinted.es/items/9256957502-maillot-de-bains-vilebrequin",
+              "preco": "105,70 €",
+              "fotos": [
+                "/gabarito_fotos/9256957502/0.webp",
+                "/gabarito_fotos/9256957502/1.webp",
+                "/gabarito_fotos/9256957502/2.webp"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "falso_sinais_fracos",
+          "titulo": "®, \"ONLY FOR USA\" e a etiqueta \"COSTUME DE BAIN À ST-TROPEZ DEPUIS 1971\": algum deles sozinho prova que é falso?",
+          "contexto": "Esses detalhes aparecem nos falsos, mas também em shorts do gabarito marcados como originais (como estes dois).",
+          "opcoes": [
+            "Concordo: nenhum deles sozinho prova falso",
+            "Não: um deles é sinal de falso (explique no comentário)",
+            "Não sei"
+          ],
+          "itens": [
+            {
+              "id": "cv02",
+              "origem": "gabarito",
+              "titulo": "Vilebrequin (comprável)",
+              "url": null,
+              "preco": null,
+              "fotos": [
+                "/gabarito_fotos/cv02/0.jpeg",
+                "/gabarito_fotos/cv02/1.jpeg"
+              ]
+            },
+            {
+              "id": "cv05",
+              "origem": "gabarito",
+              "titulo": "Vilebrequin (comprável)",
+              "url": null,
+              "preco": null,
+              "fotos": [
+                "/gabarito_fotos/cv05/0.jpeg",
+                "/gabarito_fotos/cv05/1.jpeg"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "falso_sem_foto_etiqueta",
+          "titulo": "Quando o anúncio não tem foto da etiqueta interna e o resto parece normal, o que a IA deve fazer?",
+          "contexto": "É o caso mais comum. Hoje a IA aprova se o bolso parecer certo.",
+          "opcoes": [
+            "Aprovar como original",
+            "Aprovar, mas me avisar para pedir a foto da etiqueta ao vendedor antes de pagar",
+            "Mandar para a minha revisão"
+          ],
+          "itens": [
+            {
+              "id": "9230799224",
+              "origem": "gabarito",
+              "titulo": "Costume Vilebrequin L",
+              "url": "https://www.vinted.es/items/9230799224-costume-vilebrequin-l",
+              "preco": "95,20 €",
+              "fotos": [
+                "/gabarito_fotos/9230799224/0.webp",
+                "/gabarito_fotos/9230799224/1.webp",
+                "/gabarito_fotos/9230799224/2.webp",
+                "/gabarito_fotos/9230799224/3.webp",
+                "/gabarito_fotos/9230799224/4.webp"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "falso_sem_bolso",
+          "titulo": "Este short (9239479322) não tem bolso traseiro nem etiqueta VILEBREQUIN atrás. Ele é:",
+          "contexto": "No gabarito está 'indefinido', com a observação \"não tem bolso, mas é falso\". Pela sua regra, estampado sem bolso é falso.",
+          "opcoes": [
+            "Falso",
+            "Original",
+            "Não sei"
+          ],
+          "itens": [
+            {
+              "id": "9239479322",
+              "origem": "gabarito",
+              "titulo": "Short vilebrequin",
+              "url": "https://www.vinted.es/items/9239479322-short-vilebrequin",
+              "preco": "100,45 €",
+              "fotos": [
+                "/gabarito_fotos/9239479322/0.webp",
+                "/gabarito_fotos/9239479322/1.webp",
+                "/gabarito_fotos/9239479322/2.webp",
+                "/gabarito_fotos/9239479322/3.webp"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "falso_mais_exemplos",
+          "titulo": "Você consegue mandar mais exemplos de falsos (e alguns originais) com foto da etiqueta interna?",
+          "contexto": "Com só 4 falsos não dá pra calibrar a IA com segurança. Ideal: 10 a 20 falsos que você já pegou e 5 a 10 originais, de preferência com foto da etiqueta interna (pra conferir os números).",
+          "opcoes": [
+            "Mando os links dos anúncios",
+            "Mando fotos ou prints",
+            "Vou marcando no app conforme aparecerem"
+          ],
+          "itens": [
+            {
+              "id": "9285441926",
+              "origem": "gabarito",
+              "titulo": "Short de bain vilebrequin turquoise - Taille M",
+              "url": "https://www.vinted.es/items/9285441926-short-de-bain-vilebrequin-turquoise-taille-m",
+              "preco": "58,45 €",
+              "fotos": [
+                "/gabarito_fotos/9285441926/0.webp",
+                "/gabarito_fotos/9285441926/1.webp",
+                "/gabarito_fotos/9285441926/2.webp",
+                "/gabarito_fotos/9285441926/3.webp"
+              ]
+            },
+            {
+              "id": "9230799224",
+              "origem": "gabarito",
+              "titulo": "Costume Vilebrequin L",
+              "url": "https://www.vinted.es/items/9230799224-costume-vilebrequin-l",
+              "preco": "95,20 €",
+              "fotos": [
+                "/gabarito_fotos/9230799224/0.webp",
+                "/gabarito_fotos/9230799224/1.webp",
+                "/gabarito_fotos/9230799224/2.webp",
+                "/gabarito_fotos/9230799224/3.webp",
+                "/gabarito_fotos/9230799224/4.webp"
+              ]
+            },
+            {
+              "id": "9287586211",
+              "origem": "gabarito",
+              "titulo": "Maillot de bain vilebrequin taille M excellent état",
+              "url": "https://www.vinted.es/items/9287586211-maillot-de-bain-vilebrequin-taille-m-excellent-etat",
+              "preco": "58,45 €",
+              "fotos": [
+                "/gabarito_fotos/9287586211/0.webp",
+                "/gabarito_fotos/9287586211/1.webp",
+                "/gabarito_fotos/9287586211/2.webp"
+              ]
+            },
+            {
+              "id": "9256957502",
+              "origem": "gabarito",
+              "titulo": "Maillot de bains vilebrequin",
+              "url": "https://www.vinted.es/items/9256957502-maillot-de-bains-vilebrequin",
+              "preco": "105,70 €",
+              "fotos": [
+                "/gabarito_fotos/9256957502/0.webp",
+                "/gabarito_fotos/9256957502/1.webp",
+                "/gabarito_fotos/9256957502/2.webp"
               ]
             }
           ]

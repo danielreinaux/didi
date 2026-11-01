@@ -108,6 +108,139 @@
           ]
         }
       ]
+    },
+    {
+      "id": "ville_falsos",
+      "titulo": "Ville — como você reconhece um falso",
+      "perguntas": [
+        {
+          "id": "falso_turquesa",
+          "titulo": "No short turquesa de tartaruguinhas (9285441926), o que te fez marcar como falso?",
+          "contexto": "A IA aprovou como original. Se mais de um detalhe pesou, escolha o principal e cite os outros no comentário.",
+          "itens": [
+            {
+              "id": "9285441926"
+            }
+          ],
+          "opcoes": [
+            "A etiquetinha interna (número, tartaruga e tamanho)",
+            "O cordão ou a ponteira",
+            "O desenho ou as cores das tartarugas",
+            "O tecido (brilho, toque)",
+            "Preço ou jeito do anúncio",
+            "Outro (explique no comentário)"
+          ]
+        },
+        {
+          "id": "falso_degrade",
+          "titulo": "No short marinho de tartarugas laranja em degradê (9230799224), o que entregou o falso?",
+          "contexto": "Esse anúncio não tem foto da etiqueta interna; a etiqueta de trás, a ponteira e o bolso parecem de original.",
+          "itens": [
+            {
+              "id": "9230799224"
+            }
+          ],
+          "opcoes": [
+            "Essa estampa não existe na Vilebrequin",
+            "O ® na etiqueta de trás",
+            "O bolso ou a aba desalinhados",
+            "A ponteira do cordão",
+            "O tecido",
+            "Outro (explique no comentário)"
+          ]
+        },
+        {
+          "id": "falso_etiqueta_numero",
+          "titulo": "A etiquetinha interna com o número \"00.001.4?8.778\" e o tamanho no mesmo pedaço é sinal de falso?",
+          "contexto": "Três dos quatro falsos (9285441926, 9287586211, 9256957502) têm a MESMA etiquetinha com esse número, a tartaruga mal desenhada e o tamanho nela. Nos originais vistos, o número muda de short pra short e o tamanho fica numa etiqueta separada.",
+          "itens": [
+            {
+              "id": "9287586211"
+            },
+            {
+              "id": "9256957502"
+            }
+          ],
+          "opcoes": [
+            "Sim, já vi esse número ou essa etiquetinha em vários falsos",
+            "A etiqueta pesou, mas decidi por outra coisa (explique no comentário)",
+            "Não olho etiqueta, decidi por outro motivo (explique no comentário)",
+            "Não sei"
+          ]
+        },
+        {
+          "id": "falso_sinais_fracos",
+          "titulo": "®, \"ONLY FOR USA\" e a etiqueta \"COSTUME DE BAIN À ST-TROPEZ DEPUIS 1971\": algum deles sozinho prova que é falso?",
+          "contexto": "Esses detalhes aparecem nos falsos, mas também em shorts do gabarito marcados como originais (como estes dois).",
+          "itens": [
+            {
+              "id": "cv02"
+            },
+            {
+              "id": "cv05"
+            }
+          ],
+          "opcoes": [
+            "Concordo: nenhum deles sozinho prova falso",
+            "Não: um deles é sinal de falso (explique no comentário)",
+            "Não sei"
+          ]
+        },
+        {
+          "id": "falso_sem_foto_etiqueta",
+          "titulo": "Quando o anúncio não tem foto da etiqueta interna e o resto parece normal, o que a IA deve fazer?",
+          "contexto": "É o caso mais comum. Hoje a IA aprova se o bolso parecer certo.",
+          "itens": [
+            {
+              "id": "9230799224"
+            }
+          ],
+          "opcoes": [
+            "Aprovar como original",
+            "Aprovar, mas me avisar para pedir a foto da etiqueta ao vendedor antes de pagar",
+            "Mandar para a minha revisão"
+          ]
+        },
+        {
+          "id": "falso_sem_bolso",
+          "titulo": "Este short (9239479322) não tem bolso traseiro nem etiqueta VILEBREQUIN atrás. Ele é:",
+          "contexto": "No gabarito está 'indefinido', com a observação \"não tem bolso, mas é falso\". Pela sua regra, estampado sem bolso é falso.",
+          "itens": [
+            {
+              "id": "9239479322"
+            }
+          ],
+          "opcoes": [
+            "Falso",
+            "Original",
+            "Não sei"
+          ]
+        },
+        {
+          "id": "falso_mais_exemplos",
+          "titulo": "Você consegue mandar mais exemplos de falsos (e alguns originais) com foto da etiqueta interna?",
+          "contexto": "Com só 4 falsos não dá pra calibrar a IA com segurança. Ideal: 10 a 20 falsos que você já pegou e 5 a 10 originais, de preferência com foto da etiqueta interna (pra conferir os números).",
+          "itens": [
+            {
+              "id": "9285441926"
+            },
+            {
+              "id": "9230799224"
+            },
+            {
+              "id": "9287586211"
+            },
+            {
+              "id": "9256957502"
+            }
+          ],
+          "opcoes": [
+            "Mando os links dos anúncios",
+            "Mando fotos ou prints",
+            "Vou marcando no app conforme aparecerem"
+          ]
+        }
+      ]
     }
   ]
 }
