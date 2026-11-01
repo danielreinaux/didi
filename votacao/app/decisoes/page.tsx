@@ -487,7 +487,7 @@ export default function Decisoes() {
           <header>
             <h1 className="text-[32px] lg:text-[40px] font-bold leading-none text-ink">Decisões</h1>
             <p className="mt-2 text-[15px] text-ink-2 max-w-[65ch]">
-              Perguntas em aberto sobre as suas regras de compra. Escolha uma opção em cada uma; a resposta salva na
+              Perguntas em aberto para ajustar a IA às suas regras. Escolha uma opção em cada uma; a resposta salva na
               hora e pode ser mudada depois.
             </p>
           </header>
