@@ -3,7 +3,7 @@
   "secoes": [
     {
       "id": "ville_padrao",
-      "titulo": "Ville — padrão da estampa no gabarito",
+      "titulo": "Ville — dúvidas do gabarito",
       "perguntas": [
         {
           "id": "ville_tartaruga_localizada",
@@ -65,6 +65,45 @@
           "opcoes": [
             "Padrão é tartaruga grande (marquei 'outro' por ser falso)",
             "Padrão é 'outro' mesmo",
+            "Não sei"
+          ]
+        },
+        {
+          "id": "ville_vermelho_coral",
+          "titulo": "Vermelho × vermelho-alaranjado: está certo assim?",
+          "contexto": "O cv27 está como cor 'preferida' (vermelho) e o cv04 como 'aceitável' (vermelho puxado pro laranja). A IA erra os dois: chama o cv04 de vermelho e o cv27 de coral. Isso muda a faixa de preço (preferida libera até €100).",
+          "grupos": [
+            {
+              "rotulo": "Marcado 'preferida' (vermelho)",
+              "itens": [
+                "cv27"
+              ]
+            },
+            {
+              "rotulo": "Marcado 'aceitável' (alaranjado)",
+              "itens": [
+                "cv04"
+              ]
+            }
+          ],
+          "opcoes": [
+            "Está certo assim",
+            "Os dois são vermelho (preferida)",
+            "Os dois são alaranjados (aceitável)"
+          ]
+        },
+        {
+          "id": "ville_etiqueta_tartaruga",
+          "titulo": "Este short tem etiqueta de papel pendurada?",
+          "contexto": "No gabarito está 'não tem etiqueta', mas a IA vê uma etiqueta de papel branca, em forma de tartaruga, pendurada no cós (2ª foto).",
+          "itens": [
+            {
+              "id": "9254096268"
+            }
+          ],
+          "opcoes": [
+            "Tem etiqueta de papel",
+            "Não tem etiqueta",
             "Não sei"
           ]
         }

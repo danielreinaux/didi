@@ -3,11 +3,11 @@
   "fonte": "src/build/decisoes_spec.json",
   "chave_voto": "decisao:<id_da_pergunta>",
   "titulo": "Decisões pendentes — Ville",
-  "total_perguntas": 3,
+  "total_perguntas": 5,
   "secoes": [
     {
       "id": "ville_padrao",
-      "titulo": "Ville — padrão da estampa no gabarito",
+      "titulo": "Ville — dúvidas do gabarito",
       "perguntas": [
         {
           "id": "ville_tartaruga_localizada",
@@ -127,6 +127,76 @@
                 "/gabarito_fotos/9230799224/2.webp",
                 "/gabarito_fotos/9230799224/3.webp",
                 "/gabarito_fotos/9230799224/4.webp"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "ville_vermelho_coral",
+          "titulo": "Vermelho × vermelho-alaranjado: está certo assim?",
+          "contexto": "O cv27 está como cor 'preferida' (vermelho) e o cv04 como 'aceitável' (vermelho puxado pro laranja). A IA erra os dois: chama o cv04 de vermelho e o cv27 de coral. Isso muda a faixa de preço (preferida libera até €100).",
+          "opcoes": [
+            "Está certo assim",
+            "Os dois são vermelho (preferida)",
+            "Os dois são alaranjados (aceitável)"
+          ],
+          "grupos": [
+            {
+              "rotulo": "Marcado 'preferida' (vermelho)",
+              "itens": [
+                {
+                  "id": "cv27",
+                  "origem": "gabarito",
+                  "titulo": "Vilebrequin (comprável)",
+                  "url": null,
+                  "preco": null,
+                  "fotos": [
+                    "/gabarito_fotos/cv27/0.jpeg",
+                    "/gabarito_fotos/cv27/1.jpeg"
+                  ]
+                }
+              ]
+            },
+            {
+              "rotulo": "Marcado 'aceitável' (alaranjado)",
+              "itens": [
+                {
+                  "id": "cv04",
+                  "origem": "gabarito",
+                  "titulo": "Vilebrequin (comprável)",
+                  "url": null,
+                  "preco": null,
+                  "fotos": [
+                    "/gabarito_fotos/cv04/0.jpeg",
+                    "/gabarito_fotos/cv04/1.jpeg"
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "ville_etiqueta_tartaruga",
+          "titulo": "Este short tem etiqueta de papel pendurada?",
+          "contexto": "No gabarito está 'não tem etiqueta', mas a IA vê uma etiqueta de papel branca, em forma de tartaruga, pendurada no cós (2ª foto).",
+          "opcoes": [
+            "Tem etiqueta de papel",
+            "Não tem etiqueta",
+            "Não sei"
+          ],
+          "itens": [
+            {
+              "id": "9254096268",
+              "origem": "gabarito",
+              "titulo": "Maillot short bain vilebrequin",
+              "url": "https://www.vinted.es/items/9254096268-maillot-short-bain-vilebrequin",
+              "preco": "95,20 €",
+              "fotos": [
+                "/gabarito_fotos/9254096268/0.webp",
+                "/gabarito_fotos/9254096268/1.webp",
+                "/gabarito_fotos/9254096268/2.webp",
+                "/gabarito_fotos/9254096268/3.webp",
+                "/gabarito_fotos/9254096268/4.webp"
               ]
             }
           ]
