@@ -11,6 +11,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ArrowDown, Check, ExternalLink } from "lucide-react";
 import Lightbox from "@/components/Lightbox";
+import MandarExemplos from "@/components/MandarExemplos";
 import { CARD } from "@/lib/theme";
 
 // ── Tipos do decisoes.json ───────────────────────────────────────────────────
@@ -575,6 +576,9 @@ export default function Decisoes() {
                     </section>
                   );
                 })}
+
+                {/* Exemplos de falsos/originais com link e fotos (calibra a autenticidade da Ville) */}
+                <MandarExemplos />
 
                 <p className="text-center text-sm text-ink-3 num">
                   {nRespondidas === total
