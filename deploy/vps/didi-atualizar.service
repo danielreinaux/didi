@@ -1,0 +1,8 @@
+[Unit]
+Description=Didi — puxa o código novo do GitHub e reinicia o robô se mudou
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/bin/bash /opt/didi/deploy/vps/atualizar.sh

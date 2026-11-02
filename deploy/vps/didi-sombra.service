@@ -1,0 +1,19 @@
+[Unit]
+Description=Didi — robô sempre ligado (modo sombra: mede, não grava nem manda e-mail)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=didi
+WorkingDirectory=/opt/didi
+EnvironmentFile=/opt/didi/.env
+Environment=HEADLESS=true
+Environment=SOMBRA_DIR=/home/didi/didi-sombra
+Environment=PYTHONUNBUFFERED=1
+ExecStart=/opt/didi/.venv/bin/python -m src.worker.sombra
+Restart=always
+RestartSec=30
+MemoryMax=2500M
+
+[Install]
+WantedBy=multi-user.target
