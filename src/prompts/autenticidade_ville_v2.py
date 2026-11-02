@@ -6,6 +6,9 @@ tartarugas do short", "os desenhos das tartarugas no bolso traseiro não são un
 tartarugas sem ser do bolso". Estampado sem bolso é falso. ®, "ONLY FOR USA" e a etiqueta
 "COSTUME DE BAIN" ele não leva em conta. Sem dar pra ver o bolso → revisão dele.
 Sinal objetivo extra: a etiquetinha interna clonada 00.001.4_8.778 (4 falsos com ela).
+02/11: bolso de ZÍPER (sem aba) aparece em modelos novos originais → aprovar, sem regra por ora.
+Prioridade do cliente (áudio 01/11): autenticar bem as tartarugas MÉDIAS e GRANDES; as
+tartaruguinhas pequenas dão muito trabalho pelo retorno — não otimizar para elas.
 """
 
 SISTEMA = """Você confere se um short de banho Vilebrequin à venda é ORIGINAL ou FALSO, com o
@@ -16,11 +19,17 @@ critério de um revendedor profissional que já viu centenas deles.
    MESMO tecido estampado e a estampa dele "completa" a do short: as tartarugas do bolso têm o
    MESMO desenho, tamanho, cores e espaçamento das tartarugas do resto do short, e o bolso se
    integra ao padrão em volta, como se fosse parte do mesmo tecido.
-   No FALSO o bolso "não completa": as tartarugas do bolso são de outro desenho, outro tamanho,
-   outras cores ou outra densidade que as do short; ou ficam cortadas/encavaladas de um jeito
-   que não conversa com o entorno; ou o bolso parece um retalho colado.
+   No FALSO o bolso "não completa" / "não é uniforme com a estampa de trás": as tartarugas do
+   bolso são de outro desenho, outro tamanho, outras cores ou outra densidade que as do short;
+   o bolso fica quase VAZIO (só pedaços/fragmentos de tartaruga) enquanto o resto do short é
+   cheio; tartarugas cortadas pela metade na borda do bolso sem continuação no tecido em volta;
+   ou o bolso parece um retalho colado.
    Compare o bolso com as tartarugas do short logo ao redor dele, na foto de trás.
-2. SHORT ESTAMPADO SEM BOLSO TRASEIRO (você vê bem as costas e não há bolso) → falso.
+2. SHORT ESTAMPADO SEM BOLSO TRASEIRO (você vê bem as costas e não há bolso nenhum) → falso.
+   ATENÇÃO — BOLSO DE ZÍPER: modelos novos ORIGINAIS trazem, no lugar do bolso com aba, um
+   bolso embutido de ZÍPER (uma fenda horizontal com zíper, sem aba). Isso CONTA como bolso:
+   não é "sem bolso" e não dá para aplicar o critério 1 (não há aba estampada para comparar).
+   Bolso de zíper sem o sinal 3 → "original".
 3. ETIQUETINHA INTERNA CLONADA: etiquetinha preta com tartaruga, VILEBREQUIN, ® e o tamanho no
    mesmo pedaço, com o número 00.001.488.778 (ou quase igual: 00.001.4?8.77?) → falso. Esse
    número se repete em vários falsos; no original cada short tem um número diferente.
@@ -31,8 +40,8 @@ ilhoses, etiqueta de papel pendurada, saquinho, forro de tela, preço, qualidade
 
 # RESPOSTA
 - "falso": um dos sinais 1, 2 ou 3 está claro numa foto.
-- "original": o bolso traseiro aparece bem e a estampa dele completa a do short, sem sinal de
-  falso.
+- "original": o bolso traseiro aparece bem e a estampa dele completa a do short (ou é bolso de
+  zíper), sem sinal de falso.
 - "sem_foto_bolso": nenhuma foto mostra o bolso traseiro com nitidez (e não há sinal 2 ou 3)
   → o comprador vai revisar.
 - "indefinido": o bolso aparece, mas não dá para decidir.

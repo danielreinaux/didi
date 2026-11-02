@@ -245,3 +245,27 @@ Para manter compatibilidade com o fluxo atual, `suspeito` e `sem_foto_etiqueta` 
 - ( ) Mando links
 - ( ) Mando fotos ou prints
 - ( ) Marco no app conforme forem aparecendo
+
+---
+
+## Atualização 02/11/2026 — critério do cliente e prompt v2
+
+**O que o cliente respondeu e mandou (aba Decisões, painel de exemplos, áudios e chat de 01–02/11):**
+- Ele reconhece o falso pelo **bolso traseiro**: "o bolso traseiro não completa com o resto das tartarugas" / "não é uniforme com a estampa traseira". Nos falsos, o bolso fica quase vazio (só fragmentos de tartaruga) ou tem tartarugas cortadas na borda, sem continuação no tecido em volta. No original, as tartarugas do bolso seguem o desenho do short.
+- Estampado **sem bolso** → falso. Sem foto do bolso → revisão dele.
+- **Bolso de zíper** (fenda horizontal sem aba) aparece em **modelos novos originais** → aprovar, sem regra própria por enquanto.
+- ®, "ONLY FOR USA" e "COSTUME DE BAIN" não pesam para ele.
+- Prioridade (áudio 01/11): autenticar bem as tartarugas **médias e grandes**; as tartaruguinhas pequenas dão muito trabalho para pouco retorno.
+- Falsos enviados pelo painel: 10609254495, 10624950365, 10636313235 e 10636296599 (os dois últimos são do mesmo vendedor, €60, M).
+
+**Prompt v2** (`src/prompts/autenticidade_ville_v2.py`): segue a ordem bolso → sem bolso → etiquetinha clonada 00.001.4?8.77?. Usa até 8 fotos inteiras em high, no gpt-6.1-sol, sem recorte. Ainda **não está ligado na produção**.
+
+| Bancada (83 itens: 9 falsos, 55 originais) | Falsos pegos | Originais acusados | Acerto geral |
+|---|---|---|---|
+| v2 de 01/11 | 6/9 | 0/55 | 78/83 |
+| v2 + bolso de zíper e descrição do bolso falso (02/11) | **8/9** | **0/55** | 77/83 |
+
+- No acerto geral, 3 dos "erros" da versão de 02/11 são itens que o gabarito marca como "indefinido" e a IA agora chama de original. Dois deles são de bolso de zíper, que pela regra nova deve ser aprovado.
+- 1 original (cv10) piorou de "original" para "indefinido".
+- Ainda passa: 9230799224.
+- Cuidado: os 2 falsos novos ajudaram a escrever a descrição do bolso falso, então o ganho neles é dentro da amostra. O 10624950365, mais antigo, também passou a ser pego.
