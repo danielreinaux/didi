@@ -144,6 +144,10 @@ IA_OPENAI = {
     # short premiado (28/10/2026): compara as fotos com os 3 modelos favoritos do cliente. Só
     # roda em comprável com elástico e corpo escuro (poucos por dia). ~US$ 0,012/item (medido).
     "sundek:premiado": {"model": "gpt-6.1-sol", "detail": "high", "effort": "medium"},
+    # autenticidade da Ville v2 (02/11/2026): critério do comprador (bolso "completa"?, estampado sem
+    # bolso, etiquetinha clonada) com as fotos inteiras. Bancada 79 itens: 5/7 falsos, 0/53
+    # originais acusados (gpt-4o: 7/7 mas acusa 14/53; Gemini 4/7; Haiku 0/7). ~US$0,008/item.
+    "ville:autenticidade": {"model": "gpt-6.1-sol", "detail": "high", "effort": "low"},
 }
 
 # Short premiado (classify/premiado.py): preço do ANÚNCIO (sem a taxa) até este valor →

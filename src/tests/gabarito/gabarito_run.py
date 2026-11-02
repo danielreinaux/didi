@@ -83,7 +83,7 @@ FN = {
 ARQUIVOS = {
     "marca": ["prompts/verifica_ville.py"],
     "tartaruga": ["prompts/tartaruga.py"],
-    "autenticidade": ["prompts/autenticidade_ville.py"],
+    "autenticidade": ["prompts/autenticidade_ville_v2.py", "classify/autenticidade_ville.py"],
     "cor": ["prompts/cor_fundo_ville.py", "classify/cor_fundo_ville.py", "classify/cor_ville.py"],
     "etiqueta": ["prompts/etiqueta.py"],
     "cordao": ["prompts/cordao_ville.py"],

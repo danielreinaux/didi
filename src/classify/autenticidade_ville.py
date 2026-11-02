@@ -15,9 +15,10 @@ import os
 from openai import OpenAI
 
 from ..config import IA
-from ..prompts import autenticidade_ville as prompt
+from ..prompts import autenticidade_ville as prompt  # noqa: F401  (v1, referência)
+from ..prompts import autenticidade_ville_v2 as prompt_v2
+from ..utils import llm
 from ..utils.ratelimit import pace_gpt4o
-from .crop_bolso import recortar_bolso
 
 _client: OpenAI | None = None
 
@@ -33,52 +34,47 @@ def _get_client() -> OpenAI:
 
 
 def verificar_autenticidade(item: dict) -> dict:
-    """Retorna dict com autenticidade, evidencia, _usage."""
-    fotos = (item.get("fotos") or [])[:6]
+    """Retorna dict com autenticidade, sinal, foto_bolso, evidencia, _usage.
+
+    v2 (02/11/2026): critério do comprador — o bolso traseiro "completa" a estampa? estampado
+    sem bolso? etiquetinha interna clonada 00.001.4_8.778? — com as fotos INTEIRAS em high (o
+    recorte do bolso errava o lugar em ~metade dos anúncios). gpt-6.1-sol (config.IA_OPENAI).
+    Bancada (gabarito Ville + 2 falsos do painel, 79 itens): falsos pegos 0/4 → 5/7, originais
+    acusados 0/53, acerto geral 85% → 95%. O v1 (bolso recortado) fica em prompts/autenticidade_ville.py.
+    """
+    fotos = (item.get("fotos") or [])[:8]
     if not fotos:
         return {
             "autenticidade": "sem_foto_bolso",
             "evidencia": "sem fotos",
             "_usage": {"prompt_tokens": 0, "completion_tokens": 0},
         }
-
-    # Zoom no bolso traseiro (mesmo pipeline do Sundek)
-    crop_info = recortar_bolso(item)
-    crop_url = crop_info.get("crop")
-
-    # Few-shot visual: 2 falsos + 1 original como referência de encaixe
-    conteudo = list(prompt.referencias_few_shot())
-    conteudo.append({"type": "text", "text": prompt.usuario(item.get("titulo") or "")})
-    if crop_url:
-        conteudo.append({"type": "text", "text": "ZOOM do bolso traseiro do item (foque o encaixe da estampa nas bordas):"})
-        conteudo.append({"type": "image_url", "image_url": {"url": crop_url, "detail": "high"}})
-        conteudo.append({"type": "text", "text": "Fotos gerais do short (contexto):"})
-    # Fotos gerais em LOW — só servem de contexto; o zoom é onde está a informação.
-    conteudo += [{"type": "image_url", "image_url": {"url": u, "detail": "low"}} for u in fotos]
-
-    pace_gpt4o()
-    resp = _get_client().chat.completions.create(
+    conteudo = [
+        {"type": "text", "text": prompt_v2.usuario(item.get("titulo") or "")},
+        *[{"type": "image_url", "image_url": {"url": u, "detail": "high"}} for u in fotos],
+    ]
+    if not llm.tem_rota("ville:autenticidade"):
+        pace_gpt4o()
+    resp = llm.create(
+        "ville:autenticidade",
         model=IA["model_detalhes"],
         messages=[
-            {"role": "system", "content": prompt.SISTEMA},
+            {"role": "system", "content": prompt_v2.SISTEMA},
             {"role": "user", "content": conteudo},
         ],
-        max_tokens=200,
+        max_tokens=400,
         temperature=0.1,
         response_format={"type": "json_object"},
     )
-
-    texto = (resp.choices[0].message.content or "{}").strip()
     try:
-        parsed = json.loads(texto)
+        parsed = json.loads((resp.choices[0].message.content or "{}").strip())
     except json.JSONDecodeError:
-        parsed = {
-            "autenticidade": "indefinido",
-            "evidencia": "JSON inválido",
-        }
-
+        parsed = {"autenticidade": "indefinido", "evidencia": "JSON inválido"}
+    if parsed.get("autenticidade") not in ("original", "falso", "sem_foto_bolso", "indefinido"):
+        parsed["autenticidade"] = "indefinido"
     parsed["_usage"] = {
         "prompt_tokens": resp.usage.prompt_tokens,
         "completion_tokens": resp.usage.completion_tokens,
+        "model": resp.model,
     }
     return parsed

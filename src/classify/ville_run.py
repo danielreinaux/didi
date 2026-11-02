@@ -242,7 +242,7 @@ def _processar(item: dict, idx: str, total: int) -> tuple[dict, int, int]:
             u = autenticidade.pop("_usage", {})
             in_tok += u.get("prompt_tokens", 0)
             out_tok += u.get("completion_tokens", 0)
-            _track("autenticidade", IA["model_detalhes"], u.get("prompt_tokens", 0), u.get("completion_tokens", 0))
+            _track("autenticidade", u.get("model") or IA["model_detalhes"], u.get("prompt_tokens", 0), u.get("completion_tokens", 0))
         except Exception as e:
             autenticidade = {"autenticidade": "indefinido", "evidencia": f"erro: {e}"}
 
