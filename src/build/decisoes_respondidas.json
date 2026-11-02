@@ -562,6 +562,194 @@
           "aplicado": "virou o painel 'Mandar exemplos' na aba Decisões (01/11/2026)"
         }
       ]
+    },
+    {
+      "id": "ville_respondidas_0211",
+      "titulo": "Ville — dúvidas e falsificação (respondidas em 01–02/11/2026)",
+      "perguntas": [
+        {
+          "id": "ville_vermelho_coral",
+          "titulo": "Vermelho × vermelho-alaranjado: está certo assim?",
+          "contexto": "O cv27 está como cor 'preferida' (vermelho) e o cv04 como 'aceitável' (vermelho puxado pro laranja). A IA erra os dois: chama o cv04 de vermelho e o cv27 de coral. Isso muda a faixa de preço (preferida libera até €100).",
+          "grupos": [
+            {
+              "rotulo": "Marcado 'preferida' (vermelho)",
+              "itens": [
+                "cv27"
+              ]
+            },
+            {
+              "rotulo": "Marcado 'aceitável' (alaranjado)",
+              "itens": [
+                "cv04"
+              ]
+            }
+          ],
+          "opcoes": [
+            "Está certo assim",
+            "Os dois são vermelho (preferida)",
+            "Os dois são alaranjados (aceitável)"
+          ],
+          "resposta_cliente": {
+            "opcao": "Está certo assim",
+            "comentario": null
+          },
+          "aplicado": "gabarito/regra atualizados em 02/11/2026"
+        },
+        {
+          "id": "ville_etiqueta_tartaruga",
+          "titulo": "Este short tem etiqueta de papel pendurada?",
+          "contexto": "No gabarito está 'não tem etiqueta', mas a IA vê uma etiqueta de papel branca, em forma de tartaruga, pendurada no cós (2ª foto).",
+          "itens": [
+            {
+              "id": "9254096268"
+            }
+          ],
+          "opcoes": [
+            "Tem etiqueta de papel",
+            "Não tem etiqueta",
+            "Não sei"
+          ],
+          "resposta_cliente": {
+            "opcao": "Tem etiqueta de papel",
+            "comentario": null
+          },
+          "aplicado": "gabarito/regra atualizados em 02/11/2026"
+        },
+        {
+          "id": "falso_turquesa",
+          "titulo": "No short turquesa de tartaruguinhas (9285441926), o que te fez marcar como falso?",
+          "contexto": "A IA aprovou como original. Se mais de um detalhe pesou, escolha o principal e cite os outros no comentário.",
+          "itens": [
+            {
+              "id": "9285441926"
+            }
+          ],
+          "opcoes": [
+            "A etiquetinha interna (número, tartaruga e tamanho)",
+            "O cordão ou a ponteira",
+            "O desenho ou as cores das tartarugas",
+            "O tecido (brilho, toque)",
+            "Preço ou jeito do anúncio",
+            "Outro (explique no comentário)"
+          ],
+          "resposta_cliente": {
+            "opcao": "O desenho ou as cores das tartarugas",
+            "comentario": null
+          },
+          "aplicado": "gabarito/regra atualizados em 02/11/2026"
+        },
+        {
+          "id": "falso_degrade",
+          "titulo": "No short marinho de tartarugas laranja em degradê (9230799224), o que entregou o falso?",
+          "contexto": "Esse anúncio não tem foto da etiqueta interna; a etiqueta de trás, a ponteira e o bolso parecem de original.",
+          "itens": [
+            {
+              "id": "9230799224"
+            }
+          ],
+          "opcoes": [
+            "Essa estampa não existe na Vilebrequin",
+            "O ® na etiqueta de trás",
+            "O bolso ou a aba desalinhados",
+            "A ponteira do cordão",
+            "O tecido",
+            "Outro (explique no comentário)"
+          ],
+          "resposta_cliente": {
+            "opcao": "O bolso ou a aba desalinhados",
+            "comentario": "O bolso traseiro não completa."
+          },
+          "aplicado": "gabarito/regra atualizados em 02/11/2026"
+        },
+        {
+          "id": "falso_etiqueta_numero",
+          "titulo": "A etiquetinha interna com o número \"00.001.4?8.778\" e o tamanho no mesmo pedaço é sinal de falso?",
+          "contexto": "Três dos quatro falsos (9285441926, 9287586211, 9256957502) têm a MESMA etiquetinha com esse número, a tartaruga mal desenhada e o tamanho nela. Nos originais vistos, o número muda de short pra short e o tamanho fica numa etiqueta separada.",
+          "itens": [
+            {
+              "id": "9287586211"
+            },
+            {
+              "id": "9256957502"
+            }
+          ],
+          "opcoes": [
+            "Sim, já vi esse número ou essa etiquetinha em vários falsos",
+            "A etiqueta pesou, mas decidi por outra coisa (explique no comentário)",
+            "Não olho etiqueta, decidi por outro motivo (explique no comentário)",
+            "Não sei"
+          ],
+          "resposta_cliente": {
+            "opcao": "A etiqueta pesou, mas decidi por outra coisa (explique no comentário)",
+            "comentario": "os desenhos das tartarugas no bolso trasiero nao sao uniformes com as tartarugas sem ser do bolso"
+          },
+          "aplicado": "gabarito/regra atualizados em 02/11/2026"
+        },
+        {
+          "id": "falso_sinais_fracos",
+          "titulo": "®, \"ONLY FOR USA\" e a etiqueta \"COSTUME DE BAIN À ST-TROPEZ DEPUIS 1971\": algum deles sozinho prova que é falso?",
+          "contexto": "Esses detalhes aparecem nos falsos, mas também em shorts do gabarito marcados como originais (como estes dois).",
+          "itens": [
+            {
+              "id": "cv02"
+            },
+            {
+              "id": "cv05"
+            }
+          ],
+          "opcoes": [
+            "Concordo: nenhum deles sozinho prova falso",
+            "Não: um deles é sinal de falso (explique no comentário)",
+            "Não sei"
+          ],
+          "resposta_cliente": {
+            "opcao": "Não sei",
+            "comentario": "nao levo isso em consideracao, apenas o bolso em si"
+          },
+          "aplicado": "gabarito/regra atualizados em 02/11/2026"
+        },
+        {
+          "id": "falso_sem_foto_etiqueta",
+          "titulo": "Quando o anúncio não tem foto da etiqueta interna e o resto parece normal, o que a IA deve fazer?",
+          "contexto": "É o caso mais comum. Hoje a IA aprova se o bolso parecer certo.",
+          "itens": [
+            {
+              "id": "9230799224"
+            }
+          ],
+          "opcoes": [
+            "Aprovar como original",
+            "Aprovar, mas me avisar para pedir a foto da etiqueta ao vendedor antes de pagar",
+            "Mandar para a minha revisão"
+          ],
+          "resposta_cliente": {
+            "opcao": "Mandar para a minha revisão",
+            "comentario": null
+          },
+          "aplicado": "gabarito/regra atualizados em 02/11/2026"
+        },
+        {
+          "id": "falso_sem_bolso",
+          "titulo": "Este short (9239479322) não tem bolso traseiro nem etiqueta VILEBREQUIN atrás. Ele é:",
+          "contexto": "No gabarito está 'indefinido', com a observação \"não tem bolso, mas é falso\". Pela sua regra, estampado sem bolso é falso.",
+          "itens": [
+            {
+              "id": "9239479322"
+            }
+          ],
+          "opcoes": [
+            "Falso",
+            "Original",
+            "Não sei"
+          ],
+          "resposta_cliente": {
+            "opcao": "Falso",
+            "comentario": null
+          },
+          "aplicado": "gabarito/regra atualizados em 02/11/2026"
+        }
+      ]
     }
   ]
 }

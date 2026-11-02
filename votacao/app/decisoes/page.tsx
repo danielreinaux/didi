@@ -548,6 +548,13 @@ export default function Decisoes() {
                   </p>
                 )}
 
+                {total === 0 && (
+                  <p className="rounded-xl bg-surface border border-line px-4 py-4 text-sm text-ink-2">
+                    Nenhuma pergunta em aberto agora: tudo o que você respondeu já foi aplicado na IA. Quando surgir uma
+                    dúvida nova, ela aparece aqui.
+                  </p>
+                )}
+
                 {doc.secoes.map((s) => {
                   const feitas = s.perguntas.filter((p) => respondida(p.id)).length;
                   return (
@@ -580,11 +587,13 @@ export default function Decisoes() {
                 {/* Exemplos de falsos/originais com link e fotos (calibra a autenticidade da Ville) */}
                 <MandarExemplos />
 
-                <p className="text-center text-sm text-ink-3 num">
-                  {nRespondidas === total
-                    ? "Tudo respondido. Você ainda pode mudar qualquer resposta."
-                    : `Faltam ${total - nRespondidas} de ${total}. As respostas ficam salvas; pode continuar depois.`}
-                </p>
+                {total > 0 && (
+                  <p className="text-center text-sm text-ink-3 num">
+                    {nRespondidas === total
+                      ? "Tudo respondido. Você ainda pode mudar qualquer resposta."
+                      : `Faltam ${total - nRespondidas} de ${total}. As respostas ficam salvas; pode continuar depois.`}
+                  </p>
+                )}
               </>
             )}
           </main>
