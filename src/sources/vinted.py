@@ -26,9 +26,13 @@ def montar_url_sundek_hombre() -> str:
 
 
 def _extrair_urls_pagina(page) -> list[str]:
+    """Links da grade da busca, na ordem do catálogo (mais novos primeiro). Fica de fora o
+    "armário em destaque" (data-testid closet-promotion-*): propaganda paga de um vendedor,
+    de qualquer marca — 60 links a mais na página, que entravam no lugar dos anúncios novos."""
     return page.evaluate("""() => {
         const seen = new Set();
         return Array.from(document.querySelectorAll('a[href*="/items/"]'))
+            .filter(a => !a.closest('[data-testid^="closet-promotion"]'))
             .map(a => a.href.split('?')[0])
             .filter(u => { if (seen.has(u)) return false; seen.add(u); return true; });
     }""")
@@ -36,7 +40,7 @@ def _extrair_urls_pagina(page) -> list[str]:
 
 def listar_urls_items(page, max_items: int = 20) -> list[str]:
     """Navega pelas páginas do catálogo até ter max_items URLs ou não haver mais páginas."""
-    seen: set[str] = set()
+    seen: dict[str, None] = {}  # dict, não set: mantém a ordem do catálogo (02/11/2026)
     base_url = page.url.split("&page=")[0]
     num_pagina = 1
 
@@ -51,7 +55,7 @@ def listar_urls_items(page, max_items: int = 20) -> list[str]:
             break
 
         antes = len(seen)
-        seen.update(urls)
+        seen.update(dict.fromkeys(urls))
         print(f"    página {num_pagina}: {len(urls)} itens (+{len(seen) - antes} novos, total {len(seen)})")
 
         if len(seen) >= max_items:

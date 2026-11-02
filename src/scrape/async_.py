@@ -216,7 +216,7 @@ async def abrir_sessao(playwright):
 
 async def listar_urls_async(page, max_items: int) -> list[str]:
     """Pagina o catálogo coletando URLs (igual sources.vinted.listar_urls_items mas async)."""
-    seen = set()
+    seen: dict[str, None] = {}  # ordem do catálogo, sem o armário em destaque (ver sources.vinted)
     base_url = page.url.split("&page=")[0]
     num_pagina = 1
     while len(seen) < max_items:
@@ -227,13 +227,14 @@ async def listar_urls_async(page, max_items: int) -> list[str]:
         urls = await page.evaluate("""() => {
             const seen = new Set();
             return Array.from(document.querySelectorAll('a[href*="/items/"]'))
+                .filter(a => !a.closest('[data-testid^="closet-promotion"]'))
                 .map(a => a.href.split('?')[0])
                 .filter(u => { if (seen.has(u)) return false; seen.add(u); return true; });
         }""")
         if not urls:
             break
         antes = len(seen)
-        seen.update(urls)
+        seen.update(dict.fromkeys(urls))
         print(f"    página {num_pagina}: {len(urls)} itens (+{len(seen) - antes} novos, total {len(seen)})")
         if len(seen) >= max_items:
             break
