@@ -1,4 +1,32 @@
 {
-  "titulo": "Decisões pendentes — Ville",
-  "secoes": []
+ "titulo": "Decisões pendentes — Ville",
+ "secoes": [
+  {
+   "id": "regras",
+   "titulo": "Cores da Ville",
+   "perguntas": [
+    {
+     "id": "ville_alaranjado_tier",
+     "titulo": "Vermelho-alaranjado (como o cv04): em que faixa de cor ele entra?",
+     "contexto": "Hoje ele fica em 'aceitável', junto com laranja, salmão e coral: soma pouco na nota e não libera as faixas de €60–100. Acima de 'aceitável' existem duas faixas. 'Intermediária' é onde estão cinza e musgo: nota maior, mas ainda sem liberar €60–100. 'Preferida' é onde estão preto, branco, navy e vermelho: nota máxima e libera €60–100. O laranja de verdade, como o short laranja de tartarugas pretas que você mandou, a IA já separa do alaranjado e ele continua 'aceitável'. No liso nada muda: lá só entram preto, branco, navy, cinza e musgo.",
+     "status": "pendente",
+     "itens": [
+      {
+       "id": "cv04",
+       "legenda": "Vermelho-alaranjado (hoje: aceitável)"
+      },
+      {
+       "id": "cv27",
+       "legenda": "Vermelho (preferida)"
+      }
+     ],
+     "opcoes": [
+      "Preferida, igual ao vermelho (libera €60–100)",
+      "Intermediária, como cinza e musgo (sem liberar €60–100)",
+      "Continua aceitável"
+     ]
+    }
+   ]
+  }
+ ]
 }
