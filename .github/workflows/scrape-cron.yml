@@ -23,7 +23,11 @@ permissions:
 jobs:
   sundek:
     runs-on: ubuntu-latest
-    timeout-minutes: 180
+    # 02/11/2026: o Scrape Sundek travou 3 h (13:31→16:36 UTC) e o GitHub matou o job pelo
+    # timeout — aí nem o passo que dispara a próxima rodada roda e a corrente morre até o
+    # despertador. Agora cada passo de navegador/IA tem teto próprio (estoura → o passo falha
+    # e os if:always() seguem, inclusive o disparo); o teto do job é só o último recurso.
+    timeout-minutes: 60
     concurrency:
       group: scrape-sundek
       cancel-in-progress: false
@@ -53,6 +57,7 @@ jobs:
       # rodada; a imagem ubuntu do GitHub já traz quase todas (vem com o Chrome). Agora só
       # instala se o Chromium não abrir.
       - name: Install deps
+        timeout-minutes: 6
         run: |
           pip install -r requirements.txt
           playwright install chromium
@@ -62,12 +67,14 @@ jobs:
       # Rodando a cada ~5 min, os 20 mais novos do catálogo cobrem os anúncios novos
       # (eram 60 quando rodava a cada 40 min).
       - name: Scrape Sundek
+        timeout-minutes: 10
         env:
           HEADLESS: 'true'
           MAX_ITEMS: '20'
         run: python -m src.scrape.sundek
 
       - name: Classify Sundek
+        timeout-minutes: 15
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           # rotas por agente em config.IA_ROTAS (src/utils/llm.py) + 2º olhar do desbotado;
@@ -78,6 +85,7 @@ jobs:
       # Revisita itens do acervo que sumiram do scrape e marca os vendidos/removidos.
       # Sem OpenAI — só scraping. if:always() pra rodar mesmo se o classify falhar.
       - name: Verifica vendidos
+        timeout-minutes: 6
         if: always()
         env:
           HEADLESS: 'true'
@@ -107,6 +115,7 @@ jobs:
       # if: always() → persiste o checkpoint do classify mesmo se um passo anterior
       # falhar ou o job estourar o timeout (senão o progresso de ~1-3h se perde).
       - name: Commit dados de volta no repo
+        timeout-minutes: 5
         if: always()
         run: |
           git config user.name "Didi Bot"
