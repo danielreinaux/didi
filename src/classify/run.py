@@ -618,7 +618,11 @@ def main() -> None:
     n_confirma = 0
     n_desb = 0
     n_prem = 0
+    from ..config import CORRECOES_MANUAIS
     for it in final:
+        corr = CORRECOES_MANUAIS.get(str(it.get("id")))
+        if corr and isinstance(it.get("classificacao"), dict):
+            it["classificacao"].update(corr)
         cor = it.get("cor")
         if isinstance(cor, dict) and cor.get("tier"):
             _normalizar_tier(cor)  # regras de cor por nome valem também pros itens antigos

@@ -177,3 +177,13 @@ APP_TAMBEM_IDS = {
 #                 (≈ US$ 0,0095 cada; 1ª rodada ≈ 34 itens ≈ US$ 0,32; depois < US$ 1/mês).
 #   Env LISTRA_FAIXA_UNICA sobrepõe (medição; o harness do gabarito confere todo disparado).
 LISTRA_FAIXA_UNICA = "nao_conta"  # decidido pelo cliente em 20/10/2026
+
+# Correções manuais da classificação, por anúncio: a IA errou um campo e o certo foi conferido
+# por uma pessoa. classify/run.py aplica antes de recalcular o score em toda rodada.
+CORRECOES_MANUAIS = {
+    # 03/11/2026 (Daniel): meia-lua PRETA com o sol em traço neon e etiqueta "Made in the
+    # U.S.A." = coleção antiga, sem o nome SUNDEK. A IA leu o desenho neon como "patch fluo".
+    "10649425793": {"bolso_traseiro_tem_nome": False,
+                    "bolso_evidencia": "Patch preto com o sol em traço neon, sem o nome SUNDEK "
+                                       "(coleção antiga) — corrigido à mão em 03/11/2026"},
+}
