@@ -1,13 +1,13 @@
 {
-  "gerado_em": "2026-11-02T22:23:22+00:00",
+  "gerado_em": "2026-11-03T03:21:40+00:00",
   "fonte": "src/build/decisoes_spec.json",
   "chave_voto": "decisao:<id_da_pergunta>",
   "titulo": "Decisões pendentes — Ville",
-  "total_perguntas": 1,
+  "total_perguntas": 4,
   "secoes": [
     {
       "id": "regras",
-      "titulo": "Cores da Ville",
+      "titulo": "Cores e estado da Ville",
       "perguntas": [
         {
           "id": "ville_alaranjado_tier",
@@ -43,6 +43,86 @@
                 "/gabarito_fotos/cv27/1.jpeg"
               ],
               "legenda": "Vermelho (preferida)"
+            }
+          ]
+        },
+        {
+          "id": "ville_cor_turquesa_neutra",
+          "titulo": "Turquesa com peixes (9264563780): por que a cor ficou 'neutra'?",
+          "contexto": "Você marcou a cor deste short como 'neutra', a mesma faixa do cinza e do musgo. Pelas regras que temos hoje, turquesa ficaria em 'aceitável'. Se for uma regra sua, a IA passa a seguir.",
+          "status": "pendente",
+          "opcoes": [
+            "Turquesa é neutra, como cinza e musgo",
+            "Foi engano: é aceitável",
+            "Outro motivo (explico no comentário)"
+          ],
+          "itens": [
+            {
+              "id": "9264563780",
+              "origem": "gabarito",
+              "titulo": "Vilebrequin Collector 2018 - Short bain plage homme XS 34 🐢",
+              "url": "https://www.vinted.es/items/9264563780-vilebrequin-collector-2018-short-bain-plage-homme-xs-34",
+              "preco": "79,45 €",
+              "fotos": [
+                "/gabarito_fotos/9264563780/0.webp",
+                "/gabarito_fotos/9264563780/1.webp",
+                "/gabarito_fotos/9264563780/2.webp",
+                "/gabarito_fotos/9264563780/3.webp",
+                "/gabarito_fotos/9264563780/4.webp"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "ville_cor_amarelo_penalizada",
+          "titulo": "Amarelo com folhagens e tartarugas (9261816001): por que a cor ficou 'penalizada'?",
+          "contexto": "'Penalizada' é a faixa do neon, do metálico e do multicolor, que baixa a nota. Pelas regras que temos hoje, amarelo estampado ficaria em 'aceitável'. O que pesou?",
+          "status": "pendente",
+          "opcoes": [
+            "O tom de amarelo",
+            "A estampa cheia de cores (folhagens e flores)",
+            "Foi engano: é aceitável",
+            "Outro motivo (explico no comentário)"
+          ],
+          "itens": [
+            {
+              "id": "9261816001",
+              "origem": "gabarito",
+              "titulo": "Vilebrequin TG S",
+              "url": "https://www.vinted.es/items/9261816001-vilebrequin-tg-s",
+              "preco": "52,15 €",
+              "fotos": [
+                "/gabarito_fotos/9261816001/0.webp",
+                "/gabarito_fotos/9261816001/1.webp",
+                "/gabarito_fotos/9261816001/2.webp",
+                "/gabarito_fotos/9261816001/3.webp",
+                "/gabarito_fotos/9261816001/4.webp"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "ville_mancha_cv29",
+          "titulo": "Mancha amarelada no cv29: dá para comprar assim?",
+          "contexto": "Você marcou este short como 'ok' (sem desbotado). As IAs veem uma mancha amarelada nas costas, na perna esquerda, entre as tartarugas (1ª foto). Se uma mancha pequena assim não importa, a IA não deve descartar por isso.",
+          "status": "pendente",
+          "opcoes": [
+            "Não importa, compraria assim",
+            "Importa: mancha visível é descarte",
+            "Não tinha visto a mancha"
+          ],
+          "itens": [
+            {
+              "id": "cv29",
+              "origem": "gabarito",
+              "titulo": "Vilebrequin (comprável)",
+              "url": null,
+              "preco": null,
+              "fotos": [
+                "/gabarito_fotos/cv29/0.jpeg",
+                "/gabarito_fotos/cv29/1.jpeg"
+              ],
+              "legenda": "Mancha na 1ª foto, perna esquerda"
             }
           ]
         }

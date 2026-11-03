@@ -3,7 +3,7 @@
  "secoes": [
   {
    "id": "regras",
-   "titulo": "Cores da Ville",
+   "titulo": "Cores e estado da Ville",
    "perguntas": [
     {
      "id": "ville_alaranjado_tier",
@@ -24,6 +24,56 @@
       "Preferida, igual ao vermelho (libera €60–100)",
       "Intermediária, como cinza e musgo (sem liberar €60–100)",
       "Continua aceitável"
+     ]
+    },
+    {
+     "id": "ville_cor_turquesa_neutra",
+     "titulo": "Turquesa com peixes (9264563780): por que a cor ficou 'neutra'?",
+     "contexto": "Você marcou a cor deste short como 'neutra', a mesma faixa do cinza e do musgo. Pelas regras que temos hoje, turquesa ficaria em 'aceitável'. Se for uma regra sua, a IA passa a seguir.",
+     "status": "pendente",
+     "itens": [
+      {
+       "id": "9264563780"
+      }
+     ],
+     "opcoes": [
+      "Turquesa é neutra, como cinza e musgo",
+      "Foi engano: é aceitável",
+      "Outro motivo (explico no comentário)"
+     ]
+    },
+    {
+     "id": "ville_cor_amarelo_penalizada",
+     "titulo": "Amarelo com folhagens e tartarugas (9261816001): por que a cor ficou 'penalizada'?",
+     "contexto": "'Penalizada' é a faixa do neon, do metálico e do multicolor, que baixa a nota. Pelas regras que temos hoje, amarelo estampado ficaria em 'aceitável'. O que pesou?",
+     "status": "pendente",
+     "itens": [
+      {
+       "id": "9261816001"
+      }
+     ],
+     "opcoes": [
+      "O tom de amarelo",
+      "A estampa cheia de cores (folhagens e flores)",
+      "Foi engano: é aceitável",
+      "Outro motivo (explico no comentário)"
+     ]
+    },
+    {
+     "id": "ville_mancha_cv29",
+     "titulo": "Mancha amarelada no cv29: dá para comprar assim?",
+     "contexto": "Você marcou este short como 'ok' (sem desbotado). As IAs veem uma mancha amarelada nas costas, na perna esquerda, entre as tartarugas (1ª foto). Se uma mancha pequena assim não importa, a IA não deve descartar por isso.",
+     "status": "pendente",
+     "itens": [
+      {
+       "id": "cv29",
+       "legenda": "Mancha na 1ª foto, perna esquerda"
+      }
+     ],
+     "opcoes": [
+      "Não importa, compraria assim",
+      "Importa: mancha visível é descarte",
+      "Não tinha visto a mancha"
      ]
     }
    ]
