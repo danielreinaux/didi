@@ -40,8 +40,10 @@ PTS_LISTRA_SALVA = 5 # bônus quando listra salva a cor
 # perdoa estes motivos de descarte (cor ruim e os graves continuam descartando).
 # Sem listra Sundek, vivo (piping) e bicolor NÃO são mais perdoados (Daniel, 21/10/2026, revendo
 # o app: short de vivo verde/laranja e o bicolor azul/branco "não entram, pelas listras laterais").
+# Coleção antiga (patch só com o ícone) também não (Daniel, 03/11/2026: "coleção antiga não
+# passa mesmo" — 10651161693, €9, tinha passado por aqui).
 PRECO_BARATO_ELASTICO = 10.0
-PERDOA_BARATO_ELASTICO = {"bolso_so_logo_colecao_antiga", "tecido_brilhoso"}
+PERDOA_BARATO_ELASTICO = {"tecido_brilhoso"}
 
 # Cores em que um short SEM elástico ainda é aceito (cliente, out/2026: só preto e branco).
 CORES_SEM_ELASTICO = ("preto", "negro", "branco", "blanco")
