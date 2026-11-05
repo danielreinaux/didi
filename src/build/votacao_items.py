@@ -11,7 +11,7 @@ import re
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
-from ..config import APP_DESDE, APP_TAMBEM_IDS, PREMIADO_URGENTE_ATE, VILLE_ATIVA
+from ..config import APP_DESDE, APP_TAMBEM_IDS, PREMIADO_URGENTE_ATE, VILLE_APP_DESDE, VILLE_ATIVA
 
 ROOT = Path(__file__).resolve().parent.parent.parent
 DATA = ROOT / "data"
@@ -130,12 +130,13 @@ def _premiado(it: dict) -> dict | None:
             "urgente": base is not None and base <= PREMIADO_URGENTE_ATE}
 
 
-def _recente(it: dict) -> bool:
-    """Anúncio do e-mail de 21/10 ou visto pela 1ª vez depois dele (config.APP_DESDE)."""
+def _recente(it: dict, desde: str = APP_DESDE) -> bool:
+    """Anúncio do e-mail de 21/10 ou visto pela 1ª vez depois dele (config.APP_DESDE).
+    Na Ville, visto pela 1ª vez depois da volta (config.VILLE_APP_DESDE)."""
     if str(it.get("id") or "") in APP_TAMBEM_IDS:
         return True
     datas = [d for d in (it.get("primeiro_visto"), it.get("coletado_em")) if d]
-    return bool(datas) and min(datas) >= APP_DESDE
+    return bool(datas) and min(datas) >= desde
 
 
 def _carregar(path: Path, marca: str) -> list[dict]:
@@ -150,6 +151,8 @@ def _carregar(path: Path, marca: str) -> list[dict]:
         if it.get("status") in ("vendido", "inativo", "removido"):
             continue
         if marca == "sundek" and not _recente(it):
+            continue
+        if marca == "vilebrequin" and not _recente(it, VILLE_APP_DESDE):
             continue
         cor = it.get("cor") if isinstance(it.get("cor"), dict) else {}
         cl = it.get("classificacao") or {}

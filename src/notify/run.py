@@ -13,7 +13,7 @@ marca entra em modo seed automático pra não floodar com os candidatos já exis
 import argparse
 import sys
 
-from ..config import VILLE_ATIVA
+from ..config import VILLE_ATIVA, VILLE_EMAIL
 from . import email as mailer
 from . import ledger as led
 from .select import candidatos, novos
@@ -38,8 +38,20 @@ def main() -> None:
 
     ledger = led.carregar()
     itens = candidatos(args.marca)
-    label = MARCA_LABEL.get(args.marca, "Sundek+Ville" if VILLE_ATIVA else "Sundek")
+    # Ville em modo sombra (config.VILLE_EMAIL): fica no app, fora do e-mail. Os candidatos dela
+    # entram no registro sem envio — quando o e-mail ligar, só os anúncios novos vão.
+    sombra = []
+    if not VILLE_EMAIL:
+        sombra = [it for it in itens if it.get("marca") == "vilebrequin" and str(it.get("id")) not in ledger]
+        itens = [it for it in itens if it.get("marca") != "vilebrequin"]
+        if args.marca == "vilebrequin":
+            print("[Ville] e-mail desligado (modo sombra, config.VILLE_EMAIL).")
+    label = MARCA_LABEL.get(args.marca, "Sundek+Ville" if VILLE_ATIVA and VILLE_EMAIL else "Sundek")
     pendentes = novos(itens, ledger)
+    if sombra and not args.dry_run:
+        led.registrar(ledger, sombra, "vilebrequin")
+        led.salvar(ledger)
+        print(f"[Ville] {len(sombra)} candidato(s) no app, sem e-mail (modo sombra).")
 
     # --dry-run: preview puro, SEM efeito colateral (não envia, não grava ledger).
     # Com ledger vazio, "novos" = todos os candidatos — útil pra ver o que sairia.

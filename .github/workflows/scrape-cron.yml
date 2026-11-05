@@ -179,11 +179,11 @@ jobs:
   # fetch-depth: 50 e o retry dá `git rebase --abort`, então rodar junto não trava mais.
   # O deploy segue needs:[sundek, ville].
   ville:
-    # Ville DESLIGADA em 20/10/2026 (foco 100% Sundek). Para religar: apague a linha
-    # abaixo e ponha VILLE_ATIVA = True em src/config.py.
-    if: false
+    # Ville desligada em 20/10/2026 e religada em 05/11/2026 em MODO SOMBRA: classifica e aparece
+    # no app, mas não vai no e-mail (config.VILLE_EMAIL). Para desligar de novo: `if: false` aqui
+    # e VILLE_ATIVA = False em src/config.py. Tetos de tempo iguais aos do job sundek.
     runs-on: ubuntu-latest
-    timeout-minutes: 180
+    timeout-minutes: 60
     concurrency:
       group: scrape-ville
       cancel-in-progress: false
@@ -199,34 +199,49 @@ jobs:
           python-version: '3.12'
           cache: 'pip'
 
+      - name: Cache do Chromium (Playwright)
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('requirements.txt') }}
+
       - name: Install deps
+        timeout-minutes: 6
         run: |
           pip install -r requirements.txt
-          playwright install --with-deps chromium
+          playwright install chromium
+          python -c "from playwright.sync_api import sync_playwright as s; p = s().start(); p.chromium.launch().close(); p.stop()" \
+            || { echo "Chromium não abriu — instalando as dependências de sistema"; playwright install-deps chromium; }
 
       - name: Scrape Ville
+        timeout-minutes: 10
         env:
           HEADLESS: 'true'
+          MAX_ITEMS: '20'
         run: python -m src.scrape.ville
 
       - name: Classify Ville
+        timeout-minutes: 15
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
         run: python -m src.classify.ville_run --workers 2
 
       # Revisita itens do acervo Ville que sumiram do scrape e marca vendidos/removidos.
       # Espelha o passo do Sundek (mesma sessão Vinted, só muda --marca). Sem isso, a
       # página oferta_ville mostrava anúncios já vendidos como se estivessem à venda.
       - name: Verifica vendidos (Ville)
+        timeout-minutes: 6
         if: always()
         env:
           HEADLESS: 'true'
-        run: python -m src.scrape.verifica_vendidos --marca ville --max 80
+        run: python -m src.scrape.verifica_vendidos --marca ville --max 15
 
       # analise_ville = página de auditoria (sem IA, barato) — fica só no repo.
       # oferta_ville  = página de votação do Marcos (votacao/public/oferta_ville.html).
       # votacao_items = items.json dos cards Next.js; JÁ junta Sundek + Ville numa só.
       - name: Build analise-ville + oferta_ville
+        timeout-minutes: 5
         if: always()
         run: |
           python -m src.build.analise_ville
@@ -278,7 +293,9 @@ jobs:
   # marca → 2 emails; aqui o `notify.run` SEM --marca lê o items.json combinado e manda
   # um resumo único, depois grava+commita o ledger data/notificados.json.
   deploy:
-    needs: [sundek, ville]
+    # Só espera o sundek (05/11/2026): esperar a Ville atrasaria o e-mail do Sundek a cada rodada.
+    # O que a Ville commitar entra no app no deploy da rodada seguinte (~5 min depois).
+    needs: [sundek]
     # publica o último estado commitado mesmo se um job falhar — mas não quando o sundek foi
     # CANCELADO (disparo pendente substituído por um mais novo: nada novo a publicar).
     if: always() && needs.sundek.result != 'cancelled'
