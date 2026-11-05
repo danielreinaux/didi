@@ -3,14 +3,15 @@ import { NextRequest, NextResponse } from "next/server";
 
 const redis = Redis.fromEnv();
 
-// Exemplos que o cliente manda pela aba Decisões (falsos e originais, com link e/ou fotos) para
-// calibrar a autenticidade da Ville. Um hash por exemplo + um sorted set com a ordem de envio.
+// Exemplos que o cliente manda pela aba Decisões (falsos, originais e desbotados, com link e/ou
+// fotos) para calibrar a autenticidade e o aviso de desgaste (desbotado/mancha) da Ville. Um hash
+// por exemplo + um sorted set com a ordem de envio.
 // As fotos ficam numa lista à parte (ver ./foto/route.ts).
 const INDICE = "exemplos";
 const chave = (id: string) => `exemplo:${id}`;
 const chaveFotos = (id: string) => `exemplo_fotos:${id}`;
 
-const TIPOS = new Set(["falso", "original"]);
+const TIPOS = new Set(["falso", "original", "desbotado"]);
 
 type Exemplo = { id: string; tipo: string; link: string; nota: string; criado_em: string; fotos: number };
 
@@ -34,7 +35,7 @@ export async function GET() {
   return NextResponse.json(lista.filter(Boolean), { headers: { "Cache-Control": "no-store" } });
 }
 
-// POST /api/exemplos  body: { tipo: "falso"|"original", link?, nota? } → { id }
+// POST /api/exemplos  body: { tipo: "falso"|"original"|"desbotado", link?, nota? } → { id }
 export async function POST(req: NextRequest) {
   const { tipo, link, nota } = await req.json();
   if (!TIPOS.has(tipo)) return NextResponse.json({ error: "tipo inválido" }, { status: 400 });

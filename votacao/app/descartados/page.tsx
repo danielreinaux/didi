@@ -4,6 +4,7 @@
 // Pedido do cliente (27/10/2026) pra apontar o que devia ter passado — o /history não serve
 // pra isso (cada rodada lá é a foto do acervo inteiro e quase não traz os cortados com score 0).
 // Dados: votacao/public/descartados.json (src/build/descartados.py); marcações: /api/contestar.
+// A marca (Sundek | Ville) vem do seletor global do AppShell (lib/marca.ts).
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { createPortal } from "react-dom";
@@ -11,6 +12,7 @@ import { Check, ExternalLink, X } from "lucide-react";
 import Lightbox from "@/components/Lightbox";
 import { Descartado, GrupoDescarte, ListaDescartados } from "@/lib/types";
 import { eur, haQuanto, hora } from "@/lib/tempo";
+import { LOJA_META, Loja, VILLE_EM_TESTE, escolherLoja, lojaDaMarca, useLoja } from "@/lib/marca";
 
 interface Contestacao {
   em: string;
@@ -19,12 +21,14 @@ interface Contestacao {
 
 type Filtro = "todos" | "marcados" | GrupoDescarte;
 
-// Grupos de motivo (o principal de cada anúncio), na ordem dos chips.
-const GRUPOS: { key: GrupoDescarte; label: string }[] = [
+// Grupos de motivo (o principal de cada anúncio), na ordem dos chips. Na Ville, "estampa" é o
+// padrão fora do foco e "detalhe" é o fecho (botão, fivela, velcro). Chip sem anúncio não aparece.
+const GRUPOS: { key: GrupoDescarte; label: string; ville?: string }[] = [
+  { key: "autenticidade", label: "Autenticidade" },
   { key: "elastico", label: "Sem elástico" },
-  { key: "estampa", label: "Estampa ou logo" },
+  { key: "estampa", label: "Estampa ou logo", ville: "Padrão" },
   { key: "cor", label: "Cor" },
-  { key: "detalhe", label: "Detalhes" },
+  { key: "detalhe", label: "Detalhes", ville: "Fecho" },
   { key: "preco", label: "Preço" },
   { key: "outro", label: "Outros" },
   { key: "nao_e_short", label: "Não é short" },
@@ -33,6 +37,7 @@ const GRUPOS: { key: GrupoDescarte; label: string }[] = [
 
 // Texto da etiqueta pendurada na foto (o motivo principal do corte).
 const ETIQUETA: Record<GrupoDescarte, string> = {
+  autenticidade: "Autenticidade",
   elastico: "Sem elástico",
   estampa: "Estampa ou logo",
   cor: "Cor",
@@ -41,6 +46,16 @@ const ETIQUETA: Record<GrupoDescarte, string> = {
   outro: "Outro motivo",
   nao_e_short: "Não é short",
   tamanho: "Tamanho fora",
+};
+const ETIQUETA_VILLE: Partial<Record<GrupoDescarte, string>> = { estampa: "Padrão", detalhe: "Fecho" };
+
+// Padrão da Ville (classificacao.tipo) na linha de detalhes do card.
+const PADRAO_VILLE: Record<string, string> = {
+  tartaruga_grande: "tartaruga grande",
+  tartaruga_pequena: "tartaruga pequena",
+  liso: "liso",
+  outro: "outro padrão",
+  indefinido: "padrão não identificado",
 };
 
 const POR_PAGINA = 40;
@@ -54,6 +69,14 @@ export default function Descartados() {
   const [limite, setLimite] = useState(POR_PAGINA);
   const [agora, setAgora] = useState(() => Date.now());
   const [ampliada, setAmpliada] = useState<{ fotos: string[]; i: number } | null>(null);
+  const loja = useLoja();
+  // Trocou de marca: volta pro filtro "Todos" (o motivo escolhido pode não existir na outra).
+  const [lojaVista, setLojaVista] = useState<Loja>(loja);
+  if (lojaVista !== loja) {
+    setLojaVista(loja);
+    setFiltro("todos");
+    setLimite(POR_PAGINA);
+  }
 
   useEffect(() => {
     fetch(`/descartados.json?t=${Date.now()}`, { cache: "no-store" })
@@ -71,7 +94,12 @@ export default function Descartados() {
     return () => clearInterval(t);
   }, []);
 
-  const itens = lista?.itens ?? [];
+  // Só os da marca escolhida (arquivo antigo, sem o campo `marca`, é todo Sundek).
+  const itens = (lista?.itens ?? []).filter((d) => lojaDaMarca(d.marca) === loja);
+  const rotuloGrupo = (g: (typeof GRUPOS)[number]) => (loja === "ville" && g.ville) || g.label;
+  // Ville em teste e ainda fora do arquivo (a lista diz quais marcas entraram na montagem).
+  const villeSemRodada =
+    loja === "ville" && VILLE_EM_TESTE && !!lista && itens.length === 0 && !(lista.marcas ?? []).includes(LOJA_META.ville.marca);
   const nObvios = itens.filter((d) => d.obvio).length;
   // Base: sem os óbvios (não é short / tamanho fora), a não ser que o cliente peça.
   const base = itens.filter((d) => verObvios || !d.obvio);
@@ -124,7 +152,9 @@ export default function Descartados() {
   // Frase de resumo: quanto foi cortado e o que fazer com isso.
   const resumo = !lista
     ? "O que a IA cortou nos últimos dias, mais novos primeiro."
-    : `A IA cortou ${base.length} ${base.length === 1 ? "anúncio" : "anúncios"} nas últimas ${lista.horas} h. Marque os que deviam ter passado: as marcações ajustam as regras.`;
+    : villeSemRodada
+      ? "A Ville está em teste: os anúncios que a IA cortar aparecem aqui assim que a primeira rodada terminar."
+      : `A IA cortou ${base.length} ${base.length === 1 ? "anúncio" : "anúncios"} nas últimas ${lista.horas} h. Marque os que deviam ter passado: as marcações ajustam as regras.`;
 
   return (
     <div className="h-full overflow-y-auto">
@@ -151,11 +181,12 @@ export default function Descartados() {
           </label>
         )}
 
-        {/* Filtros por motivo: fixos no topo ao rolar, numa linha que rola de lado no celular */}
-        <div className="sticky top-0 z-20 -mx-4 px-4 sm:mx-0 sm:px-0 mt-4 py-3 bg-canvas/95 backdrop-blur-sm">
+        {/* Filtros por motivo: fixos no topo ao rolar, numa linha que rola de lado no celular.
+            Somem na Ville antes da 1ª rodada (não há o que filtrar). */}
+        <div hidden={villeSemRodada} className="sticky top-0 z-20 -mx-4 px-4 sm:mx-0 sm:px-0 mt-4 py-3 bg-canvas/95 backdrop-blur-sm">
           <div className="flex gap-1.5 overflow-x-auto [scrollbar-width:none]" role="group" aria-label="Filtrar por motivo">
             {chip("todos", "Todos", base.length)}
-            {GRUPOS.filter((g) => contagem(g.key) > 0).map((g) => chip(g.key, g.label, contagem(g.key)))}
+            {GRUPOS.filter((g) => contagem(g.key) > 0).map((g) => chip(g.key, rotuloGrupo(g), contagem(g.key)))}
             {nMarcados > 0 && chip("marcados", "Marcados", nMarcados)}
           </div>
         </div>
@@ -170,6 +201,21 @@ export default function Descartados() {
             <div className="flex flex-col items-center gap-3 py-24 text-sm text-ink-3" role="status">
               <span className="w-6 h-6 rounded-full border-2 border-line border-t-ink animate-spin" aria-hidden />
               Carregando descartados…
+            </div>
+          ) : villeSemRodada ? (
+            <div className="py-16 sm:py-20 text-center max-w-[46ch] mx-auto">
+              <p className="text-ink font-medium">A Ville está em teste</p>
+              <p className="mt-1 text-sm text-ink-2">
+                Os anúncios da Vilebrequin que a IA cortar aparecem aqui assim que a primeira rodada terminar, com o motivo
+                de cada corte.
+              </p>
+              <button
+                type="button"
+                onClick={() => escolherLoja("sundek")}
+                className="mt-4 h-9 px-4 rounded-lg text-sm bg-surface border border-line text-ink-2 hover:text-ink hover:border-line-strong transition-colors"
+              >
+                Ver os descartados da Sundek
+              </button>
             </div>
           ) : filtrados.length === 0 ? (
             <div className="py-20 text-center">
@@ -189,6 +235,7 @@ export default function Descartados() {
                   <CardDescartado
                     key={d.id}
                     d={d}
+                    ville={loja === "ville"}
                     agora={agora}
                     contestado={contestados[d.id]}
                     onMarcar={marcar}
@@ -223,12 +270,14 @@ export default function Descartados() {
 
 function CardDescartado({
   d,
+  ville,
   agora,
   contestado,
   onMarcar,
   onAmpliar,
 }: {
   d: Descartado;
+  ville: boolean;
   agora: number;
   contestado?: Contestacao;
   onMarcar: (d: Descartado, contestar: boolean, nota?: string) => void;
@@ -243,9 +292,14 @@ function CardDescartado({
   const vendido = d.status === "vendido";
   const fora = d.status !== "ativo";
   const total = d.preco_base != null ? d.preco_base + (d.taxa ?? 0) + (d.frete ?? 0) : null;
-  const detalhes = [d.cor && `Cor ${d.cor.toLowerCase()}`, d.listras.length ? `listra ${d.listras.join(", ")}` : null]
+  const detalhes = [
+    d.cor && `Cor ${d.cor.toLowerCase()}`,
+    d.listras?.length ? `listra ${d.listras.join(", ")}` : null,
+    ville && d.padrao ? PADRAO_VILLE[d.padrao] ?? d.padrao.replace(/_/g, " ") : null,
+  ]
     .filter(Boolean)
     .join("; ");
+  const etiqueta = (ville && ETIQUETA_VILLE[d.grupo]) || ETIQUETA[d.grupo] || "Outro motivo";
   const idNota = `nota-${d.id}`;
 
   return (
@@ -278,7 +332,7 @@ function CardDescartado({
         )}
         {/* Etiqueta cinza com o motivo principal, pendurada como a do veredito nas Ofertas */}
         <div className="absolute top-3 left-0 pointer-events-none">
-          <span className="tag tag-out text-sm shadow-[0_2px_6px_rgba(27,36,51,0.18)]">{ETIQUETA[d.grupo]}</span>
+          <span className="tag tag-out text-sm shadow-[0_2px_6px_rgba(27,36,51,0.18)]">{etiqueta}</span>
         </div>
         {n > 1 && (
           <>
@@ -403,7 +457,7 @@ function CardDescartado({
                     setNota(e.target.value);
                     setNotaSalva(false);
                   }}
-                  placeholder="Ex.: a cor é linda e tem elástico…"
+                  placeholder={ville ? "Ex.: é tartaruga grande e o bolso confere…" : "Ex.: a cor é linda e tem elástico…"}
                   className="flex-1 min-w-0 h-10 px-3 rounded-lg bg-canvas border border-line text-base sm:text-sm text-ink placeholder:text-ink-3 focus:outline-none focus-visible:border-info focus-visible:ring-2 focus-visible:ring-info/25"
                 />
                 <button

@@ -1,8 +1,9 @@
 "use client";
 
 // Moldura do produto: barra lateral (computador) ou barra de topo + abas embaixo (celular).
-// Mostra o monitor ativo e se o robô está buscando. Cada página continua dona da sua
-// rolagem (h-full overflow-y-auto) — o shell é uma coluna flex que não sobrepõe nada.
+// Mostra o monitor ativo, o seletor de marca (Sundek | Ville, vale pra todas as telas — ver
+// lib/marca.ts) e se o robô está buscando. Cada página continua dona da sua rolagem
+// (h-full overflow-y-auto) — o shell é uma coluna flex que não sobrepõe nada.
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -20,6 +21,8 @@ import type { LucideIcon } from "lucide-react";
 import Logo, { TagMark } from "@/components/Logo";
 import { StatusLista } from "@/lib/types";
 import { hora } from "@/lib/tempo";
+import { LOJAS, LOJA_META, Loja, VILLE_EM_TESTE, comMarca, escolherLoja, lojaDaMarca, sincronizarUrl, useLoja } from "@/lib/marca";
+import { SEGMENTED_ACTIVE, SEGMENTED_INACTIVE } from "@/lib/theme";
 
 type ItemNav = { href: string; label: string; icon: LucideIcon; dica: string };
 
@@ -64,14 +67,53 @@ function situacaoRobo(status: StatusLista | null, agora: number): Robo | null {
 
 const COR_TOM = { ok: "bg-buy", atencao: "bg-deal", pausa: "bg-ink-3" } as const;
 
+// Seletor Sundek | Ville (botões com aria-pressed, como os outros filtros do app).
+function SeletorMarca({ loja, compacto = false }: { loja: Loja; compacto?: boolean }) {
+  return (
+    <div
+      role="group"
+      aria-label="Marca"
+      className={`rounded-lg bg-sunken ${compacto ? "inline-flex p-0.5" : "w-full grid grid-cols-2 p-1"}`}
+    >
+      {LOJAS.map((l) => {
+        const on = loja === l;
+        return (
+          <button
+            key={l}
+            type="button"
+            onClick={() => escolherLoja(l)}
+            aria-pressed={on}
+            title={`Ver ${LOJA_META[l].nomeCompleto}`}
+            translate="no"
+            className={`rounded-md font-medium transition-colors ${
+              compacto ? "h-8 px-3 text-xs" : "h-8 px-3 text-sm"
+            } ${on ? SEGMENTED_ACTIVE : SEGMENTED_INACTIVE}`}
+          >
+            {LOJA_META[l].nome}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
 export default function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname() || "/";
+  const loja = useLoja();
+  const meta = LOJA_META[loja];
   const [status, setStatus] = useState<StatusLista | null>(null);
   const [agora, setAgora] = useState(() => Date.now());
   const [maisAberto, setMaisAberto] = useState(false);
-  // Quantas ofertas aparecem na tela Ofertas: as da lista menos as arquivadas (o status.json conta
-  // todas, inclusive as arquivadas, e o número ficava diferente do que a página mostra).
-  const [nOfertas, setNOfertas] = useState<number | null>(null);
+  // Quantas ofertas aparecem na tela Ofertas, por marca: as da lista menos as arquivadas (o
+  // status.json conta todas, inclusive as arquivadas, e o número ficava diferente da página).
+  const [contagem, setContagem] = useState<Record<Loja, number> | null>(null);
+  const nOfertas = contagem ? contagem[loja] : null;
+
+  // Mudou de página ou de marca: repõe o ?marca=ville na URL (links internos simples não levam
+  // o parâmetro). Lê a marca do store, não do render (na hidratação o render ainda diz "sundek").
+  useEffect(() => {
+    sincronizarUrl();
+  }, [pathname, loja]);
 
   useEffect(() => {
     let ultimo: string | null = null;
@@ -82,7 +124,9 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
       ])
         .then(([itens, arq]: [{ id: string; marca: string }[], string[]]) => {
           const arquivados = new Set(arq);
-          setNOfertas(itens.filter((i) => i.marca === "sundek" && !arquivados.has(i.id)).length);
+          const n: Record<Loja, number> = { sundek: 0, ville: 0 };
+          for (const i of itens) if (!arquivados.has(i.id)) n[lojaDaMarca(i.marca)]++;
+          setContagem(n);
         })
         .catch(() => {});
     const carregar = () =>
@@ -101,8 +145,12 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         .catch(() => {});
     carregar();
     const t = setInterval(carregar, 60_000);
-    // A tela Ofertas avisa quando o número muda (arquivou/desarquivou, lista nova).
-    const aoContar = (e: Event) => setNOfertas((e as CustomEvent<number>).detail);
+    // A tela Ofertas avisa quando o número da marca dela muda (arquivou/desarquivou, lista nova).
+    const aoContar = (e: Event) => {
+      const d = (e as CustomEvent<{ loja: Loja; n: number }>).detail;
+      if (!d) return;
+      setContagem((prev) => ({ ...(prev ?? { sundek: 0, ville: 0 }), [d.loja]: d.n }));
+    };
     window.addEventListener("didi:ofertas", aoContar);
     return () => {
       clearInterval(t);
@@ -117,16 +165,22 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
       {/* Barra lateral — computador */}
       <aside className="hidden lg:flex w-60 flex-none flex-col border-r border-line bg-surface">
         <div className="px-5 pt-6 pb-5">
-          <Link href="/" aria-label="Didi — início" className="inline-block rounded-md">
+          <Link href={comMarca("/", loja)} aria-label="Didi — início" className="inline-block rounded-md">
             <Logo />
           </Link>
           <p className="mt-1.5 text-xs text-ink-3">Radar de revenda</p>
         </div>
 
         <div className="mx-3 mb-4 rounded-lg border border-line bg-canvas px-3 py-2.5">
-          <p className="text-[11px] text-ink-3">Monitor</p>
-          <p className="text-sm font-semibold text-ink" translate="no">
-            Sundek <span className="font-normal text-ink-3">no Vinted Espanha</span>
+          <p className="mb-1.5 flex items-center justify-between gap-2 text-[11px] text-ink-3">
+            Monitor
+            {loja === "ville" && VILLE_EM_TESTE && (
+              <span className="font-medium px-1.5 py-px rounded bg-sunken text-ink-2">em teste</span>
+            )}
+          </p>
+          <SeletorMarca loja={loja} />
+          <p className="mt-2.5 text-sm font-semibold text-ink" translate="no">
+            {meta.nomeCompleto} <span className="font-normal text-ink-3">no Vinted Espanha</span>
           </p>
           {robo && (
             <p className="mt-1.5 flex items-center gap-1.5 text-xs text-ink-2" aria-live="polite">
@@ -145,7 +199,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
               return (
                 <li key={n.href}>
                   <Link
-                    href={n.href}
+                    href={comMarca(n.href, loja)}
                     title={n.dica}
                     aria-current={on ? "page" : undefined}
                     className={`flex items-center gap-2.5 h-9 px-2.5 rounded-md text-sm transition-colors ${
@@ -164,20 +218,21 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
           </ul>
         </nav>
 
-        <p className="px-5 py-4 text-[11px] leading-relaxed text-ink-3 border-t border-line">
-          A IA confere cor, listra, bolso, elástico, tamanho e preço de cada anúncio.
-        </p>
+        <p className="px-5 py-4 text-[11px] leading-relaxed text-ink-3 border-t border-line">{meta.confere}</p>
       </aside>
 
       {/* Coluna principal */}
       <div className="flex-1 min-w-0 h-full flex flex-col">
         {/* Barra de topo — celular */}
-        <header className="lg:hidden flex-none flex items-center justify-between gap-3 h-14 px-4 border-b border-line bg-surface">
-          <Link href="/" aria-label="Didi — início" className="rounded-md">
+        <header className="lg:hidden flex-none flex items-center gap-3 h-14 px-4 border-b border-line bg-surface">
+          <Link href={comMarca("/", loja)} aria-label="Didi — início" className="flex-none rounded-md">
             <Logo compacto />
           </Link>
+          <div className="flex-none">
+            <SeletorMarca loja={loja} compacto />
+          </div>
           {robo && (
-            <span className="flex items-center gap-1.5 text-xs text-ink-2 min-w-0" aria-live="polite">
+            <span className="flex-1 flex items-center justify-end gap-1.5 text-xs text-ink-2 min-w-0" aria-live="polite">
               <span className={`w-1.5 h-1.5 rounded-full flex-none ${COR_TOM[robo.tom]}`} aria-hidden />
               <span className="truncate">{robo.tom === "pausa" ? "Pausado até 07:00" : robo.detalhe}</span>
             </span>
@@ -198,7 +253,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
               return (
                 <li key={n.href}>
                   <Link
-                    href={n.href}
+                    href={comMarca(n.href, loja)}
                     aria-current={on ? "page" : undefined}
                     className={`flex flex-col items-center justify-center gap-0.5 h-14 text-[11px] ${
                       on ? "text-ink font-semibold" : "text-ink-3"
@@ -255,7 +310,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                 return (
                   <li key={n.href}>
                     <Link
-                      href={n.href}
+                      href={comMarca(n.href, loja)}
                       onClick={() => setMaisAberto(false)}
                       className="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-canvas"
                     >

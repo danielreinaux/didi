@@ -8,6 +8,7 @@ import { use, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { Produto } from "@/lib/history";
 import HistoryProdutoDetalhe, { CentroHistory } from "@/components/HistoryProdutoDetalhe";
+import { comMarca, useLoja } from "@/lib/marca";
 
 export default function ProdutoDetalheBusca({
   params,
@@ -18,6 +19,7 @@ export default function ProdutoDetalheBusca({
   const [produtos, setProdutos] = useState<Produto[] | null>(null);
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState(false);
+  const loja = useLoja();
 
   useEffect(() => {
     fetch(`/history/produtos.json`)
@@ -47,7 +49,7 @@ export default function ProdutoDetalheBusca({
     return (
       <CentroHistory>
         <span className="text-ink font-medium">Esse anúncio não está no acervo.</span>
-        <Link href="/history" className="mt-2 h-9 px-4 inline-flex items-center rounded-lg text-sm font-semibold bg-ink text-white">
+        <Link href={comMarca("/history", loja)} className="mt-2 h-9 px-4 inline-flex items-center rounded-lg text-sm font-semibold bg-ink text-white">
           Voltar ao histórico
         </Link>
       </CentroHistory>
@@ -57,7 +59,7 @@ export default function ProdutoDetalheBusca({
   return (
     <HistoryProdutoDetalhe
       produto={produto}
-      voltarHref="/history"
+      voltarHref={comMarca("/history", loja)}
       voltarLabel="Histórico"
     />
   );

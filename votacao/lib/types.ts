@@ -1,3 +1,5 @@
+import type { AtributosVille, Conservacao } from "@/lib/marca";
+
 export type Decisao = "compravel" | "medio";
 
 export interface Item {
@@ -16,7 +18,9 @@ export interface Item {
   score: number;
   teto?: number;
   destaques: string[];
-  flags?: string[]; // avisos (ex: verificar_autenticidade, rever_fotos) — Ville
+  flags?: string[]; // avisos (ex: verificar_autenticidade, rever_fotos, mancha) — Ville; rótulos em lib/marca.ts
+  ville?: AtributosVille; // ficha da Ville (padrão, cor e faixa, cordão, fecho, autenticidade, etiqueta)
+  conservacao?: Conservacao; // Ville: onde está a mancha (completa o aviso "mancha")
   por_que?: string;
   evidencias?: { listra?: string; bolso?: string; elastico?: string };
   negociacao?: { modo?: "fechar" | "negociar"; oferta?: number; msg?: string };
@@ -40,6 +44,7 @@ export interface Premiado {
 // votacao/public/descartados.json — o que a IA cortou nos últimos dias (aba Descartados).
 export interface Descartado {
   id: string;
+  marca?: string; // "sundek" | "vilebrequin" (ausente nos arquivos antigos = Sundek)
   url: string;
   titulo: string;
   tamanho: string;
@@ -58,11 +63,13 @@ export interface Descartado {
   cor: string;
   listras: string[];
   elastico: boolean | null;
+  padrao?: string; // Ville: tartaruga_grande, liso…
 }
 
 export type GrupoDescarte =
   | "nao_e_short"
   | "tamanho"
+  | "autenticidade"
   | "estampa"
   | "cor"
   | "detalhe"
@@ -73,6 +80,7 @@ export type GrupoDescarte =
 export interface ListaDescartados {
   gerado_em: string;
   horas: number;
+  marcas?: string[]; // marcas que entraram nesta montagem (sem a Ville = ela ainda não rodou)
   itens: Descartado[];
 }
 
@@ -82,6 +90,7 @@ export interface StatusLista {
   total: number;
   compraveis: number;
   barganhas: number;
+  marcas?: string[]; // marcas que entraram no items.json desta montagem
 }
 
 export type Reaction = "gostei" | "nao_gostei" | "discordo";

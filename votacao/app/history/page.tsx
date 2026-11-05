@@ -3,19 +3,22 @@
 // Rota /history — lista das últimas rodadas (cada rodada = 1 workflow run do cron)
 // + busca global de produtos (título / descrição / link) por cima de TODO o acervo.
 // Lê /history/index.json (rodadas) e, sob demanda, /history/produtos.json (busca).
+// Tudo recortado pela marca do seletor global (lib/marca.ts): rodadas em que ela rodou,
+// números só dela e busca só nos anúncios dela.
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
   RodadaIndex,
   Produto,
-  MARCA_LABEL,
   DECISAO_META,
   MESES,
   fmtDataHora,
   fmtBRL,
   fmtNum,
+  rodadaDaMarca,
 } from "@/lib/history";
 import { RunLinks, RunErroBadge } from "@/components/RunLinks";
+import { LOJA_META, Loja, VILLE_EM_TESTE, comMarca, escolherLoja, lojaDaMarca, useLoja } from "@/lib/marca";
 import { Search, X } from "lucide-react";
 
 // Período: atalhos rápidos, "custom" (intervalo de/até) ou um mês específico "YYYY-MM".
@@ -81,7 +84,8 @@ function plural(n: number, um: string, varios: string): string {
 }
 
 export default function HistoryLista() {
-  const [rodadas, setRodadas] = useState<RodadaIndex[]>([]);
+  const loja = useLoja();
+  const [todasRodadas, setRodadas] = useState<RodadaIndex[]>([]);
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState(false);
   const [periodo, setPeriodo] = useState<Periodo>("mes");
@@ -132,6 +136,13 @@ export default function HistoryLista() {
 
   const buscando = busca.trim().length >= 2;
 
+  // Só as rodadas em que a marca escolhida rodou, com os números dela.
+  const rodadas = useMemo(() => {
+    const mk = LOJA_META[loja].marca;
+    return todasRodadas.map((r) => rodadaDaMarca(r, mk)).filter((r): r is RodadaIndex => r !== null);
+  }, [todasRodadas, loja]);
+  const villeSemRodada = loja === "ville" && VILLE_EM_TESTE && rodadas.length === 0;
+
   // Filtra o acervo pela busca: casa TODOS os termos no blob (título+descrição+link)
   // e, quando o texto tem um id de anúncio (link colado), casa direto pelo id.
   const resultados = useMemo(() => {
@@ -140,11 +151,12 @@ export default function HistoryLista() {
     const ids = q.match(/\d{6,}/g) || [];
     const termos = q.split(/\s+/).filter(Boolean);
     return produtos.filter((p) => {
+      if (lojaDaMarca(p.marca) !== loja) return false;
       if (ids.length && ids.some((d) => p.id.includes(d))) return true;
       const blob = p.busca ?? `${p.titulo} ${p.url}`.toLowerCase();
       return termos.every((t) => blob.includes(t));
     });
-  }, [buscando, produtos, busca]);
+  }, [buscando, produtos, busca, loja]);
 
   const mesesDisponiveis = useMemo(() => {
     const set = new Set(rodadas.map((r) => chaveMes(r.quando)).filter(Boolean));
@@ -233,8 +245,10 @@ export default function HistoryLista() {
   const resumo = carregando || erro
     ? "Cada rodada do robô: o que achou, o que custou e se deu erro."
     : buscando
-      ? `${plural(resultados.length, "produto encontrado", "produtos encontrados")} no acervo.`
-      : `${plural(agg.n, "rodada", "rodadas")} ${rotuloPeriodo}${quick.size ? " com esses filtros" : ""}, de ${fmtNum(rodadas.length)} guardadas. Custaram ${fmtBRL(agg.custo)}; ${plural(agg.gratis, "rodada não precisou", "rodadas não precisaram")} da IA porque não havia anúncio novo.`;
+      ? `${plural(resultados.length, "produto encontrado", "produtos encontrados")} no acervo${loja === "ville" ? " da Ville" : ""}.`
+      : villeSemRodada && todasRodadas.length > 0
+        ? "A Ville está em teste: as rodadas dela aparecem aqui assim que a primeira terminar."
+        : `${plural(agg.n, "rodada", "rodadas")} ${rotuloPeriodo}${quick.size ? " com esses filtros" : ""}, de ${fmtNum(rodadas.length)} guardadas. Custaram ${fmtBRL(agg.custo)}; ${plural(agg.gratis, "rodada não precisou", "rodadas não precisaram")} da IA porque não havia anúncio novo.`;
 
   return (
     <div className="h-full overflow-y-auto">
@@ -254,7 +268,7 @@ export default function HistoryLista() {
               value={busca}
               onFocus={garantirProdutos}
               onChange={(e) => { garantirProdutos(); setBusca(e.target.value); }}
-              placeholder="Buscar no acervo por título, descrição ou link do anúncio…"
+              placeholder={loja === "ville" ? "Buscar no acervo da Ville…" : "Buscar no acervo por título, descrição ou link do anúncio…"}
               className="w-full h-11 pl-10 pr-10 rounded-lg text-base sm:text-sm text-ink bg-surface border border-line placeholder:text-ink-3 outline-none focus-visible:border-info focus-visible:ring-2 focus-visible:ring-info/25"
             />
             {busca && (
@@ -268,8 +282,8 @@ export default function HistoryLista() {
             )}
           </div>
 
-          {/* Período + filtros rápidos — somem durante a busca */}
-          {!buscando && (
+          {/* Período + filtros rápidos — somem durante a busca (e na Ville antes da 1ª rodada) */}
+          {!buscando && !(villeSemRodada && !carregando) && (
             <div className="mt-4 flex flex-col gap-3">
               <div className="flex items-center gap-1.5 flex-wrap" role="group" aria-label="Período">
                 {PERIODOS.map(([p, label]) => (
@@ -372,6 +386,7 @@ export default function HistoryLista() {
                 carregando={carregandoProdutos}
                 temIndice={produtos != null}
                 resultados={resultados}
+                loja={loja}
               />
             ) : (
               <>
@@ -391,6 +406,12 @@ export default function HistoryLista() {
                   </div>
                 ) : erro ? (
                   <Vazio titulo="O histórico não carregou." texto="Ele é gerado a cada rodada do robô. Se nenhuma rodou ainda, aparece aqui depois da primeira." />
+                ) : villeSemRodada && todasRodadas.length > 0 ? (
+                  <Vazio
+                    titulo="A Ville está em teste"
+                    texto="As rodadas da Vilebrequin aparecem aqui assim que a primeira terminar, com o que a IA achou e quanto custou."
+                    acao={{ rotulo: "Ver as rodadas da Sundek", onClick: () => escolherLoja("sundek") }}
+                  />
                 ) : rodadas.length === 0 ? (
                   <Vazio titulo="Nenhuma rodada guardada ainda." texto="Cada busca do robô vira uma linha aqui, com o que achou e quanto custou." />
                 ) : rodadasVisiveis.length === 0 ? (
@@ -408,7 +429,7 @@ export default function HistoryLista() {
                         </h2>
                         <ul className="bg-surface border border-line rounded-xl divide-y divide-line overflow-hidden">
                           {g.rodadas.map((r) => (
-                            <RodadaLinha key={r.run_id} r={r} />
+                            <RodadaLinha key={r.run_id} r={r} loja={loja} />
                           ))}
                         </ul>
                       </section>
@@ -424,11 +445,20 @@ export default function HistoryLista() {
   );
 }
 
-function Vazio({ titulo, texto }: { titulo: string; texto: string }) {
+function Vazio({ titulo, texto, acao }: { titulo: string; texto: string; acao?: { rotulo: string; onClick: () => void } }) {
   return (
-    <div className="py-20 text-center">
+    <div className="py-20 text-center max-w-[52ch] mx-auto">
       <p className="text-ink font-medium">{titulo}</p>
       <p className="mt-1 text-sm text-ink-3">{texto}</p>
+      {acao && (
+        <button
+          type="button"
+          onClick={acao.onClick}
+          className="mt-4 h-9 px-4 rounded-lg text-sm bg-surface border border-line text-ink-2 hover:text-ink hover:border-line-strong transition-colors"
+        >
+          {acao.rotulo}
+        </button>
+      )}
     </div>
   );
 }
@@ -437,10 +467,12 @@ function BuscaResultados({
   carregando,
   temIndice,
   resultados,
+  loja,
 }: {
   carregando: boolean;
   temIndice: boolean;
   resultados: Produto[];
+  loja: Loja;
 }) {
   if (carregando && !temIndice) {
     return (
@@ -451,7 +483,12 @@ function BuscaResultados({
     );
   }
   if (resultados.length === 0) {
-    return <Vazio titulo="Nenhum produto encontrado." texto="Tente outro título, uma palavra da descrição ou cole o link do anúncio." />;
+    return (
+      <Vazio
+        titulo={`Nenhum produto${loja === "ville" ? " da Ville" : ""} encontrado.`}
+        texto="Tente outro título, uma palavra da descrição ou cole o link do anúncio. A busca olha só a marca escolhida no seletor."
+      />
+    );
   }
   const mostrados = resultados.slice(0, MAX_RESULTADOS);
   return (
@@ -461,19 +498,19 @@ function BuscaResultados({
       )}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
         {mostrados.map((p) => (
-          <ResultadoCard key={`${p.marca}-${p.id}`} p={p} />
+          <ResultadoCard key={`${p.marca}-${p.id}`} p={p} loja={loja} />
         ))}
       </div>
     </>
   );
 }
 
-function ResultadoCard({ p }: { p: Produto }) {
+function ResultadoCard({ p, loja }: { p: Produto; loja: Loja }) {
   const meta = DECISAO_META[p.decisao];
   const foto = p.fotos[0];
   return (
     <a
-      href={`/history/produto/${p.id}`}
+      href={comMarca(`/history/produto/${p.id}`, loja)}
       className="bg-surface border border-line rounded-xl overflow-hidden flex flex-col hover:border-line-strong transition-colors"
     >
       <div className="relative w-full aspect-square bg-sunken">
@@ -491,7 +528,6 @@ function ResultadoCard({ p }: { p: Produto }) {
           <span className="num truncate">{p.preco_total || p.preco || "—"}</span>
           <span className="num font-semibold" style={{ color: meta.cor }}>{p.score} pts</span>
         </div>
-        {p.marca !== "sundek" && <span className="text-[11px] text-ink-3">{MARCA_LABEL[p.marca]}</span>}
       </div>
     </a>
   );
@@ -513,7 +549,7 @@ const COR_STATUS: Record<string, { cor: string; dica: string }> = {
   desconhecido: { cor: "bg-ink-3", dica: "Sem informação do GitHub Actions" },
 };
 
-function RodadaLinha({ r }: { r: RodadaIndex }) {
+function RodadaLinha({ r, loja }: { r: RodadaIndex; loja: Loja }) {
   const s = r.resumo;
   const st = COR_STATUS[r.status === "ok" ? "ok" : r.status === "erro" ? "erro" : "desconhecido"];
   // Linha clicável COM botões internos independentes: um link "esticado" cobre a linha
@@ -522,7 +558,7 @@ function RodadaLinha({ r }: { r: RodadaIndex }) {
   return (
     <li className="relative hover:bg-canvas/60 transition-colors">
       <a
-        href={`/history/${r.run_id}`}
+        href={comMarca(`/history/${r.run_id}`, loja)}
         aria-label={`Abrir rodada de ${fmtDataHora(r.quando)}`}
         className="absolute inset-0 z-0"
       />
@@ -537,9 +573,6 @@ function RodadaLinha({ r }: { r: RodadaIndex }) {
           <Contagem n={s.barganha} um="barganha" varios="barganhas" cor="text-deal" />
           <Contagem n={s.novos} um="novo na última hora" varios="novos na última hora" cor="text-info" />
           <span className="hidden md:inline text-ink-3 num">{plural(s.descartados, "descartado", "descartados")}</span>
-          {r.marcas.length > 1 || r.marcas[0] !== "sundek" ? (
-            <span className="text-xs text-ink-3">{r.marcas.map((m) => MARCA_LABEL[m]).join(" e ")}</span>
-          ) : null}
           {r.fonte === "backfill" && (
             <span className="text-xs text-ink-3" title="Rodada reconstruída do histórico do git (sem run no GitHub Actions)">
               reconstruída

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import ResultadoCard from "@/components/ResultadoCard";
 import { Item, Reaction, REACTION_LABELS } from "@/lib/types";
+import { VILLE_EM_TESTE, lojaDaMarca, useLoja } from "@/lib/marca";
 
 interface Reacao {
   reaction?: Reaction;
@@ -11,14 +12,13 @@ interface Reacao {
 
 const ORDER: Reaction[] = ["gostei", "nao_gostei", "discordo"];
 
-// Ville desligada em 20/10/2026 (foco 100% Sundek): a loja fica fixa em "sundek".
-type Loja = "sundek" | "ville";
+// A marca vem do seletor global do AppShell (lib/marca.ts).
 
 export default function Resultados() {
   const [items, setItems] = useState<Item[]>([]);
   const [reacoes, setReacoes] = useState<Record<string, Reacao>>({});
   const [filtro, setFiltro] = useState<Reaction | "todos">("todos");
-  const [loja] = useState<Loja>("sundek");
+  const loja = useLoja();
   // Enquanto os dois fetches não resolvem, mostramos loading (antes caía em "Nenhum voto ainda").
   const [carregando, setCarregando] = useState(true);
 
@@ -32,11 +32,9 @@ export default function Resultados() {
   const itensMapa = Object.fromEntries(items.map((i) => [i.id, i]));
 
   // A loja "ville" no front corresponde à marca "vilebrequin" no items.json (igual à Home).
-  const marcaDaLoja = loja === "ville" ? "vilebrequin" : "sundek";
-
   const votados = Object.entries(reacoes)
     .map(([id, v]) => ({ id, ...v, item: itensMapa[id] }))
-    .filter((v) => v.item && v.reaction && v.item.marca === marcaDaLoja)
+    .filter((v) => v.item && v.reaction && lojaDaMarca(v.item.marca) === loja)
     .sort((a, b) => ORDER.indexOf(a.reaction!) - ORDER.indexOf(b.reaction!));
 
   // Contagens por loja, pra os chips e o resumo baterem com a loja selecionada.
@@ -57,9 +55,14 @@ export default function Resultados() {
     });
   }
 
-  const resumo =
-    totalVotos === 0
-      ? "Você ainda não avaliou nenhuma oferta à venda. Avalie na aba Ofertas: os votos ajudam a ajustar as regras."
+  // Ville em teste sem nenhuma oferta no items.json ainda: orienta em vez de "nenhum voto".
+  const villeSemOfertas =
+    loja === "ville" && VILLE_EM_TESTE && !carregando && !items.some((i) => lojaDaMarca(i.marca) === "ville");
+
+  const resumo = villeSemOfertas
+    ? "A Ville está em teste: quando as primeiras ofertas chegarem, os seus votos nelas aparecem aqui."
+    : totalVotos === 0
+      ? `Você ainda não avaliou nenhuma oferta${loja === "ville" ? " da Ville" : ""} à venda. Avalie na aba Ofertas: os votos ajudam a ajustar as regras.`
       : `${totalVotos} ${totalVotos === 1 ? "oferta avaliada" : "ofertas avaliadas"}: ${contagem.gostei} gostei, ${
           contagem.nao_gostei
         } não gostei e ${contagem.discordo} discordo.`;
@@ -102,12 +105,14 @@ export default function Resultados() {
           ) : filtrados.length === 0 ? (
             <div className="py-20 text-center">
               <p className="text-ink font-medium">
-                {totalVotos === 0 ? "Nenhum voto ainda." : "Nenhum voto neste filtro."}
+                {villeSemOfertas ? "A Ville está em teste" : totalVotos === 0 ? "Nenhum voto ainda." : "Nenhum voto neste filtro."}
               </p>
               <p className="mt-1 text-sm text-ink-3">
-                {totalVotos === 0
-                  ? "Na aba Ofertas, toque em Gostei, Não gostei ou Discordo em cada anúncio."
-                  : "Escolha outro filtro para ver os demais votos."}
+                {villeSemOfertas
+                  ? "As ofertas aparecem na aba Ofertas assim que a primeira rodada terminar. Vote nelas e os votos aparecem aqui."
+                  : totalVotos === 0
+                    ? "Na aba Ofertas, toque em Gostei, Não gostei ou Discordo em cada anúncio."
+                    : "Escolha outro filtro para ver os demais votos."}
               </p>
             </div>
           ) : (

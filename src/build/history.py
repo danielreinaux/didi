@@ -453,8 +453,18 @@ def _montar_snapshot(run_id: str, fonte: str, run_dt: datetime,
     }
 
 
+_CAMPOS_RESUMO = ("candidatos", "compraveis", "barganha", "descartados", "nao_classificados",
+                  "novos", "ativos", "custo_usd", "custo_brl", "tok_in", "tok_out", "calls")
+
+
+def _resumo(m: dict) -> dict:
+    return {c: m.get(c, 0.0 if c.startswith("custo") else 0) for c in _CAMPOS_RESUMO}
+
+
 def _resumo_index(snap: dict) -> dict:
-    """Linha do index.json (sem produtos — só o cabeçalho da rodada)."""
+    """Linha do index.json (sem produtos — só o cabeçalho da rodada).
+    `resumo` é a soma das marcas; `por_marca` traz o de cada uma (o app filtra pela marca
+    do seletor)."""
     t = snap["metricas"].get("total", {})
     return {
         "run_id": snap["run_id"],
@@ -479,6 +489,7 @@ def _resumo_index(snap: dict) -> dict:
             "tok_out": t.get("tok_out", 0),
             "calls": t.get("calls", 0),
         },
+        "por_marca": {mk: _resumo(snap["metricas"][mk]) for mk in snap["marcas"] if mk in snap["metricas"]},
     }
 
 
@@ -582,6 +593,14 @@ def _build_custo() -> int:
             "sundek_usd": round(sk.get("custo_usd", 0.0), 6),
             "ville_usd": round(vl.get("custo_usd", 0.0), 6),
             "etapas": etapas,
+            # Marcas que rodaram + os números de cada uma (o /custo filtra pela marca do seletor).
+            "marcas": snap.get("marcas") or [],
+            "por_marca": {
+                mk: {c: (round(mm.get(c, 0.0), 6) if c == "custo_usd" else mm.get(c, 0))
+                     for c in ("custo_brl", "custo_usd", "calls", "tok_in", "tok_out", "novos",
+                               "candidatos", "ativos", "descartados")}
+                for mk, mm in (("sundek", sk), ("vilebrequin", vl)) if mm
+            },
         })
     novos_ids = {str(r.get("run_id")) for r in rodadas}
     rodadas += [r for rid, r in anteriores.items() if rid not in novos_ids]

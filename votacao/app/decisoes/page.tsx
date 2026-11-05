@@ -8,11 +8,14 @@
 // "decisao:<id_da_pergunta>" → hash no Redis { reaction: <texto da opção>,
 // observacao: <comentário> }. Ao abrir, o GET /api/reactions preenche o que já foi
 // respondido (só as chaves com prefixo "decisao:").
+// Marca: perguntas da Ville têm id começando com "ville_"; o resto é da Sundek. A tela mostra
+// só as da marca do seletor global (lib/marca.ts).
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ArrowDown, Check, ExternalLink } from "lucide-react";
 import Lightbox from "@/components/Lightbox";
 import MandarExemplos from "@/components/MandarExemplos";
 import { CARD } from "@/lib/theme";
+import { LOJA_META, Loja, escolherLoja, useLoja } from "@/lib/marca";
 
 // ── Tipos do decisoes.json ───────────────────────────────────────────────────
 type ItemFoto = {
@@ -45,6 +48,9 @@ const PREFIXO = "decisao:";
 const chave = (perguntaId: string) => `${PREFIXO}${perguntaId}`;
 // Opções que pedem explicação ("São diferentes (explique no comentário)", "Discordo (…)").
 const PEDE_COMENTARIO = /explique no coment/i;
+
+// De que marca é a pergunta (pelo id do decisoes_spec.json).
+const lojaDaPergunta = (id: string): Loja => (id.startsWith("ville_") ? "ville" : "sundek");
 
 type AbrirFoto = (item: ItemFoto, indice: number) => void;
 
@@ -412,6 +418,8 @@ export default function Decisoes() {
   const [erroRespostas, setErroRespostas] = useState(false);
   const [lightbox, setLightbox] = useState<{ fotos: string[]; i: number; legenda: string } | null>(null);
   const [tentativa, setTentativa] = useState(0);
+  const loja = useLoja();
+  const outra: Loja = loja === "sundek" ? "ville" : "sundek";
 
   useEffect(() => {
     let vivo = true;
@@ -447,7 +455,20 @@ export default function Decisoes() {
     };
   }, [tentativa]);
 
-  const perguntas = useMemo(() => (doc ? doc.secoes.flatMap((s) => s.perguntas) : []), [doc]);
+  // Seções só com as perguntas da marca escolhida (seção que fica vazia some).
+  const secoes = useMemo(
+    () =>
+      (doc?.secoes ?? [])
+        .map((s) => ({ ...s, perguntas: s.perguntas.filter((p) => lojaDaPergunta(p.id) === loja) }))
+        .filter((s) => s.perguntas.length > 0),
+    [doc, loja]
+  );
+  const perguntas = useMemo(() => secoes.flatMap((s) => s.perguntas), [secoes]);
+  // Quantas perguntas a outra marca tem (pro atalho quando esta não tem nenhuma).
+  const nOutra = useMemo(
+    () => (doc?.secoes ?? []).reduce((a, s) => a + s.perguntas.filter((p) => lojaDaPergunta(p.id) === outra).length, 0),
+    [doc, outra]
+  );
   const numeroDe = useMemo(() => new Map(perguntas.map((p, i) => [p.id, i + 1])), [perguntas]);
   const total = perguntas.length;
   const respondida = (id: string) => !!respostas[id]?.reaction;
@@ -488,8 +509,8 @@ export default function Decisoes() {
           <header>
             <h1 className="text-[32px] lg:text-[40px] font-bold leading-none text-ink">Decisões</h1>
             <p className="mt-2 text-[15px] text-ink-2 max-w-[65ch]">
-              Perguntas em aberto para ajustar a IA às suas regras. Escolha uma opção em cada uma; a resposta salva na
-              hora e pode ser mudada depois.
+              Perguntas em aberto para ajustar a IA da {LOJA_META[loja].nome} às suas regras. Escolha uma opção em cada uma;
+              a resposta salva na hora e pode ser mudada depois.
             </p>
           </header>
 
@@ -549,13 +570,24 @@ export default function Decisoes() {
                 )}
 
                 {total === 0 && (
-                  <p className="rounded-xl bg-surface border border-line px-4 py-4 text-sm text-ink-2">
-                    Nenhuma pergunta em aberto agora: tudo o que você respondeu já foi aplicado na IA. Quando surgir uma
-                    dúvida nova, ela aparece aqui.
-                  </p>
+                  <div className="rounded-xl bg-surface border border-line px-4 py-4 text-sm text-ink-2 flex flex-col sm:flex-row sm:items-center gap-3">
+                    <p className="flex-1">
+                      Nenhuma pergunta da {LOJA_META[loja].nome} em aberto agora: tudo o que você respondeu já foi aplicado
+                      na IA. Quando surgir uma dúvida nova, ela aparece aqui.
+                    </p>
+                    {nOutra > 0 && (
+                      <button
+                        type="button"
+                        onClick={() => escolherLoja(outra)}
+                        className="flex-none self-start sm:self-auto h-9 px-3 rounded-lg text-sm bg-surface border border-line text-ink-2 hover:text-ink hover:border-line-strong transition-colors"
+                      >
+                        {nOutra === 1 ? `Ver a pergunta da ${LOJA_META[outra].nome}` : `Ver as ${nOutra} perguntas da ${LOJA_META[outra].nome}`}
+                      </button>
+                    )}
+                  </div>
                 )}
 
-                {doc.secoes.map((s) => {
+                {secoes.map((s) => {
                   const feitas = s.perguntas.filter((p) => respondida(p.id)).length;
                   return (
                     <section key={s.id} aria-labelledby={`secao-${s.id}`} className="flex flex-col gap-4">
@@ -585,7 +617,7 @@ export default function Decisoes() {
                 })}
 
                 {/* Exemplos de falsos/originais com link e fotos (calibra a autenticidade da Ville) */}
-                <MandarExemplos />
+                {loja === "ville" && <MandarExemplos />}
 
                 {total > 0 && (
                   <p className="text-center text-sm text-ink-3 num">

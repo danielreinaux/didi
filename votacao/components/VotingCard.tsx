@@ -6,7 +6,8 @@ import Image from "next/image";
 import Lightbox from "@/components/Lightbox";
 import { Item, Reaction, REACTIONS } from "@/lib/types";
 import { eNovo, eur, haQuanto } from "@/lib/tempo";
-import { Archive, ArchiveRestore, Check, ChevronRight, ExternalLink, HandCoins, TriangleAlert } from "lucide-react";
+import { COR_TOM, fichaVille, lojaDaMarca, manchaOnde, rotuloFlag } from "@/lib/marca";
+import { Archive, ArchiveRestore, Check, ChevronRight, ExternalLink, HandCoins, Info, TriangleAlert } from "lucide-react";
 
 interface Props {
   item: Item;
@@ -18,12 +19,6 @@ interface Props {
   agora: number; // relógio da página (atualiza a cada minuto) — "no ar há X" e selo NOVO
   destaque?: boolean; // aberto pelo link do e-mail (?id=): borda chamando atenção
 }
-
-// Rótulos amigáveis pras flags de aviso vindas do score (Ville).
-const FLAG_LABELS: Record<string, string> = {
-  verificar_autenticidade: "verificar autenticidade (sem foto do bolso)",
-  rever_fotos: "rever fotos (padrão indefinido)",
-};
 
 export default function VotingCard({ item, reacaoInicial, obsInicial, onReacao, arquivado, onArquivar, agora, destaque }: Props) {
   const [reacao, setReacao] = useState<Reaction | null>(reacaoInicial ?? null);
@@ -133,11 +128,21 @@ export default function VotingCard({ item, reacaoInicial, obsInicial, onReacao, 
   const base = item.preco_base ?? null;
   const total = base != null ? base + (item.taxa ?? 0) + (item.frete ?? 0) : null;
 
+  // Ville: ficha com o que importa nela (padrão, cor e faixa, cordão, fecho, autenticidade,
+  // etiqueta). Quando a ficha vem, ela substitui a lista de destaques (que repete o mesmo).
+  const ville = lojaDaMarca(item.marca) === "ville";
+  const ficha = ville ? fichaVille(item.ville) : [];
   // "cor Azul marinho (maravilhoso)" → "Cor azul marinho (maravilhoso)": a lista do que a IA conferiu.
-  const conferido = (item.destaques ?? []).map((d) => {
-    const t = d.replace(/_/g, " ");
-    return t.charAt(0).toUpperCase() + t.slice(1);
-  });
+  const conferido = ficha.length
+    ? []
+    : (item.destaques ?? []).map((d) => {
+        const t = d.replace(/_/g, " ");
+        return t.charAt(0).toUpperCase() + t.slice(1);
+      });
+  // Avisos do score: os conhecidos com rótulo (a mancha diz onde, quando vem); os novos
+  // aparecem crus e discretos.
+  const onde = manchaOnde(item.conservacao);
+  const avisos = (item.flags ?? []).map((f) => ({ f, aviso: rotuloFlag(f, onde) }));
   const veredito = compravel ? "Comprável" : "Barganha";
 
   return (
@@ -277,6 +282,18 @@ export default function VotingCard({ item, reacaoInicial, obsInicial, onReacao, 
           </p>
         )}
 
+        {ficha.length > 0 && (
+          <dl className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-sm" aria-label="Ficha da Vilebrequin">
+            {ficha.map((c) => (
+              <div key={c.chave} className="rounded-lg bg-canvas px-2.5 py-2 min-w-0">
+                <dt className="text-[11px] text-ink-3">{c.rotulo}</dt>
+                <dd className={`font-semibold leading-snug break-words ${COR_TOM[c.tom]}`}>{c.valor}</dd>
+                {c.detalhe && <dd className="text-[11px] text-ink-3 leading-snug break-words">{c.detalhe}</dd>}
+              </div>
+            ))}
+          </dl>
+        )}
+
         {conferido.length > 0 && (
           <ul className="flex flex-col gap-1 text-sm text-ink-2" aria-label="O que a IA conferiu">
             {conferido.map((d, i) => (
@@ -288,15 +305,27 @@ export default function VotingCard({ item, reacaoInicial, obsInicial, onReacao, 
           </ul>
         )}
 
-        {/* Avisos (Ville): ex. verificar autenticidade, rever fotos */}
-        {item.flags && item.flags.length > 0 && (
-          <ul className="flex flex-col gap-1 text-sm text-deal">
-            {item.flags.map((f, i) => (
-              <li key={i} className="flex gap-2 items-start">
-                <TriangleAlert size={15} strokeWidth={2} className="flex-none mt-0.5" aria-hidden />
-                {FLAG_LABELS[f] ?? f.replace(/_/g, " ")}
-              </li>
-            ))}
+        {/* Avisos (Ville): ex. verificar autenticidade, rever fotos, mancha */}
+        {avisos.length > 0 && (
+          <ul className="flex flex-col gap-1 text-sm" aria-label="Avisos">
+            {avisos.map(({ f, aviso }, i) =>
+              aviso ? (
+                <li
+                  key={i}
+                  className={`flex gap-2 items-start ${
+                    aviso.forte ? "text-urgent font-medium bg-urgent-soft rounded-lg px-2.5 py-1.5" : "text-deal"
+                  }`}
+                >
+                  <TriangleAlert size={15} strokeWidth={aviso.forte ? 2.2 : 2} className="flex-none mt-0.5" aria-hidden />
+                  <span className="min-w-0 break-words">{aviso.rotulo}</span>
+                </li>
+              ) : (
+                <li key={i} className="flex gap-2 items-start text-xs text-ink-3" title="Aviso novo da IA, ainda sem texto no app">
+                  <Info size={13} strokeWidth={2} className="flex-none mt-px" aria-hidden />
+                  <span className="min-w-0 break-all">{f}</span>
+                </li>
+              )
+            )}
           </ul>
         )}
 

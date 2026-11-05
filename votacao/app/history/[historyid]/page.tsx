@@ -1,7 +1,7 @@
 "use client";
 
 // Rota /history/[historyid] — visão completa de uma rodada: métricas + produtos.
-// Lê o estático /history/<run_id>.json.
+// Lê o estático /history/<run_id>.json. Mostra só a marca do seletor global (lib/marca.ts).
 
 import { use, useEffect, useMemo, useState } from "react";
 import {
@@ -9,7 +9,6 @@ import {
   Produto,
   Marca,
   Decisao,
-  MetricasMarca,
   MARCA_LABEL,
   DECISAO_META,
   labelMotivo,
@@ -18,12 +17,13 @@ import {
   fmtUSD,
   fmtNum,
   fmtDuracao,
+  runDaMarca,
 } from "@/lib/history";
 import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
 import { RunLinks, RunErroBadge } from "@/components/RunLinks";
+import { LOJA_META, LOJAS, Loja, comMarca, escolherLoja, lojaDaMarca, useLoja } from "@/lib/marca";
 
-type Escopo = "total" | Marca;
 type FiltroDec = "candidatos" | Decisao;
 
 export default function RodadaDetalhe({ params }: { params: Promise<{ historyid: string }> }) {
@@ -31,8 +31,9 @@ export default function RodadaDetalhe({ params }: { params: Promise<{ historyid:
   const [rodada, setRodada] = useState<Rodada | null>(null);
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState(false);
-  const [escopo, setEscopo] = useState<Escopo>("total");
   const [filtroDec, setFiltroDec] = useState<FiltroDec>("candidatos");
+  const loja = useLoja();
+  const escopo: Marca = LOJA_META[loja].marca;
 
   useEffect(() => {
     fetch(`/history/${historyid}.json`)
@@ -45,21 +46,12 @@ export default function RodadaDetalhe({ params }: { params: Promise<{ historyid:
       .finally(() => setCarregando(false));
   }, [historyid]);
 
-  const marcasDisponiveis = rodada?.marcas ?? [];
-  const temDuasMarcas = marcasDisponiveis.length > 1;
-
-  // Métricas do escopo selecionado (total = soma; marca = a marca).
-  const metricasEscopo = useMemo(() => {
-    if (!rodada) return null;
-    if (escopo === "total") return combinarMetricas(rodada);
-    return rodada.metricas[escopo] ?? null;
-  }, [rodada, escopo]);
-
-  // Produtos filtrados por marca + decisão.
+  // Métricas e produtos só da marca escolhida.
+  const metricasEscopo = rodada?.metricas[escopo] ?? null;
   const produtosFiltrados = useMemo(() => {
     if (!rodada) return [];
     return rodada.produtos.filter((p) => {
-      if (escopo !== "total" && p.marca !== escopo) return false;
+      if (p.marca !== escopo) return false;
       if (filtroDec === "candidatos") return p.decisao === "compravel" || p.decisao === "medio";
       return p.decisao === filtroDec;
     });
@@ -73,21 +65,48 @@ export default function RodadaDetalhe({ params }: { params: Promise<{ historyid:
       </Centro>
     );
   }
-  if (erro || !rodada || !metricasEscopo) {
+  if (erro || !rodada) {
     return (
       <Centro>
         <span className="text-ink font-medium">Essa rodada não está mais no histórico.</span>
         <span className="text-ink-3">O histórico guarda só as rodadas mais recentes.</span>
-        <Link href="/history" className="mt-2 h-9 px-4 inline-flex items-center rounded-lg text-sm font-semibold bg-ink text-white">
+        <Link href={comMarca("/history", loja)} className="mt-2 h-9 px-4 inline-flex items-center rounded-lg text-sm font-semibold bg-ink text-white">
           Ver as rodadas
         </Link>
       </Centro>
     );
   }
+  // A rodada existe, mas a marca escolhida não rodou nela (ex.: Ville antes de voltar do teste).
+  if (!metricasEscopo) {
+    const outras = LOJAS.filter((l) => l !== loja && rodada.marcas.includes(LOJA_META[l].marca));
+    return (
+      <Centro>
+        <span className="text-ink font-medium">A {LOJA_META[loja].nome} não rodou nesta rodada.</span>
+        <span className="text-ink-3">
+          {loja === "ville" ? "A Ville está em teste: as rodadas dela aparecem no histórico assim que a primeira terminar." : "Escolha outra rodada no histórico."}
+        </span>
+        <span className="mt-2 flex items-center gap-2 flex-wrap justify-center">
+          {outras.map((l) => (
+            <button
+              key={l}
+              type="button"
+              onClick={() => escolherLoja(l)}
+              className="h-9 px-4 inline-flex items-center rounded-lg text-sm bg-surface border border-line text-ink-2 hover:text-ink hover:border-line-strong"
+            >
+              Ver a {LOJA_META[l].nome} nesta rodada
+            </button>
+          ))}
+          <Link href={comMarca("/history", loja)} className="h-9 px-4 inline-flex items-center rounded-lg text-sm font-semibold bg-ink text-white">
+            Ver as rodadas
+          </Link>
+        </span>
+      </Centro>
+    );
+  }
 
-  const t = rodada.metricas.total;
   const m = metricasEscopo;
-  const contagemDec = (d: Decisao) => rodada.produtos.filter((p) => (escopo === "total" || p.marca === escopo) && p.decisao === d).length;
+  const run = runDaMarca(rodada, escopo);
+  const contagemDec = (d: Decisao) => rodada.produtos.filter((p) => p.marca === escopo && p.decisao === d).length;
   const nCandidatos = m.compraveis + m.barganha;
   const maxMotivo = Math.max(1, ...Object.values(m.por_motivo));
 
@@ -103,7 +122,7 @@ export default function RodadaDetalhe({ params }: { params: Promise<{ historyid:
     <div className="h-full overflow-y-auto">
       <div className="app-wrap pt-6 lg:pt-10 pb-12">
         <div className="max-w-[1040px]">
-          <Link href="/history" className="inline-flex items-center gap-1 text-sm text-ink-2 hover:text-ink -ml-1">
+          <Link href={comMarca("/history", loja)} className="inline-flex items-center gap-1 text-sm text-ink-2 hover:text-ink -ml-1">
             <ChevronLeft size={16} aria-hidden />
             Rodadas
           </Link>
@@ -118,32 +137,14 @@ export default function RodadaDetalhe({ params }: { params: Promise<{ historyid:
                 {m.barganha === 1 ? "1 barganha" : `${fmtNum(m.barganha)} barganhas`} à venda.
               </p>
               <div className="mt-3 flex items-center gap-2 flex-wrap">
-                <RunErroBadge meta={rodada} />
+                <RunErroBadge meta={run} />
                 {rodada.fonte === "backfill" && (
                   <span className="text-xs text-ink-3">Reconstruída do histórico do git (sem run no GitHub Actions).</span>
                 )}
               </div>
             </div>
-            <RunLinks meta={rodada} tamanho="md" />
+            <RunLinks meta={run} tamanho="md" />
           </div>
-
-          {/* Escopo: total / marca (só faz diferença com mais de uma marca na rodada) */}
-          {temDuasMarcas && (
-            <div className="mt-5 flex items-center gap-1.5 flex-wrap" role="group" aria-label="Marca">
-              {(["total", ...marcasDisponiveis] as Escopo[]).map((e) => (
-                <button
-                  key={e}
-                  onClick={() => setEscopo(e)}
-                  aria-pressed={escopo === e}
-                  className={`h-9 px-3 rounded-full text-sm transition-colors ${
-                    escopo === e ? "bg-ink text-white" : "bg-surface border border-line text-ink-2 hover:text-ink hover:border-line-strong"
-                  }`}
-                >
-                  {e === "total" ? "Todas as marcas" : MARCA_LABEL[e as Marca]}
-                </button>
-              ))}
-            </div>
-          )}
 
           <main className="mt-8 flex flex-col gap-8">
             {/* ── Desta rodada ── */}
@@ -157,21 +158,15 @@ export default function RodadaDetalhe({ params }: { params: Promise<{ historyid:
                 <Stat v={fmtNum(m.calls)} l="Chamadas à IA" />
                 <Stat v={fmtNum(m.novos)} l="Novos na última hora" cor="text-info" />
               </dl>
-              {escopo === "total" && temDuasMarcas && (
-                <Nota>
-                  Soma de todas as marcas. {t.custo_usd ? "O custo em dólar do dia é contabilizado separadamente." : ""}
-                </Nota>
+              {rodada.marcas.length > 1 && (
+                <Nota>Só a {MARCA_LABEL[escopo]}; troque a marca no seletor para ver a outra.</Nota>
               )}
-              {"duracao_s" in m && (m as MetricasMarca).duracao_s != null && (
-                <Nota>Tempo de análise da IA (Ville): {fmtDuracao((m as MetricasMarca).duracao_s)}.</Nota>
-              )}
+              {m.duracao_s != null && <Nota>Tempo de análise da IA: {fmtDuracao(m.duracao_s)}.</Nota>}
             </section>
 
             {/* ── Estado do acervo ── */}
             <section>
-              <Titulo>
-                Acervo à venda depois da rodada{escopo !== "total" ? `, ${MARCA_LABEL[escopo as Marca]}` : ""}
-              </Titulo>
+              <Titulo>Acervo à venda depois da rodada</Titulo>
               <dl className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 bg-surface border border-line rounded-xl overflow-hidden">
                 <Stat v={fmtNum(nCandidatos)} l="Candidatos" />
                 <Stat v={fmtNum(m.compraveis)} l="Compráveis" cor="text-buy" />
@@ -269,7 +264,7 @@ export default function RodadaDetalhe({ params }: { params: Promise<{ historyid:
                   )}
                   <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
                     {produtosFiltrados.map((p) => (
-                      <ProdutoCard key={`${p.marca}-${p.id}`} p={p} runId={historyid} />
+                      <ProdutoCard key={`${p.marca}-${p.id}`} p={p} runId={historyid} loja={lojaDaMarca(p.marca)} />
                     ))}
                   </div>
                 </>
@@ -299,55 +294,18 @@ function Nota({ children }: { children: React.ReactNode }) {
   return <p className="mt-2 text-xs text-ink-3 leading-relaxed">{children}</p>;
 }
 
-// Combina Sundek + Ville numa métrica "total" com por_motivo/por_etapa mesclados.
-function combinarMetricas(rodada: Rodada): MetricasMarca {
-  const marcas = rodada.marcas.map((mk) => rodada.metricas[mk]).filter(Boolean) as MetricasMarca[];
-  const soma = (f: (x: MetricasMarca) => number) => marcas.reduce((a, x) => a + (f(x) || 0), 0);
-  const por_motivo: Record<string, number> = {};
-  const por_etapa: MetricasMarca["por_etapa"] = {};
-  let duracao = 0;
-  let temDuracao = false;
-  for (const x of marcas) {
-    for (const [k, v] of Object.entries(x.por_motivo)) por_motivo[k] = (por_motivo[k] || 0) + v;
-    for (const [k, v] of Object.entries(x.por_etapa)) por_etapa[k] = v;
-    if (x.duracao_s != null) { duracao += x.duracao_s; temDuracao = true; }
-  }
-  const por_motivo_ord = Object.fromEntries(Object.entries(por_motivo).sort((a, b) => b[1] - a[1]));
-  return {
-    acervo_total: soma((x) => x.acervo_total),
-    ativos: soma((x) => x.ativos),
-    vendidos: soma((x) => x.vendidos),
-    removidos: soma((x) => x.removidos),
-    candidatos: soma((x) => x.candidatos),
-    compraveis: soma((x) => x.compraveis),
-    barganha: soma((x) => x.barganha),
-    descartados: soma((x) => x.descartados),
-    nao_classificados: soma((x) => x.nao_classificados),
-    por_motivo: por_motivo_ord,
-    novos: soma((x) => x.novos),
-    custo_usd: Number(soma((x) => x.custo_usd).toFixed(6)),
-    custo_brl: Number(soma((x) => x.custo_brl).toFixed(2)),
-    tok_in: soma((x) => x.tok_in),
-    tok_out: soma((x) => x.tok_out),
-    calls: soma((x) => x.calls),
-    duracao_s: temDuracao ? duracao : null,
-    custo_piso: marcas.some((x) => x.custo_piso),
-    por_etapa,
-  };
-}
-
 // Os descartados vêm amostrados (top score) quando o total > incluídos.
-function amostrado(rodada: Rodada, escopo: Escopo): boolean {
-  const infos = escopo === "total" ? Object.values(rodada.produtos_info) : [rodada.produtos_info[escopo]].filter(Boolean);
-  return infos.some((i) => i && i.descartados_total > i.descartados_incluidos);
+function amostrado(rodada: Rodada, escopo: Marca): boolean {
+  const i = rodada.produtos_info[escopo];
+  return !!i && i.descartados_total > i.descartados_incluidos;
 }
 
-function ProdutoCard({ p, runId }: { p: Produto; runId: string }) {
+function ProdutoCard({ p, runId, loja }: { p: Produto; runId: string; loja: Loja }) {
   const meta = DECISAO_META[p.decisao];
   const foto = p.fotos[0];
   return (
     <a
-      href={`/history/${runId}/${p.id}`}
+      href={comMarca(`/history/${runId}/${p.id}`, loja)}
       className="bg-surface border border-line rounded-xl overflow-hidden flex flex-col hover:border-line-strong transition-colors"
     >
       <div className="relative w-full aspect-square bg-sunken">

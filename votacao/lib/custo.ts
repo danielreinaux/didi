@@ -1,6 +1,20 @@
 // Tipos + helpers do dashboard de custo (/custo). Fonte: /history/custo.json,
 // gerado por src/build/history.py (_build_custo). Uma linha por rodada com o custo
-// total, o split por marca e o custo por etapa do pipeline Sundek.
+// total, o split por marca e o custo por etapa (chaves "sundek:…" e "ville:…").
+import { LOJA_META, Loja } from "@/lib/marca";
+
+// Números de uma marca numa rodada (history.py, a partir de nov/2026).
+export interface CustoMarca {
+  custo_brl: number;
+  custo_usd: number;
+  calls: number;
+  tok_in: number;
+  tok_out: number;
+  novos: number;
+  candidatos: number;
+  ativos: number;
+  descartados: number;
+}
 
 export interface RodadaCusto {
   run_id: string;
@@ -17,7 +31,10 @@ export interface RodadaCusto {
   descartados: number;
   sundek_usd: number;
   ville_usd: number;
-  etapas: Record<string, number>; // custo_usd por etapa (Sundek)
+  etapas: Record<string, number>; // custo_usd por etapa, prefixado pela marca
+  // Só nas rodadas gravadas a partir de nov/2026; antes disso cada rodada era de uma marca só.
+  marcas?: string[];
+  por_marca?: Partial<Record<"sundek" | "vilebrequin", CustoMarca>>;
 }
 
 export interface DocCusto {
@@ -76,9 +93,34 @@ export function custo4o(r: RodadaCusto): number {
   return s;
 }
 
-// Custo (USD) de TODAS as etapas Sundek de uma rodada (base do % 4o).
+// Custo (USD) de TODAS as etapas da rodada (base do % 4o).
 export function custoEtapas(r: RodadaCusto): number {
   let s = 0;
   for (const v of Object.values(r.etapas)) s += v;
   return s;
+}
+
+// ── Recorte por marca (seletor global, lib/marca.ts) ─────────────────────────
+// A marca rodou nesta rodada? Rodadas antigas (sem `marcas`): a Sundek sempre rodou; a Ville
+// só se gastou algo ou tem etapa dela.
+export function rodouNaRodada(r: RodadaCusto, loja: Loja): boolean {
+  if (r.marcas) return r.marcas.includes(LOJA_META[loja].marca);
+  if (loja === "sundek") return true;
+  return (r.ville_usd || 0) > 0 || Object.keys(r.etapas || {}).some((k) => k.startsWith("ville:"));
+}
+
+// A linha da rodada só com os números da marca (custo, chamadas, tokens, etapas…). null se ela
+// não rodou. Sem `por_marca` e com a outra marca fora, o total da rodada já é desta marca.
+export function custoDaMarca(r: RodadaCusto, loja: Loja): RodadaCusto | null {
+  if (!rodouNaRodada(r, loja)) return null;
+  const etapas = Object.fromEntries(
+    Object.entries(r.etapas || {}).filter(([k]) => (loja === "ville" ? k.startsWith("ville:") : !k.startsWith("ville:")))
+  );
+  const pm = r.por_marca?.[LOJA_META[loja].marca];
+  if (pm) return { ...r, ...pm, etapas };
+  const outra: Loja = loja === "sundek" ? "ville" : "sundek";
+  if (!rodouNaRodada(r, outra)) return { ...r, etapas };
+  // Rodada antiga com as duas marcas: só o custo tem quebra (chamadas/tokens ficam os do total).
+  const usd = (loja === "sundek" ? r.sundek_usd : r.ville_usd) || 0;
+  return { ...r, custo_usd: usd, custo_brl: Math.round(usd * 5 * 100) / 100, etapas };
 }

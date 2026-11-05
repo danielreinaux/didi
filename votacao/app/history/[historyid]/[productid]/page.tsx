@@ -7,6 +7,7 @@ import { use, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { Rodada, Produto, MESES } from "@/lib/history";
 import HistoryProdutoDetalhe, { CentroHistory } from "@/components/HistoryProdutoDetalhe";
+import { comMarca, useLoja } from "@/lib/marca";
 
 export default function ProdutoDetalheRodada({
   params,
@@ -17,6 +18,7 @@ export default function ProdutoDetalheRodada({
   const [rodada, setRodada] = useState<Rodada | null>(null);
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState(false);
+  const loja = useLoja();
 
   useEffect(() => {
     fetch(`/history/${historyid}.json`)
@@ -46,7 +48,7 @@ export default function ProdutoDetalheRodada({
     return (
       <CentroHistory>
         <span className="text-ink font-medium">Esse anúncio não está nesta rodada.</span>
-        <Link href={`/history/${historyid}`} className="mt-2 h-9 px-4 inline-flex items-center rounded-lg text-sm font-semibold bg-ink text-white">
+        <Link href={comMarca(`/history/${historyid}`, loja)} className="mt-2 h-9 px-4 inline-flex items-center rounded-lg text-sm font-semibold bg-ink text-white">
           Voltar à rodada
         </Link>
       </CentroHistory>
@@ -56,7 +58,7 @@ export default function ProdutoDetalheRodada({
   return (
     <HistoryProdutoDetalhe
       produto={produto}
-      voltarHref={`/history/${historyid}`}
+      voltarHref={comMarca(`/history/${historyid}`, loja)}
       voltarLabel={`Rodada de ${tituloRodada(rodada.quando)}`}
     />
   );

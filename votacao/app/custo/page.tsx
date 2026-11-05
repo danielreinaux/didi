@@ -3,7 +3,8 @@
 // Rota /custo — dashboard de custo das rodadas. Lê /history/custo.json (1 fetch) e
 // recalcula tudo no cliente conforme o período: KPIs, série temporal, breakdown por
 // etapa (gpt-4o vs mini), custo por marca, correlações e projeção. Espelha a análise
-// do relatório de custo, mas viva e filtrável.
+// do relatório de custo, mas viva e filtrável. Os números são da marca do seletor global
+// (lib/marca.ts); só o quadro "Custo por marca" compara as duas.
 
 import { useEffect, useMemo, useState } from "react";
 import { CARD, SEGMENTED_ACTIVE, SEGMENTED_BTN, SEGMENTED_GROUP, SEGMENTED_INACTIVE } from "@/lib/theme";
@@ -13,10 +14,12 @@ import {
   pearson,
   custo4o,
   custoEtapas,
+  custoDaMarca,
   labelEtapa,
   ETAPAS_4O,
 } from "@/lib/custo";
 import { fmtBRL, fmtNum, MESES } from "@/lib/history";
+import { LOJA_META, VILLE_EM_TESTE, escolherLoja, useLoja } from "@/lib/marca";
 
 const USD_BRL = 5; // mesma taxa do pipeline (history.py)
 type Periodo = "mes" | "ano" | "tudo" | "custom" | string;
@@ -35,7 +38,8 @@ function fmtDiaMes(iso: string): string {
 }
 
 export default function DashboardCusto() {
-  const [rodadas, setRodadas] = useState<RodadaCusto[]>([]);
+  const loja = useLoja();
+  const [todasRodadas, setRodadas] = useState<RodadaCusto[]>([]);
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState(false);
   const [periodo, setPeriodo] = useState<Periodo>("tudo");
@@ -50,20 +54,27 @@ export default function DashboardCusto() {
       .finally(() => setCarregando(false));
   }, []);
 
+  // Rodadas em que a marca escolhida rodou, com os números só dela.
+  const rodadas = useMemo(
+    () => todasRodadas.map((r) => custoDaMarca(r, loja)).filter((r): r is RodadaCusto => r !== null),
+    [todasRodadas, loja]
+  );
+  const villeSemRodada = loja === "ville" && VILLE_EM_TESTE && !carregando && !erro && rodadas.length === 0;
+
   const mesesDisponiveis = useMemo(() => {
     const set = new Set(rodadas.map((r) => chaveMes(r.quando)).filter(Boolean));
     return Array.from(set).sort().reverse();
   }, [rodadas]);
 
-  // Filtro de período (mesma lógica do /history).
-  const noPeriodo = useMemo(() => {
-    if (periodo === "tudo") return rodadas;
+  // Filtro de período (mesma lógica do /history). Vale pra marca escolhida e, no quadro
+  // "Custo por marca", pras duas.
+  const filtrarPeriodo = useMemo(() => {
     const agora = new Date();
     const anoAtual = agora.getFullYear();
     const mesAtual = `${anoAtual}-${String(agora.getMonth() + 1).padStart(2, "0")}`;
     const tDe = periodo === "custom" && de ? new Date(`${de}T00:00:00`).getTime() : null;
     const tAte = periodo === "custom" && ate ? new Date(`${ate}T23:59:59`).getTime() : null;
-    return rodadas.filter((r) => {
+    return (lista: RodadaCusto[]) => periodo === "tudo" ? lista : lista.filter((r) => {
       const d = new Date(r.quando);
       if (isNaN(d.getTime())) return false;
       if (periodo === "ano") return d.getFullYear() === anoAtual;
@@ -76,7 +87,9 @@ export default function DashboardCusto() {
       }
       return chaveMes(r.quando) === periodo;
     });
-  }, [rodadas, periodo, de, ate]);
+  }, [periodo, de, ate]);
+  const noPeriodo = useMemo(() => filtrarPeriodo(rodadas), [filtrarPeriodo, rodadas]);
+  const todasNoPeriodo = useMemo(() => filtrarPeriodo(todasRodadas), [filtrarPeriodo, todasRodadas]);
 
   // Ordenadas por data (série temporal) e só as pagas (custo > 0) pra correlação.
   const serie = useMemo(() => [...noPeriodo].sort((a, b) => a.quando.localeCompare(b.quando)), [noPeriodo]);
@@ -117,13 +130,13 @@ export default function DashboardCusto() {
     return { lista, max, pct4o, pctMini: 100 - pct4o };
   }, [noPeriodo]);
 
-  // ── Custo por marca (USD → BRL) ─────────────────────────────────────────
+  // ── Custo por marca (USD → BRL): compara as duas, no período, com todas as rodadas ──
   const marca = useMemo(() => {
-    const sundek = noPeriodo.reduce((a, r) => a + (r.sundek_usd || 0), 0) * USD_BRL;
-    const ville = noPeriodo.reduce((a, r) => a + (r.ville_usd || 0), 0) * USD_BRL;
+    const sundek = todasNoPeriodo.reduce((a, r) => a + (r.sundek_usd || 0), 0) * USD_BRL;
+    const ville = todasNoPeriodo.reduce((a, r) => a + (r.ville_usd || 0), 0) * USD_BRL;
     const total = sundek + ville || 1;
     return { sundek, ville, pctSundek: (sundek / total) * 100, pctVille: (ville / total) * 100 };
-  }, [noPeriodo]);
+  }, [todasNoPeriodo]);
 
   // ── Correlações (recalculadas pro período, sobre as pagas) ──────────────
   const correls = useMemo(() => {
@@ -145,7 +158,9 @@ export default function DashboardCusto() {
   const resumo =
     carregando || erro
       ? "Quanto a IA custa em cada rodada do robô."
-      : kpi.n === 0
+      : villeSemRodada
+        ? "A Ville está em teste: o custo dela aparece aqui assim que a primeira rodada terminar."
+        : kpi.n === 0
         ? "Nenhuma rodada neste período. Escolha outro período acima."
         : `${fmtBRL(kpi.custoTotal)} gastos com IA em ${fmtNum(kpi.n)} rodadas, cerca de ${fmtBRL(kpi.custoDia)} por dia.`;
 
@@ -215,6 +230,21 @@ export default function DashboardCusto() {
             <p className="py-20 text-center text-sm text-ink-2" role="alert">
               O arquivo de custos não carregou. Ele é gerado a cada rodada; atualize a página em alguns minutos.
             </p>
+          ) : villeSemRodada ? (
+            <div className="py-16 sm:py-20 text-center max-w-[48ch] mx-auto">
+              <p className="text-ink font-medium">A Ville está em teste</p>
+              <p className="mt-1 text-sm text-ink-2">
+                O custo da IA na Vilebrequin (por rodada, por etapa e a projeção do mês) aparece aqui assim que a primeira
+                rodada terminar.
+              </p>
+              <button
+                type="button"
+                onClick={() => escolherLoja("sundek")}
+                className="mt-4 h-9 px-4 rounded-lg text-sm bg-surface border border-line text-ink-2 hover:text-ink hover:border-line-strong transition-colors"
+              >
+                Ver os custos da Sundek
+              </button>
+            </div>
           ) : kpi.n === 0 ? (
             <p className="py-20 text-center text-sm text-ink-3">Nenhuma rodada neste período.</p>
           ) : (
@@ -253,6 +283,9 @@ export default function DashboardCusto() {
                 <section className={`${CARD} p-5`}>
                   <h2 className="text-lg font-semibold text-ink leading-tight">Custo por etapa</h2>
                   <p className="text-sm text-ink-3 mb-4">Onde o dinheiro vai em cada rodada.</p>
+                  {etapas.lista.length === 0 && (
+                    <p className="text-sm text-ink-3">Ainda sem custo por etapa nas rodadas deste período.</p>
+                  )}
                   <div className="flex flex-col gap-2.5">
                     {etapas.lista.map((e) => (
                       <div key={e.et} className="grid grid-cols-[minmax(0,140px)_1fr_auto] items-center gap-3">
@@ -315,13 +348,16 @@ export default function DashboardCusto() {
                     );
                   })}
                 </div>
-                <p className="text-sm mt-5 text-ink-2 leading-relaxed max-w-[75ch]">
-                  O custo cresce quase 1:1 com chamadas e tokens; com itens novos a relação é fraca. Candidatos e acervo aparecem
-                  negativos: rodadas com acervo maior tendem a custar menos (mais itens já classificados, menos trabalho novo).
-                </p>
+                {loja === "sundek" && (
+                  <p className="text-sm mt-5 text-ink-2 leading-relaxed max-w-[75ch]">
+                    O custo cresce quase 1:1 com chamadas e tokens; com itens novos a relação é fraca. Candidatos e acervo aparecem
+                    negativos: rodadas com acervo maior tendem a custar menos (mais itens já classificados, menos trabalho novo).
+                  </p>
+                )}
               </section>
 
-              {/* Alavancas, da maior para a menor */}
+              {/* Alavancas, da maior para a menor (análise feita no pipeline da Sundek) */}
+              {loja === "sundek" && (
               <section className={`${CARD} p-5`}>
                 <h2 className="text-lg font-semibold text-ink leading-tight">Onde dá para economizar</h2>
                 <p className="text-sm text-ink-3 mb-2">Da alavanca de maior impacto para a de menor.</p>
@@ -340,10 +376,12 @@ export default function DashboardCusto() {
                   </Lever>
                 </div>
               </section>
+              )}
 
               <p className="text-xs text-ink-3 num">
-                Fonte: /history/custo.json, {fmtNum(rodadas.length)} rodadas no total. O custo por etapa só existe nas rodadas
-                Sundek com detalhe.
+                {loja === "sundek"
+                  ? `Fonte: /history/custo.json, ${fmtNum(rodadas.length)} rodadas no total. O custo por etapa só existe nas rodadas Sundek com detalhe.`
+                  : `Fonte: /history/custo.json, ${fmtNum(rodadas.length)} rodadas com a ${LOJA_META[loja].nome}.`}
               </p>
             </>
           )}

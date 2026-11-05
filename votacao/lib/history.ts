@@ -42,7 +42,10 @@ export interface RodadaIndex extends RunMeta {
   fonte: "deploy" | "backfill";
   quando: string; // ISO com offset -03:00
   marcas: Marca[];
-  resumo: ResumoRodada;
+  resumo: ResumoRodada; // soma das marcas
+  // Resumo de cada marca (history.py, a partir de nov/2026). Rodadas antigas não têm: lá a
+  // rodada era de uma marca só e o `resumo` é dela.
+  por_marca?: Partial<Record<Marca, ResumoRodada>>;
 }
 
 export interface MetricasMarca {
@@ -269,6 +272,26 @@ export function runUrl(r: RunRef): string | null {
 // Jobs que falharam nesta rodada (pro aviso e pra apontar o botão de logs no erro).
 export function jobsComErro(r: RunRef): JobInfo[] {
   return (r.jobs ?? []).filter((j) => j.conclusion && CONCLUSOES_ERRO.has(j.conclusion));
+}
+
+// ── Recorte por marca (seletor global, lib/marca.ts) ─────────────────────────
+// Nome do job de cada marca no scrape-cron.yml. Os outros jobs (deploy…) valem pras duas.
+const JOB_DA_MARCA: Record<Marca, string> = { sundek: "sundek", vilebrequin: "ville" };
+
+// Metadados do run vistos por uma marca: tira o job da OUTRA marca (erro lá não pinta esta
+// de erro, e o botão de logs não aponta pra ele). Sem a lista de jobs, fica o status do run.
+export function runDaMarca<T extends RunMeta>(r: T, marca: Marca): T {
+  if (!r.jobs?.length) return r;
+  const outro = JOB_DA_MARCA[marca === "sundek" ? "vilebrequin" : "sundek"];
+  const jobs = r.jobs.filter((j) => j.name !== outro);
+  const erro = jobs.some((j) => j.conclusion && CONCLUSOES_ERRO.has(j.conclusion));
+  return { ...r, jobs, status: r.status === "erro" && !erro ? "ok" : r.status };
+}
+
+// A rodada vista por uma marca: null se a marca não rodou; o resumo passa a ser só o dela.
+export function rodadaDaMarca(r: RodadaIndex, marca: Marca): RodadaIndex | null {
+  if (!r.marcas.includes(marca)) return null;
+  return runDaMarca({ ...r, resumo: r.por_marca?.[marca] ?? r.resumo }, marca);
 }
 
 // URL do botão "Logs": vai direto no log do 1º job que falhou (o caso que importa);

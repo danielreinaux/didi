@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import VotingCard from "@/components/VotingCard";
 import { Item, Reaction, StatusLista } from "@/lib/types";
 import { instante } from "@/lib/tempo";
+import { LOJA_META, VILLE_EM_TESTE, escolherLoja, lojaDaMarca, useLoja } from "@/lib/marca";
 import { Archive, ArrowLeft } from "lucide-react";
 
 type Filtro = "todos" | "compravel" | "medio" | "nao_votados";
@@ -11,16 +12,16 @@ type Ordem = "recentes" | "melhores";
 
 // De quanto em quanto tempo a página confere se a lista mudou (o robô roda a cada ~5 min).
 const CHECAR_MS = 60_000;
-type Loja = "sundek" | "ville";
 
-// Ville desligada em 20/10/2026 (foco 100% Sundek): a loja fica fixa em "sundek".
+// A marca vem do seletor global do AppShell (lib/marca.ts). A Ville voltou em modo sombra
+// em nov/2026 depois de ficar desligada desde 20/10.
 
 export default function Home() {
   const [items, setItems] = useState<Item[]>([]);
   const [reacoes, setReacoes] = useState<Record<string, Reaction>>({});
   const [obs, setObs] = useState<Record<string, string>>({});
   const [filtro, setFiltro] = useState<Filtro>("todos");
-  const [loja] = useState<Loja>("sundek");
+  const loja = useLoja();
   // Ids arquivados (global, vindos do Redis) e se estamos na visão de arquivados.
   const [arquivados, setArquivados] = useState<Set<string>>(new Set());
   const [verArquivados, setVerArquivados] = useState(false);
@@ -29,7 +30,7 @@ export default function Home() {
   // Falha ao carregar as ofertas — distingue "deu erro" de "lista vazia".
   const [erroCarregar, setErroCarregar] = useState(false);
   // Atualização automática: horário da lista publicada + relógio pros "há X min".
-  const [, setStatus] = useState<StatusLista | null>(null);
+  const [status, setStatus] = useState<StatusLista | null>(null);
   const statusRef = useRef<string | null>(null);
   const [agora, setAgora] = useState(() => Date.now());
   // Ids que chegaram na última atualização automática (aviso "N novas ofertas").
@@ -64,7 +65,10 @@ export default function Home() {
         const id = linkId.current;
         if (!silencioso && id && !linkTratado.current) {
           linkTratado.current = true;
-          if (lista.some((i) => i.id === id)) {
+          const alvo = lista.find((i) => i.id === id);
+          if (alvo) {
+            // O link do e-mail pode ser de outra marca: troca o seletor pra ela.
+            escolherLoja(lojaDaMarca(alvo.marca));
             setFiltro("todos");
             setDestaqueId(id);
           } else {
@@ -183,8 +187,13 @@ export default function Home() {
   }
 
   // A loja "ville" no front corresponde à marca "vilebrequin" no items.json.
-  const marcaDaLoja = loja === "ville" ? "vilebrequin" : "sundek";
-  const itensDaMarca = items.filter((i) => i.marca === marcaDaLoja);
+  const itensDaMarca = items.filter((i) => lojaDaMarca(i.marca) === loja);
+  const nomeLoja = LOJA_META[loja].nome;
+  // Ville em teste e ainda sem nenhuma rodada no items.json (o status.json lista as marcas que
+  // entraram na montagem): o estado vazio explica em vez de dizer "nenhuma oferta".
+  const villeTeste = loja === "ville" && VILLE_EM_TESTE;
+  const villeSemRodada =
+    villeTeste && itensDaMarca.length === 0 && !(status?.marcas ?? []).includes(LOJA_META.ville.marca);
 
   // Quantos arquivados existem nessa loja (pro badge do botão "Ver arquivados").
   const nArquivados = itensDaMarca.filter((i) => arquivados.has(i.id)).length;
@@ -193,8 +202,8 @@ export default function Home() {
   const nNaoArquivados = itensDaMarca.length - nArquivados;
   useEffect(() => {
     if (carregando) return;
-    window.dispatchEvent(new CustomEvent("didi:ofertas", { detail: nNaoArquivados }));
-  }, [nNaoArquivados, carregando]);
+    window.dispatchEvent(new CustomEvent("didi:ofertas", { detail: { loja, n: nNaoArquivados } }));
+  }, [nNaoArquivados, carregando, loja]);
 
   // Tela base = só não-arquivados; visão de arquivados = só os arquivados.
   const itensLoja = itensDaMarca.filter((i) =>
@@ -239,11 +248,15 @@ export default function Home() {
     };
   }, [destaqueId]);
 
+  // Aviso "chegaram N ofertas novas" só conta as da marca escolhida.
+  const idsDaMarca = new Set(itensDaMarca.map((i) => i.id));
+  const chegaramDaMarca = chegaram.filter((id) => idsDaMarca.has(id));
+
   function verChegaram() {
     mudarOrdem("recentes");
     setFiltro("todos");
     setVerArquivados(false);
-    setChegaram([]);
+    setChegaram((prev) => prev.filter((id) => !idsDaMarca.has(id)));
     mainRef.current?.scrollTo({ top: 0, behavior: "smooth" });
   }
 
@@ -257,8 +270,12 @@ export default function Home() {
   // Frase de resumo no topo (o que importa: quanto tem pra comprar agora).
   const resumo = verArquivados
     ? `${itensLoja.length} ${itensLoja.length === 1 ? "anúncio arquivado" : "anúncios arquivados"}. Desarquive para trazer de volta à lista.`
-    : itensLoja.length === 0
-      ? "Nenhuma oferta à venda agora. O robô avisa por e-mail quando aparecer uma."
+    : villeSemRodada
+      ? "A Ville está em teste: as ofertas aparecem aqui assim que a primeira rodada terminar."
+      : itensLoja.length === 0
+      ? villeTeste
+        ? "Nenhuma oferta da Ville à venda agora. A Ville está em teste: quando o robô achar uma, ela aparece aqui."
+        : `Nenhuma oferta${loja === "ville" ? ` da ${nomeLoja}` : ""} à venda agora. O robô avisa por e-mail quando aparecer uma.`
       : `${compraveis} ${compraveis === 1 ? "comprável" : "compráveis"} e ${barganhas} ${
           barganhas === 1 ? "barganha" : "barganhas"
         } à venda agora. Você avaliou ${votados} de ${itensLoja.length}.`;
@@ -288,9 +305,11 @@ export default function Home() {
             </button>
           </div>
 
-          {/* Filtros: fixos no topo ao rolar (o deep link desconta a altura deles) */}
+          {/* Filtros: fixos no topo ao rolar (o deep link desconta a altura deles). Somem na Ville
+              antes da 1ª rodada (não há o que filtrar). */}
           <div
             ref={headerRef}
+            hidden={villeSemRodada && !carregando && !verArquivados}
             className="sticky top-0 z-20 -mx-4 px-4 sm:mx-0 sm:px-0 mt-5 py-3 bg-canvas/95 backdrop-blur-sm flex items-center gap-2"
           >
             <div className="flex-1 min-w-0 flex gap-1.5 overflow-x-auto [scrollbar-width:none]" role="group" aria-label="Filtrar ofertas">
@@ -321,13 +340,13 @@ export default function Home() {
             </label>
           </div>
 
-          {chegaram.length > 0 && (
+          {chegaramDaMarca.length > 0 && (
             <button
               onClick={verChegaram}
               className="mt-2 w-full flex items-center justify-between gap-3 text-sm rounded-lg px-4 py-3 bg-info text-white hover:bg-[#244bb4] transition-colors"
             >
               <span className="font-medium">
-                {chegaram.length === 1 ? "Chegou 1 oferta nova" : `Chegaram ${chegaram.length} ofertas novas`}
+                {chegaramDaMarca.length === 1 ? "Chegou 1 oferta nova" : `Chegaram ${chegaramDaMarca.length} ofertas novas`}
               </span>
               <span className="text-white/85">Mostrar</span>
             </button>
@@ -354,6 +373,21 @@ export default function Home() {
                   Tentar de novo
                 </button>
               </div>
+            ) : villeSemRodada && !verArquivados ? (
+              <div className="py-16 sm:py-20 text-center max-w-[46ch] mx-auto">
+                <p className="text-ink font-medium">A Ville está em teste</p>
+                <p className="mt-1 text-sm text-ink-2">
+                  As ofertas da Vilebrequin aparecem aqui assim que a primeira rodada terminar, com padrão, cor, cordão,
+                  fecho e autenticidade conferidos pela IA.
+                </p>
+                <button
+                  type="button"
+                  onClick={() => escolherLoja("sundek")}
+                  className="mt-4 h-9 px-4 rounded-lg text-sm bg-surface border border-line text-ink-2 hover:text-ink hover:border-line-strong transition-colors"
+                >
+                  Ver as ofertas da Sundek
+                </button>
+              </div>
             ) : filtrados.length === 0 ? (
               <div className="py-20 text-center">
                 <p className="text-ink font-medium">
@@ -362,7 +396,9 @@ export default function Home() {
                 <p className="mt-1 text-sm text-ink-3">
                   {verArquivados
                     ? "Os anúncios que você arquivar aparecem aqui."
-                    : "Quando o robô achar um anúncio que passa nas regras, ele aparece aqui e chega por e-mail."}
+                    : villeTeste
+                      ? "Quando o robô achar um anúncio da Ville que passa nas regras, ele aparece aqui."
+                      : "Quando o robô achar um anúncio que passa nas regras, ele aparece aqui e chega por e-mail."}
                 </p>
               </div>
             ) : (

@@ -96,6 +96,31 @@ def _destaques(it: dict) -> list[str]:
     return d
 
 
+def _atributos_ville(it: dict) -> dict:
+    """Ficha da Ville pro card do app (só exibição — as regras ficam em classify/score_ville.py):
+    padrão, cor e faixa de cor, fundo, cordão, fecho, autenticidade e etiqueta. Só o que veio."""
+    cl = it.get("classificacao") or {}
+    tart = it.get("tartaruga") if isinstance(it.get("tartaruga"), dict) else {}
+    cor = it.get("cor") if isinstance(it.get("cor"), dict) else {}
+    auth = it.get("autenticidade") if isinstance(it.get("autenticidade"), dict) else {}
+    cordao = it.get("cordao") if isinstance(it.get("cordao"), dict) else {}
+    fecho = it.get("fecho") if isinstance(it.get("fecho"), dict) else {}
+    et = it.get("etiqueta") if isinstance(it.get("etiqueta"), dict) else {}
+    bd = (it.get("score") or {}).get("breakdown") or {}
+    a = {
+        "padrao": cl.get("tipo"),
+        "variedade": tart.get("tartaruga_variedade"),
+        "cor": cor.get("cor_principal") or tart.get("cor_principal"),
+        "faixa_cor": bd.get("cor_bucket"),
+        "fundo": tart.get("fundo_padrao"),
+        "cordao": cordao.get("cordao_cor"),
+        "fecho": fecho.get("tipo_fechamento"),
+        "autenticidade": auth.get("autenticidade") or cl.get("autenticidade"),
+        "etiqueta": et.get("tem_etiqueta") if isinstance(et.get("tem_etiqueta"), bool) else None,
+    }
+    return {k: v for k, v in a.items() if v not in (None, "")}
+
+
 # Labels por chave de breakdown (cobre Sundek e Ville).
 _PTS_LABEL = {"tier": "cor", "padrao": "padrão", "tamanho": "tam", "elastico": "elástico",
               "etiqueta": "etiqueta", "condicao": "condição", "listra_bonus": "listra",
@@ -198,6 +223,8 @@ def _carregar(path: Path, marca: str) -> list[dict]:
             # Ville: onde está a mancha (aviso "mancha" nas flags; classify/estado_ville.py)
             **({"conservacao": {"mancha_onde": (it.get("conservacao") or {}).get("mancha_onde")}}
                if isinstance(it.get("conservacao"), dict) and (it.get("conservacao") or {}).get("mancha_onde") else {}),
+            # Ficha da Ville no card (padrão, cor/faixa, cordão, fecho, autenticidade, etiqueta).
+            **({"ville": _atributos_ville(it)} if marca == "vilebrequin" else {}),
         })
     return cand
 
@@ -210,10 +237,15 @@ def main() -> None:
     args = parser.parse_args()
 
     cand = []
+    # Marcas que entraram nesta montagem: o app usa pra saber se a Ville já rodou (estado
+    # vazio "em teste" × "nenhuma oferta agora").
+    marcas = []
     if not args.so_ville:
         cand += _carregar(DATA / "coleta-classificada.json", "sundek")
-    if VILLE_ATIVA or args.so_ville:
+        marcas.append("sundek")
+    if (VILLE_ATIVA or args.so_ville) and (DATA / "coleta-ville-classificada.json").exists():
         cand += _carregar(DATA / "coleta-ville-classificada.json", "vilebrequin")
+        marcas.append("vilebrequin")
     # comprável primeiro, depois por score desc
     cand.sort(key=lambda x: (0 if x["decisao"] == "compravel" else 1, -x["score"]))
     OUT.write_text(json.dumps(cand, indent=2, ensure_ascii=False), encoding="utf-8")
@@ -222,6 +254,7 @@ def main() -> None:
         "total": len(cand),
         "compraveis": sum(1 for x in cand if x["decisao"] == "compravel"),
         "barganhas": sum(1 for x in cand if x["decisao"] == "medio"),
+        "marcas": marcas,
     }, ensure_ascii=False), encoding="utf-8")
     # Aba "Descartados" do app (o que a IA cortou nos últimos dias, com o motivo).
     if not args.so_ville:

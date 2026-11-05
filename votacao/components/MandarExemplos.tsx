@@ -1,14 +1,40 @@
 "use client";
 
-// Aba Decisões: o cliente manda exemplos de falsos (e originais) com link e/ou fotos, pra
-// calibrar a autenticidade da Ville. Fotos reduzidas no aparelho (≤ 1400 px, JPEG) e enviadas
+// Aba Decisões: o cliente manda exemplos de falsos, originais e desbotados com link e/ou fotos,
+// pra calibrar a autenticidade da Ville e o aviso de desgaste (desbotado, mancha). Fotos reduzidas no aparelho (≤ 1400 px, JPEG) e enviadas
 // uma por vez para /api/exemplos/foto. A lista mostra o que já foi mandado (dá pra apagar).
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Camera, ExternalLink, ImagePlus, Trash2, X } from "lucide-react";
 import Lightbox from "@/components/Lightbox";
 
-type Exemplo = { id: string; tipo: "falso" | "original"; link: string; nota: string; criado_em: string; fotos: number };
+type Tipo = "falso" | "original" | "desbotado";
+// `tipo` vem do Redis: os já gravados são falso/original; tipo desconhecido aparece cru.
+type Exemplo = { id: string; tipo: string; link: string; nota: string; criado_em: string; fotos: number };
 type Anexo = { arquivo: File; preview: string };
+
+// Rótulo, cor do botão escolhido e do selo na lista, e o exemplo de nota de cada tipo.
+const TIPOS: Record<Tipo, { rotulo: string; on: string; selo: string; dica: string }> = {
+  falso: {
+    rotulo: "Falso",
+    on: "bg-urgent text-white",
+    selo: "bg-urgent-soft text-urgent",
+    dica: "Ex.: etiquetinha interna, estampa, tecido, preço…",
+  },
+  original: {
+    rotulo: "Original",
+    on: "bg-buy text-white",
+    selo: "bg-buy-soft text-buy",
+    dica: "Ex.: comprei e conferi a etiqueta",
+  },
+  desbotado: {
+    rotulo: "Desbotado",
+    on: "bg-deal text-white",
+    selo: "bg-deal-soft text-deal",
+    dica: "Ex.: cor gasta nas pernas, mancha perto do bolso…",
+  },
+};
+const ORDEM_TIPOS: Tipo[] = ["falso", "original", "desbotado"];
+const ehTipo = (t: string): t is Tipo => Object.prototype.hasOwnProperty.call(TIPOS, t);
 
 const MAX_FOTOS = 12;
 
@@ -43,7 +69,7 @@ function quando(iso: string) {
 }
 
 export default function MandarExemplos() {
-  const [tipo, setTipo] = useState<"falso" | "original">("falso");
+  const [tipo, setTipo] = useState<Tipo>("falso");
   const [link, setLink] = useState("");
   const [nota, setNota] = useState("");
   const [anexos, setAnexos] = useState<Anexo[]>([]);
@@ -142,21 +168,27 @@ export default function MandarExemplos() {
   const fotosDe = (e: Exemplo) => Array.from({ length: e.fotos }, (_, i) => `/api/exemplos/foto?id=${e.id}&i=${i}`);
   const nFalsos = (lista ?? []).filter((e) => e.tipo === "falso").length;
   const nOriginais = (lista ?? []).filter((e) => e.tipo === "original").length;
+  const nDesbotados = (lista ?? []).filter((e) => e.tipo === "desbotado").length;
 
   return (
     <section aria-labelledby="mandar-exemplos" className="flex flex-col gap-4">
       <div className="flex flex-col gap-1">
         <div className="flex items-baseline justify-between gap-3 flex-wrap">
           <h2 id="mandar-exemplos" className="text-xl sm:text-2xl font-bold text-ink">
-            Mandar exemplos de falsos e originais
+            Mandar exemplos (falsos, originais e desbotados)
           </h2>
           <span className="text-sm text-ink-3 num">
-            {nFalsos} {nFalsos === 1 ? "falso" : "falsos"} e {nOriginais} {nOriginais === 1 ? "original" : "originais"} enviados
+            {nFalsos} {nFalsos === 1 ? "falso" : "falsos"}, {nOriginais} {nOriginais === 1 ? "original" : "originais"} e{" "}
+            {nDesbotados} {nDesbotados === 1 ? "desbotado" : "desbotados"} enviados
           </span>
         </div>
         <p className="text-sm text-ink-2 max-w-[75ch] leading-relaxed">
           Cada exemplo ensina a IA a separar o falso do original. Mande um por vez: cole o link do anúncio e, se tiver,
           anexe as fotos (a da etiqueta interna é a mais importante). Meta: 10 a 20 falsos e 5 a 10 originais.
+        </p>
+        <p className="text-sm text-ink-2 max-w-[75ch] leading-relaxed">
+          Exemplos de shorts gastos ou desbotados (e de manchas) ensinam a IA a avisar o desgaste. Mande a foto em que
+          o desgaste aparece melhor. Meta: 10 a 20 desbotados.
         </p>
       </div>
 
@@ -164,21 +196,17 @@ export default function MandarExemplos() {
         <div className="flex flex-col gap-2">
           <span className="text-sm font-medium text-ink">Este exemplo é</span>
           <div className="inline-flex p-1 rounded-lg bg-sunken w-fit" role="radiogroup" aria-label="Tipo do exemplo">
-            {(["falso", "original"] as const).map((t) => (
+            {ORDEM_TIPOS.map((t) => (
               <button
                 key={t}
                 role="radio"
                 aria-checked={tipo === t}
                 onClick={() => setTipo(t)}
-                className={`px-5 h-9 rounded-md text-sm font-medium transition-colors ${
-                  tipo === t
-                    ? t === "falso"
-                      ? "bg-urgent text-white"
-                      : "bg-buy text-white"
-                    : "text-ink-2 hover:text-ink"
+                className={`px-4 sm:px-5 h-9 rounded-md text-sm font-medium transition-colors ${
+                  tipo === t ? TIPOS[t].on : "text-ink-2 hover:text-ink"
                 }`}
               >
-                {t === "falso" ? "Falso" : "Original"}
+                {TIPOS[t].rotulo}
               </button>
             ))}
           </div>
@@ -248,7 +276,7 @@ export default function MandarExemplos() {
             value={nota}
             onChange={(e) => setNota(e.target.value)}
             rows={2}
-            placeholder={tipo === "falso" ? "Ex.: etiquetinha interna, estampa, tecido, preço…" : "Ex.: comprei e conferi a etiqueta"}
+            placeholder={TIPOS[tipo].dica}
             className="px-3 py-2 rounded-lg bg-canvas border border-line text-base sm:text-sm text-ink placeholder:text-ink-3 resize-none outline-none focus-visible:border-info focus-visible:ring-2 focus-visible:ring-info/25"
           />
         </label>
@@ -279,10 +307,10 @@ export default function MandarExemplos() {
               <div className="flex items-center gap-2 flex-wrap">
                 <span
                   className={`text-xs font-semibold px-2 py-0.5 rounded ${
-                    e.tipo === "falso" ? "bg-urgent-soft text-urgent" : "bg-buy-soft text-buy"
+                    ehTipo(e.tipo) ? TIPOS[e.tipo].selo : "bg-sunken text-ink-2"
                   }`}
                 >
-                  {e.tipo === "falso" ? "Falso" : "Original"}
+                  {ehTipo(e.tipo) ? TIPOS[e.tipo].rotulo : e.tipo}
                 </span>
                 <span className="text-xs text-ink-3 num">{quando(e.criado_em)}</span>
                 <button

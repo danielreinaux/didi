@@ -8,7 +8,8 @@
 import { useState } from "react";
 import { eur } from "@/lib/tempo";
 import Link from "next/link";
-import { ChevronLeft, ExternalLink, HandCoins, TriangleAlert, X } from "lucide-react";
+import { ChevronLeft, ExternalLink, HandCoins, Info, TriangleAlert, X } from "lucide-react";
+import { rotuloFlag } from "@/lib/marca";
 import {
   Produto,
   DECISAO_META,
@@ -167,13 +168,26 @@ export default function HistoryProdutoDetalhe({
                 )}
 
                 {p.flags && p.flags.length > 0 && (
-                  <ul className="flex gap-2 flex-wrap">
-                    {p.flags.map((fl) => (
-                      <li key={fl} className="inline-flex items-center gap-1.5 text-sm px-2.5 py-1 rounded-lg bg-deal-soft text-deal">
-                        <TriangleAlert size={14} strokeWidth={2} aria-hidden />
-                        {fl.replace(/_/g, " ")}
-                      </li>
-                    ))}
+                  <ul className="flex gap-2 flex-wrap" aria-label="Avisos">
+                    {p.flags.map((fl) => {
+                      const aviso = rotuloFlag(fl);
+                      return aviso ? (
+                        <li
+                          key={fl}
+                          className={`inline-flex items-center gap-1.5 text-sm px-2.5 py-1 rounded-lg ${
+                            aviso.forte ? "bg-urgent-soft text-urgent font-medium" : "bg-deal-soft text-deal"
+                          }`}
+                        >
+                          <TriangleAlert size={14} strokeWidth={2} className="flex-none" aria-hidden />
+                          {aviso.rotulo}
+                        </li>
+                      ) : (
+                        <li key={fl} className="inline-flex items-center gap-1.5 text-xs px-2 py-1 rounded-lg bg-sunken text-ink-3 break-all" title="Aviso novo da IA, ainda sem texto no app">
+                          <Info size={12} strokeWidth={2} className="flex-none" aria-hidden />
+                          {fl}
+                        </li>
+                      );
+                    })}
                   </ul>
                 )}
 
