@@ -1,9 +1,9 @@
 {
-  "gerado_em": "2026-11-05T03:59:52+00:00",
+  "gerado_em": "2026-11-05T04:10:06+00:00",
   "fonte": "src/build/decisoes_spec.json",
   "chave_voto": "decisao:<id_da_pergunta>",
   "titulo": "Decisões pendentes — Ville",
-  "total_perguntas": 1,
+  "total_perguntas": 2,
   "secoes": [
     {
       "id": "regras",
@@ -101,6 +101,47 @@
                 "/gabarito_fotos/9254096268/4.webp"
               ],
               "legenda": "Liso — marcado aceitável"
+            }
+          ]
+        },
+        {
+          "id": "ville_desbotado_marinhos",
+          "titulo": "Estes dois marinhos estão desbotados?",
+          "contexto": "No gabarito eles estão \"ok\", mas três IAs diferentes veem desgaste neles: o liso com as costas mais claras e manchadas (assento e costuras), e o de tartarugas vermelhas com áreas azul-acinzentadas. Pode ser só a luz da foto. A sua resposta calibra o aviso de desbotado.",
+          "status": "pendente",
+          "opcoes": [
+            "Os dois estão ok (é a luz)",
+            "Os dois estão desbotados",
+            "Só o liso está desbotado",
+            "Só o de tartarugas está desbotado"
+          ],
+          "itens": [
+            {
+              "id": "9283695540",
+              "origem": "gabarito",
+              "titulo": "Vilebrequin swim shorts dark blue size L",
+              "url": "https://www.vinted.es/items/9283695540-vilebrequin-swim-shorts-dark-blue-size-l",
+              "preco": "56,88 €",
+              "fotos": [
+                "/gabarito_fotos/9283695540/0.webp",
+                "/gabarito_fotos/9283695540/1.webp",
+                "/gabarito_fotos/9283695540/2.webp",
+                "/gabarito_fotos/9283695540/3.webp",
+                "/gabarito_fotos/9283695540/4.webp"
+              ],
+              "legenda": "Liso marinho — costas mais claras?"
+            },
+            {
+              "id": "cv34",
+              "origem": "gabarito",
+              "titulo": "Vilebrequin (comprável)",
+              "url": null,
+              "preco": null,
+              "fotos": [
+                "/gabarito_fotos/cv34/0.jpeg",
+                "/gabarito_fotos/cv34/1.jpeg"
+              ],
+              "legenda": "Tartaruga vermelha — áreas acinzentadas?"
             }
           ]
         }
