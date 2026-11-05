@@ -130,6 +130,19 @@ IA_ROTAS = {
     # cor_fundo_ville deu 91% vs 84–89% dos outros). Quando ele diz "branco", o Haiku 5.5 confere
     # (classify/cor_fundo_ville.py): o mini lia azul claríssimo como branco.
     "ville:cor_fundo_branco": {"to": "openrouter:anthropic/claude-haiku-5.5", "min_tokens": 1500},
+    # Os agentes do Sundek que eram da OpenAI, agora pelo OpenRouter com o MESMO modelo e o mesmo
+    # preço (05/11/2026): a chave da OpenAI foi invalidada em 04/11 (401 em toda chamada, nada
+    # classificado desde 07:00 BRT). Daniel: "jogar as mesmas chaves que usamos na openai, só que
+    # na openrouter". elástico/premiado repetem o IA_OPENAI (fotos em high, raciocínio médio).
+    "sundek:tipo": "openrouter:openai/gpt-4o-mini",
+    "sundek:cor": "openrouter:openai/gpt-4o-mini",
+    "sundek:marca_recheck": "openrouter:openai/gpt-4o",
+    "sundek:listra_confirma": "openrouter:openai/gpt-4o",
+    "sundek:velcro": "openrouter:openai/gpt-4o",
+    "sundek:elastico": {"to": "openrouter:openai/gpt-6.1-sol", "detail": "high",
+                        "reasoning": {"effort": "medium"}, "min_tokens": 8000},
+    "sundek:premiado": {"to": "openrouter:openai/gpt-6.1-sol", "detail": "high",
+                        "reasoning": {"effort": "medium"}, "min_tokens": 8000},
 }
 
 # Modelo da OpenAI por agente, para agente SEM rota no OpenRouter (src/utils/llm.py).

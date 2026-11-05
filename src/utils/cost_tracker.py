@@ -19,6 +19,10 @@ PRECOS = {
     "qwen/qwen3.7-flash":           {"in": 0.03, "out": 0.13},
     "google/gemma-4-26b-a4b-it":    {"in": 0.10, "out": 0.30},
     "anthropic/claude-haiku-5.5":   {"in": 0.10, "out": 0.50},
+    # os modelos da OpenAI servidos pelo OpenRouter (05/11/2026) — mesmo preço da OpenAI
+    "openai/gpt-4o-mini":           {"in": 0.15, "out": 0.60},
+    "openai/gpt-4o":                {"in": 2.50, "out": 10.00},
+    "openai/gpt-6.1-sol":           {"in": 2.00, "out": 10.00},
     # reservas (só se a rota principal falhar)
     "google/gemini-3.1-flash-lite": {"in": 0.25, "out": 1.50},
     "google/gemma-4-31b-it":        {"in": 0.20, "out": 0.40},
