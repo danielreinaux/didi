@@ -84,12 +84,30 @@ def assunto_premiado(itens: list[dict]) -> str | None:
     return assunto
 
 
+# Ordem e nome das seções do e-mail quando vêm as duas marcas (Daniel, 05/11/2026: um e-mail
+# por rodada, com uma seção por marca).
+_MARCAS = (("sundek", "Sundek"), ("vilebrequin", "Vilebrequin"))
+
+
+def _por_marca(itens: list[dict]) -> list[tuple[str, list[dict]]]:
+    """[(nome da marca, itens dela)] só das marcas presentes, mantendo a ordem de cada uma."""
+    grupos = [(nome, [it for it in itens if (it.get("marca") or "sundek") == m]) for m, nome in _MARCAS]
+    return [(nome, g) for nome, g in grupos if g]
+
+
+def _contagem(itens: list[dict]) -> str:
+    """"2 Sundek, 1 Vilebrequin"."""
+    return ", ".join(f"{len(g)} {nome}" for nome, g in _por_marca(itens))
+
+
 def assunto_comum(itens: list[dict], marca_label: str) -> str:
-    """"3 ofertas novas de Sundek, a partir de €9" (sem premiado)."""
+    """"3 ofertas novas de Sundek, a partir de €9" (sem premiado). Com as duas marcas:
+    "3 ofertas novas (2 Sundek, 1 Vilebrequin), a partir de €9"."""
     n = len(itens)
     precos = [it["preco_base"] for it in itens if it.get("preco_base")]
     a_partir = f", a partir de €{_eur(min(precos))}" if precos else ""
-    return f"{n} {'oferta nova' if n == 1 else 'ofertas novas'} de {marca_label}{a_partir}"
+    de = f"({_contagem(itens)})" if len(_por_marca(itens)) > 1 else f"de {marca_label}"
+    return f"{n} {'oferta nova' if n == 1 else 'ofertas novas'} {de}{a_partir}"
 
 
 def _botao(url: str, texto: str, escuro: bool = True) -> str:
@@ -99,6 +117,33 @@ def _botao(url: str, texto: str, escuro: bool = True) -> str:
         estilo = f"background:#ffffff;color:{_C['ink']};border:1px solid {_C['line']}"
     return (f'<a href="{url}" style="display:inline-block;{estilo};font-size:14px;font-weight:600;'
             f'text-decoration:none;padding:9px 14px;border-radius:8px;margin:0 8px 6px 0">{texto}</a>')
+
+
+# Avisos da Ville (score_ville.flags) no card do e-mail — os mesmos do app (votacao/lib/marca.ts).
+_AVISOS = {
+    "mancha": "Tem mancha, confira as fotos",
+    "desbotado_ia": "A IA viu desbotado, confira antes de comprar",
+    "possivel_desbotado": "Pode estar desbotado, confira as fotos",
+    "verificar_autenticidade": "Confira a autenticidade (bolso traseiro)",
+    "pedir_foto_traseira": "Peça a foto do bolso traseiro ao vendedor",
+    "fundo_multicolor": "Fundo multicolor, revise antes de comprar",
+    "colecao_antiga": "Coleção antiga (cordão cinza)",
+}
+
+
+def _avisos_html(it: dict) -> str:
+    linhas = []
+    for f in it.get("flags") or []:
+        txt = _AVISOS.get(f)
+        if not txt:
+            continue
+        onde = (it.get("conservacao") or {}).get("mancha_onde") if f == "mancha" else None
+        if onde:
+            txt = f"Tem mancha: {onde}"
+        forte = f == "desbotado_ia"
+        linhas.append(f'<div style="font-size:13px;color:{_C["urgent"] if forte else _C["deal"]};margin:4px 0 0">'
+                      f'⚠&nbsp; {html.escape(txt)}</div>')
+    return "".join(linhas)
 
 
 def _card_html(it: dict) -> str:
@@ -154,6 +199,7 @@ def _card_html(it: dict) -> str:
             Tamanho <b style="color:{_C['ink']}">{tam}</b>{f', {estado}' if estado else ''}
           </div>
           {conferido}
+          {_avisos_html(it)}
           {linha_prem}
           {neg_html}
           <div style="margin-top:12px">{_botao(url, "Abrir no Vinted")}{_botao(url_app, "Ver no app", escuro=False)}</div>
@@ -164,12 +210,25 @@ def _card_html(it: dict) -> str:
 
 def corpo_html(marca_label: str, itens: list[dict]) -> str:
     n = len(itens)
-    cards = "".join(_card_html(it) for it in itens)
+    grupos = _por_marca(itens)
+    if len(grupos) > 1:
+        # Uma seção por marca (Sundek primeiro), cada uma com o nome e quantas ofertas tem.
+        cards = "".join(
+            f'<h2 style="font-size:17px;font-weight:700;color:{_C["ink"]};margin:22px 0 12px;'
+            f'padding-top:14px;border-top:1px solid {_C["line"]}">{nome} '
+            f'<span style="font-size:13px;font-weight:400;color:{_C["ink3"]}">'
+            f'{len(g)} {"oferta" if len(g) == 1 else "ofertas"}</span></h2>'
+            + "".join(_card_html(it) for it in g)
+            for nome, g in grupos)
+    else:
+        cards = "".join(_card_html(it) for it in itens)
     prem = [it for it in itens if (it.get("premiado") or {}).get("modelo")]
     if any((it.get("premiado") or {}).get("urgente") for it in prem):
         titulo = "Compra urgente: um dos seus shorts premiados está à venda com preço bom"
     elif prem:
         titulo = "Um dos seus shorts premiados está à venda"
+    elif len(grupos) > 1:
+        titulo = f"{n} ofertas novas: {html.escape(_contagem(itens))}"
     else:
         titulo = f"{n} {'oferta nova' if n == 1 else 'ofertas novas'} de {html.escape(marca_label)}"
     from datetime import datetime, timedelta, timezone
@@ -192,8 +251,9 @@ def corpo_html(marca_label: str, itens: list[dict]) -> str:
   </p>
   {cards}
   <p style="font-size:12px;line-height:1.5;color:{_C['ink3']};margin:18px 0 0">
-    O Didi confere cor, listra, bolso, elástico, tamanho e preço de cada anúncio e só avisa o que passa
-    nas suas regras. <a href="{SITE_VOTACAO}" style="color:{_C['ink2']}">Ver todas as ofertas</a>
+    {"O Didi confere cor, padrão, bolso, tamanho e preço de cada anúncio e só avisa o que passa nas suas regras."
+     if len(grupos) > 1 else
+     "O Didi confere cor, listra, bolso, elástico, tamanho e preço de cada anúncio e só avisa o que passa nas suas regras."} <a href="{SITE_VOTACAO}" style="color:{_C['ink2']}">Ver todas as ofertas</a>
   </p>
 </div>
 </div>"""

@@ -46,7 +46,7 @@ def main() -> None:
         itens = [it for it in itens if it.get("marca") != "vilebrequin"]
         if args.marca == "vilebrequin":
             print("[Ville] e-mail desligado (modo sombra, config.VILLE_EMAIL).")
-    label = MARCA_LABEL.get(args.marca, "Sundek+Ville" if VILLE_ATIVA and VILLE_EMAIL else "Sundek")
+    label = MARCA_LABEL.get(args.marca, "Sundek e Vilebrequin" if VILLE_ATIVA and VILLE_EMAIL else "Sundek")
     pendentes = novos(itens, ledger)
     if sombra and not args.dry_run:
         led.registrar(ledger, sombra, "vilebrequin")
