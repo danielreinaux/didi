@@ -16,7 +16,7 @@ import sys
 import time
 import threading
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -516,6 +516,20 @@ def main() -> None:
             pass
     if acervo_previo:
         print(f"  acervo acumulado: {len(acervo_previo)} itens já conhecidos.")
+
+    # Item que deu ERRO na classificação só voltava se reaparecesse entre os 20 mais novos do
+    # scrape — na prática, nunca (04/11/2026: chave da OpenAI inválida, ~50 itens do dia
+    # perdidos). Os ativos das últimas 48 h entram de novo na rodada, até 60 por vez.
+    no_scrape = {x.get("id") for x in itens}
+    desde = (datetime.now(timezone.utc) - timedelta(hours=48)).isoformat()
+    com_erro = [x for rid, x in acervo_previo.items()
+                if rid not in no_scrape and x.get("status") == "ativo"
+                and (x.get("classificacao") or {}).get("tipo") == "erro"
+                and (x.get("primeiro_visto") or "") >= desde][:60]
+    if com_erro:
+        print(f"  {len(com_erro)} itens com erro nas últimas 48 h — tentando de novo.")
+        itens = itens + com_erro
+        total = len(itens)
 
     # Pular só se ID já processado E fotos não mudaram (mesma URL list)
     def _mesmas_fotos(item_novo: dict, item_velho: dict) -> bool:
