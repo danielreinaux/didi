@@ -1,39 +1,6 @@
 {
- "gerado_em": "2026-11-05T15:04:28.172731-03:00",
+ "gerado_em": "2026-11-05T15:11:43.546070-03:00",
  "rodadas": [
-  {
-   "run_id": "41880375509",
-   "quando": "2026-11-04T14:51:04.929474-03:00",
-   "status": "ok",
-   "custo_brl": 0.0,
-   "custo_usd": 0.0,
-   "calls": 0,
-   "tok_in": 0,
-   "tok_out": 0,
-   "novos": 5,
-   "candidatos": 15,
-   "ativos": 6938,
-   "descartados": 6703,
-   "sundek_usd": 0.0,
-   "ville_usd": 0.0,
-   "etapas": {},
-   "marcas": [
-    "sundek"
-   ],
-   "por_marca": {
-    "sundek": {
-     "custo_brl": 0.0,
-     "custo_usd": 0.0,
-     "calls": 0,
-     "tok_in": 0,
-     "tok_out": 0,
-     "novos": 5,
-     "candidatos": 15,
-     "ativos": 6938,
-     "descartados": 6703
-    }
-   }
-  },
   {
    "run_id": "41880996068",
    "quando": "2026-11-04T14:55:23.638327-03:00",
@@ -8273,6 +8240,57 @@
      "tok_in": 0,
      "tok_out": 0,
      "novos": 2,
+     "candidatos": 7,
+     "ativos": 111,
+     "descartados": 104
+    }
+   }
+  },
+  {
+   "run_id": "42080634471",
+   "quando": "2026-11-05T15:11:37.671686-03:00",
+   "status": "ok",
+   "custo_brl": 0.0,
+   "custo_usd": 0.000813,
+   "calls": 5,
+   "tok_in": 24748,
+   "tok_out": 1040,
+   "novos": 11,
+   "candidatos": 23,
+   "ativos": 7036,
+   "descartados": 6830,
+   "sundek_usd": 0.000813,
+   "ville_usd": 0.0,
+   "etapas": {
+    "sundek:brand": 0.000227,
+    "sundek:classify_tipo": 0.0,
+    "sundek:color": 0.0,
+    "sundek:listra": 0.000585,
+    "sundek:elastico": 0.0
+   },
+   "marcas": [
+    "sundek",
+    "vilebrequin"
+   ],
+   "por_marca": {
+    "sundek": {
+     "custo_brl": 0.0,
+     "custo_usd": 0.000813,
+     "calls": 5,
+     "tok_in": 24748,
+     "tok_out": 1040,
+     "novos": 10,
+     "candidatos": 16,
+     "ativos": 6925,
+     "descartados": 6726
+    },
+    "vilebrequin": {
+     "custo_brl": 0.0,
+     "custo_usd": 0.0,
+     "calls": 0,
+     "tok_in": 0,
+     "tok_out": 0,
+     "novos": 1,
      "candidatos": 7,
      "ativos": 111,
      "descartados": 104
