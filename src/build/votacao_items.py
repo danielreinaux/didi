@@ -195,6 +195,9 @@ def _carregar(path: Path, marca: str) -> list[dict]:
             "publicado_em": _publicado_em(it),
             # Um dos 3 favoritos do cliente → selo no card e destaque no e-mail
             "premiado": _premiado(it),
+            # Ville: onde está a mancha (aviso "mancha" nas flags; classify/estado_ville.py)
+            **({"conservacao": {"mancha_onde": (it.get("conservacao") or {}).get("mancha_onde")}}
+               if isinstance(it.get("conservacao"), dict) and (it.get("conservacao") or {}).get("mancha_onde") else {}),
         })
     return cand
 

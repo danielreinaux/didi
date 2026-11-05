@@ -40,6 +40,7 @@ from .cordao_ville import verificar_cordao
 from .cor_fundo_ville import classificar_cor_fundo
 from .fecho_ville import verificar_fecho
 from .etiqueta import verificar_etiqueta
+from .estado_ville import verificar_estado
 from .score_ville import calcular_score, _tamanho_key
 # Reusa as exclusões de título do Sundek (infantil, não-short) — P2.
 from .prefilter import EXCLUSAO, EXCLUSAO_INFANTIL
@@ -332,6 +333,24 @@ def _processar(item: dict, idx: str, total: int) -> tuple[dict, int, int]:
         "classificacao": {"tipo": tipo_tart, "autenticidade": auth_val},
     }
     resultado["score"] = calcular_score(resultado)
+    # 8. Conservação (desbotado + mancha → aviso no app), só em quem vai pro app: o score relê.
+    #    Fica em "conservacao" — "estado" é o campo do Vinted ("Muy bueno"…).
+    if resultado["score"].get("decisao") in ("compravel", "medio"):
+        try:
+            estado = verificar_estado(resultado)
+            for u in estado.pop("_usage", []):
+                in_tok += u.get("prompt_tokens", 0)
+                out_tok += u.get("completion_tokens", 0)
+                _track("estado", u.get("model") or "anthropic/claude-haiku-5.5",
+                       u.get("prompt_tokens", 0), u.get("completion_tokens", 0))
+            resultado["conservacao"] = estado
+            if estado.get("desbotado") in ("forte", "talvez"):
+                linha += f" | desbotado={estado['desbotado']}"
+            if estado.get("mancha"):
+                linha += " | mancha"
+            resultado["score"] = calcular_score(resultado)
+        except Exception as e:  # noqa: BLE001 — sem o estado, o item segue sem aviso
+            resultado["conservacao"] = {"desbotado": None, "erro": str(e)[:120]}
     s = resultado["score"]
     linha += f" | {s.get('decisao')} ({s.get('score')})"
     _log(linha)

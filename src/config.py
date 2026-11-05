@@ -155,6 +155,10 @@ IA_ROTAS = {
     "ville:cor_fundo": "openrouter:openai/gpt-4o-mini",
     "ville:autenticidade": {"to": "openrouter:openai/gpt-6.1-sol", "detail": "high",
                             "reasoning": {"effort": "low"}, "min_tokens": 8000},
+    # Estado da Ville (desbotado + mancha → aviso), só nos candidatos: Haiku 3 votos + Gemini.
+    # Bancada 05/11/2026 em classify/estado_ville.py.
+    "ville:estado": {"to": "openrouter:anthropic/claude-haiku-5.5", "detail": "high", "min_tokens": 1500},
+    "ville:estado_forte": {"to": "openrouter:google/gemini-3.5-flash-lite", "detail": "high", **_GEMINI3},
 }
 
 # Modelo da OpenAI por agente, para agente SEM rota no OpenRouter (src/utils/llm.py).

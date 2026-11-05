@@ -342,6 +342,21 @@ def calcular_score(item: dict) -> dict:
             decisao = "medio"
             motivo = "fundo multicolor/gradiente — revisar antes de comprar"
 
+    # ── Conservação (classify/estado_ville.py, item["conservacao"]) → AVISO ─
+    # Desbotado e mancha não descartam (05/11/2026): só 3 desbotados no gabarito pra calibrar,
+    # e o cliente quer a mancha avisada (cv29). Desbotado "forte" (2 modelos) rebaixa pra médio.
+    estado = item.get("conservacao") if isinstance(item.get("conservacao"), dict) else {}
+    if decisao in ("compravel", "medio"):
+        if estado.get("mancha"):
+            flags.append("mancha")
+        if estado.get("desbotado") == "forte":
+            flags.append("desbotado_ia")
+            if decisao == "compravel":
+                decisao = "medio"
+                motivo = "a IA viu desbotado — conferir as fotos antes de comprar"
+        elif estado.get("desbotado") == "talvez":
+            flags.append("possivel_desbotado")
+
     if decisao == "descartado" and not motivo:
         motivo = "fora das faixas de compra"
 
