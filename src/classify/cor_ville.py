@@ -3,8 +3,12 @@
 A Ville NÃO funciona como o Sundek: aqui a cor quase nunca exclui.
 Regras do cliente (manual + WhatsApp):
   - Cores PREFERIDAS ("muito bonitas"): preto, branco, azul escuro/navy,
-    vermelho não-alaranjado. São as que liberam compra nas faixas altas (€60-100).
+    vermelho (inclusive o vermelho-alaranjado, cliente 04/11/2026). São as que
+    liberam compra nas faixas altas (€60-100).
   - Cores NEUTRAS boas: cinza, musgo (verde militar/oliva escuro fosco).
+    Turquesa NÃO (05/11/2026): o cliente respondeu "turquesa é neutra" sobre um short de peixes
+    (9264563780, descartado pelo padrão), mas marcou 8 turquesas com tartaruga como aceitáveis
+    no gabarito — fica aceitável até ele desfazer a contradição (pergunta em /decisoes).
   - Cores ACEITÁVEIS: qualquer outra (laranja, verde, azul médio, etc.) —
     NÃO excluem quando há tartaruga grande; só não dão bônus.
   - NEON/FLUO/METÁLICO: só BAIXAM a nota, nunca excluem (≠ Sundek).
@@ -37,7 +41,8 @@ _MULTICOLOR_RE = re.compile(r"multicolor|multicor|arco[\s-]?[íi]ris|listrad", r
 _PRETO_RE = re.compile(r"\bpreto\b|\bnoir\b|\bblack\b|\bnegro\b", re.I)
 _BRANCO_RE = re.compile(r"\bbranco\b|\bblanc\b|\bwhite\b|\bbianco\b", re.I)
 _NAVY_RE = re.compile(r"navy|marinho|azul\s*escuro|azul\s*marinho|azul\s*navy|bleu\s*marine", re.I)
-# vermelho que NÃO seja alaranjado/coral/salmão
+# Vermelho, inclusive o puxado pro laranja ("Preferida, igual ao vermelho", cliente em /decisoes,
+# 04/11/2026, sobre o cv04). Laranja, coral e salmão SEM "vermelho" no nome seguem aceitáveis.
 _VERMELHO_RE = re.compile(r"vermelh|\bred\b|\brosso\b|\brouge\b", re.I)
 _ALARANJADO_RE = re.compile(r"alaranj|laranj|coral|salm|tomate|orange", re.I)
 
@@ -63,8 +68,7 @@ def bucket_cor(nome: str | None) -> str:
     if _PENALIZA_RE.search(n) or _MULTICOLOR_RE.search(n):
         return "penalizada"
 
-    # Vermelho preferido só se NÃO for alaranjado/coral/salmão.
-    if _VERMELHO_RE.search(n) and not _ALARANJADO_RE.search(n):
+    if _VERMELHO_RE.search(n):
         return "preferida"
     if _PRETO_RE.search(n) or _BRANCO_RE.search(n) or _NAVY_RE.search(n):
         return "preferida"
@@ -124,7 +128,7 @@ def cor_aceita_em_liso(nome: str | None) -> bool:
     sendo preferida. Qualquer outra cor → descarta.
     """
     n = _norm(nome)
-    # Vermelho não-alaranjado: ótimo na tartaruga, mas fora do whitelist do liso.
-    if _VERMELHO_RE.search(n) and not _ALARANJADO_RE.search(n):
+    # Vermelho (e o vermelho-alaranjado): ótimo na tartaruga, mas fora do whitelist do liso.
+    if _VERMELHO_RE.search(n):
         return False
     return bucket_cor(nome) in ("preferida", "neutra")

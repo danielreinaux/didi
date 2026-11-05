@@ -6,6 +6,7 @@ from openai import OpenAI
 
 from ..config import IA
 from ..prompts import verifica_ville as prompt
+from ..utils import llm
 
 _client: OpenAI | None = None
 
@@ -39,7 +40,8 @@ def verificar_ville(item: dict) -> dict:
         *[{"type": "image_url", "image_url": {"url": u, "detail": "low"}} for u in fotos],
     ]
 
-    resp = _get_client().chat.completions.create(
+    resp = llm.create(
+        "ville:marca",
         model=IA["model_detalhes"],  # gpt-4o — confirmação de marca/formato
         messages=[
             {"role": "system", "content": prompt.SISTEMA},
@@ -66,5 +68,6 @@ def verificar_ville(item: dict) -> dict:
     parsed["_usage"] = {
         "prompt_tokens": resp.usage.prompt_tokens,
         "completion_tokens": resp.usage.completion_tokens,
+        "model": resp.model,
     }
     return parsed

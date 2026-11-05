@@ -143,6 +143,13 @@ IA_ROTAS = {
                         "reasoning": {"effort": "medium"}, "min_tokens": 8000},
     "sundek:premiado": {"to": "openrouter:openai/gpt-6.1-sol", "detail": "high",
                         "reasoning": {"effort": "medium"}, "min_tokens": 8000},
+    # Mesma troca na Ville (05/11/2026, antes de religar): padrão/tartaruga e marca (gpt-4o),
+    # cor de fundo (gpt-4o-mini) e autenticidade (gpt-6.1-sol, como no IA_OPENAI).
+    "ville:tartaruga": "openrouter:openai/gpt-4o",
+    "ville:marca": "openrouter:openai/gpt-4o",
+    "ville:cor_fundo": "openrouter:openai/gpt-4o-mini",
+    "ville:autenticidade": {"to": "openrouter:openai/gpt-6.1-sol", "detail": "high",
+                            "reasoning": {"effort": "low"}, "min_tokens": 8000},
 }
 
 # Modelo da OpenAI por agente, para agente SEM rota no OpenRouter (src/utils/llm.py).

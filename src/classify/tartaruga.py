@@ -6,6 +6,7 @@ from openai import OpenAI
 
 from ..config import IA
 from ..prompts import tartaruga as prompt
+from ..utils import llm
 
 _client: OpenAI | None = None
 
@@ -37,7 +38,8 @@ def classificar_tartaruga(item: dict) -> dict:
     # detail=low: tartaruga grande é fácil de ver em baixa resolução (~10x mais barato).
     conteudo += [{"type": "image_url", "image_url": {"url": u, "detail": "low"}} for u in fotos]
 
-    resp = _get_client().chat.completions.create(
+    resp = llm.create(
+        "ville:tartaruga",
         # gpt-4o (não mini): a distinção tartaruga × animais parecidos (camaleão,
         # lagarto) exige visão fina — o mini erra mesmo em detail=high. Em detail=low
         # o 4o já acerta (ver teste), então fica barato (~$0.001-0.002/item).
@@ -68,5 +70,6 @@ def classificar_tartaruga(item: dict) -> dict:
     parsed["_usage"] = {
         "prompt_tokens": resp.usage.prompt_tokens,
         "completion_tokens": resp.usage.completion_tokens,
+        "model": resp.model,
     }
     return parsed

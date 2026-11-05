@@ -178,7 +178,7 @@ def _processar(item: dict, idx: str, total: int) -> tuple[dict, int, int]:
         u = marca.pop("_usage", {})
         in_tok += u.get("prompt_tokens", 0)
         out_tok += u.get("completion_tokens", 0)
-        _track("marca", IA["model_detalhes"], u.get("prompt_tokens", 0), u.get("completion_tokens", 0))
+        _track("marca", u.get("model") or IA["model_detalhes"], u.get("prompt_tokens", 0), u.get("completion_tokens", 0))
     except Exception as e:
         marca = {"e_vilebrequin": "indefinido", "autenticidade": "indefinido", "evidencia": f"erro: {e}", "confianca": 0}
 
@@ -204,7 +204,7 @@ def _processar(item: dict, idx: str, total: int) -> tuple[dict, int, int]:
         u = tartaruga.pop("_usage", {})
         in_tok += u.get("prompt_tokens", 0)
         out_tok += u.get("completion_tokens", 0)
-        _track("tartaruga", IA["model_detalhes"], u.get("prompt_tokens", 0), u.get("completion_tokens", 0))
+        _track("tartaruga", u.get("model") or IA["model_detalhes"], u.get("prompt_tokens", 0), u.get("completion_tokens", 0))
     except Exception as e:
         tartaruga = {"tipo": "indefinido", "justificativa": f"erro: {e}", "confianca": 0}
 
@@ -281,7 +281,7 @@ def _processar(item: dict, idx: str, total: int) -> tuple[dict, int, int]:
         u = etiqueta.pop("_usage", {})
         in_tok += u.get("prompt_tokens", 0)
         out_tok += u.get("completion_tokens", 0)
-        _track("etiqueta", IA["model"], u.get("prompt_tokens", 0), u.get("completion_tokens", 0))
+        _track("etiqueta", u.get("model") or IA["model"], u.get("prompt_tokens", 0), u.get("completion_tokens", 0))
         if etiqueta.get("tem_etiqueta") is True:
             linha += " | etiq✓"
         elif etiqueta.get("tem_etiqueta") is False:

@@ -8,7 +8,7 @@ em classify/cor_ville.py, que é regra de negócio.
 """
 
 CORES = [
-    "preto", "branco", "azul marinho", "vermelho", "cinza", "musgo",
+    "preto", "branco", "azul marinho", "vermelho", "vermelho alaranjado", "cinza", "musgo",
     "azul claro", "azul médio", "turquesa", "verde", "verde claro", "amarelo",
     "laranja", "coral", "rosa", "roxo", "bordô", "bege", "marrom", "multicolor",
 ]
@@ -34,9 +34,13 @@ SISTEMA = f"""Você identifica a COR DE FUNDO do tecido de shorts de banho Vileb
 2. CINZA × AZUL CLARO: cinza claro, pérola, gelo, prata fosco é "cinza" — mesmo que a luz da
    foto deixe o tom levemente frio/arroxeado. "azul claro" só quando é claramente AZUL (céu,
    bebê). Tom neutro/acinzentado sem cor definida → "cinza".
-3. VERMELHO × CORAL: "vermelho" é o vermelho de verdade, incluindo vermelho vivo, cereja,
-   framboesa e vermelho levemente rosado. "coral" é quando o tom PUXA PARA O LARANJA: vermelho-
-   alaranjado, salmão, pêssego, tomate alaranjado. Laranja de fato → "laranja".
+3. VERMELHO × VERMELHO ALARANJADO × CORAL × LARANJA: "vermelho" é o vermelho de verdade,
+   incluindo vermelho vivo, cereja, framboesa e vermelho levemente rosado. "vermelho alaranjado"
+   é o vermelho FORTE que puxa para o laranja: vermelho-tomate, vermelho-coral intenso, vermelho
+   de bombeiro alaranjado. "coral" é o tom mais CLARO e rosado-alaranjado: salmão, pêssego, coral
+   claro. Laranja de fato (abóbora, tangerina, laranja vivo) → "laranja". Na dúvida entre
+   vermelho e vermelho alaranjado, tanto faz; entre vermelho alaranjado e coral, olhe se o tom
+   ainda é FORTE e escuro como um vermelho (vermelho alaranjado) ou claro/pastel (coral).
 4. AZUL MARINHO × AZUL MÉDIO: "azul marinho" é azul quase preto, escuro e fechado. Azul royal,
    azul vivo, azul "bic", azul cobalto → "azul médio", mesmo que seja um azul forte.
 5. PRETO × AZUL MARINHO: preto não tem azul nenhum; se dá pra ver azul no tecido → "azul marinho".
