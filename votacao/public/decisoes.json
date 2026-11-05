@@ -1,60 +1,23 @@
 {
-  "gerado_em": "2026-11-03T03:21:40+00:00",
+  "gerado_em": "2026-11-05T03:59:52+00:00",
   "fonte": "src/build/decisoes_spec.json",
   "chave_voto": "decisao:<id_da_pergunta>",
   "titulo": "Decisões pendentes — Ville",
-  "total_perguntas": 4,
+  "total_perguntas": 1,
   "secoes": [
     {
       "id": "regras",
       "titulo": "Cores e estado da Ville",
       "perguntas": [
         {
-          "id": "ville_alaranjado_tier",
-          "titulo": "Vermelho-alaranjado (como o cv04): em que faixa de cor ele entra?",
-          "contexto": "Hoje ele fica em 'aceitável', junto com laranja, salmão e coral: soma pouco na nota e não libera as faixas de €60–100. Acima de 'aceitável' existem duas faixas. 'Intermediária' é onde estão cinza e musgo: nota maior, mas ainda sem liberar €60–100. 'Preferida' é onde estão preto, branco, navy e vermelho: nota máxima e libera €60–100. O laranja de verdade, como o short laranja de tartarugas pretas que você mandou, a IA já separa do alaranjado e ele continua 'aceitável'. No liso nada muda: lá só entram preto, branco, navy, cinza e musgo.",
+          "id": "ville_turquesa_contradicao",
+          "titulo": "Turquesa com tartarugas: aceitável ou neutra?",
+          "contexto": "Você respondeu que turquesa é neutra (como cinza e musgo) sobre o short de peixes. Mas no gabarito estes turquesas com tartaruga estão como aceitáveis. Neutra dá mais nota e, na tartaruga pequena, deixa passar; aceitável não. Qual vale para a tartaruga?",
           "status": "pendente",
           "opcoes": [
-            "Preferida, igual ao vermelho (libera €60–100)",
-            "Intermediária, como cinza e musgo (sem liberar €60–100)",
-            "Continua aceitável"
-          ],
-          "itens": [
-            {
-              "id": "cv04",
-              "origem": "gabarito",
-              "titulo": "Vilebrequin (comprável)",
-              "url": null,
-              "preco": null,
-              "fotos": [
-                "/gabarito_fotos/cv04/0.jpeg",
-                "/gabarito_fotos/cv04/1.jpeg"
-              ],
-              "legenda": "Vermelho-alaranjado (hoje: aceitável)"
-            },
-            {
-              "id": "cv27",
-              "origem": "gabarito",
-              "titulo": "Vilebrequin (comprável)",
-              "url": null,
-              "preco": null,
-              "fotos": [
-                "/gabarito_fotos/cv27/0.jpeg",
-                "/gabarito_fotos/cv27/1.jpeg"
-              ],
-              "legenda": "Vermelho (preferida)"
-            }
-          ]
-        },
-        {
-          "id": "ville_cor_turquesa_neutra",
-          "titulo": "Turquesa com peixes (9264563780): por que a cor ficou 'neutra'?",
-          "contexto": "Você marcou a cor deste short como 'neutra', a mesma faixa do cinza e do musgo. Pelas regras que temos hoje, turquesa ficaria em 'aceitável'. Se for uma regra sua, a IA passa a seguir.",
-          "status": "pendente",
-          "opcoes": [
-            "Turquesa é neutra, como cinza e musgo",
-            "Foi engano: é aceitável",
-            "Outro motivo (explico no comentário)"
+            "Turquesa é aceitável (o de peixes foi engano)",
+            "Turquesa é neutra (corrigir os de tartaruga)",
+            "Depende do tom (explico no comentário)"
           ],
           "itens": [
             {
@@ -69,60 +32,75 @@
                 "/gabarito_fotos/9264563780/2.webp",
                 "/gabarito_fotos/9264563780/3.webp",
                 "/gabarito_fotos/9264563780/4.webp"
-              ]
-            }
-          ]
-        },
-        {
-          "id": "ville_cor_amarelo_penalizada",
-          "titulo": "Amarelo com folhagens e tartarugas (9261816001): por que a cor ficou 'penalizada'?",
-          "contexto": "'Penalizada' é a faixa do neon, do metálico e do multicolor, que baixa a nota. Pelas regras que temos hoje, amarelo estampado ficaria em 'aceitável'. O que pesou?",
-          "status": "pendente",
-          "opcoes": [
-            "O tom de amarelo",
-            "A estampa cheia de cores (folhagens e flores)",
-            "Foi engano: é aceitável",
-            "Outro motivo (explico no comentário)"
-          ],
-          "itens": [
+              ],
+              "legenda": "Peixes — marcado neutra"
+            },
             {
-              "id": "9261816001",
+              "id": "9287374824",
               "origem": "gabarito",
-              "titulo": "Vilebrequin TG S",
-              "url": "https://www.vinted.es/items/9261816001-vilebrequin-tg-s",
-              "preco": "52,15 €",
+              "titulo": "Short de bain Vilebrequin taille L",
+              "url": "https://www.vinted.es/items/9287374824-short-de-bain-vilebrequin-taille-l",
+              "preco": "53,20 €",
               "fotos": [
-                "/gabarito_fotos/9261816001/0.webp",
-                "/gabarito_fotos/9261816001/1.webp",
-                "/gabarito_fotos/9261816001/2.webp",
-                "/gabarito_fotos/9261816001/3.webp",
-                "/gabarito_fotos/9261816001/4.webp"
-              ]
-            }
-          ]
-        },
-        {
-          "id": "ville_mancha_cv29",
-          "titulo": "Mancha amarelada no cv29: dá para comprar assim?",
-          "contexto": "Você marcou este short como 'ok' (sem desbotado). As IAs veem uma mancha amarelada nas costas, na perna esquerda, entre as tartarugas (1ª foto). Se uma mancha pequena assim não importa, a IA não deve descartar por isso.",
-          "status": "pendente",
-          "opcoes": [
-            "Não importa, compraria assim",
-            "Importa: mancha visível é descarte",
-            "Não tinha visto a mancha"
-          ],
-          "itens": [
+                "/gabarito_fotos/9287374824/0.webp",
+                "/gabarito_fotos/9287374824/1.webp",
+                "/gabarito_fotos/9287374824/2.webp",
+                "/gabarito_fotos/9287374824/3.webp"
+              ],
+              "legenda": "Tartaruga — marcado aceitável"
+            },
             {
-              "id": "cv29",
+              "id": "cv05",
               "origem": "gabarito",
               "titulo": "Vilebrequin (comprável)",
               "url": null,
               "preco": null,
               "fotos": [
-                "/gabarito_fotos/cv29/0.jpeg",
-                "/gabarito_fotos/cv29/1.jpeg"
+                "/gabarito_fotos/cv05/0.jpeg",
+                "/gabarito_fotos/cv05/1.jpeg"
               ],
-              "legenda": "Mancha na 1ª foto, perna esquerda"
+              "legenda": "Tartaruga — marcado aceitável"
+            },
+            {
+              "id": "cv11",
+              "origem": "gabarito",
+              "titulo": "Vilebrequin (comprável)",
+              "url": null,
+              "preco": null,
+              "fotos": [
+                "/gabarito_fotos/cv11/0.jpeg",
+                "/gabarito_fotos/cv11/1.jpeg"
+              ],
+              "legenda": "Tartaruga — marcado aceitável"
+            },
+            {
+              "id": "9277022244",
+              "origem": "gabarito",
+              "titulo": "Lot maillot Villebrequin",
+              "url": "https://www.vinted.es/items/9277022244-lot-maillot-villebrequin",
+              "preco": "105,70 €",
+              "fotos": [
+                "/gabarito_fotos/9277022244/0.webp",
+                "/gabarito_fotos/9277022244/1.webp",
+                "/gabarito_fotos/9277022244/2.webp",
+                "/gabarito_fotos/9277022244/3.webp"
+              ],
+              "legenda": "Tartaruga — marcado aceitável"
+            },
+            {
+              "id": "9254096268",
+              "origem": "gabarito",
+              "titulo": "Maillot short bain vilebrequin",
+              "url": "https://www.vinted.es/items/9254096268-maillot-short-bain-vilebrequin",
+              "preco": "95,20 €",
+              "fotos": [
+                "/gabarito_fotos/9254096268/0.webp",
+                "/gabarito_fotos/9254096268/1.webp",
+                "/gabarito_fotos/9254096268/2.webp",
+                "/gabarito_fotos/9254096268/3.webp",
+                "/gabarito_fotos/9254096268/4.webp"
+              ],
+              "legenda": "Liso — marcado aceitável"
             }
           ]
         }

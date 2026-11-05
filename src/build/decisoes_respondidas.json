@@ -750,6 +750,99 @@
           "aplicado": "gabarito/regra atualizados em 02/11/2026"
         }
       ]
+    },
+    {
+      "id": "ville_respondidas_0511",
+      "titulo": "Ville — cores e estado (respondidas em 04/11/2026)",
+      "perguntas": [
+        {
+          "id": "ville_alaranjado_tier",
+          "titulo": "Vermelho-alaranjado (como o cv04): em que faixa de cor ele entra?",
+          "contexto": "Hoje ele fica em 'aceitável', junto com laranja, salmão e coral: soma pouco na nota e não libera as faixas de €60–100. Acima de 'aceitável' existem duas faixas. 'Intermediária' é onde estão cinza e musgo: nota maior, mas ainda sem liberar €60–100. 'Preferida' é onde estão preto, branco, navy e vermelho: nota máxima e libera €60–100. O laranja de verdade, como o short laranja de tartarugas pretas que você mandou, a IA já separa do alaranjado e ele continua 'aceitável'. No liso nada muda: lá só entram preto, branco, navy, cinza e musgo.",
+          "itens": [
+            {
+              "id": "cv04",
+              "legenda": "Vermelho-alaranjado (hoje: aceitável)"
+            },
+            {
+              "id": "cv27",
+              "legenda": "Vermelho (preferida)"
+            }
+          ],
+          "opcoes": [
+            "Preferida, igual ao vermelho (libera €60–100)",
+            "Intermediária, como cinza e musgo (sem liberar €60–100)",
+            "Continua aceitável"
+          ],
+          "resposta_cliente": {
+            "opcao": "Preferida, igual ao vermelho (libera €60–100)",
+            "comentario": null
+          },
+          "aplicado": "regra atualizada e cv04 corrigido no gabarito em 05/11/2026"
+        },
+        {
+          "id": "ville_cor_turquesa_neutra",
+          "titulo": "Turquesa com peixes (9264563780): por que a cor ficou 'neutra'?",
+          "contexto": "Você marcou a cor deste short como 'neutra', a mesma faixa do cinza e do musgo. Pelas regras que temos hoje, turquesa ficaria em 'aceitável'. Se for uma regra sua, a IA passa a seguir.",
+          "itens": [
+            {
+              "id": "9264563780"
+            }
+          ],
+          "opcoes": [
+            "Turquesa é neutra, como cinza e musgo",
+            "Foi engano: é aceitável",
+            "Outro motivo (explico no comentário)"
+          ],
+          "resposta_cliente": {
+            "opcao": "Turquesa é neutra, como cinza e musgo",
+            "comentario": null
+          },
+          "aplicado": "não aplicado: 8 turquesas de tartaruga estão como aceitáveis no gabarito — virou a pergunta ville_turquesa_contradicao (05/11/2026)"
+        },
+        {
+          "id": "ville_cor_amarelo_penalizada",
+          "titulo": "Amarelo com folhagens e tartarugas (9261816001): por que a cor ficou 'penalizada'?",
+          "contexto": "'Penalizada' é a faixa do neon, do metálico e do multicolor, que baixa a nota. Pelas regras que temos hoje, amarelo estampado ficaria em 'aceitável'. O que pesou?",
+          "itens": [
+            {
+              "id": "9261816001"
+            }
+          ],
+          "opcoes": [
+            "O tom de amarelo",
+            "A estampa cheia de cores (folhagens e flores)",
+            "Foi engano: é aceitável",
+            "Outro motivo (explico no comentário)"
+          ],
+          "resposta_cliente": {
+            "opcao": "A estampa cheia de cores (folhagens e flores)",
+            "comentario": null
+          },
+          "aplicado": "sem mudança: o short tem padrão \"outro\" e já é descartado; a IA não separou estampa carregada de tartarugas coloridas (testado em 05/11/2026)"
+        },
+        {
+          "id": "ville_mancha_cv29",
+          "titulo": "Mancha amarelada no cv29: dá para comprar assim?",
+          "contexto": "Você marcou este short como 'ok' (sem desbotado). As IAs veem uma mancha amarelada nas costas, na perna esquerda, entre as tartarugas (1ª foto). Se uma mancha pequena assim não importa, a IA não deve descartar por isso.",
+          "itens": [
+            {
+              "id": "cv29",
+              "legenda": "Mancha na 1ª foto, perna esquerda"
+            }
+          ],
+          "opcoes": [
+            "Não importa, compraria assim",
+            "Importa: mancha visível é descarte",
+            "Não tinha visto a mancha"
+          ],
+          "resposta_cliente": {
+            "opcao": "Não tinha visto a mancha",
+            "comentario": "pode passar mas botar um comentário que há mancha"
+          },
+          "aplicado": "aviso \"tem mancha\" no app, com o lugar da mancha (agente de conservação, 05/11/2026)"
+        }
+      ]
     }
   ]
 }
