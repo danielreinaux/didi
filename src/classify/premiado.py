@@ -15,7 +15,8 @@ from ..utils import llm
 from ..prompts import premiado as prompt
 
 REFS = Path(__file__).resolve().parent.parent / "prompts" / "refs" / "premiado"
-VERSAO = 1  # sobe quando o prompt/as referências mudarem → olha de novo os itens ativos
+VERSAO = 2  # sobe quando o prompt/as referências mudarem → olha de novo os itens ativos
+# v2 (06/11/2026): modelo 1 também com corpo preto.
 # Cor do corpo (cor.cor_principal) que vale a pena olhar: marinho e preto (o classificador de
 # cor às vezes chama o marinho de "azul escuro" e o preto de "cinza escuro"/"grafite").
 _CORPO_ESCURO = ("marinho", "navy", "preto", "negro", "azul escuro", "cinza escuro", "grafite", "chumbo")
