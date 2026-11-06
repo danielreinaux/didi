@@ -82,6 +82,34 @@ jobs:
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
         run: python -m src.classify.run --workers 2
 
+      # E-mail LOGO DEPOIS da análise (06/11/2026). Antes ele saía no fim do job 'deploy', depois
+      # do verifica vendidos e do deploy no Vercel: ~2,5 min parado (o premiado urgente de 06/11
+      # levou 8 min do anúncio ao e-mail). O e-mail leva ao Vinted, não depende do app no ar.
+      # - items.json montado aqui só para o notify ler; NÃO é commitado (dono: job 'deploy') e
+      #   é desfeito no fim, senão o rebase do commit recusa a árvore suja.
+      # - Ledger (data/notificados.json): este job é o ÚNICO que escreve (rodadas em fila pelo
+      #   concurrency scrape-sundek). Parte do ledger do main de agora, não do checkout: uma
+      #   rodada que ficou na fila desde antes do commit da anterior não reenvia o que ela mandou.
+      # - continue-on-error: SMTP fora do ar não marca a rodada como falha (a corrente esperaria
+      #   5 min). Sem registro no ledger, o aviso sai na rodada seguinte.
+      # - A Ville entra com o que ela commitou até o checkout (em sombra hoje: config.VILLE_EMAIL).
+      - name: Notificar por email (Sundek + Ville)
+        timeout-minutes: 3
+        if: always()
+        continue-on-error: true
+        env:
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS }}
+          NOTIFY_TO: ${{ secrets.NOTIFY_TO }}
+        run: |
+          set +e
+          git fetch -q origin main && git show origin/main:data/notificados.json > /tmp/ledger.json \
+            && [ -s /tmp/ledger.json ] && cp /tmp/ledger.json data/notificados.json
+          python -m src.build.votacao_items && python -m src.notify.run
+          rc=$?
+          git checkout -- votacao/public/items.json votacao/public/status.json votacao/public/descartados.json
+          exit $rc
+
       # Revisita itens do acervo que sumiram do scrape e marca os vendidos/removidos.
       # Sem OpenAI — só scraping. if:always() pra rodar mesmo se o classify falhar.
       - name: Verifica vendidos
@@ -109,8 +137,7 @@ jobs:
           # conflito de rebase no push. Agora quem monta e commita o items.json é só o
           # job 'deploy' do fim (fonte única), a partir do main já com os dois lados.
 
-      # A notificação por email saiu daqui: agora é UM email consolidado (Sundek + Ville)
-      # no job 'deploy' do fim, depois que o items.json combinado já está commitado.
+      # A notificação por email roda logo depois do Classify (passo acima), não no job 'deploy'.
 
       # if: always() → persiste o checkpoint do classify mesmo se um passo anterior
       # falhar ou o job estourar o timeout (senão o progresso de ~1-3h se perde).
@@ -121,7 +148,10 @@ jobs:
           git config user.name "Didi Bot"
           git config user.email "bot@didi.local"
           # items.json saiu daqui — agora é dono único do job 'deploy' (ver comentário no build).
-          git add data/coleta.json data/coleta-classificada.json data/historico.json data/custo_por_etapa.json data/analise.html votacao/public/analise.html
+          # O passo do e-mail monta um items.json só para ler; se ele morreu no meio (timeout),
+          # desfaz aqui, senão o rebase recusa a árvore suja e a rodada perde os dados.
+          git checkout -- votacao/public/items.json votacao/public/status.json votacao/public/descartados.json 2>/dev/null || true
+          git add data/coleta.json data/coleta-classificada.json data/historico.json data/custo_por_etapa.json data/analise.html votacao/public/analise.html data/notificados.json
           git diff --cached --quiet && echo "nada a commitar" && exit 0
           git commit -m "data: cron sundek $(date -u +'%Y-%m-%d %H:%M UTC')"
           # O job dura 1-3h; outro run pode ter empurrado pro main nesse meio-tempo.
@@ -289,9 +319,8 @@ jobs:
   # main JÁ atualizado (ref: main puxa o tip com os commits dos dois). Publica exatamente
   # o que está commitado em votacao/public/ (items.json combinado + analise.html + oferta_ville).
   #
-  # Também manda UM email consolidado (Sundek + Ville). Antes cada job notificava sua
-  # marca → 2 emails; aqui o `notify.run` SEM --marca lê o items.json combinado e manda
-  # um resumo único, depois grava+commita o ledger data/notificados.json.
+  # O e-mail (um só, com as duas marcas) saiu daqui em 06/11/2026: roda no job sundek logo
+  # depois da análise, ~2,5 min antes. Este job não toca mais no ledger data/notificados.json.
   deploy:
     # Só espera o sundek (05/11/2026): esperar a Ville atrasaria o e-mail do Sundek a cada rodada.
     # O que a Ville commitar entra no app no deploy da rodada seguinte (~5 min depois).
@@ -392,33 +421,3 @@ jobs:
           npx vercel --prod --token="$VERCEL_TOKEN" --yes
           # ↑ a env var ainda é VERCEL_TOKEN porque é o nome que a CLI espera;
           # o valor vem do secret VERCEL_KEY que você cadastrou.
-
-      # (Python já foi montado no começo do job, antes do snapshot do histórico.)
-      # UM email só, com as duas marcas. Sem --marca, o run.py lê o items.json combinado
-      # e manda um resumo único (assunto "Sundek+Ville"). Seed pelo ledger global.
-      - name: Notificar por email (Sundek + Ville)
-        if: always()
-        env:
-          SMTP_USER: ${{ secrets.SMTP_USER }}
-          SMTP_PASS: ${{ secrets.SMTP_PASS }}
-          NOTIFY_TO: ${{ secrets.NOTIFY_TO }}
-        run: python -m src.notify.run
-
-      # O notify gravou o ledger atualizado; commita de volta pra deduplicar na próxima.
-      - name: Commit do ledger de notificações
-        if: always()
-        run: |
-          git config user.name "Didi Bot"
-          git config user.email "bot@didi.local"
-          git add data/notificados.json
-          git diff --cached --quiet && echo "nada a commitar" && exit 0
-          git commit -m "data: notificados $(date -u +'%Y-%m-%d %H:%M UTC')"
-          for i in 1 2 3 4 5; do
-            git fetch origin main
-            if git rebase -X theirs origin/main && git push; then exit 0; fi
-            git rebase --abort 2>/dev/null || true   # salvaguarda: -X theirs já evita travar em conflito; isto só cobre falha de push por corrida
-            echo "push falhou (tentativa $i/5) — re-sincronizando em 5s..."
-            sleep 5
-          done
-          echo "::error::não consegui empurrar o ledger após 5 tentativas"
-          exit 1
