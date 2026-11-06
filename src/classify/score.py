@@ -160,6 +160,17 @@ def calcular_teto(tier_final: str, tamanho: str, tem_elastico: bool, tem_etiquet
 
 def calcular_score(item: dict) -> dict:
     """Retorna dict com score, teto, decisao e breakdown."""
+    # Item que pulou etapas por "descarte garantido": os campos delas estão vazios
+    # (elastico=None etc.) e o score cru lia isso como "sem elástico" — o app mostrava
+    # "sem elástico" num short COM elástico descartado pelo PREÇO (05/11/2026,
+    # 10675123283). O score passa a ser o do melhor caso, que dá o motivo de verdade.
+    dg = (item.get("classificacao") or {}).get("descarte_garantido")
+    if isinstance(dg, dict) and dg.get("etapa") in ETAPAS_IA:
+        s = _score_melhor_caso(item, dg["etapa"])
+        if s is not None:
+            return {**s, "descarte_garantido": dg["etapa"]}
+        # None = a regra mudou e o descarte deixou de ser garantido: score cru, e o
+        # run.py manda reprocessar (_pulo_vencido).
     cl = item.get("classificacao") or {}
     cor_raw = item.get("cor")
     cor = cor_raw if isinstance(cor_raw, dict) else {}
@@ -393,6 +404,7 @@ def _melhor_caso(item: dict, etapa: str, tem_elastico: bool | None) -> dict:
     k = ETAPAS_IA.index(etapa)
     x = dict(item)
     cl = dict(x.get("classificacao") or {})
+    cl.pop("descarte_garantido", None)  # o melhor caso é o score normal (sem recursão)
     cor = dict(x["cor"]) if isinstance(x.get("cor"), dict) else {}
     if k < 1:  # tipo ainda não rodou
         cl.update(tipo="liso", aparencia="ok", tecido_brilhoso=False, listra_na_frente=False)
@@ -421,11 +433,21 @@ def descarte_garantido(item: dict, etapa: str) -> str | None:
     """Depois de `etapa` (uma de ETAPAS_IA), o item é DESCARTADO qualquer que seja a
     resposta das etapas seguintes? Devolve o motivo (str) se sim; None se ainda pode
     passar. Função pura sobre o score atual → muda junto quando a regra mudar."""
+    s = _score_melhor_caso(item, etapa)
+    if s is None:
+        return None
+    return s.get("motivo_exclusao") or s.get("motivo") or "descartado"
+
+
+def _score_melhor_caso(item: dict, etapa: str) -> dict | None:
+    """Score do item com as etapas depois de `etapa` no melhor caso, se ele é DESCARTADO
+    em todos os casos (com e sem elástico quando o elástico ainda não rodou); None se
+    algum caso passa. Devolve o score do caso mais favorável (com elástico)."""
     casos = (True, False) if ETAPAS_IA.index(etapa) < 4 else (None,)
-    motivo = None
+    primeiro = None
     for tem_el in casos:
         s = calcular_score(_melhor_caso(item, etapa, tem_el))
         if s["decisao"] != "descartado":
             return None
-        motivo = motivo or s.get("motivo_exclusao") or s.get("motivo") or "descartado"
-    return motivo
+        primeiro = primeiro or s
+    return primeiro
