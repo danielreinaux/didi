@@ -435,6 +435,9 @@ def main() -> None:
         print(f"  {len(rever)} cortados só pelo título (marca Vilebrequin no Vinted) — analisando de novo.")
         for x in rever:
             ja_processados.pop(x.get("id"), None)
+        # Sem o score velho ("nao_ville"): as saídas antecipadas do _processar (padrão
+        # "outro", tamanho…) não calculam score, e o pass final só calcula quem não tem.
+        rever = [{k: v for k, v in x.items() if k != "score"} for x in rever]
         itens = itens + rever
         total = len(itens)
 
