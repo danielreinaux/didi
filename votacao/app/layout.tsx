@@ -1,19 +1,21 @@
 import type { Metadata, Viewport } from "next";
-import { Bricolage_Grotesque, Instrument_Sans } from "next/font/google";
+import localFont from "next/font/local";
 import AppShell from "@/components/AppShell";
 import "./globals.css";
 
 // Bricolage Grotesque: títulos, preços e a marca. Instrument Sans: interface e texto.
-const bricolage = Bricolage_Grotesque({
+// Arquivos dentro do projeto (app/fonts/LEIA-ME.md): o next/font/google baixava do Google a
+// cada build e, quando o Google falhava, o deploy na Vercel quebrava.
+const bricolage = localFont({
+  src: "./fonts/bricolage-grotesque-latin.woff2",
   variable: "--font-bricolage",
-  subsets: ["latin"],
-  weight: ["500", "600", "700"],
+  weight: "200 800",
   display: "swap",
 });
-const instrument = Instrument_Sans({
+const instrument = localFont({
+  src: "./fonts/instrument-sans-latin.woff2",
   variable: "--font-instrument",
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+  weight: "400 700",
   display: "swap",
 });
 
