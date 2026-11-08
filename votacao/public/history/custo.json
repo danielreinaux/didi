@@ -1,57 +1,6 @@
 {
- "gerado_em": "2026-11-08T13:45:22.187865-03:00",
+ "gerado_em": "2026-11-08T13:49:13.469256-03:00",
  "rodadas": [
-  {
-   "run_id": "42399370674",
-   "quando": "2026-11-07T15:08:25.604481-03:00",
-   "status": "ok",
-   "custo_brl": 0.01,
-   "custo_usd": 0.001023,
-   "calls": 7,
-   "tok_in": 32863,
-   "tok_out": 1150,
-   "novos": 8,
-   "candidatos": 25,
-   "ativos": 7075,
-   "descartados": 6869,
-   "sundek_usd": 0.001023,
-   "ville_usd": 0.0,
-   "etapas": {
-    "sundek:brand": 0.000451,
-    "sundek:classify_tipo": 0.0,
-    "sundek:color": 0.0,
-    "sundek:listra": 0.000572,
-    "sundek:elastico": 0.0
-   },
-   "marcas": [
-    "sundek",
-    "vilebrequin"
-   ],
-   "por_marca": {
-    "sundek": {
-     "custo_brl": 0.01,
-     "custo_usd": 0.001023,
-     "calls": 7,
-     "tok_in": 32863,
-     "tok_out": 1150,
-     "novos": 8,
-     "candidatos": 18,
-     "ativos": 6933,
-     "descartados": 6734
-    },
-    "vilebrequin": {
-     "custo_brl": 0.0,
-     "custo_usd": 0.0,
-     "calls": 0,
-     "tok_in": 0,
-     "tok_out": 0,
-     "novos": 0,
-     "candidatos": 7,
-     "ativos": 142,
-     "descartados": 135
-    }
-   }
-  },
   {
    "run_id": "42399736782",
    "quando": "2026-11-07T15:11:50.433460-03:00",
@@ -9341,6 +9290,62 @@
      "calls": 11,
      "tok_in": 50281,
      "tok_out": 3084,
+     "novos": 10,
+     "candidatos": 12,
+     "ativos": 163,
+     "descartados": 151
+    }
+   }
+  },
+  {
+   "run_id": "42501466023",
+   "quando": "2026-11-08T13:49:10.038343-03:00",
+   "status": "ok",
+   "custo_brl": 0.03,
+   "custo_usd": 0.005023,
+   "calls": 10,
+   "tok_in": 46304,
+   "tok_out": 2379,
+   "novos": 23,
+   "candidatos": 34,
+   "ativos": 7145,
+   "descartados": 6931,
+   "sundek_usd": 0.005023,
+   "ville_usd": 0.0,
+   "etapas": {
+    "sundek:brand": 0.00024,
+    "sundek:classify_tipo": 0.0,
+    "sundek:color": 0.0,
+    "sundek:listra": 0.00063,
+    "sundek:elastico": 0.0,
+    "sundek:velcro_fly": 0.0,
+    "sundek:crop_localizar": 0.000611,
+    "sundek:bolso": 0.001855,
+    "sundek:etiqueta": 8.3e-05,
+    "sundek:desbotado_aprovado": 0.001604
+   },
+   "marcas": [
+    "sundek",
+    "vilebrequin"
+   ],
+   "por_marca": {
+    "sundek": {
+     "custo_brl": 0.03,
+     "custo_usd": 0.005023,
+     "calls": 10,
+     "tok_in": 46304,
+     "tok_out": 2379,
+     "novos": 13,
+     "candidatos": 22,
+     "ativos": 6982,
+     "descartados": 6780
+    },
+    "vilebrequin": {
+     "custo_brl": 0.0,
+     "custo_usd": 0.0,
+     "calls": 0,
+     "tok_in": 0,
+     "tok_out": 0,
      "novos": 10,
      "candidatos": 12,
      "ativos": 163,
