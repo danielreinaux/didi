@@ -33,7 +33,10 @@ SUNDEK = {
 VILEBREQUIN = {
     "marca": "Vilebrequin",
     "brand_id_vinted": 99810,
-    "preco_min": 40,
+    # Piso era €40 (a "faixa esperada" do manual), mas a regra de compra do cliente diz
+    # tartaruga grande < €40 → comprável sempre, e liso/tartaruga pequena ótimo a €25: a
+    # busca nunca trazia justamente os mais baratos (08/11/2026).
+    "preco_min": 1,
     "preco_max": 100,
     "tamanhos_aceitos": ["S", "M", "L", "XL"],
     "size_ids_vinted": {"S": 207, "M": 208, "L": 209, "XL": 210},
