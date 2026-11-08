@@ -44,7 +44,7 @@ from .estado_ville import verificar_estado
 from .score_ville import calcular_score, _tamanho_key
 # Reusa as exclusões de título do Sundek (infantil, não-short) — P2.
 from .prefilter import EXCLUSAO, EXCLUSAO_INFANTIL
-from ..config import IA
+from ..config import IA, VILLE_APP_DESDE
 # Custo REAL por etapa/modelo (o Ville usa gpt-4o em marca/tartaruga/autenticidade/
 # fecho e mini no resto). Antes o custo era PISO — precificado como se fosse tudo mini.
 from ..utils.cost_tracker import track as _track, dump_json as _dump_cost, reset as _reset_cost, relatorio as _relatorio_cost, PRECOS as _PRECOS
@@ -55,11 +55,28 @@ DATA = ROOT / "data"
 _print_lock = threading.Lock()
 _counters_lock = threading.Lock()
 
-# Palavras-chave que indicam que o título é provavelmente Vilebrequin
+# Palavras-chave que indicam que o título é provavelmente Vilebrequin. A 2ª alternativa pega
+# os erros de grafia vistos no Vinted: vibrequin, vilbrequin, villebrekin, vilebreuin.
 _VILLE_RE = re.compile(
-    r"vilebrequin|vile[- ]?brequin|villebrequin|vilebreq|vbrequin|v\.?b\.",
+    r"vilebrequin|vile[- ]?brequin|villebrequin|vilebreq|vbrequin|v\.?b\.|"
+    r"vi(?:ll?)?e?[- ]?bre[qkc]?u?i?n",
     re.IGNORECASE,
 )
+
+
+def _marca_vinted(item: dict) -> str:
+    """Marca cadastrada no Vinted, lida do resumo do card ("título+tamanho·estado·marca·
+    Subido…"). O campo `marca` do scrape vem vazio. "" se não der para ler."""
+    partes = [p.strip() for p in (item.get("resumo") or "").split("·")]
+    estado = (item.get("estado") or "").strip()
+    if estado and estado in partes:
+        i = partes.index(estado)
+        return partes[i + 1] if i + 1 < len(partes) else ""
+    return partes[2] if len(partes) >= 3 else ""
+
+
+def _marca_vinted_e_ville(item: dict) -> bool:
+    return bool(_VILLE_RE.search(_marca_vinted(item)))
 
 # Indício de que há um SHORT no anúncio (mesmo que o título cite t-shirt/polo).
 # Salva os "Ensemble Homme T-shirt + Short de bain Tortues" — conjuntos que
@@ -90,7 +107,7 @@ def _parece_ville(item: dict) -> tuple[bool, str, str]:
     """Prefilter de título (regex, sem IA). Retorna (ok, tipo, motivo).
 
     Corta de graça, antes de gastar visão:
-      - título sem "vilebrequin"        → nao_ville
+      - título sem "vilebrequin" E marca do Vinted ≠ Vilebrequin → nao_ville
       - infantil (X ans, kids, etc.)     → infantil
       - não-short (polo, camiseta, sunga…) → nao_short
     tipo é "" quando ok=True.
@@ -98,7 +115,10 @@ def _parece_ville(item: dict) -> tuple[bool, str, str]:
     titulo = (item.get("titulo") or "").strip()
     if not titulo:
         return False, "nao_ville", "sem título"
-    if not _VILLE_RE.search(titulo.lower()):
+    # Título sozinho não basta (07/11/2026): "Maillot de bain", "Bañador caballero" e
+    # "Vibrequin banadores" com a marca Vilebrequin no Vinted eram cortados sem a IA olhar
+    # (23 em 7 dias). Com a marca cadastrada, a IA de marca confere pelas fotos.
+    if not _VILLE_RE.search(titulo.lower()) and not _marca_vinted_e_ville(item):
         return False, "nao_ville", "titulo sem Vilebrequin"
     for regex, motivo in EXCLUSAO_INFANTIL:
         if regex.search(titulo):
@@ -357,6 +377,11 @@ def _processar(item: dict, idx: str, total: int) -> tuple[dict, int, int]:
     return resultado, in_tok, out_tok
 
 
+# Teto de itens do acervo reanalisados por rodada (ver `rever` no main): ~US$ 0,012 cada e
+# o passo Classify Ville tem 15 min.
+REVER_TITULO_MAX = 6
+
+
 def main() -> None:
     inp = DATA / "coleta-ville.json"
     if not inp.exists():
@@ -396,6 +421,22 @@ def main() -> None:
             pass
     if acervo_previo:
         print(f"  acervo acumulado: {len(acervo_previo)} itens já conhecidos.")
+
+    # Ativos cortados pela regra antiga do título (só ele, sem IA) que a regra de hoje deixa
+    # passar: voltam para a rodada, poucos por vez. Só os vistos desde que a Ville entrou no
+    # app (VILLE_APP_DESDE) — os mais velhos nem aparecem lá.
+    no_scrape = {x.get("id") for x in itens}
+    rever = [x for rid, x in acervo_previo.items()
+             if rid not in no_scrape and x.get("status") == "ativo"
+             and (x.get("classificacao") or {}).get("motivo") == "titulo sem Vilebrequin"
+             and (x.get("primeiro_visto") or "") >= VILLE_APP_DESDE
+             and _parece_ville(x)[0]][:REVER_TITULO_MAX]
+    if rever:
+        print(f"  {len(rever)} cortados só pelo título (marca Vilebrequin no Vinted) — analisando de novo.")
+        for x in rever:
+            ja_processados.pop(x.get("id"), None)
+        itens = itens + rever
+        total = len(itens)
 
     pendentes = [(i, item) for i, item in enumerate(itens) if item.get("id") not in ja_processados]
     pulados = total - len(pendentes)
