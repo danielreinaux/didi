@@ -1,5 +1,60 @@
 {
-  "por_etapa": {},
-  "duracao_s": 0.3,
-  "itens_processados": 0
+  "por_etapa": {
+    "marca": {
+      "openai/gpt-4o": {
+        "in": 735,
+        "out": 64,
+        "calls": 1
+      }
+    },
+    "tartaruga": {
+      "openai/gpt-4o": {
+        "in": 4240,
+        "out": 97,
+        "calls": 1
+      }
+    },
+    "cor": {
+      "openai/gpt-4o-mini": {
+        "in": 6676,
+        "out": 61,
+        "calls": 1
+      }
+    },
+    "etiqueta": {
+      "qwen/qwen3.7-flash": {
+        "in": 1539,
+        "out": 51,
+        "calls": 1
+      }
+    },
+    "cordao": {
+      "google/gemini-3.5-flash-lite": {
+        "in": 4026,
+        "out": 54,
+        "calls": 1
+      }
+    },
+    "fecho": {
+      "google/gemini-3.5-flash-lite": {
+        "in": 3262,
+        "out": 64,
+        "calls": 1
+      }
+    },
+    "estado": {
+      "anthropic/claude-haiku-5.5": {
+        "in": 6678,
+        "out": 1975,
+        "calls": 3
+      },
+      "google/gemini-3.5-flash-lite": {
+        "in": 2730,
+        "out": 65,
+        "calls": 1
+      }
+    }
+  },
+  "duracao_s": 16.8,
+  "itens_processados": 1
 }
