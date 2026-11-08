@@ -138,8 +138,37 @@ def _tamanho_key(tamanho: str | None) -> str:
     return "L"
 
 
-def _tamanho_numerico(tamanho: str | None, titulo: str | None = None) -> int | None:
-    """Retorna tamanho numérico se houver (campo tamanho OU título do anúncio)."""
+# Tamanho em letra solto no texto: "Short M", "(S)", "taglia XL", "tg. L". Não pega
+# "L'été" nem "M502" (exige separador dos dois lados).
+_LETRA_TAMANHO_RE = re.compile(r"(?:^|[\s(/,:.-])(XXL|XL|XS|S|M|L)(?=$|[\s)/,.;-])", re.I)
+
+
+def _e_tamanho_letra(tamanho: str | None) -> bool:
+    """Campo tamanho do Vinted é S/M/L/XL (o vendedor escolheu a letra)."""
+    return bool(re.fullmatch(r"S|M|L|XL", (tamanho or "").strip().upper()))
+
+
+def _tamanho_efetivo(tamanho: str | None, titulo: str | None) -> str:
+    """Tamanho a usar no score. "Talla única" no campo, com a letra no título ("Short de
+    bain Sundek taille S"), vale a letra do título (08/11/2026: ~17 em 60 dias cortados
+    como infantil com tamanho adulto escrito no título)."""
+    t = (tamanho or "").strip()
+    if re.search(r"talla\s*[úu]nica", t, re.I):
+        m = _LETRA_TAMANHO_RE.search(titulo or "")
+        if m:
+            return m.group(1).upper()
+    return t
+
+
+def _tamanho_numerico(tamanho: str | None, titulo: str | None = None,
+                      letra_manda: bool = True) -> int | None:
+    """Retorna tamanho numérico se houver (campo tamanho OU título do anúncio).
+    Com `letra_manda`, campo em letra (S–XL) manda e número no título não conta (08/11/2026:
+    "Costume Sundek taglia S (30)" e "sundek 38 xl" eram cortados pelo número com o tamanho
+    do anúncio aceito — 228 em 60 dias). O score passa letra_manda=False no SEM elástico:
+    o manual pede cintura 31–34 justamente nele."""
+    if letra_manda and _e_tamanho_letra(tamanho):
+        return None
     for txt in (tamanho, titulo):
         if not txt:
             continue
@@ -182,7 +211,7 @@ def calcular_score(item: dict) -> dict:
     # vem vazia. Distinguir os dois evita o carimbo fantasma de 'cor_ruim'.
     cor_avaliada = bool(cor.get("tier") or cor.get("tier_final"))
     tier_final = cor.get("tier_final") or cor.get("tier") or "ruim"
-    tamanho = item.get("tamanho") or ""
+    tamanho = _tamanho_efetivo(item.get("tamanho"), item.get("titulo"))
     tam_key = _tamanho_key(tamanho)
     tem_elastico = elastico.get("tem_elastico") is True
     tipo_fechamento = elastico.get("tipo_fechamento") or ("elastico" if tem_elastico else "sem")
@@ -262,7 +291,7 @@ def calcular_score(item: dict) -> dict:
     if tam_key == "XXL":
         exclusoes.append("tamanho_XXL")
     # Tamanho numérico fora de 31-34 = exclusão sempre (checa campo E título)
-    num = _tamanho_numerico(tamanho, item.get("titulo"))
+    num = _tamanho_numerico(tamanho, item.get("titulo"), letra_manda=tem_elastico)
     if num is not None and not (31 <= num <= 34):
         exclusoes.append(f"tamanho_numerico_{num}")
 

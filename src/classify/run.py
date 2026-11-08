@@ -416,6 +416,11 @@ def _pulo_vencido(it: dict) -> bool:
         return True
 
 
+# Reanálise dos cortados pelo pré-filtro antigo (ver `rever_pf` no main): ativos vistos nos
+# últimos N dias, até X por rodada (~US$ 0,02 cada; o Classify tem 15 min).
+REVER_PREFILTRO_DIAS = 14
+REVER_PREFILTRO_MAX = 10
+
 # Teto de 2ªs olhadas da listra por rodada (gpt-4o high ≈ US$ 0,0095 cada).
 LISTRA_CONFIRMA_MAX_POR_RODADA = 80
 
@@ -529,6 +534,25 @@ def main() -> None:
     if com_erro:
         print(f"  {len(com_erro)} itens com erro nas últimas 48 h — tentando de novo.")
         itens = itens + com_erro
+        total = len(itens)
+
+    # Ativos cortados no pré-filtro (sem IA) por uma regra que mudou e que o pré-filtro de
+    # HOJE deixa passar: voltam para a IA, poucos por vez. 08/11/2026: número no título com
+    # tamanho S–XL no anúncio, "Talla única" com o tamanho no título, "cintura elástica".
+    desde_pf = (datetime.now(timezone.utc) - timedelta(days=REVER_PREFILTRO_DIAS)).isoformat()
+    rever_pf = [x for rid, x in acervo_previo.items()
+                if rid not in no_scrape and x.get("status") == "ativo"
+                and (x.get("primeiro_visto") or "") >= desde_pf
+                and not x.get("marca_check")
+                and (x.get("classificacao") or {}).get("confianca") == 1
+                and (x.get("classificacao") or {}).get("tipo") in ("nao_short", "tamanho_invalido", "infantil")
+                and parece_short(x).ok][:REVER_PREFILTRO_MAX]
+    if rever_pf:
+        print(f"  {len(rever_pf)} cortados no pré-filtro por regra antiga — mandando para a IA.")
+        for x in rever_pf:
+            ja_processados.pop(x.get("id"), None)
+        itens = itens + [{k: v for k, v in x.items() if k not in ("score", "classificacao")}
+                         for x in rever_pf]
         total = len(itens)
 
     # Pular só se ID já processado E fotos não mudaram (mesma URL list)

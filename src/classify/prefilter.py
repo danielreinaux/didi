@@ -47,7 +47,8 @@ EXCLUSAO: list[tuple[re.Pattern, str]] = [
     (re.compile(r"\bpantalon[ei]\b(?!.*(?:cort[oi]|short|bagno|mare|costume|cargo))", re.I), "calça longa"),
 
     # íntimos / sungas
-    (re.compile(r"\bslip\b", re.I), "slip (sunga)"),
+    # "con slip interno" / "with slip" = short com cueca forro, não é sunga (08/11/2026).
+    (re.compile(r"(?<!con\s)(?<!with\s)\bslip\b(?!\s+(?:interno|interior|integrat|incorporad))", re.I), "slip (sunga)"),
     (re.compile(r"\bsunga\b", re.I), "sunga"),
     (re.compile(r"\b[ií]ntimo\b|\bunderwear\b|\bbox(er)?\s+brief\b", re.I), "roupa íntima"),
 
@@ -55,7 +56,9 @@ EXCLUSAO: list[tuple[re.Pattern, str]] = [
     (re.compile(r"\binfradito\b|\bflip[-\s]?flop\b|\bchinelo\b", re.I), "chinelo"),
     (re.compile(r"\bcappello\b|\bhat\b|\bbon[eé]\b|\bcap\b", re.I), "chapéu/boné"),
     (re.compile(r"\bocchiali\b|\bsunglasses\b|\b[óo]culos\b", re.I), "óculos"),
-    (re.compile(r"\bcintur[oóa]n?\b|\bbelt\b|\bcinto\b", re.I), "cinto"),
+    # "cintura" é cinto em italiano, mas "cintura elástica/elastica" é o cós (08/11/2026:
+    # "Bañador Sundek … Cintura Elástica" saía como cinto).
+    (re.compile(r"\bcintur[oó]n\b|\bcintura\b(?!\s+(?:el[aá]stic|elasticizzat|regolabil|ajustabl|con\s+coul))|\bbelt\b|\bcinto\b", re.I), "cinto"),
     (re.compile(r"\bborsa\b|\bbag\b|\bbolsa\b|\bzaino\b", re.I), "bolsa"),
     (re.compile(r"\bscarpe?\b|\bshoes\b|\bsapatos?\b|\bsneakers?\b", re.I), "calçado"),
 
@@ -92,14 +95,25 @@ EXCLUSAO_INFANTIL: list[tuple[re.Pattern, str]] = [
 _TAMANHOS = SUNDEK["tamanhos_aceitos"]
 
 
-def _tamanho_ok(tamanho: str | None) -> bool:
+def _tamanho_adulto_no_titulo(titulo: str | None) -> bool:
+    """Título com tamanho adulto aceito: letra S–XL ou número 29–34."""
+    from .score import _LETRA_TAMANHO_RE
+    m = _LETRA_TAMANHO_RE.search(titulo or "")
+    if m and m.group(1).upper() in ("S", "M", "L", "XL"):
+        return True
+    return bool(re.search(r"\b(29|3[0-4])\b", titulo or ""))
+
+
+def _tamanho_ok(tamanho: str | None, titulo: str | None = None) -> bool:
     if not tamanho:
         return True  # sem info de tamanho → deixa passar, IA decide
     t = tamanho.strip()
     # "Talla única" no Vinted-ES geralmente é piece infantil que vendedor não soube classificar
     # (adulto Sundek sempre tem S/M/L/XL/numérico). Marca como suspeita de tamanho_invalido.
     if "talla" in t.lower() and ("única" in t.lower() or "unica" in t.lower()):
-        return False
+        # …a não ser que o título diga o tamanho adulto ("Short de bain Sundek taille S",
+        # "Costume Sundek uomo taglia 31"): aí vale o do título (08/11/2026).
+        return _tamanho_adulto_no_titulo(titulo)
     for ok in _TAMANHOS:
         if ok.lower() in t.lower():
             return True
@@ -121,7 +135,11 @@ def _tamanho_excluido_no_score(tamanho: str | None) -> bool:
 
 
 def _tamanho_numerico_ruim(tamanho: str | None, titulo: str | None) -> int | None:
-    """Detecta tamanho numérico fora de 31-34 no campo OU no título. Retorna o número."""
+    """Detecta tamanho numérico fora de 31-34 no campo OU no título. Retorna o número.
+    Campo em letra (S–XL) manda: número no título não conta (mesma regra do score)."""
+    from .score import _e_tamanho_letra
+    if _e_tamanho_letra(tamanho):
+        return None
     for txt in (tamanho, titulo):
         if not txt:
             continue
@@ -154,7 +172,7 @@ def parece_short(item: dict) -> Resultado:
     if _tamanho_excluido_no_score(item.get("tamanho")):
         tam = item.get("tamanho") or "?"
         return Resultado(False, f"tamanho fora do range ({tam})", "tamanho_invalido")
-    if not _tamanho_ok(item.get("tamanho")):
+    if not _tamanho_ok(item.get("tamanho"), titulo):
         tam = item.get("tamanho") or "?"
         return Resultado(False, f"tamanho fora do range ({tam})", "tamanho_invalido")
     # Tamanho numérico fora de 31-34 — corta aqui, sem gastar IA. Tipo: tamanho_invalido.
