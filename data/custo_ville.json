@@ -10,14 +10,21 @@
     "tartaruga": {
       "openai/gpt-4o": {
         "in": 4240,
-        "out": 97,
+        "out": 104,
+        "calls": 1
+      }
+    },
+    "autenticidade": {
+      "openai/gpt-6.1-sol": {
+        "in": 2049,
+        "out": 92,
         "calls": 1
       }
     },
     "cor": {
       "openai/gpt-4o-mini": {
         "in": 6676,
-        "out": 61,
+        "out": 64,
         "calls": 1
       }
     },
@@ -31,30 +38,30 @@
     "cordao": {
       "google/gemini-3.5-flash-lite": {
         "in": 4026,
-        "out": 54,
+        "out": 60,
         "calls": 1
       }
     },
     "fecho": {
       "google/gemini-3.5-flash-lite": {
         "in": 3262,
-        "out": 64,
+        "out": 71,
         "calls": 1
       }
     },
     "estado": {
       "anthropic/claude-haiku-5.5": {
         "in": 6678,
-        "out": 1975,
+        "out": 1857,
         "calls": 3
       },
       "google/gemini-3.5-flash-lite": {
         "in": 2730,
-        "out": 65,
+        "out": 78,
         "calls": 1
       }
     }
   },
-  "duracao_s": 16.8,
+  "duracao_s": 23.0,
   "itens_processados": 1
 }
