@@ -83,6 +83,20 @@ function plural(n: number, um: string, varios: string): string {
   return `${fmtNum(n)} ${n === 1 ? um : varios}`;
 }
 
+// Casa TODOS os termos no blob (título+descrição+link) e, quando o texto tem um id de anúncio
+// (link colado), casa direto pelo id. Só os anúncios da marca `loja`.
+function filtrarProdutos(produtos: Produto[], busca: string, loja: Loja): Produto[] {
+  const q = busca.toLowerCase().trim();
+  const ids = q.match(/\d{6,}/g) || [];
+  const termos = q.split(/\s+/).filter(Boolean);
+  return produtos.filter((p) => {
+    if (lojaDaMarca(p.marca) !== loja) return false;
+    if (ids.length && ids.some((d) => p.id.includes(d))) return true;
+    const blob = p.busca ?? `${p.titulo} ${p.url}`.toLowerCase();
+    return termos.every((t) => blob.includes(t));
+  });
+}
+
 export default function HistoryLista() {
   const loja = useLoja();
   const [todasRodadas, setRodadas] = useState<RodadaIndex[]>([]);
@@ -143,20 +157,18 @@ export default function HistoryLista() {
   }, [todasRodadas, loja]);
   const villeSemRodada = loja === "ville" && VILLE_EM_TESTE && rodadas.length === 0;
 
-  // Filtra o acervo pela busca: casa TODOS os termos no blob (título+descrição+link)
-  // e, quando o texto tem um id de anúncio (link colado), casa direto pelo id.
+  // Filtra o acervo pela busca, só na marca do seletor.
   const resultados = useMemo(() => {
     if (!buscando || !produtos) return [];
-    const q = busca.toLowerCase().trim();
-    const ids = q.match(/\d{6,}/g) || [];
-    const termos = q.split(/\s+/).filter(Boolean);
-    return produtos.filter((p) => {
-      if (lojaDaMarca(p.marca) !== loja) return false;
-      if (ids.length && ids.some((d) => p.id.includes(d))) return true;
-      const blob = p.busca ?? `${p.titulo} ${p.url}`.toLowerCase();
-      return termos.every((t) => blob.includes(t));
-    });
+    return filtrarProdutos(produtos, busca, loja);
   }, [buscando, produtos, busca, loja]);
+  // Nada na marca do seletor: quantos casam na outra, para o vazio oferecer a troca
+  // (07/11/2026: link da Ville colado com o seletor em Sundek dava "nenhum produto").
+  const outraLoja: Loja = loja === "sundek" ? "ville" : "sundek";
+  const naOutra = useMemo(() => {
+    if (!buscando || !produtos || resultados.length > 0) return 0;
+    return filtrarProdutos(produtos, busca, outraLoja).length;
+  }, [buscando, produtos, busca, outraLoja, resultados.length]);
 
   const mesesDisponiveis = useMemo(() => {
     const set = new Set(rodadas.map((r) => chaveMes(r.quando)).filter(Boolean));
@@ -387,6 +399,8 @@ export default function HistoryLista() {
                 temIndice={produtos != null}
                 resultados={resultados}
                 loja={loja}
+                naOutra={naOutra}
+                outraLoja={outraLoja}
               />
             ) : (
               <>
@@ -468,11 +482,15 @@ function BuscaResultados({
   temIndice,
   resultados,
   loja,
+  naOutra,
+  outraLoja,
 }: {
   carregando: boolean;
   temIndice: boolean;
   resultados: Produto[];
   loja: Loja;
+  naOutra: number;
+  outraLoja: Loja;
 }) {
   if (carregando && !temIndice) {
     return (
@@ -480,6 +498,16 @@ function BuscaResultados({
         <span className="w-6 h-6 rounded-full border-2 border-line border-t-ink animate-spin" aria-hidden />
         Carregando o índice de busca…
       </div>
+    );
+  }
+  if (resultados.length === 0 && naOutra > 0) {
+    const outra = LOJA_META[outraLoja];
+    return (
+      <Vazio
+        titulo={`Nenhum produto da ${LOJA_META[loja].nome} encontrado.`}
+        texto={`${plural(naOutra, "anúncio", "anúncios")} da ${outra.nomeCompleto} ${naOutra === 1 ? "casa" : "casam"} com essa busca.`}
+        acao={{ rotulo: `Ver na ${outra.nome}`, onClick: () => escolherLoja(outraLoja) }}
+      />
     );
   }
   if (resultados.length === 0) {
