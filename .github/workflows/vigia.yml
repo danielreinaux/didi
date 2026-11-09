@@ -1,0 +1,67 @@
+name: Vigia (religa as rodadas se a corrente parar de dia)
+
+# 09/11/2026: o GitHub falhou em 2 rodadas (15:04 e 15:08 BRT; a 2ª nem criou os jobs,
+# "workflow file issue") e a corrente morreu, porque cada rodada só dispara a seguinte no fim.
+# O */5 do schedule do scrape-cron não religou (o agendador do GitHub perde disparos) e o robô
+# ficou 1h38 parado, até o despertador de reserva rodar.
+#
+# O vigia fica acordado das 07h às 20h BRT. A cada 5 min confere se há rodada andando ou na
+# fila; se não há e a última terminou há mais de 12 min, dispara outra. Um job dura no máximo
+# 6 h: perto disso ele chama o próximo vigia. O despertador chama o 1º vigia do dia junto com
+# a 1ª rodada; o schedule abaixo é só reserva. Repositório público → minutos grátis.
+# Pausa junto com as rodadas: variável do repositório RODADA_CONTINUA=false.
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '23 10,13,16,19 * * *'   # reserva: 07:23, 10:23, 13:23, 16:23 BRT
+
+permissions:
+  actions: write             # lê as rodadas e dispara o scrape-cron.yml (e o próximo vigia)
+
+concurrency:
+  group: vigia
+  cancel-in-progress: false  # o que está vigiando termina; um pendente novo substitui o antigo
+
+jobs:
+  vigia:
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    steps:
+      - name: Confere a corrente a cada 5 min (07h–20h BRT)
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        run: |
+          set +e
+          if [ "${{ vars.RODADA_CONTINUA }}" = "false" ]; then echo "rodadas pausadas — nada a fazer"; exit 0; fi
+          disparar() { for i in 1 2 3 4 5 6; do gh workflow run "$@" && return 0; echo "dispatch falhou ($i/6) — de novo em 20 s"; sleep 20; done; return 1; }
+          agora() { TZ=America/Sao_Paulo date '+%d/%m %H:%M'; }
+          inicio=$(date +%s)
+          # Folga na largada: às 07h o despertador acabou de disparar a 1ª rodada.
+          sleep 120
+          while true; do
+            H=$(TZ=America/Sao_Paulo date +%-H)
+            if [ "$H" -lt 7 ] || [ "$H" -ge 20 ]; then
+              echo "$(agora) fora da janela das rodadas — o despertador cuida da manhã"; exit 0
+            fi
+            # Rodadas que ainda não terminaram (andando, na fila ou esperando a anterior).
+            ativos=$(gh run list -R "$REPO" --workflow scrape-cron.yml -L 10 --json status \
+                       --jq '[.[] | select(.status != "completed")] | length' 2>/dev/null)
+            ultima=$(gh run list -R "$REPO" --workflow scrape-cron.yml -L 1 --json updatedAt \
+                       --jq '.[0].updatedAt' 2>/dev/null)
+            if [ -z "$ativos" ] || [ -z "$ultima" ]; then
+              echo "$(agora) não consegui ler as rodadas — confiro de novo em 5 min"
+            elif [ "$ativos" = "0" ]; then
+              parada=$(( $(date +%s) - $(date -d "$ultima" +%s) ))
+              if [ "$parada" -gt 720 ]; then
+                echo "$(agora) nenhuma rodada há $((parada / 60)) min — religando a corrente"
+                disparar scrape-cron.yml --repo "$REPO" --ref main -f automatico=true
+              fi
+            fi
+            if [ $(( $(date +%s) - inicio )) -gt $(( 5 * 3600 + 30 * 60 )) ]; then
+              echo "$(agora) perto do limite de 6 h do job — chamando o próximo vigia"
+              disparar vigia.yml --repo "$REPO" --ref main
+              exit 0
+            fi
+            sleep 300
+          done

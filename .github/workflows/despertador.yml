@@ -49,6 +49,8 @@ jobs:
           disparar() { for i in 1 2 3 4 5 6; do gh workflow run "$@" && return 0; echo "dispatch falhou ($i/6) — de novo em 20 s"; sleep 20; done; return 1; }
           if [ "$ACAO" = "rodada" ]; then
             disparar scrape-cron.yml --repo "${{ github.repository }}" --ref main -f automatico=true
+            # O vigia religa a corrente se ela morrer durante o dia (vigia.yml, 09/11/2026).
+            disparar vigia.yml --repo "${{ github.repository }}" --ref main || true
           else
             disparar despertador.yml --repo "${{ github.repository }}" --ref main
           fi
