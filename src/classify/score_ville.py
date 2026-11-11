@@ -233,6 +233,10 @@ def calcular_score(item: dict) -> dict:
     # continua só nerfando (teto em médio) até o Marcos confirmar se também corta.
     if fundo_padrao == "gradiente":
         exclusoes.append("fundo_gradiente")
+    # Mesclado (preto+branco/cinza em pinceladas): descarte (cliente 10/11/2026 — "essa cor
+    # não é preto, nem branco, meio mesclado, aí não atende").
+    if fundo_padrao == "mesclado":
+        exclusoes.append("fundo_mesclado")
     # Fecho: o cliente só compra cordão (e elástico). Fivela/botão/velcro →
     # descarte, independente de preço e cor (dono 17/06). Conservador: só exclui
     # quando o detector tem CERTEZA — "indefinido" NÃO exclui (prioriza recall).

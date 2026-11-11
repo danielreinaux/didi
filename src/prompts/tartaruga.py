@@ -185,6 +185,14 @@ TARTARUGA_PEQUENA: SÓ o caso do MICRO-PRINT — tartarugas MINÚSCULAS e MUITO
   padrãozinho de pontinhos, não tartarugas). É um caso RARO e menos valorizado.
   ⚠️ Se você consegue VER e CONTAR tartarugas individuais com clareza, NÃO é
   pequena — é tartaruga_grande. Na MENOR dúvida entre grande e pequena → GRANDE.
+  EXCEÇÃO — TARTARUGUINHAS EM GRADE GEOMÉTRICA (cliente 10/11/2026: "essa tartaruga não é
+  média"): tartarugas PEQUENAS, todas iguais e de UMA cor só, ENFILEIRADAS formando um
+  desenho geométrico regular — losangos/diamantes ou treliça em diagonal, com "buracos"
+  vazios da cor do fundo no meio de cada losango. O que salta ao olho é a GRADE de
+  losangos, não cada tartaruga. Isso é tartaruga_pequena (padrao_identificado =
+  "tartaruguinhas em losango"), mesmo que dê para contar as tartarugas. No padrão clássico
+  (tartaruga_grande) as tartarugas ficam ESPALHADAS, viradas para lados diferentes, sem
+  formar figura geométrica.
 
 LISO: short sem estampa, em cor sólida. Pode ter:
   - bordado discreto (logo Vilebrequin, tartaruga bordada no bolso)
@@ -204,6 +212,16 @@ OUTRO: qualquer outro padrão que não seja tartaruga nem liso. Exemplos:
   - personagens, mapas, fogos de artifício
   - TIE-DYE, aquarela, tingimento em manchas, mesclado sem motivos → "outro" (NÃO liso:
     liso é cor sólida, sem manchas de tingimento)
+  - TARTARUGA EM MOSAICO (cliente 10/11/2026: "essa tartaruga não segue o padrão, tirar esse
+    tipo"): a tartaruga é desenhada com PEDRINHAS/AZULEJOS — casco em anéis concêntricos de
+    cores diferentes feitos de quadradinhos, e o FUNDO do short também é uma malha de
+    azulejinhos (linhas claras formando tesselas). Mesmo sendo tartaruga e grande, NÃO é o
+    padrão que ele compra → "outro", padrao_identificado = "tartaruga em mosaico".
+    Só vale quando os DOIS sinais aparecem: (a) casco em anéis concêntricos de pedrinhas e
+    (b) fundo do short inteiro quadriculado por linhas claras de azulejo. NÃO é mosaico (e
+    continua tartaruga_grande): tartaruga preenchida com estrelinhas, florzinhas, bolinhas
+    ou outras figurinhas; tartaruga sobre fundo de estrelas/flores; tartaruga holográfica,
+    de "fogos de artifício" ou degradê. Na dúvida, NÃO use esta regra.
   Incluir o nome do padrão identificado no campo "padrao_identificado".
 
 ⚠️  CUIDADO — ANIMAIS PARECIDOS COM TARTARUGA (erro comum):
@@ -265,6 +283,15 @@ fundo_padrao: avalie a HOMOGENEIDADE do fundo (corpo do short, não das tartarug
     (ex: azul → laranja, rosa → azul, verde → amarelo). A transição atravessa
     o short e cria zonas claramente de cores diferentes. Ver REF 1.
 
+  "mesclado": fundo de tons NEUTROS MISTURADOS — preto com branco e/ou cinza em
+    PINCELADAS, faixas largas, borrões ou blocos (efeito de pintura/aquarela/mármore
+    em preto-e-branco). Não dá para dizer "o short é preto" nem "o short é branco":
+    as duas cores ocupam áreas grandes do tecido. (Cliente 10/11/2026: "essa cor não
+    é preto, nem branco, meio mesclado, aí não atende".) Vale mesmo que haja
+    tartarugas coloridas por cima — olhe só o que está ATRÁS delas.
+    NÃO é mesclado: fundo preto (ou branco) inteiro com motivos de outra cor; sombra,
+    dobra ou reflexo num tecido de uma cor só.
+
   ⚠️  O QUE NÃO É MULTICOLOR/GRADIENTE (REGRA ANTI-FALSO-POSITIVO):
     • AMASSADOS, DOBRAS, VINCOS do tecido → variação de TOM, não de cor.
     • SOMBRAS (de mesa, ângulo da foto, partes que ficam embaixo) → não.
@@ -306,9 +333,9 @@ Responda APENAS com JSON válido:
 {
   "tipo": "tartaruga_grande" | "tartaruga_pequena" | "liso" | "outro" | "indefinido",
   "cor_principal": "<cor>",
-  "fundo_padrao": "uniforme" | "multicolor" | "gradiente" | "indefinido",
+  "fundo_padrao": "uniforme" | "multicolor" | "gradiente" | "mesclado" | "indefinido",
   "tartaruga_variedade": "<descrição ou null>",
-  "padrao_identificado": "<nome do padrão se tipo=outro, senão null>",
+  "padrao_identificado": "<nome do padrão se tipo=outro (ou o caso especial indicado acima), senão null>",
   "aparencia": "ok" | "desbotado" | "indefinido",
   "justificativa": "<frase curta DESCREVENDO O ITEM REAL, não as referências>",
   "confianca": 0.0-1.0
@@ -326,6 +353,9 @@ def usuario(titulo: str) -> str:
         f'ATENÇÃO ao campo "fundo_padrao": olhe apenas o FUNDO (corpo do tecido), '
         f'ignorando as tartarugas, amassados, sombras e reflexos de luz. Compare '
         f'com REF 1 (gradiente real = multicolor) e REF 2 (azul ciano amassado = '
-        f'uniforme, NÃO multicolor). A justificativa deve descrever ESTE item, '
+        f'uniforme, NÃO multicolor). Fundo preto+branco/cinza em pinceladas ou faixas '
+        f'= "mesclado". Tartaruga em MOSAICO (azulejinhos) = tipo "outro". '
+        f'Tartaruguinhas de uma cor enfileiradas em losangos = tartaruga_pequena. '
+        f'A justificativa deve descrever ESTE item, '
         f'NÃO as referências.'
     )

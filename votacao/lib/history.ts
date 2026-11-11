@@ -190,6 +190,7 @@ const MOTIVO_LABEL: Record<string, string> = {
   tamanho_invalido: "Tamanho inválido",
   cor_liso_fora_whitelist: "Liso com cor fora da whitelist",
   fundo_gradiente: "Fundo degradê",
+  fundo_mesclado: "Fundo mesclado (nem preto nem branco)",
 };
 
 const TIPO_LABEL: Record<string, string> = {

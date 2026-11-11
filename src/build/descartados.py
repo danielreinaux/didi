@@ -64,6 +64,7 @@ _EXCLUSAO_VILLE = {
     "desbotado": ("cor", "desbotado"),
     "cor_liso_fora_whitelist": ("cor", "liso numa cor que não entra"),
     "fundo_gradiente": ("cor", "fundo degradê"),
+    "fundo_mesclado": ("cor", "fundo mesclado (nem preto nem branco)"),
 }
 _TIPO_VILLE = {"tartaruga_grande": "tartaruga grande", "tartaruga_pequena": "tartaruga pequena",
                "liso": "liso", "outro": "outro padrão", "indefinido": "padrão indefinido"}
