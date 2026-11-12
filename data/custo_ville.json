@@ -1,5 +1,67 @@
 {
-  "por_etapa": {},
-  "duracao_s": 0.2,
-  "itens_processados": 0
+  "por_etapa": {
+    "marca": {
+      "openai/gpt-4o": {
+        "in": 9442,
+        "out": 636,
+        "calls": 10
+      }
+    },
+    "tartaruga": {
+      "openai/gpt-4o": {
+        "in": 51542,
+        "out": 950,
+        "calls": 10
+      }
+    },
+    "cor": {
+      "openai/gpt-4o-mini": {
+        "in": 37047,
+        "out": 180,
+        "calls": 3
+      }
+    },
+    "etiqueta": {
+      "qwen/qwen3.7-flash": {
+        "in": 7499,
+        "out": 171,
+        "calls": 3
+      }
+    },
+    "cordao": {
+      "google/gemini-3.5-flash-lite": {
+        "in": 21875,
+        "out": 191,
+        "calls": 3
+      }
+    },
+    "fecho": {
+      "google/gemini-3.5-flash-lite": {
+        "in": 19583,
+        "out": 215,
+        "calls": 3
+      }
+    },
+    "autenticidade": {
+      "openai/gpt-6.1-sol": {
+        "in": 4119,
+        "out": 81,
+        "calls": 1
+      }
+    },
+    "estado": {
+      "anthropic/claude-haiku-5.5": {
+        "in": 13299,
+        "out": 820,
+        "calls": 3
+      },
+      "google/gemini-3.5-flash-lite": {
+        "in": 6036,
+        "out": 58,
+        "calls": 1
+      }
+    }
+  },
+  "duracao_s": 52.9,
+  "itens_processados": 11
 }
