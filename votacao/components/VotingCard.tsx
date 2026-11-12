@@ -6,7 +6,7 @@ import Image from "next/image";
 import Lightbox from "@/components/Lightbox";
 import { Item, Reaction, REACTIONS } from "@/lib/types";
 import { eNovo, eur, haQuanto } from "@/lib/tempo";
-import { COR_TOM, fichaVille, lojaDaMarca, manchaOnde, rotuloFlag } from "@/lib/marca";
+import { COR_TOM, LOJA_META, fichaVille, lojaDaMarca, manchaOnde, rotuloFlag } from "@/lib/marca";
 import { Archive, ArchiveRestore, Check, ChevronRight, ExternalLink, HandCoins, Info, TriangleAlert } from "lucide-react";
 
 interface Props {
@@ -130,7 +130,8 @@ export default function VotingCard({ item, reacaoInicial, obsInicial, onReacao, 
 
   // Ville: ficha com o que importa nela (padrão, cor e faixa, cordão, fecho, autenticidade,
   // etiqueta). Quando a ficha vem, ela substitui a lista de destaques (que repete o mesmo).
-  const ville = lojaDaMarca(item.marca) === "ville";
+  const lojaItem = lojaDaMarca(item.marca);
+  const ville = lojaItem === "ville";
   const ficha = ville ? fichaVille(item.ville) : [];
   // "cor Azul marinho (maravilhoso)" → "Cor azul marinho (maravilhoso)": a lista do que a IA conferiu.
   const conferido = ficha.length
@@ -226,6 +227,10 @@ export default function VotingCard({ item, reacaoInicial, obsInicial, onReacao, 
       <div className="flex-1 p-4 md:p-5 flex flex-col gap-4 min-w-0">
         <div className="flex flex-col gap-1.5">
           <div className="flex items-center gap-2 text-xs text-ink-3">
+            {/* A lista de Ofertas junta Sundek e Ville: o card diz de qual marca é. */}
+            <span className="px-1.5 py-0.5 rounded bg-sunken text-ink-2 font-medium" translate="no">
+              {LOJA_META[lojaItem].nomeCompleto}
+            </span>
             {novo && <span className="px-1.5 py-0.5 rounded bg-info text-white font-semibold">Nova</span>}
             {noAr && <span title="Quando o anúncio foi publicado no Vinted">No ar {noAr}</span>}
           </div>

@@ -1,8 +1,8 @@
 "use client";
 
 // Moldura do produto: barra lateral (computador) ou barra de topo + abas embaixo (celular).
-// Mostra o monitor ativo, o seletor de marca (Sundek | Ville, vale pra todas as telas — ver
-// lib/marca.ts) e se o robô está buscando. Cada página continua dona da sua rolagem
+// Mostra o monitor ativo, o seletor de marca (Sundek | Ville, ver lib/marca.ts; vale pra todas
+// as telas menos Ofertas, que junta as duas marcas numa lista só) e se o robô está buscando. Cada página continua dona da sua rolagem
 // (h-full overflow-y-auto) — o shell é uma coluna flex que não sobrepõe nada.
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -21,7 +21,7 @@ import type { LucideIcon } from "lucide-react";
 import Logo, { TagMark } from "@/components/Logo";
 import { StatusLista } from "@/lib/types";
 import { hora } from "@/lib/tempo";
-import { LOJAS, LOJA_META, Loja, VILLE_EM_TESTE, comMarca, escolherLoja, lojaDaMarca, sincronizarUrl, useLoja } from "@/lib/marca";
+import { LOJAS, LOJA_META, Loja, VILLE_EM_TESTE, comMarca, escolherLoja, sincronizarUrl, useLoja } from "@/lib/marca";
 import { SEGMENTED_ACTIVE, SEGMENTED_INACTIVE } from "@/lib/theme";
 
 type ItemNav = { href: string; label: string; icon: LucideIcon; dica: string };
@@ -101,13 +101,15 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname() || "/";
   const loja = useLoja();
   const meta = LOJA_META[loja];
+  // Ofertas mostra as duas marcas numa lista só (12/11/2026): nela o seletor não vale e some
+  // (as arquivadas têm um seletor próprio na página). As outras telas seguem por marca.
+  const juntas = pathname === "/";
   const [status, setStatus] = useState<StatusLista | null>(null);
   const [agora, setAgora] = useState(() => Date.now());
   const [maisAberto, setMaisAberto] = useState(false);
-  // Quantas ofertas aparecem na tela Ofertas, por marca: as da lista menos as arquivadas (o
-  // status.json conta todas, inclusive as arquivadas, e o número ficava diferente da página).
-  const [contagem, setContagem] = useState<Record<Loja, number> | null>(null);
-  const nOfertas = contagem ? contagem[loja] : null;
+  // Quantas ofertas aparecem na tela Ofertas (as duas marcas): as da lista menos as arquivadas
+  // (o status.json conta todas, inclusive as arquivadas, e o número ficava diferente da página).
+  const [nOfertas, setNOfertas] = useState<number | null>(null);
 
   // Mudou de página ou de marca: repõe o ?marca=ville na URL (links internos simples não levam
   // o parâmetro). Lê a marca do store, não do render (na hidratação o render ainda diz "sundek").
@@ -122,11 +124,9 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         fetch(`/items.json?t=${Date.now()}`, { cache: "no-store" }).then((r) => (r.ok ? r.json() : [])),
         fetch("/api/archive").then((r) => (r.ok ? r.json() : [])),
       ])
-        .then(([itens, arq]: [{ id: string; marca: string }[], string[]]) => {
+        .then(([itens, arq]: [{ id: string }[], string[]]) => {
           const arquivados = new Set(arq);
-          const n: Record<Loja, number> = { sundek: 0, ville: 0 };
-          for (const i of itens) if (!arquivados.has(i.id)) n[lojaDaMarca(i.marca)]++;
-          setContagem(n);
+          setNOfertas(itens.filter((i) => !arquivados.has(i.id)).length);
         })
         .catch(() => {});
     const carregar = () =>
@@ -145,11 +145,10 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         .catch(() => {});
     carregar();
     const t = setInterval(carregar, 60_000);
-    // A tela Ofertas avisa quando o número da marca dela muda (arquivou/desarquivou, lista nova).
+    // A tela Ofertas avisa quando o número dela muda (arquivou/desarquivou, lista nova).
     const aoContar = (e: Event) => {
-      const d = (e as CustomEvent<{ loja: Loja; n: number }>).detail;
-      if (!d) return;
-      setContagem((prev) => ({ ...(prev ?? { sundek: 0, ville: 0 }), [d.loja]: d.n }));
+      const d = (e as CustomEvent<{ n: number }>).detail;
+      if (d) setNOfertas(d.n);
     };
     window.addEventListener("didi:ofertas", aoContar);
     return () => {
@@ -174,14 +173,26 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         <div className="mx-3 mb-4 rounded-lg border border-line bg-canvas px-3 py-2.5">
           <p className="mb-1.5 flex items-center justify-between gap-2 text-[11px] text-ink-3">
             Monitor
-            {loja === "ville" && VILLE_EM_TESTE && (
+            {!juntas && loja === "ville" && VILLE_EM_TESTE && (
               <span className="font-medium px-1.5 py-px rounded bg-sunken text-ink-2">em teste</span>
             )}
           </p>
-          <SeletorMarca loja={loja} />
-          <p className="mt-2.5 text-sm font-semibold text-ink" translate="no">
-            {meta.nomeCompleto} <span className="font-normal text-ink-3">no Vinted Espanha</span>
-          </p>
+          {juntas ? (
+            // Mesma altura do seletor + linha da marca: o menu não pula ao trocar de tela.
+            <div className="min-h-[70px] flex flex-col justify-center">
+              <p className="text-sm font-semibold text-ink" translate="no">
+                Sundek e Vilebrequin
+              </p>
+              <p className="mt-0.5 text-xs text-ink-3">Juntas numa lista só, no Vinted Espanha</p>
+            </div>
+          ) : (
+            <>
+              <SeletorMarca loja={loja} />
+              <p className="mt-2.5 text-sm font-semibold text-ink" translate="no">
+                {meta.nomeCompleto} <span className="font-normal text-ink-3">no Vinted Espanha</span>
+              </p>
+            </>
+          )}
           {robo && (
             <p className="mt-1.5 flex items-center gap-1.5 text-xs text-ink-2" aria-live="polite">
               <span className={`w-1.5 h-1.5 rounded-full ${COR_TOM[robo.tom]}`} aria-hidden />
@@ -218,7 +229,9 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
           </ul>
         </nav>
 
-        <p className="px-5 py-4 text-[11px] leading-relaxed text-ink-3 border-t border-line">{meta.confere}</p>
+        <p className="px-5 py-4 text-[11px] leading-relaxed text-ink-3 border-t border-line">
+          {juntas ? "A IA confere cada anúncio pelas regras da marca dele antes de mostrar aqui." : meta.confere}
+        </p>
       </aside>
 
       {/* Coluna principal */}
@@ -229,7 +242,13 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
             <Logo compacto />
           </Link>
           <div className="flex-none">
-            <SeletorMarca loja={loja} compacto />
+            {juntas ? (
+              <span className="text-xs font-medium text-ink-2" translate="no">
+                Sundek e Ville
+              </span>
+            ) : (
+              <SeletorMarca loja={loja} compacto />
+            )}
           </div>
           {robo && (
             <span className="flex-1 flex items-center justify-end gap-1.5 text-xs text-ink-2 min-w-0" aria-live="polite">
