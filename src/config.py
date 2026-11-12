@@ -156,8 +156,10 @@ IA_ROTAS = {
     "ville:tartaruga": "openrouter:openai/gpt-4o",
     "ville:marca": "openrouter:openai/gpt-4o",
     "ville:cor_fundo": "openrouter:openai/gpt-4o-mini",
+    # 12/11/2026: raciocínio médio (era baixo) — em baixo não via tartaruga cortada no contorno
+    # do bolso ou inventava corte em original; ver prompts/autenticidade_ville_v2.py.
     "ville:autenticidade": {"to": "openrouter:openai/gpt-6.1-sol", "detail": "high",
-                            "reasoning": {"effort": "low"}, "min_tokens": 8000},
+                            "reasoning": {"effort": "medium"}, "min_tokens": 8000},
     # Estado da Ville (desbotado + mancha → aviso), só nos candidatos: Haiku 3 votos + Gemini.
     # Bancada 05/11/2026 em classify/estado_ville.py.
     "ville:estado": {"to": "openrouter:anthropic/claude-haiku-5.5", "detail": "high", "min_tokens": 1500},
@@ -179,7 +181,9 @@ IA_OPENAI = {
     # autenticidade da Ville v2 (02/11/2026): critério do comprador (bolso "completa"?, estampado sem
     # bolso, etiquetinha clonada) com as fotos inteiras. Bancada 79 itens: 5/7 falsos, 0/53
     # originais acusados (gpt-4o: 7/7 mas acusa 14/53; Gemini 4/7; Haiku 0/7). ~US$0,008/item.
-    "ville:autenticidade": {"model": "gpt-6.1-sol", "detail": "high", "effort": "low"},
+    # 12/11/2026: critério do contorno do bolso + raciocínio médio. Gabarito + 1 falso novo, 60
+    # peças: 6/6 falsos, 54/54 originais (antes 4/6 e 52/54). ~US$0,009/item (medido).
+    "ville:autenticidade": {"model": "gpt-6.1-sol", "detail": "high", "effort": "medium"},
 }
 
 # Short premiado (classify/premiado.py): preço do ANÚNCIO (sem a taxa) até este valor →
