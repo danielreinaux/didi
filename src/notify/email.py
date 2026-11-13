@@ -100,13 +100,21 @@ def _contagem(itens: list[dict]) -> str:
     return ", ".join(f"{len(g)} {nome}" for nome, g in _por_marca(itens))
 
 
+def _marca_do_email(itens: list[dict], marca_label: str) -> str:
+    """Nome da marca no assunto e no título quando o e-mail traz uma marca só: a que veio de
+    fato ("Vilebrequin" num e-mail só de Ville), não o rótulo da rodada ("Sundek e Vilebrequin")."""
+    grupos = _por_marca(itens)
+    return grupos[0][0] if len(grupos) == 1 else marca_label
+
+
 def assunto_comum(itens: list[dict], marca_label: str) -> str:
     """"3 ofertas novas de Sundek, a partir de €9" (sem premiado). Com as duas marcas:
     "3 ofertas novas (2 Sundek, 1 Vilebrequin), a partir de €9"."""
     n = len(itens)
     precos = [it["preco_base"] for it in itens if it.get("preco_base")]
     a_partir = f", a partir de €{_eur(min(precos))}" if precos else ""
-    de = f"({_contagem(itens)})" if len(_por_marca(itens)) > 1 else f"de {marca_label}"
+    de = (f"({_contagem(itens)})" if len(_por_marca(itens)) > 1
+          else f"de {_marca_do_email(itens, marca_label)}")
     return f"{n} {'oferta nova' if n == 1 else 'ofertas novas'} {de}{a_partir}"
 
 
@@ -230,7 +238,10 @@ def corpo_html(marca_label: str, itens: list[dict]) -> str:
     elif len(grupos) > 1:
         titulo = f"{n} ofertas novas: {html.escape(_contagem(itens))}"
     else:
-        titulo = f"{n} {'oferta nova' if n == 1 else 'ofertas novas'} de {html.escape(marca_label)}"
+        titulo = (f"{n} {'oferta nova' if n == 1 else 'ofertas novas'} de "
+                  f"{html.escape(_marca_do_email(itens, marca_label))}")
+    # Rodapé: listra e elástico são conferências só do Sundek; com Ville no e-mail vale o geral.
+    so_sundek = [nome for nome, _ in grupos] == ["Sundek"]
     from datetime import datetime, timedelta, timezone
     agora = datetime.now(timezone(timedelta(hours=-3))).strftime("%H:%M")
     return f"""\
@@ -251,9 +262,9 @@ def corpo_html(marca_label: str, itens: list[dict]) -> str:
   </p>
   {cards}
   <p style="font-size:12px;line-height:1.5;color:{_C['ink3']};margin:18px 0 0">
-    {"O Didi confere cor, padrão, bolso, tamanho e preço de cada anúncio e só avisa o que passa nas suas regras."
-     if len(grupos) > 1 else
-     "O Didi confere cor, listra, bolso, elástico, tamanho e preço de cada anúncio e só avisa o que passa nas suas regras."} <a href="{SITE_VOTACAO}" style="color:{_C['ink2']}">Ver todas as ofertas</a>
+    {"O Didi confere cor, listra, bolso, elástico, tamanho e preço de cada anúncio e só avisa o que passa nas suas regras."
+     if so_sundek else
+     "O Didi confere cor, padrão, bolso, tamanho e preço de cada anúncio e só avisa o que passa nas suas regras."} <a href="{SITE_VOTACAO}" style="color:{_C['ink2']}">Ver todas as ofertas</a>
   </p>
 </div>
 </div>"""

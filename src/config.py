@@ -1,11 +1,12 @@
 """Filtros de busca e configuração da IA. Derivados do manual de regras."""
 
-# Vilebrequin desligada em 20/10/2026 (foco 100% na Sundek) e religada em 05/11/2026 em MODO
-# SOMBRA: classifica e aparece no app, mas fica fora do e-mail até VILLE_EMAIL = True (os
-# candidatos dela entram no registro de avisados sem envio, então ligar o e-mail não manda o
-# acumulado). Para desligar de novo: False aqui + `if: false` no job `ville` do workflow.
+# Vilebrequin desligada em 20/10/2026 (foco 100% na Sundek), religada em 05/11/2026 só no app
+# (modo sombra) e com o E-MAIL LIGADO em 13/11/2026: as ofertas novas dela vão no mesmo e-mail do
+# Sundek, numa seção própria. Com VILLE_EMAIL = False ela volta à sombra: fica no app e os
+# candidatos entram no registro de avisados sem envio (por isso ligar não mandou o acumulado).
+# Para desligar tudo: VILLE_ATIVA = False + `if: false` no job `ville` do workflow.
 VILLE_ATIVA = True
-VILLE_EMAIL = False
+VILLE_EMAIL = True
 # No app, só os anúncios da Ville vistos pela 1ª vez depois da volta (o acervo de set–out/2026
 # está quase todo vendido e foi classificado com as regras antigas).
 VILLE_APP_DESDE = "2026-11-05T00:00:00+00:00"
