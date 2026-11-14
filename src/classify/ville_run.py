@@ -41,6 +41,7 @@ from .cor_fundo_ville import classificar_cor_fundo
 from .fecho_ville import verificar_fecho
 from .etiqueta import verificar_etiqueta
 from .estado_ville import verificar_estado
+from . import orientacao
 from .score_ville import calcular_score, _tamanho_key
 # Reusa as exclusões de título do Sundek (infantil, não-short) — P2.
 from .prefilter import EXCLUSAO, EXCLUSAO_INFANTIL
@@ -169,6 +170,14 @@ def _salvar(resultados: list, itens_orig: list, acervo_previo: dict, path: Path)
 
 
 def _processar(item: dict, idx: str, total: int) -> tuple[dict, int, int]:
+    """Processa um item. O resultado sai com as URLs ORIGINAIS das fotos: os agentes podem
+    ter visto versões postas em pé (classify/orientacao.py), que não vão para o acervo."""
+    resultado, in_tok, out_tok = _processar_etapas(item, idx, total)
+    return orientacao.restaurar(resultado), in_tok, out_tok
+
+
+def _processar_etapas(item: dict, idx: str, total: int) -> tuple[dict, int, int]:
+    """As etapas do pipeline. A partir da 2b, `item` pode ser a cópia com fotos giradas."""
     titulo = (item.get("titulo") or "")[:50]
     prefix = f"  [{idx}/{total}] {titulo}"
     in_tok = out_tok = 0
@@ -218,6 +227,16 @@ def _processar(item: dict, idx: str, total: int) -> tuple[dict, int, int]:
     if marca_sem_evidencia(marca):
         _log(f"{prefix} → × SEM-EVIDENCIA [{marca.get('evidencia','')[:60]}]")
         return {**item, "marca_check": marca, "classificacao": {"tipo": "sem_evidencia", "motivo": marca.get("evidencia") or "sem evidência visual do produto", "confianca": marca.get("confianca") or 0}}, in_tok, out_tok
+
+    # 2b. Foto de cabeça para baixo ou deitada → em pé, só para os agentes daqui em diante
+    #     (13/11/2026, mesmo passo do Sundek). Só roda em quem já passou por short + Ville.
+    item, u = orientacao.para_agentes(item)
+    if u:
+        in_tok += u.get("prompt_tokens", 0)
+        out_tok += u.get("completion_tokens", 0)
+        _track("orientacao", u.get("model") or "", u.get("prompt_tokens", 0), u.get("completion_tokens", 0))
+        if orientacao.girou(item):
+            prefix += f" [giros {item['orientacao']['giros']}]"
 
     # 3. Tartaruga (padrão de estampa)
     try:

@@ -4,6 +4,7 @@ data/coleta-classificada.json. Não re-scrapeia.
 Pipeline por item:
   1. Prefilter de título (regex, sem IA)
   2. Verifica marca Sundek + formato (vision)
+  2b. Põe em pé as fotos de cabeça para baixo ou deitadas (classify/orientacao.py)
   3. Liso/estampado/logo_grande (vision)
   4. Cor tier (vision, só nos lisos aprovados)
   5. Elástico + Etiqueta (vision, só nos lisos aprovados)
@@ -32,6 +33,7 @@ from .elastico import verificar_elastico
 from .botao_fly import verificar_botao, verificar_velcro
 from .etiqueta import verificar_etiqueta
 from .listra import verificar_listra, precisa_confirmar, confirmar_faixa_unica
+from . import orientacao
 from .premiado import checar as checar_premiado, precisa_checar as precisa_checar_premiado
 from ..utils.cost_tracker import track as _track, relatorio as _relatorio, dump_json as _dump_cost
 from ..utils.listra_tier import avaliar_combo, limao_salvavel
@@ -89,7 +91,15 @@ def _pular_resto(c: dict, parcial: dict, etapa: str) -> str | None:
 
 
 def _processar(item: dict, idx: str, total: int) -> tuple[dict, int, int]:
-    """Processa um item completo. Retorna (resultado, input_tokens, output_tokens)."""
+    """Processa um item completo. Retorna (resultado, input_tokens, output_tokens).
+    O resultado sai com as URLs ORIGINAIS das fotos: os agentes podem ter visto versões
+    postas em pé (classify/orientacao.py), que não vão para o acervo."""
+    resultado, in_tok, out_tok = _processar_etapas(item, idx, total)
+    return orientacao.restaurar(resultado), in_tok, out_tok
+
+
+def _processar_etapas(item: dict, idx: str, total: int) -> tuple[dict, int, int]:
+    """As etapas do pipeline. A partir da 2b, `item` pode ser a cópia com fotos giradas."""
     titulo = (item.get("titulo") or "")[:50]
     prefix = f"  [{idx}/{total}] {titulo}"
     in_tok = out_tok = 0
@@ -146,6 +156,17 @@ def _processar(item: dict, idx: str, total: int) -> tuple[dict, int, int]:
         m = marca.get("marca_identificada") or "outra marca"
         _log(f"{prefix} → × NAO-SUNDEK [{m}]")
         return {**item, "marca_check": marca, "classificacao": {"tipo": "nao_sundek", "motivo": m}}, in_tok, out_tok
+
+    # 2b. Foto de cabeça para baixo ou deitada → em pé, só para os agentes daqui em diante
+    #     (13/11/2026: short com a listra nas costas fotografado de cabeça para baixo saía
+    #     como "listra na frente"). Só roda em quem já passou por short + Sundek.
+    item, u = orientacao.para_agentes(item, max_fotos=6)  # os agentes do Sundek olham até 6
+    if u:
+        in_tok += u.get("prompt_tokens", 0)
+        out_tok += u.get("completion_tokens", 0)
+        _track("orientacao", u.get("model") or "", u.get("prompt_tokens", 0), u.get("completion_tokens", 0))
+        if orientacao.girou(item):
+            prefix += f" [giros {item['orientacao']['giros']}]"
 
     # 3. Liso/estampado
     try:
@@ -442,7 +463,7 @@ PREMIADO_MAX_POR_RODADA = 20
 
 def _checar_premiado(it: dict) -> None:
     """Comprável com elástico e corpo escuro: é um dos 3 favoritos do cliente? (classify/premiado.py)"""
-    chk = checar_premiado(it)
+    chk = checar_premiado(orientacao.reaplicar(it))  # fotos em pé, como os outros agentes viram
     if chk is None:  # falhou → tenta de novo na próxima rodada
         return
     u = chk.pop("_usage")
@@ -455,7 +476,8 @@ def _checar_premiado(it: dict) -> None:
 
 def _checar_aprovado(it: dict, calcular_score) -> None:
     """Liso que vai aparecer no app sem ter tido o 2º olhar do desbotado (classify/desbotado.py)."""
-    chk = checar_aprovado(it)
+    # cópia rasa com as fotos em pé: checar_aprovado altera it["classificacao"], que é o mesmo dict
+    chk = checar_aprovado(orientacao.reaplicar(it))
     if chk is None:  # sem rota/falhou → tenta de novo na próxima rodada
         return
     u = chk.get("_usage") or {}
@@ -467,7 +489,7 @@ def _checar_aprovado(it: dict, calcular_score) -> None:
 
 def _confirmar_listra(it: dict, calcular_score) -> None:
     """2ª olhada na listra de ≤1 cor; se for faixa de 1 cor na lateral → sem listra + rescore."""
-    conf = confirmar_faixa_unica(it)
+    conf = confirmar_faixa_unica(orientacao.reaplicar(it))
     if conf is None:  # falhou → tenta de novo na próxima rodada
         return
     u = conf.pop("_usage")

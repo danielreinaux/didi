@@ -165,6 +165,12 @@ IA_ROTAS = {
     # Bancada 05/11/2026 em classify/estado_ville.py.
     "ville:estado": {"to": "openrouter:anthropic/claude-haiku-5.5", "detail": "high", "min_tokens": 1500},
     "ville:estado_forte": {"to": "openrouter:google/gemini-3.5-flash-lite", "detail": "high", **_GEMINI3},
+    # Orientação das fotos (classify/orientacao.py, 13/11/2026), Sundek e Ville, depois da marca:
+    # diz de que lado está o cós para pôr em pé a foto de cabeça para baixo ou deitada antes dos
+    # outros agentes. Medido em 122 fotos de 31 anúncios reais: 16 giradas, as 16 certas, nenhuma
+    # foto de short inteiro girada sem ser vista. O gemini-2.5-flash-lite (4x mais barato) errou
+    # o lado em várias fotos deitadas. ~US$ 0,0009 por anúncio. Sem esta rota, nada é girado.
+    "orientacao": {"to": "openrouter:google/gemini-3.5-flash-lite", **_GEMINI3},
 }
 
 # Modelo da OpenAI por agente, para agente SEM rota no OpenRouter (src/utils/llm.py).
