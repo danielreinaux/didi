@@ -228,15 +228,17 @@ def _processar_etapas(item: dict, idx: str, total: int) -> tuple[dict, int, int]
         _log(f"{prefix} → × SEM-EVIDENCIA [{marca.get('evidencia','')[:60]}]")
         return {**item, "marca_check": marca, "classificacao": {"tipo": "sem_evidencia", "motivo": marca.get("evidencia") or "sem evidência visual do produto", "confianca": marca.get("confianca") or 0}}, in_tok, out_tok
 
-    # 2b. Foto de cabeça para baixo ou deitada → em pé, só para os agentes daqui em diante
-    #     (13/11/2026, mesmo passo do Sundek). Só roda em quem já passou por short + Ville.
+    # 2b. Fotos para os agentes daqui em diante (classify/orientacao.py, mesmo passo do
+    #     Sundek): as giradas ficam em pé e, se as costas só aparecem depois da 5ª foto, essa
+    #     foto entra como 6ª (14/11/2026: anúncio de 11 fotos com as costas na 9 e na 11
+    #     saía como "sem foto do bolso"). Só roda em quem já passou por short + Ville.
     item, u = orientacao.para_agentes(item)
     if u:
         in_tok += u.get("prompt_tokens", 0)
         out_tok += u.get("completion_tokens", 0)
         _track("orientacao", u.get("model") or "", u.get("prompt_tokens", 0), u.get("completion_tokens", 0))
         if orientacao.girou(item):
-            prefix += f" [giros {item['orientacao']['giros']}]"
+            prefix += f" [{orientacao.resumo(item)}]"
 
     # 3. Tartaruga (padrão de estampa)
     try:

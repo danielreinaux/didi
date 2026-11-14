@@ -2,6 +2,8 @@
 import re
 from datetime import datetime, timezone
 
+from .fotos_pagina import MAX_GUARDADAS, completar
+
 
 def _strip_label(text: str | None, labels: list[str]) -> str | None:
     if not text:
@@ -114,6 +116,13 @@ def extract_item(page, url: str) -> dict:
 
     item_id_match = re.search(r"/items/(\d+)", url)
 
+    # A tela só mostra 5 fotos; o resto vem dos dados embutidos na página (fotos_pagina.py).
+    fotos = raw.get("fotos") or []
+    try:
+        fotos = completar(fotos, page.content(), item_id_match.group(1) if item_id_match else "")
+    except Exception:
+        pass
+
     marca_clean = None
     if raw.get("marcaRaw"):
         marca_clean = re.sub(r"Menú de la marca", "", raw["marcaRaw"], flags=re.I).strip()
@@ -137,8 +146,9 @@ def extract_item(page, url: str) -> dict:
             "localizacao": raw.get("sellerLocation"),
             "ultima_visita": raw.get("sellerLastSeen"),
         },
-        "fotos_count": len(raw.get("fotos") or []),
-        "fotos": (raw.get("fotos") or [])[:8],
+        "fotos_count": len(fotos),          # total no anúncio (antes: só as 5 da tela)
+        "fotos": fotos[:MAX_GUARDADAS],
+        "fotos_fonte": "pagina",            # marca quem já foi coletado com a lista completa
         "acoes": {
             "pode_barganhar": raw.get("podeBarganhar"),
             "pode_mensagem": raw.get("podeMensagem"),

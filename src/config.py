@@ -165,11 +165,14 @@ IA_ROTAS = {
     # Bancada 05/11/2026 em classify/estado_ville.py.
     "ville:estado": {"to": "openrouter:anthropic/claude-haiku-5.5", "detail": "high", "min_tokens": 1500},
     "ville:estado_forte": {"to": "openrouter:google/gemini-3.5-flash-lite", "detail": "high", **_GEMINI3},
-    # Orientação das fotos (classify/orientacao.py, 13/11/2026), Sundek e Ville, depois da marca:
-    # diz de que lado está o cós para pôr em pé a foto de cabeça para baixo ou deitada antes dos
-    # outros agentes. Medido em 122 fotos de 31 anúncios reais: 16 giradas, as 16 certas, nenhuma
-    # foto de short inteiro girada sem ser vista. O gemini-2.5-flash-lite (4x mais barato) errou
-    # o lado em várias fotos deitadas. ~US$ 0,0009 por anúncio. Sem esta rota, nada é girado.
+    # Fotos para os agentes (classify/orientacao.py, 13–14/11/2026), Sundek e Ville, depois da
+    # marca. Chamada do LADO: de que lado está o cós, para pôr em pé a foto de cabeça para baixo
+    # ou deitada (122 fotos de 31 anúncios reais: 16 giradas, as 16 certas). Chamada da VISTA, só
+    # em anúncio com mais de 5 fotos: acha a foto das costas quando ela vem no fim do anúncio
+    # (14 anúncios reais conferidos no olho, 2 precisavam e os 2 saíram certos). O
+    # gemini-2.5-flash-lite (4x mais barato) errou o lado em várias fotos deitadas.
+    # ~US$ 0,001 por anúncio de até 5 fotos; ~US$ 0,003 nos de mais de 5. Sem esta rota, as
+    # fotos vão como vieram.
     "orientacao": {"to": "openrouter:google/gemini-3.5-flash-lite", **_GEMINI3},
 }
 

@@ -18,6 +18,7 @@ from playwright.async_api import async_playwright
 from ..config import MAX_ITEMS_POR_RODADA, VINTED
 from ..utils.historico import atualizar_com_scrape
 from ..sources.vinted import montar_url_sundek_hombre
+from .fotos_pagina import MAX_GUARDADAS, completar
 
 ROOT = Path(__file__).resolve().parent.parent.parent
 DATA = ROOT / "data"
@@ -138,6 +139,12 @@ async def extract_item_async(page, url: str) -> dict:
     }""")
 
     item_id_match = re.search(r"/items/(\d+)", url)
+    # A tela só mostra 5 fotos; o resto vem dos dados embutidos na página (fotos_pagina.py).
+    fotos = raw.get("fotos") or []
+    try:
+        fotos = completar(fotos, await page.content(), item_id_match.group(1) if item_id_match else "")
+    except Exception:
+        pass
     marca_clean = None
     if raw.get("marcaRaw"):
         marca_clean = re.sub(r"Menú de la marca", "", raw["marcaRaw"], flags=re.I).strip()
@@ -161,8 +168,9 @@ async def extract_item_async(page, url: str) -> dict:
             "localizacao": raw.get("sellerLocation"),
             "ultima_visita": raw.get("sellerLastSeen"),
         },
-        "fotos_count": len(raw.get("fotos") or []),
-        "fotos": (raw.get("fotos") or [])[:8],
+        "fotos_count": len(fotos),          # total no anúncio (antes: só as 5 da tela)
+        "fotos": fotos[:MAX_GUARDADAS],
+        "fotos_fonte": "pagina",            # marca quem já foi coletado com a lista completa
         "acoes": {
             "pode_barganhar": raw.get("podeBarganhar"),
             "pode_mensagem": raw.get("podeMensagem"),

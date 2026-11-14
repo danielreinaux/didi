@@ -4,7 +4,7 @@ data/coleta-classificada.json. Não re-scrapeia.
 Pipeline por item:
   1. Prefilter de título (regex, sem IA)
   2. Verifica marca Sundek + formato (vision)
-  2b. Põe em pé as fotos de cabeça para baixo ou deitadas (classify/orientacao.py)
+  2b. Põe em pé as fotos giradas e puxa a foto das costas para a 6ª (classify/orientacao.py)
   3. Liso/estampado/logo_grande (vision)
   4. Cor tier (vision, só nos lisos aprovados)
   5. Elástico + Etiqueta (vision, só nos lisos aprovados)
@@ -157,16 +157,17 @@ def _processar_etapas(item: dict, idx: str, total: int) -> tuple[dict, int, int]
         _log(f"{prefix} → × NAO-SUNDEK [{m}]")
         return {**item, "marca_check": marca, "classificacao": {"tipo": "nao_sundek", "motivo": m}}, in_tok, out_tok
 
-    # 2b. Foto de cabeça para baixo ou deitada → em pé, só para os agentes daqui em diante
-    #     (13/11/2026: short com a listra nas costas fotografado de cabeça para baixo saía
-    #     como "listra na frente"). Só roda em quem já passou por short + Sundek.
+    # 2b. Fotos para os agentes daqui em diante (classify/orientacao.py): as de cabeça para
+    #     baixo ou deitadas ficam em pé (13/11/2026: listra nas costas saía como "listra na
+    #     frente") e, se as costas só aparecem depois da 5ª foto, essa foto entra como 6ª
+    #     (14/11/2026). Só roda em quem já passou por short + Sundek.
     item, u = orientacao.para_agentes(item, max_fotos=6)  # os agentes do Sundek olham até 6
     if u:
         in_tok += u.get("prompt_tokens", 0)
         out_tok += u.get("completion_tokens", 0)
         _track("orientacao", u.get("model") or "", u.get("prompt_tokens", 0), u.get("completion_tokens", 0))
         if orientacao.girou(item):
-            prefix += f" [giros {item['orientacao']['giros']}]"
+            prefix += f" [{orientacao.resumo(item)}]"
 
     # 3. Liso/estampado
     try:
@@ -581,7 +582,14 @@ def main() -> None:
     def _mesmas_fotos(item_novo: dict, item_velho: dict) -> bool:
         f_novo = tuple((item_novo.get("fotos") or []))
         f_velho = tuple((item_velho.get("fotos") or []))
-        return f_novo == f_velho and bool(f_novo)
+        if f_novo == f_velho and f_novo:
+            return True
+        # Até 14/11/2026 o scrape só guardava as 5 fotos da tela (scrape/fotos_pagina.py).
+        # As mesmas 5 agora com mais fotos atrás NÃO são "fotos novas": sem isto, uns 40% da
+        # vitrine seriam reanalisados de uma vez na 1ª rodada. Quem já foi coletado com a
+        # lista completa ("fotos_fonte") segue a regra normal.
+        return (not item_velho.get("fotos_fonte") and len(f_velho) == 5
+                and len(f_novo) > 5 and f_novo[:5] == f_velho)
 
     pendentes = []
     reprocessados = 0

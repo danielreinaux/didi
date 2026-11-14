@@ -126,7 +126,13 @@ def _atualizar_dados(page, item: dict) -> str:
     mud = []
     fotos = list(dict.fromkeys(d.get("fotos") or []))
     chave = lambda u: u.split("/f800/")[-1].split("?")[0]
-    if fotos and [chave(u) for u in fotos] != [chave(u) for u in (item.get("fotos") or [])]:
+    na_tela = [chave(u) for u in fotos]
+    guardadas = [chave(u) for u in (item.get("fotos") or [])]
+    # A tela mostra no máximo 5 fotos e o acervo pode guardar mais (scrape/fotos_pagina.py):
+    # só mudou se as da tela deixaram de ser o começo das guardadas.
+    if len(guardadas) > len(na_tela) >= 5:
+        guardadas = guardadas[:len(na_tela)]
+    if fotos and na_tela != guardadas:
         item["fotos"] = fotos
         mud.append("fotos")
     novo = _preco_float(d.get("preco"))
