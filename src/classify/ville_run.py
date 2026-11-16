@@ -20,7 +20,7 @@ import sys
 import time
 import threading
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -102,6 +102,18 @@ def marca_sem_evidencia(marca: dict) -> bool:
     return (e_vb == "indefinido" and conf == 0) or (
         e_vb == "indefinido" and e_sh == "indefinido" and conf < 0.4
     )
+
+
+def _falha_ia(x: dict) -> bool:
+    """True se o anúncio ficou sem análise por FALHA de chamada (sem crédito, 429, timeout),
+    não por decisão da IA: está marcado "erro", ou foi gravado "sem_evidencia" pelo código
+    antigo, que tratava a exceção da marca como "a IA não viu nada" (na falta de saldo de
+    15–16/11/2026, 27 anúncios foram descartados assim e nunca voltariam para a análise)."""
+    cl = x.get("classificacao") or {}
+    if cl.get("tipo") == "erro":
+        return True
+    evidencia = str((x.get("marca_check") or {}).get("evidencia") or "")
+    return cl.get("tipo") == "sem_evidencia" and evidencia.startswith("erro:")
 
 
 def _parece_ville(item: dict) -> tuple[bool, str, str]:
@@ -210,7 +222,10 @@ def _processar_etapas(item: dict, idx: str, total: int) -> tuple[dict, int, int]
         out_tok += u.get("completion_tokens", 0)
         _track("marca", u.get("model") or IA["model_detalhes"], u.get("prompt_tokens", 0), u.get("completion_tokens", 0))
     except Exception as e:
-        marca = {"e_vilebrequin": "indefinido", "autenticidade": "indefinido", "evidencia": f"erro: {e}", "confianca": 0}
+        # Falha de chamada não é "a IA não viu nada": marca erro para o anúncio voltar na
+        # próxima rodada (como no Sundek). Antes virava "sem_evidencia" e não era mais analisado.
+        _log(f"{prefix} → ERRO marca: {str(e)[:80]}")
+        return {**item, "classificacao": {"tipo": "erro", "erro": f"marca: {e}"}}, in_tok, out_tok
 
     if marca.get("e_vilebrequin") == "nao":
         _log(f"{prefix} → × NAO-VILLE (marca)")
@@ -248,7 +263,10 @@ def _processar_etapas(item: dict, idx: str, total: int) -> tuple[dict, int, int]
         out_tok += u.get("completion_tokens", 0)
         _track("tartaruga", u.get("model") or IA["model_detalhes"], u.get("prompt_tokens", 0), u.get("completion_tokens", 0))
     except Exception as e:
-        tartaruga = {"tipo": "indefinido", "justificativa": f"erro: {e}", "confianca": 0}
+        # Idem: sem a resposta do padrão o anúncio não tem veredito. Antes saía "indefinido" e
+        # podia ir para o app com o aviso "a IA não identificou o padrão".
+        _log(f"{prefix} → ERRO padrão: {str(e)[:80]}")
+        return {**item, "marca_check": marca, "classificacao": {"tipo": "erro", "erro": f"tartaruga: {e}"}}, in_tok, out_tok
 
     tipo_tart = tartaruga.get("tipo", "indefinido")
     tag_tart = {
@@ -286,7 +304,11 @@ def _processar_etapas(item: dict, idx: str, total: int) -> tuple[dict, int, int]
             out_tok += u.get("completion_tokens", 0)
             _track("autenticidade", u.get("model") or IA["model_detalhes"], u.get("prompt_tokens", 0), u.get("completion_tokens", 0))
         except Exception as e:
-            autenticidade = {"autenticidade": "indefinido", "evidencia": f"erro: {e}"}
+            # Idem: o teste do bolso é o filtro de falsos. Antes a falha virava "indefinido" e
+            # o anúncio passava só com o aviso "a IA não conseguiu confirmar".
+            _log(f"{prefix} → ERRO autenticidade: {str(e)[:80]}")
+            return {**item, "marca_check": marca, "tartaruga": tartaruga,
+                    "classificacao": {"tipo": "erro", "erro": f"autenticidade: {e}"}}, in_tok, out_tok
 
     auth_val = autenticidade.get("autenticidade", "indefinido")
     auth_tag = {
@@ -402,6 +424,11 @@ def _processar_etapas(item: dict, idx: str, total: int) -> tuple[dict, int, int]
 # o passo Classify Ville tem 15 min.
 REVER_TITULO_MAX = 6
 
+# Anúncios que ficaram sem análise por falha de chamada (ver _falha_ia) voltam para a rodada
+# enquanto estão ativos e foram vistos há pouco.
+FALHA_IA_HORAS = 48
+FALHA_IA_MAX = 60
+
 
 def main() -> None:
     inp = DATA / "coleta-ville.json"
@@ -436,7 +463,7 @@ def main() -> None:
                 if not rid:
                     continue
                 acervo_previo[rid] = x
-                if (x.get("classificacao") or {}).get("tipo") not in (None, "erro"):
+                if (x.get("classificacao") or {}).get("tipo") is not None and not _falha_ia(x):
                     ja_processados[rid] = x
         except Exception:
             pass
@@ -460,6 +487,19 @@ def main() -> None:
         # "outro", tamanho…) não calculam score, e o pass final só calcula quem não tem.
         rever = [{k: v for k, v in x.items() if k != "score"} for x in rever]
         itens = itens + rever
+        total = len(itens)
+
+    # Falha de chamada nas últimas 48 h: o anúncio só voltava enquanto estivesse entre os 20
+    # mais novos do scrape. Os ativos entram de novo, até 60 por rodada (mesma regra do Sundek).
+    desde_falha = (datetime.now(timezone.utc) - timedelta(hours=FALHA_IA_HORAS)).isoformat()
+    com_falha = [x for rid, x in acervo_previo.items()
+                 if rid not in no_scrape and x.get("status") == "ativo" and _falha_ia(x)
+                 and (x.get("primeiro_visto") or "") >= desde_falha][:FALHA_IA_MAX]
+    if com_falha:
+        print(f"  {len(com_falha)} itens com falha de IA nas últimas {FALHA_IA_HORAS} h — tentando de novo.")
+        # sem o que a tentativa anterior gravou: as saídas antecipadas do _processar não recalculam
+        itens = itens + [{k: v for k, v in x.items() if k not in ("score", "classificacao", "marca_check")}
+                         for x in com_falha]
         total = len(itens)
 
     pendentes = [(i, item) for i, item in enumerate(itens) if item.get("id") not in ja_processados]
