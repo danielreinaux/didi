@@ -1,5 +1,77 @@
 [
  {
+  "run_id": "44290550736",
+  "fonte": "deploy",
+  "quando": "2026-11-18T08:03:29.164313-03:00",
+  "marcas": [
+   "sundek",
+   "vilebrequin"
+  ],
+  "run_url": "https://github.com/danielreinaux/didi/actions/runs/44290550736",
+  "status": "ok",
+  "jobs": [
+   {
+    "name": "ville",
+    "conclusion": null,
+    "url": "https://github.com/danielreinaux/didi/actions/runs/44290550736/job/134754378117"
+   },
+   {
+    "name": "sundek",
+    "conclusion": "success",
+    "url": "https://github.com/danielreinaux/didi/actions/runs/44290550736/job/134754378625"
+   },
+   {
+    "name": "deploy",
+    "conclusion": null,
+    "url": "https://github.com/danielreinaux/didi/actions/runs/44290550736/job/134756200375"
+   }
+  ],
+  "resumo": {
+   "candidatos": 47,
+   "compraveis": 33,
+   "barganha": 14,
+   "descartados": 7299,
+   "nao_classificados": 106,
+   "novos": 5,
+   "ativos": 7524,
+   "custo_usd": 0.0,
+   "custo_brl": 0.0,
+   "tok_in": 0,
+   "tok_out": 0,
+   "calls": 0
+  },
+  "por_marca": {
+   "sundek": {
+    "candidatos": 25,
+    "compraveis": 20,
+    "barganha": 5,
+    "descartados": 7021,
+    "nao_classificados": 106,
+    "novos": 5,
+    "ativos": 7224,
+    "custo_usd": 0.0,
+    "custo_brl": 0.0,
+    "tok_in": 0,
+    "tok_out": 0,
+    "calls": 0
+   },
+   "vilebrequin": {
+    "candidatos": 22,
+    "compraveis": 13,
+    "barganha": 9,
+    "descartados": 278,
+    "nao_classificados": 0,
+    "novos": 0,
+    "ativos": 300,
+    "custo_usd": 0.0,
+    "custo_brl": 0.0,
+    "tok_in": 0,
+    "tok_out": 0,
+    "calls": 0
+   }
+  }
+ },
+ {
   "run_id": "44289962952",
   "fonte": "deploy",
   "quando": "2026-11-18T08:00:09.610706-03:00",
@@ -14324,78 +14396,6 @@
     "tok_in": 1092,
     "tok_out": 59,
     "calls": 1
-   }
-  }
- },
- {
-  "run_id": "44068490555",
-  "fonte": "deploy",
-  "quando": "2026-11-17T07:54:39.045281-03:00",
-  "marcas": [
-   "sundek",
-   "vilebrequin"
-  ],
-  "run_url": "https://github.com/danielreinaux/didi/actions/runs/44068490555",
-  "status": "ok",
-  "jobs": [
-   {
-    "name": "sundek",
-    "conclusion": "success",
-    "url": "https://github.com/danielreinaux/didi/actions/runs/44068490555/job/133988318793"
-   },
-   {
-    "name": "ville",
-    "conclusion": null,
-    "url": "https://github.com/danielreinaux/didi/actions/runs/44068490555/job/133988319482"
-   },
-   {
-    "name": "deploy",
-    "conclusion": null,
-    "url": "https://github.com/danielreinaux/didi/actions/runs/44068490555/job/133990435093"
-   }
-  ],
-  "resumo": {
-   "candidatos": 52,
-   "compraveis": 39,
-   "barganha": 13,
-   "descartados": 7264,
-   "nao_classificados": 106,
-   "novos": 13,
-   "ativos": 7495,
-   "custo_usd": 0.0,
-   "custo_brl": 0.0,
-   "tok_in": 0,
-   "tok_out": 0,
-   "calls": 0
-  },
-  "por_marca": {
-   "sundek": {
-    "candidatos": 28,
-    "compraveis": 24,
-    "barganha": 4,
-    "descartados": 7004,
-    "nao_classificados": 106,
-    "novos": 13,
-    "ativos": 7211,
-    "custo_usd": 0.0,
-    "custo_brl": 0.0,
-    "tok_in": 0,
-    "tok_out": 0,
-    "calls": 0
-   },
-   "vilebrequin": {
-    "candidatos": 24,
-    "compraveis": 15,
-    "barganha": 9,
-    "descartados": 260,
-    "nao_classificados": 0,
-    "novos": 0,
-    "ativos": 284,
-    "custo_usd": 0.0,
-    "custo_brl": 0.0,
-    "tok_in": 0,
-    "tok_out": 0,
-    "calls": 0
    }
   }
  }
