@@ -11,11 +11,12 @@ from pathlib import Path
 from playwright.sync_api import sync_playwright
 
 from ..utils.browser import abrir_sessao_vinted
-from ..config import MAX_ITEMS_POR_RODADA
+from ..config import MAX_ITEMS_POR_RODADA, VINTED_UK
 from .extract import extract_item
 from .guard import checar_fotos
 from ..utils.historico import atualizar_com_scrape
 from ..sources.vinted import listar_urls_items, montar_url_sundek_hombre
+from ..sources import vinted_uk
 
 ROOT = Path(__file__).resolve().parent.parent.parent
 DATA = ROOT / "data"
@@ -80,6 +81,15 @@ def main() -> None:
 
         out.write_text(json.dumps(coletados, indent=2, ensure_ascii=False))
         print(f"\n[5] {len(coletados)} itens salvos em data/coleta.json")
+
+        # [5b] Vinted UK: só os anúncios ainda não vistos, depois da Espanha (sources/vinted_uk.py).
+        #      Ficam fora do histórico e do guard abaixo, que continuam só com a Espanha.
+        if VINTED_UK:
+            uk = vinted_uk.coletar(browser, montar_url_sundek_hombre(vinted_uk.BASE_URL, vinted_uk.MOEDA),
+                                   DATA / "coleta-classificada.json", {c.get("id") for c in coletados})
+            if uk:
+                out.write_text(json.dumps(coletados + uk, indent=2, ensure_ascii=False))
+                print(f"    {len(coletados) + len(uk)} itens em data/coleta.json ({len(uk)} do UK)")
 
         # [6] Atualiza histórico longitudinal (preços, vendidos)
         stats = atualizar_com_scrape(coletados)

@@ -231,6 +231,15 @@ export default function VotingCard({ item, reacaoInicial, obsInicial, onReacao, 
             <span className="px-1.5 py-0.5 rounded bg-sunken text-ink-2 font-medium" translate="no">
               {LOJA_META[lojaItem].nomeCompleto}
             </span>
+            {item.site === "uk" && (
+              <span
+                className="px-1.5 py-0.5 rounded border border-line text-ink-2 font-medium"
+                title="Anúncio do vinted.co.uk: só se compra com conta no Reino Unido"
+                translate="no"
+              >
+                Vinted UK
+              </span>
+            )}
             {novo && <span className="px-1.5 py-0.5 rounded bg-info text-white font-semibold">Nova</span>}
             {noAr && <span title="Quando o anúncio foi publicado no Vinted">No ar {noAr}</span>}
           </div>
@@ -257,6 +266,12 @@ export default function VotingCard({ item, reacaoInicial, obsInicial, onReacao, 
                   .filter(Boolean)
                   .join(", ")}
               </span>
+            </p>
+          ) : null}
+          {item.site === "uk" && item.preco_original ? (
+            <p className="w-full text-xs text-ink-3 num">
+              No Vinted UK: <span className="font-semibold text-ink-2">{item.preco_original}</span>
+              {item.cambio ? ` (convertido a £1 = €${eur(item.cambio)})` : null}
             </p>
           ) : null}
         </div>

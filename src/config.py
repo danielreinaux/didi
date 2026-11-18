@@ -52,9 +52,22 @@ VILEBREQUIN = {
 VINTED = {
     "home_url": "https://www.vinted.pt",
     "es_base_url": "https://www.vinted.es",
+    "uk_base_url": "https://www.vinted.co.uk",
     "catalog_id_hombre": 5,
     "catalog_id_banho_hombre": 2050,
 }
+
+# ---------- Vinted UK (18/11/2026) ----------
+# Além do vinted.es, as duas marcas também são buscadas no vinted.co.uk (Daniel, 18/11/2026). O UK
+# é um Vinted à parte: anúncio de lá só se compra com conta e endereço no Reino Unido. Mesmos ids
+# de marca, categoria, tamanho e estado do vinted.es (conferido em 18/11/2026). Os preços em libra
+# viram euro na coleta (GBP_EUR), para as regras do score valerem iguais; o app e o e-mail mostram
+# também o preço em libra. A cada rodada só abre os anúncios do UK ainda não vistos (sources/
+# vinted_uk.py), para não alongar a rodada da Espanha. Para desligar: VINTED_UK = False.
+VINTED_UK = True
+GBP_EUR = 1.20      # BCE em 18/11/2026: 1,2006 (out–nov/2026 entre 1,17 e 1,20). Atualizar à mão.
+UK_MAX_LISTA = 20   # anúncios mais novos do catálogo do UK olhados a cada rodada
+UK_MAX_NOVOS = 10   # desses, quantos ainda não vistos são abertos por rodada (o resto fica pra próxima)
 
 # Quantos itens a coleta deve trazer por execução (por marca).
 # Override pontual via env MAX_ITEMS (ex: testar com 100 sem mexer no padrão).

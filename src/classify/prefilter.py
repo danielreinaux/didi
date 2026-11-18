@@ -24,6 +24,9 @@ EXCLUSAO: list[tuple[re.Pattern, str]] = [
     (re.compile(r"\bpolo\b", re.I), "polo"),
     (re.compile(r"\bcamicia\b", re.I), "camicia (camisa italiana)"),
     (re.compile(r"\bcamisa\b", re.I), "camisa"),
+    # vinted.co.uk. "t-shirt" fica no de cima; título que também diz short passa ("shirt and swim
+    # shorts") e "Shirt de bain sundek" (erro de digitação de "short de bain", comprável em 2026) também.
+    (re.compile(r"^(?!.*\bshorts?\b)(?!.*\bshirt\s+de\s+bain).*(?<![-\w])shirts?\b", re.I), "camisa (shirt)"),
     (re.compile(r"\bblusa\b", re.I), "blusa"),
     (re.compile(r"\btanktop\b|\btank[-\s]top\b", re.I), "tank top"),
     (re.compile(r"\bhoodie\b|\bsweatshirt\b", re.I), "moletom"),
@@ -33,14 +36,14 @@ EXCLUSAO: list[tuple[re.Pattern, str]] = [
     # Cliente, 20/10/2026: short de moletom (não é de banho) → descartar sempre.
     (re.compile(r"\bfelpat[oaie]\b|\bch[aá]ndal\b|\bsurv[eê]tement\b|\bjogg(ing|er)s?\b|\bmolleton\b|\bmoletom\b|\bsweat\s?shorts?\b|\bfleece\b", re.I), "moletom/agasalho"),
     (re.compile(r"\bmaglion(e|cino)\b", re.I), "maglione (suéter italiano)"),
-    (re.compile(r"\bsweater\b|\bsuet[eé]r\b|\bsu[eé]ter\b", re.I), "suéter"),
+    (re.compile(r"\bsweater\b|\bsuet[eé]r\b|\bsu[eé]ter\b|\bjumper\b|\bcardigan\b", re.I), "suéter"),
     (re.compile(r"\bjersey\b", re.I), "jersey"),
     (re.compile(r"\bgiacca\b|\bjacket\b|\bjaqueta\b|\bblazer\b", re.I), "jaqueta/casaco"),
     (re.compile(r"\bcappotto\b|\bcoat\b|\bcasaco\b", re.I), "casaco"),
 
     # calças longas — em italiano, "pantalone/i" pode ser calça OU bermuda dependendo do contexto.
     # Só excluímos quando NÃO há indicação de short (corto, corti, short, bagno, mare, costume).
-    (re.compile(r"\bpants\b|\bcal[cç]a\b", re.I), "calça longa"),
+    (re.compile(r"\bpants\b|\bcal[cç]a\b|\btrousers\b|\bchinos?\b(?!\s*shorts?\b)", re.I), "calça longa"),
     (re.compile(r"\bjeans?\b", re.I), "jeans"),
     # pantalone(s) sem qualquer indicador de short = provavelmente calça
     # (usamos lookahead negativo: pantalone(i) NÃO seguido por corto/corti/short/bagno/mare/costume)
@@ -86,9 +89,9 @@ EXCLUSAO_INFANTIL: list[tuple[re.Pattern, str]] = [
     (re.compile(r"\bragazz[oa]\b", re.I), "infantil (ragazzo)"),
     (re.compile(r"\bni[ñn][oa]\b", re.I), "infantil (niño)"),
     (re.compile(r"\benfant\b|\bgar[çc]on\b", re.I), "infantil (enfant)"),
-    (re.compile(r"\bkids?\b|\bchild\b|\bboy\b", re.I), "infantil (kids)"),
-    # tamanhos por idade: "taille 10 ans", "tg 14 anni", "10 años", "8 yo"
-    (re.compile(r"\b(taille|tg|talla|size)?\s*\d{1,2}\s*(ans|anni|a[ñn]os?|years?|yo)\b", re.I), "infantil (tamanho por idade)"),
+    (re.compile(r"\bkids?\b|\bchild(ren)?\b|\bboys?\b|\bjunior\b|\btoddler\b", re.I), "infantil (kids)"),
+    # tamanhos por idade: "taille 10 ans", "tg 14 anni", "10 años", "8 yo", "9-10 yrs", "age 10"
+    (re.compile(r"\b(taille|tg|talla|size)?\s*\d{1,2}\s*(ans|anni|a[ñn]os?|years?|yrs?|yo)\b|\bage\s*\d{1,2}\b", re.I), "infantil (tamanho por idade)"),
 ]
 
 

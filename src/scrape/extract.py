@@ -125,7 +125,7 @@ def extract_item(page, url: str) -> dict:
 
     marca_clean = None
     if raw.get("marcaRaw"):
-        marca_clean = re.sub(r"Menú de la marca", "", raw["marcaRaw"], flags=re.I).strip()
+        marca_clean = re.sub(r"Menú de la marca|Brand menu", "", raw["marcaRaw"], flags=re.I).strip()
 
     return {
         "id": item_id_match.group(1) if item_id_match else None,
@@ -135,7 +135,7 @@ def extract_item(page, url: str) -> dict:
         "marca": marca_clean,
         "tamanho": _strip_label(raw.get("tamanhoRaw"), ["Tamaño", "Talla", "Tamanho", "Size"]),
         "estado": _strip_label(raw.get("estadoRaw"), ["Estado", "Condition"]),
-        "cor": _strip_label(raw.get("corRaw"), ["Color"]),
+        "cor": _strip_label(raw.get("corRaw"), ["Colour", "Color"]),  # UK: "Colour"
         "upload": _strip_label(raw.get("uploadRaw"), ["Subido", "Uploaded"]),
         "envio": _strip_label(raw.get("enviRaw"), ["Envío", "Shipping"]),
         "preco": raw.get("preco"),

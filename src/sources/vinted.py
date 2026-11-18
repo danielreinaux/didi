@@ -1,12 +1,21 @@
-"""Source: Vinted (vinted.es). Monta URL filtrada e lista URLs de items."""
+"""Source: Vinted (vinted.es e vinted.co.uk). Monta URL filtrada e lista URLs de items."""
+import math
 from urllib.parse import urlencode
 
-from ..config import SUNDEK, VINTED
+from ..config import GBP_EUR, SUNDEK, VINTED
 
 
-def montar_url_sundek_hombre() -> str:
+def faixa_de_preco(preco_min: float, preco_max: float, moeda: str) -> tuple[int, int]:
+    """Faixa de preço do filtro na moeda do site. Os limites da config são em euro; no UK
+    viram libra pela cotação, arredondando para fora (o score refaz a conta em euro)."""
+    if moeda == "EUR":
+        return int(preco_min), int(preco_max)
+    return max(1, math.floor(preco_min / GBP_EUR)), math.ceil(preco_max / GBP_EUR)
+
+
+def montar_url_sundek_hombre(base_url: str | None = None, moeda: str = "EUR") -> str:
     # Vinted exige parâmetros repetidos para múltiplos valores (não vírgula)
-    base = f'{VINTED["es_base_url"]}/catalog'
+    base = f'{base_url or VINTED["es_base_url"]}/catalog'
     parts = [
         "search_text=sundek",
         f"brand_ids[]={SUNDEK['brand_id_vinted']}",
@@ -16,10 +25,11 @@ def montar_url_sundek_hombre() -> str:
         parts.append(f"size_ids[]={sid}")
     for st in SUNDEK["status_ids_vinted"].values():
         parts.append(f"status_ids[]={st}")
+    p_min, p_max = faixa_de_preco(SUNDEK["preco_min"], SUNDEK["preco_max"], moeda)
     parts += [
-        f"price_from={SUNDEK['preco_min']}",
-        f"price_to={SUNDEK['preco_max']}",
-        "currency=EUR",
+        f"price_from={p_min}",
+        f"price_to={p_max}",
+        f"currency={moeda}",
         "order=newest_first",
     ]
     return f"{base}?{'&'.join(parts)}"

@@ -33,6 +33,11 @@ export interface Item {
   publicado_em?: string | null;
   // Um dos 3 shorts favoritos do cliente (urgente = anúncio até €20). Ver src/classify/premiado.py.
   premiado?: Premiado | null;
+  // Anúncio do vinted.co.uk (src/sources/vinted_uk.py): preços acima em euro, convertidos; o do
+  // anúncio, em libra, vem em preco_original. Ausente = vinted.es.
+  site?: string;
+  preco_original?: string | null;
+  cambio?: number;
 }
 
 export interface Premiado {

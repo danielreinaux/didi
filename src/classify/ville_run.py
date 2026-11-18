@@ -85,7 +85,7 @@ def _marca_vinted_e_ville(item: dict) -> bool:
 # incluem o short comprável (o doc cita 'Ensemble...' como comprável clássico).
 _SHORT_HINT = re.compile(
     r"\bshorts?\b|maillot|\bbain\b|bermuda|\bswim\b|costume\s+da\s+bagno|"
-    r"zwembroek|badebroek|ba[ñn]ador|\bmare\b",
+    r"zwembroek|badebroek|ba[ñn]ador|\bmare\b|\btrunks\b|\bswimming\b|\bswimwear\b",
     re.IGNORECASE,
 )
 

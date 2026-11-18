@@ -62,6 +62,11 @@ def _preco_html(it: dict) -> str:
     if extras:
         sub = (f'<div style="font-size:12px;color:{_C["ink3"]};margin-top:2px">'
                f'Total ≈ €{_eur(total)} ({", ".join(extras)})</div>')
+    if it.get("site") == "uk" and it.get("preco_original"):
+        # Anúncio do vinted.co.uk: o preço em euro é convertido; o do anúncio é em libra.
+        sub += (f'<div style="font-size:12px;color:{_C["ink2"]};margin-top:2px">'
+                f'No Vinted UK: <b>{html.escape(it["preco_original"])}</b> (convertido a £1 = €'
+                f'{_eur(it.get("cambio") or 0)})</div>')
     return (f'<div style="font-size:26px;line-height:1;font-weight:700;color:{_C["ink"]};'
             f'letter-spacing:-0.5px">€{_eur(base)}</div>{sub}')
 
@@ -154,6 +159,16 @@ def _avisos_html(it: dict) -> str:
     return "".join(linhas)
 
 
+def _selo_uk(it: dict) -> str:
+    """Selo "Vinted UK" ao lado do selo da oferta (anúncio do vinted.co.uk: só se compra com conta
+    no Reino Unido)."""
+    if it.get("site") != "uk":
+        return ""
+    return (f'&nbsp;<span style="display:inline-block;background:{_C["canvas"]};color:{_C["ink"]};'
+            f'font-size:12px;font-weight:700;padding:4px 9px;border-radius:4px;'
+            f'border:1px solid {_C["line"]}">Vinted UK</span>')
+
+
 def _card_html(it: dict) -> str:
     texto_selo, fundo_selo, cor_selo = _selo(it)
     foto = (it.get("fotos") or [None])[0] or ""
@@ -200,7 +215,7 @@ def _card_html(it: dict) -> str:
         <td style="padding:14px;vertical-align:top;width:132px">{img}</td>
         <td style="padding:14px 14px 14px 0;vertical-align:top;font-family:{_FONTE}">
           <span style="display:inline-block;background:{fundo_selo};color:{cor_selo};font-size:12px;
-                font-weight:700;padding:4px 9px;border-radius:4px 6px 6px 4px">{texto_selo}</span>
+                font-weight:700;padding:4px 9px;border-radius:4px 6px 6px 4px">{texto_selo}</span>{_selo_uk(it)}
           <div style="font-size:15px;font-weight:600;color:{_C['ink']};margin:8px 0 8px;line-height:1.3">{titulo}</div>
           {_preco_html(it)}
           <div style="font-size:13px;color:{_C['ink2']};margin:8px 0 6px">

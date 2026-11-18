@@ -27,6 +27,7 @@ from pathlib import Path
 from playwright.sync_api import sync_playwright
 
 from ..utils.browser import abrir_sessao_vinted
+from ..sources import vinted_uk
 from ..utils.acervo_io import salvar_lista
 
 ROOT = Path(__file__).resolve().parent.parent.parent
@@ -136,6 +137,14 @@ def _atualizar_dados(page, item: dict) -> str:
         item["fotos"] = fotos
         mud.append("fotos")
     novo = _preco_float(d.get("preco"))
+    if item.get("site") == vinted_uk.SITE:
+        # Anúncio do vinted.co.uk: a página mostra libra; o acervo guarda euro (sources/vinted_uk.py).
+        p = vinted_uk.libras(d.get("preco")) if "£" in (d.get("preco") or "") else None
+        if p:
+            m = vinted_uk.atualizar_preco(item, p)
+            if m:
+                mud.append(m)
+        return ", ".join(mud)
     velho = _preco_float(item.get("preco"))
     if novo and velho and abs(novo - velho) >= 0.01:
         item.setdefault("preco_inicial", item.get("preco"))

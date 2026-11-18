@@ -1,9 +1,10 @@
-"""Source: Vinted (vinted.es) — filtrado para Vilebrequin."""
+"""Source: Vinted (vinted.es e vinted.co.uk) — filtrado para Vilebrequin."""
 from ..config import VILEBREQUIN, VINTED
+from .vinted import faixa_de_preco
 
 
-def montar_url_ville_hombre() -> str:
-    base = f'{VINTED["es_base_url"]}/catalog'
+def montar_url_ville_hombre(base_url: str | None = None, moeda: str = "EUR") -> str:
+    base = f'{base_url or VINTED["es_base_url"]}/catalog'
     parts = ["search_text=vilebrequin"]
 
     if VILEBREQUIN.get("brand_id_vinted"):
@@ -17,10 +18,11 @@ def montar_url_ville_hombre() -> str:
     for st in VILEBREQUIN["status_ids_vinted"].values():
         parts.append(f"status_ids[]={st}")
 
+    p_min, p_max = faixa_de_preco(VILEBREQUIN["preco_min"], VILEBREQUIN["preco_max"], moeda)
     parts += [
-        f"price_from={VILEBREQUIN['preco_min']}",
-        f"price_to={VILEBREQUIN['preco_max']}",
-        "currency=EUR",
+        f"price_from={p_min}",
+        f"price_to={p_max}",
+        f"currency={moeda}",
         "order=newest_first",
     ]
     return f"{base}?{'&'.join(parts)}"

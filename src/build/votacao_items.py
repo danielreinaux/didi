@@ -20,6 +20,9 @@ OUT = ROOT / "votacao" / "public" / "items.json"
 STATUS = ROOT / "votacao" / "public" / "status.json"
 
 _MIN_POR = {"segundo": 0, "minuto": 1, "hora": 60, "dia": 1440, "semana": 10080, "mes": 43200, "año": 525600}
+# vinted.co.uk: "30 min ago", "2 hours ago", "a day ago", "just now"
+_MIN_POR_EN = {"second": 0, "sec": 0, "min": 1, "minute": 1, "hour": 60, "day": 1440, "week": 10080,
+               "month": 43200, "year": 525600}
 
 
 def _publicado_em(it: dict) -> str | None:
@@ -30,8 +33,12 @@ def _publicado_em(it: dict) -> str | None:
         base = datetime.fromisoformat(it.get("coletado_em") or "")
     except ValueError:
         return None
-    if up in ("ahora mismo", "justo ahora"):
+    if up in ("ahora mismo", "justo ahora", "just now"):
         return base.isoformat()
+    m = re.match(r"(a|an|\d+)\s+(second|sec|minute|min|hour|day|week|month|year)s?\s+ago", up)
+    if m:
+        n = 1 if m.group(1) in ("a", "an") else int(m.group(1))
+        return (base - timedelta(minutes=n * _MIN_POR_EN[m.group(2)])).isoformat()
     m = re.match(r"hace\s+(un|una|unos|unas|\d+)\s+(segundo|minuto|hora|d[ií]a|semana|mes|año)", up)
     if not m:
         return None
@@ -164,6 +171,21 @@ def _recente(it: dict, desde: str = APP_DESDE) -> bool:
     return bool(datas) and min(datas) >= desde
 
 
+def _uk(it: dict, negociacao: dict) -> dict:
+    """Campos do anúncio do vinted.co.uk para o card e o e-mail (sources/vinted_uk.py): o preço em
+    libra do anúncio e a oferta sugerida também em libra (o score calcula em euro)."""
+    if it.get("site") != "uk":
+        return {}
+    cambio = it.get("cambio") or 0
+    neg = dict(negociacao or {})
+    if neg.get("oferta") and cambio:
+        neg["oferta_original"] = f"£{neg['oferta'] / cambio:.0f}"
+        if neg.get("msg"):
+            neg["msg"] = f"{neg['msg']} (no UK: oferta ≈ {neg['oferta_original']})"
+    return {"site": "uk", "preco_original": it.get("preco_gbp"), "moeda_original": "GBP",
+            "cambio": cambio, "negociacao": neg}
+
+
 def _carregar(path: Path, marca: str) -> list[dict]:
     if not path.exists():
         return []
@@ -225,6 +247,8 @@ def _carregar(path: Path, marca: str) -> list[dict]:
                if isinstance(it.get("conservacao"), dict) and (it.get("conservacao") or {}).get("mancha_onde") else {}),
             # Ficha da Ville no card (padrão, cor/faixa, cordão, fecho, autenticidade, etiqueta).
             **({"ville": _atributos_ville(it)} if marca == "vilebrequin" else {}),
+            # Anúncio do vinted.co.uk: selo "Vinted UK" e preço em libra (sobrescreve a negociação).
+            **_uk(it, s.get("negociacao") or {}),
         })
     return cand
 
