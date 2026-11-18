@@ -63,6 +63,7 @@ _EXCLUSAO_VILLE = {
     "padrao_outro_nao_compra": ("estampa", "padrão fora do foco (não é tartaruga nem liso)"),
     "desbotado": ("cor", "desbotado"),
     "cor_liso_fora_whitelist": ("cor", "liso numa cor que não entra"),
+    "liso_fora_do_foco": ("estampa", "liso — fora do foco (só tartaruga)"),
     "fundo_gradiente": ("cor", "fundo degradê"),
     "fundo_mesclado": ("cor", "fundo mesclado (nem preto nem branco)"),
 }

@@ -28,6 +28,7 @@ import math
 import re
 
 from .cor_ville import bucket_cor, bucket_cor_item, e_cor_bonita, e_fundo_problematico, cor_aceita_em_liso
+from ..config import VILLE_LISO_OFERTA
 
 # Tetos de preço (€) por padrão — base do cálculo de eficiência de preço.
 TETO = {
@@ -226,7 +227,9 @@ def calcular_score(item: dict) -> dict:
         exclusoes.append("desbotado")
     if tam_key is None:
         exclusoes.append("tamanho_invalido")
-    if tipo == "liso" and not cor_aceita_em_liso(cor_nome):
+    if tipo == "liso" and not VILLE_LISO_OFERTA:
+        exclusoes.append("liso_fora_do_foco")  # cliente, 17/11/2026: só tartaruga (config)
+    elif tipo == "liso" and not cor_aceita_em_liso(cor_nome):
         exclusoes.append("cor_liso_fora_whitelist")
     # Degradê: descarte direto (dono 17/06 — "o padrão degradê pode cortar, não
     # precisa nem nerfar"). O fundo MULTICOLOR (manchas/blocos, sem transição)
@@ -331,7 +334,7 @@ def calcular_score(item: dict) -> dict:
         if decisao == "compravel":
             decisao = "medio"
             motivo = "estampado sem foto do bolso — pedir foto traseira ao vendedor"
-    if autenticidade in ("indefinido", "sem_foto_bolso") and decisao in ("compravel", "medio"):
+    if autenticidade in ("indefinido", "sem_foto_bolso", "suspeito") and decisao in ("compravel", "medio"):
         flags.append("verificar_autenticidade")
     # Coleção antiga (cordão cinza) já penaliza o score; expõe também como flag
     # pra aparecer na votação e o dono decidir caso a caso pelo preço (17/06).

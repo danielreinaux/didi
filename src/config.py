@@ -7,6 +7,12 @@
 # Para desligar tudo: VILLE_ATIVA = False + `if: false` no job `ville` do workflow.
 VILLE_ATIVA = True
 VILLE_EMAIL = True
+# Short LISO da Ville fora das ofertas (cliente, áudio de 17/11/2026: "tirar esses Viles lisos de
+# aparecer como oferta… tô nem comprando esses, tô só focando nos da tartaruga"). O liso para logo
+# depois do padrão, sem gastar cor, etiqueta, cordão e fecho, e vai para os Descartados como "liso —
+# fora do foco". Não há teste de autenticidade para liso (o bolso não tem estampa para conferir).
+# Para voltar a mostrar: VILLE_LISO_OFERTA = True (os já descartados assim precisam de reanálise).
+VILLE_LISO_OFERTA = False
 # No app, só os anúncios da Ville vistos pela 1ª vez depois da volta (o acervo de set–out/2026
 # está quase todo vendido e foi classificado com as regras antigas).
 VILLE_APP_DESDE = "2026-11-05T00:00:00+00:00"

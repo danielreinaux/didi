@@ -61,7 +61,7 @@ def _destaques(it: dict) -> list[str]:
         d.append("📷 pedir foto traseira")
     elif autvalor == "original":
         d.append("autêntico (bolso)")
-    elif autvalor in ("sem_foto_bolso", "indefinido"):
+    elif autvalor in ("sem_foto_bolso", "indefinido", "suspeito"):
         d.append("⚠ conferir autenticidade")
     if "colecao_antiga" in flags:
         d.append("🕰 coleção antiga")

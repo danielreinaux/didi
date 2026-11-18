@@ -35,7 +35,7 @@ except Exception:
 
 from .ville_brand import verificar_ville
 from .tartaruga import classificar_tartaruga
-from .autenticidade_ville import verificar_autenticidade
+from .autenticidade_ville import verificar_autenticidade, acertar_gravado
 from .cordao_ville import verificar_cordao
 from .cor_fundo_ville import classificar_cor_fundo
 from .fecho_ville import verificar_fecho
@@ -46,7 +46,7 @@ from . import reanalise
 from .score_ville import calcular_score, _tamanho_key
 # Reusa as exclusões de título do Sundek (infantil, não-short) — P2.
 from .prefilter import EXCLUSAO, EXCLUSAO_INFANTIL
-from ..config import IA, VILLE_APP_DESDE
+from ..config import IA, VILLE_APP_DESDE, VILLE_LISO_OFERTA
 # Custo REAL por etapa/modelo (o Ville usa gpt-4o em marca/tartaruga/autenticidade/
 # fecho e mini no resto). Antes o custo era PISO — precificado como se fosse tudo mini.
 from ..utils.cost_tracker import track as _track, dump_json as _dump_cost, reset as _reset_cost, relatorio as _relatorio_cost, PRECOS as _PRECOS
@@ -287,6 +287,11 @@ def _processar_etapas(item: dict, idx: str, total: int) -> tuple[dict, int, int]
         _log(f"{prefix} → {tag_tart} — descarte garantido, pula atributos")
         return {**item, "marca_check": marca, "tartaruga": tartaruga,
                 "classificacao": {"tipo": "outro", "autenticidade": "indefinido"}}, in_tok, out_tok
+    # Liso fora das ofertas (config.VILLE_LISO_OFERTA): mesmo atalho do "outro".
+    if tipo_tart == "liso" and not VILLE_LISO_OFERTA:
+        _log(f"{prefix} → {tag_tart} — liso fora do foco, pula atributos")
+        return {**item, "marca_check": marca, "tartaruga": tartaruga,
+                "classificacao": {"tipo": "liso", "autenticidade": "indefinido"}}, in_tok, out_tok
 
     # 4. Autenticidade dedicada (zoom no bolso traseiro — critério central da marca).
     # Pula a chamada de IA quando o short é liso (sem padrão pra continuar no bolso)
@@ -561,6 +566,17 @@ def main() -> None:
     mudou = False
     for x in out:
         if "score" not in x and (x.get("classificacao") or {}).get("tipo"):
+            x["score"] = calcular_score(x)
+            mudou = True
+        # "indefinido" com 2 de 3 leituras vendo corte no bolso é suspeita, não "não deu para
+        # ver": acerta o que foi gravado antes de 18/11/2026 e refaz o score (trava em médio).
+        if acertar_gravado(x):
+            x["score"] = calcular_score(x)
+            mudou = True
+        # Liso aprovado antes de sair das ofertas (config.VILLE_LISO_OFERTA): refaz o score, que
+        # agora descarta — senão ficaria no app, porque este passe só calcula quem não tem score.
+        elif (not VILLE_LISO_OFERTA and (x.get("classificacao") or {}).get("tipo") == "liso"
+              and (x.get("score") or {}).get("decisao") in ("compravel", "medio")):
             x["score"] = calcular_score(x)
             mudou = True
     if mudou:

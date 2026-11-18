@@ -36,8 +36,33 @@ def _get_client() -> OpenAI:
 # Falso pelo bolso só vale com 3 leituras de 3. Uma leitura sozinha às vezes inventa corte num
 # original com o bolso pequeno na foto (cv34 do gabarito: 2 em 14 leituras, 12/11/2026); os
 # falsos de verdade saem falsos em todas (short branco 9 de 9, laranja 8 de 8).
+# Maioria sem unanimidade (2 de 3) é "suspeito": o score trava em médio e o app mostra
+# "Suspeita". Até 18/11/2026 saía "indefinido", que o score trata como "não deu para ver": o
+# 10772630323 foi para o app como comprável 97 ("compre já") com 2 de 3 leituras vendo corte.
 VOTOS_BOLSO = 3
 _SINAIS_OBJETIVOS = ("sem_bolso", "etiqueta_clonada")
+
+
+def _maioria_viu_corte(votos_bolso) -> bool:
+    """"2/3" → True. Unanimidade ("3/3") já é "falso"; minoria ("1/3") vale a outra leitura."""
+    try:
+        falsos, total = (int(n) for n in str(votos_bolso).split("/"))
+    except (TypeError, ValueError):
+        return False
+    return falsos < total and falsos > total - falsos
+
+
+def acertar_gravado(item: dict) -> bool:
+    """Anúncio gravado antes de 18/11/2026 como "indefinido" com a maioria das leituras vendo
+    corte no bolso passa a "suspeito". Devolve True se mudou (o chamador recalcula o score)."""
+    aut = item.get("autenticidade")
+    if not (isinstance(aut, dict) and aut.get("autenticidade") == "indefinido"
+            and _maioria_viu_corte(aut.get("votos_bolso"))):
+        return False
+    aut["autenticidade"] = "suspeito"
+    if isinstance(item.get("classificacao"), dict):
+        item["classificacao"]["autenticidade"] = "suspeito"
+    return True
 
 
 def _um_voto(titulo: str, fotos: list) -> dict:
@@ -84,6 +109,7 @@ def verificar_autenticidade(item: dict) -> dict:
     lista "cortes" no JSON antes do veredito, raciocínio médio (config.IA_ROTAS) e confirmação:
     falso pelo bolso só com VOTOS_BOLSO leituras iguais (2 de 3 → indefinido, 1 de 3 → vale a
     leitura que não acusou). Etiqueta clonada e short sem bolso não precisam de confirmação.
+    18/11/2026: 2 de 3 passa a devolver "suspeito" (ver VOTOS_BOLSO).
     """
     fotos = (item.get("fotos") or [])[:8]
     if not fotos:
@@ -103,7 +129,7 @@ def verificar_autenticidade(item: dict) -> dict:
         final = dict(voto)
     elif len(falsos) > len(outros):
         final = dict(voto)
-        final["autenticidade"] = "indefinido"
+        final["autenticidade"] = "suspeito"
         final["sinal"] = "nenhum"
         final["evidencia"] = (f"{len(falsos)} de {len(votos)} leituras viram tartaruga cortada no "
                               "contorno do bolso; conferir. " + (voto.get("evidencia") or ""))
