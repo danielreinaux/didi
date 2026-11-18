@@ -34,6 +34,7 @@ from .botao_fly import verificar_botao, verificar_velcro
 from .etiqueta import verificar_etiqueta
 from .listra import verificar_listra, precisa_confirmar, confirmar_faixa_unica
 from . import orientacao
+from . import reanalise
 from .premiado import checar as checar_premiado, precisa_checar as precisa_checar_premiado
 from ..utils.cost_tracker import track as _track, relatorio as _relatorio, dump_json as _dump_cost
 from ..utils.listra_tier import avaliar_combo, limao_salvavel
@@ -90,6 +91,18 @@ def _pular_resto(c: dict, parcial: dict, etapa: str) -> str | None:
     return m
 
 
+def _falha(item: dict, marca: dict, etapa: str, e: Exception, onde: str,
+           in_tok: int, out_tok: int) -> tuple[dict, int, int]:
+    """A chamada de IA da `etapa` falhou (sem crédito, 429, timeout): o anúncio fica "erro" e
+    volta para a análise, em vez de ser aprovado ou descartado sem a resposta dessa etapa.
+    18/11/2026: o código seguia em frente — sem o elástico o score lia "sem elástico" (6 shorts
+    em novembro, 5 deles no fim do saldo de 15/11) e sem o botão/bolso o short podia passar sem
+    conferência. As voltas são dosadas em classify/reanalise.py. Só falha de chamada chega
+    aqui: os agentes já tratam JSON inválido e recorte que não deu certo."""
+    _log(f"{onde} | ERRO {etapa}: {str(e)[:80]}")
+    return {**item, "marca_check": marca, "classificacao": reanalise.erro(etapa, e)}, in_tok, out_tok
+
+
 def _processar(item: dict, idx: str, total: int) -> tuple[dict, int, int]:
     """Processa um item completo. Retorna (resultado, input_tokens, output_tokens).
     O resultado sai com as URLs ORIGINAIS das fotos: os agentes podem ter visto versões
@@ -143,7 +156,7 @@ def _processar_etapas(item: dict, idx: str, total: int) -> tuple[dict, int, int]
         # ser reprocessado. NÃO segue em frente — sem saber se é short/Sundek,
         # o resto do pipeline não faz sentido.
         _log(f"{prefix} → ERRO marca: {str(e)[:80]}")
-        return {**item, "classificacao": {"tipo": "erro", "erro": f"marca: {e}"}}, in_tok, out_tok
+        return {**item, "classificacao": reanalise.erro(reanalise.ETAPA_MARCA, e)}, in_tok, out_tok
 
     # Checa formato ANTES da marca: o modelo confunde "não é short" com "não é Sundek".
     # Uma camiseta/regata Sundek deve cair em nao_short, não em nao_sundek.
@@ -219,7 +232,7 @@ def _processar_etapas(item: dict, idx: str, total: int) -> tuple[dict, int, int]
                 out_tok += u.get("completion_tokens", 0)
                 _track("color", u.get("model") or _IA["model"], u.get("prompt_tokens", 0), u.get("completion_tokens", 0))
             except Exception as e:
-                cor = {"tier": "erro", "erro": str(e)}
+                return _falha(item, marca, "cor", e, linha, in_tok, out_tok)
 
             # Short-circuit: cor ruim → pula listra, bolso, elástico, etiqueta
             # (cores ruins são neon/fluo — listras neutras não salvam, ver listra_tier)
@@ -263,7 +276,7 @@ def _processar_etapas(item: dict, idx: str, total: int) -> tuple[dict, int, int]
                 )
                 linha += f" | {tag_listra}"
             except Exception as e:
-                pass  # mantém o que veio do prompt multi-uso
+                return _falha(item, marca, "listra", e, linha, in_tok, out_tok)
 
             # Ajusta tier com base na combinação cor+listras
             cores_listras = c.get("cores_listras") or []
@@ -307,7 +320,7 @@ def _processar_etapas(item: dict, idx: str, total: int) -> tuple[dict, int, int]
                 _track("elastico", u.get("model") or _IA["model_detalhes"], u.get("prompt_tokens", 0), u.get("completion_tokens", 0))
                 linha += f" | {'elás✓' if elastico.get('tem_elastico') else '!SEM-ELÁS'}"
             except Exception as e:
-                elastico = {"tem_elastico": None, "erro": str(e)}
+                return _falha(item, marca, "elastico", e, linha, in_tok, out_tok)
 
             # 4c'. Detector dedicado de botão/snap no fly (feedback do cliente: "muitos com
             # BOTÃO passando" — o snap do modelo elástico+snap é pequeno e some em detail=low).
@@ -331,7 +344,7 @@ def _processar_etapas(item: dict, idx: str, total: int) -> tuple[dict, int, int]
                             elastico["tipo_fechamento"] = "velcro" if bt.get("tipo") == "velcro" else "botao"
                             elastico["evidencia"] = f"[botão no fly: {bt.get('evidencia')}] " + (elastico.get("evidencia") or "")
                 except Exception as e_bt:
-                    print(f"  [{idx}] botao_fly falhou: {e_bt}")
+                    return _falha(item, marca, "botao", e_bt, linha, in_tok, out_tok)
 
             # 4c''. VELCRO nos shorts SEM elástico (boardshort de cós fixo), onde o botao_fly
             # não roda (o gate dele evita os ilhós de boardshort virarem "botão"). Velcro só
@@ -357,7 +370,7 @@ def _processar_etapas(item: dict, idx: str, total: int) -> tuple[dict, int, int]
                         elastico["tipo_fechamento"] = "velcro"
                         elastico["evidencia"] = f"[velcro na braguilha: {vc.get('evidencia')}] " + (elastico.get("evidencia") or "")
                 except Exception as e_vc:
-                    print(f"  [{idx}] velcro_fly falhou: {e_vc}")
+                    return _falha(item, marca, "velcro", e_vc, linha, in_tok, out_tok)
 
             # Short-circuit: botão/velcro → descartado. Pula bolso e etiqueta.
             if (elastico or {}).get("tipo_fechamento") in ("botao", "velcro"):
@@ -394,7 +407,7 @@ def _processar_etapas(item: dict, idx: str, total: int) -> tuple[dict, int, int]
                 )
                 linha += f" | {tag_bolso}"
             except Exception as e:
-                pass
+                return _falha(item, marca, "bolso", e, linha, in_tok, out_tok)
 
             # 6. Etiqueta (barata, só dá bônus — por último). Não roda se o bolso já
             #    garantiu o descarte (sem bolso / bolso só com logo / bolso frontal).
@@ -423,7 +436,7 @@ def _processar_etapas(item: dict, idx: str, total: int) -> tuple[dict, int, int]
 
     except Exception as e:
         _log(f"{prefix} → ERRO: {str(e)[:80]}")
-        return {**item, "marca_check": marca, "classificacao": {"tipo": "erro", "erro": str(e)}}, in_tok, out_tok
+        return {**item, "marca_check": marca, "classificacao": reanalise.erro("pipeline", e)}, in_tok, out_tok
 
 
 def _pulo_vencido(it: dict) -> bool:
@@ -553,10 +566,14 @@ def main() -> None:
     com_erro = [x for rid, x in acervo_previo.items()
                 if rid not in no_scrape and x.get("status") == "ativo"
                 and (x.get("classificacao") or {}).get("tipo") == "erro"
-                and (x.get("primeiro_visto") or "") >= desde][:60]
+                and (x.get("primeiro_visto") or "") >= desde
+                and not reanalise.em_espera(x)][:60]
     if com_erro:
         print(f"  {len(com_erro)} itens com erro nas últimas 48 h — tentando de novo.")
-        itens = itens + com_erro
+        # sem o que a tentativa anterior gravou (marca, giro das fotos…): as saídas antecipadas
+        # do _processar não regravam tudo, e a contagem de tentativas fica no acervo_previo
+        itens = itens + [{k: v for k, v in x.items() if k not in reanalise.CAMPOS_DA_IA}
+                         for x in com_erro]
         total = len(itens)
 
     # Ativos cortados no pré-filtro (sem IA) por uma regra que mudou e que o pré-filtro de
@@ -578,6 +595,15 @@ def main() -> None:
                          for x in rever_pf]
         total = len(itens)
 
+    # Reanálise pedida à mão (data/reanalise_pedida.json): uma vez por anúncio e por carimbo.
+    pedidos = reanalise.pendentes("sundek", acervo_previo)
+    if pedidos:
+        print(f"  {len(pedidos)} anúncio(s) com reanálise pedida — entrando na rodada.")
+        for rid in pedidos:
+            ja_processados.pop(rid, None)
+        itens = reanalise.juntar(itens, pedidos)
+        total = len(itens)
+
     # Pular só se ID já processado E fotos não mudaram (mesma URL list)
     def _mesmas_fotos(item_novo: dict, item_velho: dict) -> bool:
         f_novo = tuple((item_novo.get("fotos") or []))
@@ -593,7 +619,12 @@ def main() -> None:
 
     pendentes = []
     reprocessados = 0
+    em_espera = 0
     for i, item in enumerate(itens):
+        # Falhou numa etapa do meio há pouco: espera a vez (cada volta paga as etapas de antes).
+        if item.get("id") not in pedidos and reanalise.em_espera(acervo_previo.get(item.get("id"))):
+            em_espera += 1
+            continue
         cached = ja_processados.get(item.get("id"))
         if cached and _mesmas_fotos(item, cached) and not _pulo_vencido(
                 {**cached, "preco": item.get("preco"), "preco_total": item.get("preco_total")}):
@@ -602,9 +633,11 @@ def main() -> None:
             reprocessados += 1  # fotos mudaram, reprocessar
         pendentes.append((i, item))
 
-    pulados = total - len(pendentes)
+    pulados = total - len(pendentes) - em_espera
     if pulados:
         print(f"  {pulados} itens já classificados (fotos idênticas) — pulando.")
+    if em_espera:
+        print(f"  {em_espera} itens com falha de IA há pouco — aguardando a próxima tentativa.")
     if reprocessados:
         print(f"  {reprocessados} itens com fotos modificadas — reprocessando.")
     print(f"  {len(pendentes)} itens para processar.\n")
@@ -622,6 +655,7 @@ def main() -> None:
             except Exception as e:
                 resultado = {**item_orig, "classificacao": {"tipo": "erro", "erro": str(e)}}
                 in_t = out_t = 0
+            resultado = reanalise.anotar_falha(resultado, acervo_previo.get(resultado.get("id")))
             resultados.append((orig_i, resultado))
             with _counters_lock:
                 input_tokens += in_t

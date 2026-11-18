@@ -42,6 +42,7 @@ from .fecho_ville import verificar_fecho
 from .etiqueta import verificar_etiqueta
 from .estado_ville import verificar_estado
 from . import orientacao
+from . import reanalise
 from .score_ville import calcular_score, _tamanho_key
 # Reusa as exclusões de título do Sundek (infantil, não-short) — P2.
 from .prefilter import EXCLUSAO, EXCLUSAO_INFANTIL
@@ -225,7 +226,7 @@ def _processar_etapas(item: dict, idx: str, total: int) -> tuple[dict, int, int]
         # Falha de chamada não é "a IA não viu nada": marca erro para o anúncio voltar na
         # próxima rodada (como no Sundek). Antes virava "sem_evidencia" e não era mais analisado.
         _log(f"{prefix} → ERRO marca: {str(e)[:80]}")
-        return {**item, "classificacao": {"tipo": "erro", "erro": f"marca: {e}"}}, in_tok, out_tok
+        return {**item, "classificacao": reanalise.erro(reanalise.ETAPA_MARCA, e)}, in_tok, out_tok
 
     if marca.get("e_vilebrequin") == "nao":
         _log(f"{prefix} → × NAO-VILLE (marca)")
@@ -266,7 +267,7 @@ def _processar_etapas(item: dict, idx: str, total: int) -> tuple[dict, int, int]
         # Idem: sem a resposta do padrão o anúncio não tem veredito. Antes saía "indefinido" e
         # podia ir para o app com o aviso "a IA não identificou o padrão".
         _log(f"{prefix} → ERRO padrão: {str(e)[:80]}")
-        return {**item, "marca_check": marca, "classificacao": {"tipo": "erro", "erro": f"tartaruga: {e}"}}, in_tok, out_tok
+        return {**item, "marca_check": marca, "classificacao": reanalise.erro("tartaruga", e)}, in_tok, out_tok
 
     tipo_tart = tartaruga.get("tipo", "indefinido")
     tag_tart = {
@@ -308,7 +309,7 @@ def _processar_etapas(item: dict, idx: str, total: int) -> tuple[dict, int, int]
             # o anúncio passava só com o aviso "a IA não conseguiu confirmar".
             _log(f"{prefix} → ERRO autenticidade: {str(e)[:80]}")
             return {**item, "marca_check": marca, "tartaruga": tartaruga,
-                    "classificacao": {"tipo": "erro", "erro": f"autenticidade: {e}"}}, in_tok, out_tok
+                    "classificacao": reanalise.erro("autenticidade", e)}, in_tok, out_tok
 
     auth_val = autenticidade.get("autenticidade", "indefinido")
     auth_tag = {
@@ -337,7 +338,11 @@ def _processar_etapas(item: dict, idx: str, total: int) -> tuple[dict, int, int]
                    u2.get("prompt_tokens", 0), u2.get("completion_tokens", 0))
         linha += f" | cor={cor.get('cor_principal')}"
     except Exception as e:
-        cor = {"tier": "erro", "erro": str(e)}
+        # A cor de fundo decide o descarte do liso e o fecho decide botão/fivela/velcro: sem a
+        # resposta, o anúncio volta para a análise em vez de ser pontuado sem ela.
+        _log(f"{linha} | ERRO cor: {str(e)[:80]}")
+        return {**item, "marca_check": marca, "tartaruga": tartaruga,
+                "classificacao": reanalise.erro("cor", e)}, in_tok, out_tok
 
     # 5. Etiqueta
     try:
@@ -382,7 +387,9 @@ def _processar_etapas(item: dict, idx: str, total: int) -> tuple[dict, int, int]
         elif tf and tf != "indefinido":
             linha += f" | fecho={tf}"
     except Exception as e:
-        fecho = {"tipo_fechamento": "indefinido", "erro": str(e)}
+        _log(f"{linha} | ERRO fecho: {str(e)[:80]}")
+        return {**item, "marca_check": marca, "tartaruga": tartaruga,
+                "classificacao": reanalise.erro("fecho", e)}, in_tok, out_tok
 
     resultado = {
         **item,
@@ -494,18 +501,35 @@ def main() -> None:
     desde_falha = (datetime.now(timezone.utc) - timedelta(hours=FALHA_IA_HORAS)).isoformat()
     com_falha = [x for rid, x in acervo_previo.items()
                  if rid not in no_scrape and x.get("status") == "ativo" and _falha_ia(x)
-                 and (x.get("primeiro_visto") or "") >= desde_falha][:FALHA_IA_MAX]
+                 and (x.get("primeiro_visto") or "") >= desde_falha
+                 and not reanalise.em_espera(x)][:FALHA_IA_MAX]
     if com_falha:
         print(f"  {len(com_falha)} itens com falha de IA nas últimas {FALHA_IA_HORAS} h — tentando de novo.")
         # sem o que a tentativa anterior gravou: as saídas antecipadas do _processar não recalculam
-        itens = itens + [{k: v for k, v in x.items() if k not in ("score", "classificacao", "marca_check")}
+        itens = itens + [{k: v for k, v in x.items() if k not in reanalise.CAMPOS_DA_IA}
                          for x in com_falha]
         total = len(itens)
 
-    pendentes = [(i, item) for i, item in enumerate(itens) if item.get("id") not in ja_processados]
-    pulados = total - len(pendentes)
+    # Reanálise pedida à mão (data/reanalise_pedida.json): uma vez por anúncio e por carimbo.
+    pedidos = reanalise.pendentes("ville", acervo_previo)
+    if pedidos:
+        print(f"  {len(pedidos)} anúncio(s) com reanálise pedida — entrando na rodada.")
+        for rid in pedidos:
+            ja_processados.pop(rid, None)
+        itens = reanalise.juntar(itens, pedidos)
+        total = len(itens)
+
+    # Quem falhou numa etapa do meio há pouco espera a vez: cada volta paga de novo a marca e
+    # o padrão (gpt-4o) antes de chegar à etapa que falhou (classify/reanalise.py).
+    aguardando = {item.get("id") for item in itens
+                  if item.get("id") not in pedidos and reanalise.em_espera(acervo_previo.get(item.get("id")))}
+    pendentes = [(i, item) for i, item in enumerate(itens)
+                 if item.get("id") not in ja_processados and item.get("id") not in aguardando]
+    pulados = total - len(pendentes) - len(aguardando)
     if pulados:
         print(f"  {pulados} itens já classificados — pulando. {len(pendentes)} pendentes.\n")
+    if aguardando:
+        print(f"  {len(aguardando)} itens com falha de IA há pouco — aguardando a próxima tentativa.")
 
     with ThreadPoolExecutor(max_workers=workers) as pool:
         futures = {
@@ -520,6 +544,7 @@ def main() -> None:
             except Exception as e:
                 resultado = {**item_orig, "classificacao": {"tipo": "erro", "erro": str(e)}}
                 in_t = out_t = 0
+            resultado = reanalise.anotar_falha(resultado, acervo_previo.get(resultado.get("id")))
             resultados.append((orig_i, resultado))
             with _counters_lock:
                 input_tokens += in_t
