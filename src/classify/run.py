@@ -36,6 +36,7 @@ from .listra import verificar_listra, precisa_confirmar, confirmar_faixa_unica
 from . import orientacao
 from . import reanalise
 from .premiado import checar as checar_premiado, precisa_checar as precisa_checar_premiado
+from .elastico_confere import conferir as conferir_elastico, precisa_conferir as precisa_conferir_elastico
 from ..utils.cost_tracker import track as _track, relatorio as _relatorio, dump_json as _dump_cost
 from ..utils.listra_tier import avaliar_combo, limao_salvavel
 from .prefilter import parece_short
@@ -474,6 +475,23 @@ DESBOTADO_CHECK_MAX_POR_RODADA = 60
 # Teto de checagens de "short premiado" por rodada (gpt-6.1-sol ≈ US$ 0,012 cada; normal: 0–2).
 PREMIADO_MAX_POR_RODADA = 20
 
+# Teto da 2ª olhada do elástico por rodada (gemini + Haiku ≈ US$ 0,002 cada; normal: 0–2).
+ELASTICO_CONFERE_MAX_POR_RODADA = 20
+
+
+def _conferir_elastico(it: dict, calcular_score) -> None:
+    """Aprovado com elástico: recorte ampliado do cós, julgado por outro modelo (classify/elastico_confere.py).
+    Se ele não vê elástico, o score põe o aviso "conferir_elastico" (e pode rebaixar para barganha)."""
+    chk = conferir_elastico(it)
+    if chk is None:  # sem rota/falhou → tenta de novo na próxima rodada
+        return
+    for u in chk.pop("_usage", []):
+        _track("elastico_confere", u.get("model") or "", u.get("prompt_tokens", 0), u.get("completion_tokens", 0))
+    it["elastico"] = {**(it.get("elastico") or {}), "confere": chk}
+    it["score"] = calcular_score(it)
+    if chk.get("tem_elastico") is False:
+        _log(f"  elástico a conferir: {it.get('id')} {it.get('preco')} — {chk.get('o_que_vejo', '')[:90]}")
+
 
 def _checar_premiado(it: dict) -> None:
     """Comprável com elástico e corpo escuro: é um dos 3 favoritos do cliente? (classify/premiado.py)"""
@@ -720,6 +738,7 @@ def main() -> None:
     n_confirma = 0
     n_desb = 0
     n_prem = 0
+    n_conf = 0
     from ..config import CORRECOES_MANUAIS
     for it in final:
         corr = CORRECOES_MANUAIS.get(str(it.get("id")))
@@ -753,12 +772,18 @@ def main() -> None:
             if n_desb < DESBOTADO_CHECK_MAX_POR_RODADA and precisa_checar_aprovado(it):
                 n_desb += 1
                 _checar_aprovado(it, calcular_score)
+            # Aprovado com elástico: 2ª olhada no cós ampliado (aviso, nunca descarte).
+            if n_conf < ELASTICO_CONFERE_MAX_POR_RODADA and precisa_conferir_elastico(it):
+                n_conf += 1
+                _conferir_elastico(it, calcular_score)
             # Depois de todas as conferências (o item pode ter deixado de ser comprável).
             if n_prem < PREMIADO_MAX_POR_RODADA and precisa_checar_premiado(it):
                 n_prem += 1
                 _checar_premiado(it)
     if n_prem:
         print(f"  short premiado: {n_prem} comprável(is) comparado(s) com os 3 modelos do cliente")
+    if n_conf:
+        print(f"  elástico 2ª olhada: {n_conf} aprovado(s) com o cós conferido de perto")
     if n_confirma:
         print(f"  listra 2ª olhada (faixa de 1 cor): {n_confirma} item(ns) conferidos com gpt-4o")
     if n_desb:

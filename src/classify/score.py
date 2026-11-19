@@ -392,6 +392,19 @@ def calcular_score(item: dict) -> dict:
         decisao = "medio"
         motivo = "lote (várias peças) — barganha"
 
+    # 2ª olhada do elástico (classify/elastico_confere.py, 19/11/2026): quando o recorte ampliado
+    # do cós não mostra elástico, o anúncio não é descartado — ganha o aviso "conferir_elastico" e,
+    # se a aprovação dependia do elástico, desce de comprável para barganha.
+    flags = []
+    confere = elastico.get("confere") if isinstance(elastico.get("confere"), dict) else {}
+    if tem_elastico and confere.get("tem_elastico") is False and decisao in ("compravel", "medio"):
+        flags.append("conferir_elastico")
+        if decisao == "compravel":
+            sem = calcular_score({**item, "elastico": {**elastico, "tem_elastico": False, "confere": None}})
+            if sem.get("decisao") != "compravel":
+                decisao = "medio"
+                motivo = "a 2ª olhada no cós não viu elástico — confira antes de comprar"
+
     # Sugestão de negociação (preço a oferecer) — só pra candidatos.
     negociacao = {}
     if decisao in ("compravel", "medio"):
@@ -403,6 +416,7 @@ def calcular_score(item: dict) -> dict:
         "preco_num": round(preco, 2) if preco else None,
         "decisao": decisao,
         "motivo": motivo,
+        **({"flags": flags} if flags else {}),
         "negociacao": negociacao,
         "breakdown": {
             "tier": pts_tier,

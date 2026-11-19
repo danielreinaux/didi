@@ -96,8 +96,8 @@ def _destaques(it: dict) -> list[str]:
         d.append("listra Sundek" + (f" ({', '.join(cores)})" if cores else ""))
     if cl.get("tem_bolso_traseiro") is True and cl.get("bolso_traseiro_tem_nome") is True:
         d.append("bolso + nome")
-    if el.get("tem_elastico") is True:
-        d.append("elástico")
+    if el.get("tem_elastico") is True and (el.get("confere") or {}).get("tem_elastico") is not False:
+        d.append("elástico")  # se a 2ª olhada não viu elástico, vale o aviso "conferir_elastico"
     if et.get("tem_etiqueta") is True:
         d.append("etiqueta")
     return d

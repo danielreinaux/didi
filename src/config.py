@@ -120,6 +120,10 @@ IA_ROTAS = {
     # 2º olhar do desbotado (só nos lisos marcados desbotado; 3 votos) — Claude Haiku 5.5.
     # Sem a chave → não roda e vale o desbotado do tipo. Medição: reports/tipo_sundek.md.
     "sundek:desbotado": {"to": "openrouter:anthropic/claude-haiku-5.5", "min_tokens": 1500},
+    # 2ª olhada do elástico nos aprovados (classify/elastico_confere.py, 19/11/2026): o gemini acha
+    # o cós visto de trás, o Haiku julga o recorte ampliado. Sem as chaves → não confere.
+    "sundek:elastico_local": {"to": "openrouter:google/gemini-3.5-flash-lite", **_GEMINI3},
+    "sundek:elastico_confere": {"to": "openrouter:anthropic/claude-haiku-5.5", "min_tokens": 1500},
     # listra v3: +1 critério nas 2 rodadas, decisão igual; US$0,00065 (mini: 0,0023)
     "sundek:listra": {"to": "openrouter:bytedance-seed/seed-2.0-mini", **_SEM_RACIOCINIO,
                       # reserva +2 no gabarito, mas o Google tira o 3.1-flash-lite em 05/2027

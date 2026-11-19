@@ -325,7 +325,7 @@ export default function VotingCard({ item, reacaoInicial, obsInicial, onReacao, 
           </ul>
         )}
 
-        {/* Avisos (Ville): ex. verificar autenticidade, rever fotos, mancha */}
+        {/* Avisos do score: Ville (autenticidade, fotos, mancha) e Sundek (conferir elástico) */}
         {avisos.length > 0 && (
           <ul className="flex flex-col gap-1 text-sm" aria-label="Avisos">
             {avisos.map(({ f, aviso }, i) =>
