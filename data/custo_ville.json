@@ -1,5 +1,27 @@
 {
-  "por_etapa": {},
-  "duracao_s": 0.4,
-  "itens_processados": 0
+  "por_etapa": {
+    "marca": {
+      "openai/gpt-4o": {
+        "in": 907,
+        "out": 61,
+        "calls": 1
+      }
+    },
+    "orientacao": {
+      "google/gemini-3.5-flash-lite": {
+        "in": 1639,
+        "out": 150,
+        "calls": 1
+      }
+    },
+    "tartaruga": {
+      "openai/gpt-4o": {
+        "in": 5117,
+        "out": 90,
+        "calls": 1
+      }
+    }
+  },
+  "duracao_s": 6.9,
+  "itens_processados": 1
 }
