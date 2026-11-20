@@ -184,6 +184,10 @@ IA_ROTAS = {
     # do bolso ou inventava corte em original; ver prompts/autenticidade_ville_v2.py.
     "ville:autenticidade": {"to": "openrouter:openai/gpt-6.1-sol", "detail": "high",
                             "reasoning": {"effort": "medium"}, "min_tokens": 8000},
+    # 2ª olhada do bolso nos aprovados "original" (classify/bolso_confere.py, 20/11/2026): acha o
+    # bolso e a aba; depois 3 leituras dos recortes por borda. Sem as chaves → não confere.
+    "ville:bolso_local": {"to": "openrouter:openai/gpt-6.1-sol", "reasoning": {"effort": "low"}, "min_tokens": 2000},
+    "ville:bolso_confere": {"to": "openrouter:openai/gpt-6.1-sol", "reasoning": {"effort": "medium"}, "min_tokens": 8000},
     # Estado da Ville (desbotado + mancha → aviso), só nos candidatos: Haiku 3 votos + Gemini.
     # Bancada 05/11/2026 em classify/estado_ville.py.
     "ville:estado": {"to": "openrouter:anthropic/claude-haiku-5.5", "detail": "high", "min_tokens": 1500},

@@ -142,6 +142,8 @@ export const FLAGS: Record<string, { rotulo: string; forte?: boolean }> = {
   colecao_antiga: { rotulo: "Coleção antiga — cordão cinza" },
   // Sundek: a 2ª olhada no cós ampliado não viu elástico (src/classify/elastico_confere.py)
   conferir_elastico: { rotulo: "Confira o elástico — de perto, o cós não pareceu ter elástico", forte: true },
+  // Ville: a 2ª olhada no bolso ampliado viu tartaruga cortada/grudada no contorno (src/classify/bolso_confere.py)
+  conferir_bolso: { rotulo: "Confira o bolso — de perto, a estampa parece não casar no contorno (sinal de falso)", forte: true },
 };
 
 // Conservação que o pipeline da Ville manda no items.json (`conservacao`), ex.:

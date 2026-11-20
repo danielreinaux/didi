@@ -55,6 +55,8 @@ def _destaques(it: dict) -> list[str]:
     if cor.get("cor_principal"):
         d.append(f"cor {cor.get('cor_principal')}")
     autvalor = (auth.get("autenticidade") if isinstance(auth, dict) else None) or cl.get("autenticidade")
+    if autvalor == "original" and ((auth.get("confere") or {}).get("nao_casa") or 0) >= 2:
+        autvalor = "suspeito"  # 2ª olhada do bolso (classify/bolso_confere.py)
     # Estampado sem foto do bolso: ação clara (pedir foto traseira) tem prioridade
     # sobre o genérico "conferir autenticidade" — é o que o dono pediu (17/06).
     if "pedir_foto_traseira" in flags:

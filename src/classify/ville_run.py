@@ -36,6 +36,7 @@ except Exception:
 from .ville_brand import verificar_ville
 from .tartaruga import classificar_tartaruga
 from .autenticidade_ville import verificar_autenticidade, acertar_gravado
+from .bolso_confere import conferir as conferir_bolso, precisa_conferir as precisa_conferir_bolso
 from .cordao_ville import verificar_cordao
 from .cor_fundo_ville import classificar_cor_fundo
 from .fecho_ville import verificar_fecho
@@ -436,6 +437,10 @@ def _processar_etapas(item: dict, idx: str, total: int) -> tuple[dict, int, int]
 # o passo Classify Ville tem 15 min.
 REVER_TITULO_MAX = 6
 
+# Teto da 2ª olhada do bolso por rodada (classify/bolso_confere.py: ~US$ 0,04 e ~40 s cada; as
+# conferências rodam em paralelo). Normal: 0–1 por rodada; na 1ª, os aprovados que já estão no app.
+BOLSO_CONFERE_MAX_POR_RODADA = 4
+
 # Anúncios que ficaram sem análise por falha de chamada (ver _falha_ia) voltam para a rodada
 # enquanto estão ativos e foram vistos há pouco.
 FALHA_IA_HORAS = 48
@@ -579,6 +584,23 @@ def main() -> None:
               and (x.get("score") or {}).get("decisao") in ("compravel", "medio")):
             x["score"] = calcular_score(x)
             mudou = True
+    # 2ª olhada do bolso nos aprovados "original" (classify/bolso_confere.py, 20/11/2026): recortes
+    # por borda, exemplos marcados, 3 leituras. 2+ vendo o bolso não casar → suspeito (só aviso).
+    alvos = [x for x in out if precisa_conferir_bolso(x)][:BOLSO_CONFERE_MAX_POR_RODADA]
+    if alvos:
+        with ThreadPoolExecutor(max_workers=len(alvos)) as pool:
+            conferidos = list(pool.map(conferir_bolso, alvos))
+        for x, chk in zip(alvos, conferidos):
+            if chk is None:  # sem rota/falhou → tenta de novo na próxima rodada
+                continue
+            for u in chk.pop("_usage", []):
+                _track("bolso_confere", u.get("model") or "", u.get("prompt_tokens", 0), u.get("completion_tokens", 0))
+            x["autenticidade"] = {**x["autenticidade"], "confere": chk}
+            x["score"] = calcular_score(x)
+            mudou = True
+            if (chk.get("nao_casa") or 0) >= 2:
+                _log(f"  bolso a conferir: {x.get('id')} {x.get('preco')} — {'; '.join(chk.get('pontos') or [])[:120]}")
+        print(f"  bolso 2ª olhada: {len(alvos)} aprovado(s) conferido(s) de perto")
     if mudou:
         checkpoint_path.write_text(json.dumps(out, indent=2, ensure_ascii=False), encoding="utf-8")
 

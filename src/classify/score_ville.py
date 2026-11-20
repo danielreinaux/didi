@@ -204,6 +204,13 @@ def calcular_score(item: dict) -> dict:
     auth_block = item.get("autenticidade") if isinstance(item.get("autenticidade"), dict) else {}
     marca = item.get("marca_check") or {}
     autenticidade = auth_block.get("autenticidade") or marca.get("autenticidade") or "indefinido"
+    # 2ª olhada do bolso (classify/bolso_confere.py, 20/11/2026): 2 ou mais das 3 leituras do bolso
+    # ampliado viram a estampa não casar → suspeito (trava em médio, aviso "conferir_bolso"),
+    # mesmo com a 1ª leitura "original". Nunca vira falso por aqui.
+    _conf = auth_block.get("confere") if isinstance(auth_block.get("confere"), dict) else {}
+    bolso_nao_casa = autenticidade == "original" and (_conf.get("nao_casa") or 0) >= 2
+    if bolso_nao_casa:
+        autenticidade = "suspeito"
 
     cor_nome = _cor_principal(item)
     # bucket_cor_item: penaliza fundo multicolor/gradiente como se fosse neon.
@@ -334,7 +341,9 @@ def calcular_score(item: dict) -> dict:
         if decisao == "compravel":
             decisao = "medio"
             motivo = "estampado sem foto do bolso — pedir foto traseira ao vendedor"
-    if autenticidade in ("indefinido", "sem_foto_bolso", "suspeito") and decisao in ("compravel", "medio"):
+    if bolso_nao_casa and decisao in ("compravel", "medio"):
+        flags.append("conferir_bolso")
+    elif autenticidade in ("indefinido", "sem_foto_bolso", "suspeito") and decisao in ("compravel", "medio"):
         flags.append("verificar_autenticidade")
     # Coleção antiga (cordão cinza) já penaliza o score; expõe também como flag
     # pra aparecer na votação e o dono decidir caso a caso pelo preço (17/06).

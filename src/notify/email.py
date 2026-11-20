@@ -143,6 +143,8 @@ _AVISOS = {
     "colecao_antiga": "Coleção antiga (cordão cinza)",
     # Sundek (classify/elastico_confere.py)
     "conferir_elastico": "Confira o elástico: de perto, o cós não pareceu ter elástico",
+    # Ville (classify/bolso_confere.py)
+    "conferir_bolso": "Confira o bolso: de perto, a estampa parece não casar no contorno",
 }
 
 
@@ -155,7 +157,7 @@ def _avisos_html(it: dict) -> str:
         onde = (it.get("conservacao") or {}).get("mancha_onde") if f == "mancha" else None
         if onde:
             txt = f"Tem mancha: {onde}"
-        forte = f in ("desbotado_ia", "conferir_elastico")
+        forte = f in ("desbotado_ia", "conferir_elastico", "conferir_bolso")
         linhas.append(f'<div style="font-size:13px;color:{_C["urgent"] if forte else _C["deal"]};margin:4px 0 0">'
                       f'⚠&nbsp; {html.escape(txt)}</div>')
     return "".join(linhas)

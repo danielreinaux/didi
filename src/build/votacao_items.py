@@ -122,7 +122,7 @@ def _atributos_ville(it: dict) -> dict:
         "fundo": tart.get("fundo_padrao"),
         "cordao": cordao.get("cordao_cor"),
         "fecho": fecho.get("tipo_fechamento"),
-        "autenticidade": auth.get("autenticidade") or cl.get("autenticidade"),
+        "autenticidade": ("suspeito" if bolso_nao_casa(it) else auth.get("autenticidade") or cl.get("autenticidade")),
         "etiqueta": et.get("tem_etiqueta") if isinstance(et.get("tem_etiqueta"), bool) else None,
     }
     return {k: v for k, v in a.items() if v not in (None, "")}
@@ -186,6 +186,15 @@ def _uk(it: dict, negociacao: dict) -> dict:
             "cambio": cambio, "negociacao": neg}
 
 
+def bolso_nao_casa(it: dict) -> bool:
+    """Ville "original" em que a 2ª olhada do bolso viu a estampa não casar em 2+ leituras
+    (classify/bolso_confere.py — mesma regra do bolso_confere.nao_casa; sem importá-lo para o job
+    de deploy não precisar das dependências do classify)."""
+    aut = it.get("autenticidade") if isinstance(it.get("autenticidade"), dict) else {}
+    conf = aut.get("confere") if isinstance(aut.get("confere"), dict) else {}
+    return aut.get("autenticidade") == "original" and (conf.get("nao_casa") or 0) >= 2
+
+
 def _carregar(path: Path, marca: str) -> list[dict]:
     if not path.exists():
         return []
@@ -208,7 +217,9 @@ def _carregar(path: Path, marca: str) -> list[dict]:
         tart = it.get("tartaruga") if isinstance(it.get("tartaruga"), dict) else {}
         evid = {
             "listra": cl.get("listra_evidencia"),
-            "bolso": cl.get("bolso_evidencia") or auth.get("evidencia"),
+            "bolso": cl.get("bolso_evidencia") or (
+                "De perto, o bolso não casa: " + "; ".join((auth.get("confere") or {}).get("pontos") or [])
+                if bolso_nao_casa(it) else auth.get("evidencia")),
             "elastico": el.get("evidencia"),
         }
         cand.append({
