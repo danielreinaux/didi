@@ -1,61 +1,6 @@
 {
- "gerado_em": "2026-11-20T11:04:40.840807-03:00",
+ "gerado_em": "2026-11-20T11:08:58.143130-03:00",
  "rodadas": [
-  {
-   "run_id": "44541389569",
-   "quando": "2026-11-19T11:17:13.426352-03:00",
-   "status": "ok",
-   "custo_brl": 0.02,
-   "custo_usd": 0.003085,
-   "calls": 12,
-   "tok_in": 40936,
-   "tok_out": 1666,
-   "novos": 8,
-   "candidatos": 46,
-   "ativos": 7560,
-   "descartados": 7336,
-   "sundek_usd": 0.001362,
-   "ville_usd": 0.001723,
-   "etapas": {
-    "sundek:brand": 0.000209,
-    "sundek:orientacao": 0.000581,
-    "sundek:classify_tipo": 0.0,
-    "sundek:color": 0.0,
-    "sundek:listra": 0.000571,
-    "sundek:elastico": 0.0,
-    "ville:marca": 0.0,
-    "ville:orientacao": 0.001723,
-    "ville:tartaruga": 0.0
-   },
-   "marcas": [
-    "sundek",
-    "vilebrequin"
-   ],
-   "por_marca": {
-    "sundek": {
-     "custo_brl": 0.01,
-     "custo_usd": 0.001362,
-     "calls": 6,
-     "tok_in": 25626,
-     "tok_out": 1066,
-     "novos": 5,
-     "candidatos": 25,
-     "ativos": 7236,
-     "descartados": 7033
-    },
-    "vilebrequin": {
-     "custo_brl": 0.01,
-     "custo_usd": 0.001723,
-     "calls": 6,
-     "tok_in": 15310,
-     "tok_out": 600,
-     "novos": 3,
-     "candidatos": 21,
-     "ativos": 324,
-     "descartados": 303
-    }
-   }
-  },
   {
    "run_id": "44542023454",
    "quando": "2026-11-19T11:21:36.499025-03:00",
@@ -9331,6 +9276,64 @@
      "tok_in": 0,
      "tok_out": 0,
      "novos": 5,
+     "candidatos": 26,
+     "ativos": 7252,
+     "descartados": 7050
+    },
+    "vilebrequin": {
+     "custo_brl": 0.0,
+     "custo_usd": 0.0,
+     "calls": 0,
+     "tok_in": 0,
+     "tok_out": 0,
+     "novos": 2,
+     "candidatos": 22,
+     "ativos": 341,
+     "descartados": 319
+    }
+   }
+  },
+  {
+   "run_id": "44749930543",
+   "quando": "2026-11-20T11:08:51.044174-03:00",
+   "status": "ok",
+   "custo_brl": 0.03,
+   "custo_usd": 0.006606,
+   "calls": 12,
+   "tok_in": 42621,
+   "tok_out": 1908,
+   "novos": 8,
+   "candidatos": 48,
+   "ativos": 7593,
+   "descartados": 7369,
+   "sundek_usd": 0.006606,
+   "ville_usd": 0.0,
+   "etapas": {
+    "sundek:brand": 0.00027,
+    "sundek:orientacao": 0.001027,
+    "sundek:classify_tipo": 0.0,
+    "sundek:color": 0.0,
+    "sundek:listra": 0.000612,
+    "sundek:elastico": 0.0,
+    "sundek:crop_fly_localizar": 0.000786,
+    "sundek:botao_fly": 0.001362,
+    "sundek:crop_localizar": 0.000692,
+    "sundek:bolso": 0.001794,
+    "sundek:etiqueta": 6.2e-05,
+    "sundek:listra_confirma": 0.0
+   },
+   "marcas": [
+    "sundek",
+    "vilebrequin"
+   ],
+   "por_marca": {
+    "sundek": {
+     "custo_brl": 0.03,
+     "custo_usd": 0.006606,
+     "calls": 12,
+     "tok_in": 42621,
+     "tok_out": 1908,
+     "novos": 6,
      "candidatos": 26,
      "ativos": 7252,
      "descartados": 7050
