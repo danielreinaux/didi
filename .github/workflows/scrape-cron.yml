@@ -20,6 +20,12 @@ permissions:
   contents: write            # pra commitar os JSONs de dados de volta no repo
   actions: write             # history.py lê status/logs dos jobs; a rodada dispara a próxima
 
+# Python escreve o log na hora (sem buffer). Antes, quando um passo estourava o tempo (a coleta
+# travou em 20/11 na Ville e em 21/11 no Sundek, depois que o Vinted UK entrou), o que já tinha
+# sido impresso se perdia e não dava para ver em que anúncio ou site travou.
+env:
+  PYTHONUNBUFFERED: '1'
+
 jobs:
   sundek:
     runs-on: ubuntu-latest
