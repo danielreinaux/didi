@@ -1,28 +1,28 @@
 {
- "run_id": "45012570448",
+ "run_id": "45167814187",
  "fonte": "deploy",
- "quando": "2026-11-22T07:31:59.154415-03:00",
+ "quando": "2026-11-23T08:47:44.366964-03:00",
  "commit": {
-  "sundek": "e0e98cc11bf3610aa8d0e162d63ddf7fcd77ce3d",
-  "ville": "e0e98cc11bf3610aa8d0e162d63ddf7fcd77ce3d"
+  "sundek": "ba56f964f701a2fbde56b0b90c53aee2ae291973",
+  "ville": "ba56f964f701a2fbde56b0b90c53aee2ae291973"
  },
- "run_url": "https://github.com/danielreinaux/didi/actions/runs/45012570448",
+ "run_url": "https://github.com/danielreinaux/didi/actions/runs/45167814187",
  "status": "ok",
  "jobs": [
   {
-   "name": "sundek",
-   "conclusion": "success",
-   "url": "https://github.com/danielreinaux/didi/actions/runs/45012570448/job/137177903403"
-  },
-  {
    "name": "ville",
    "conclusion": "success",
-   "url": "https://github.com/danielreinaux/didi/actions/runs/45012570448/job/137177903589"
+   "url": "https://github.com/danielreinaux/didi/actions/runs/45167814187/job/137669243272"
+  },
+  {
+   "name": "sundek",
+   "conclusion": "success",
+   "url": "https://github.com/danielreinaux/didi/actions/runs/45167814187/job/137669243703"
   },
   {
    "name": "deploy",
    "conclusion": null,
-   "url": "https://github.com/danielreinaux/didi/actions/runs/45012570448/job/137178824617"
+   "url": "https://github.com/danielreinaux/didi/actions/runs/45167814187/job/137670987986"
   }
  ],
  "marcas": [
@@ -31,119 +31,151 @@
  ],
  "metricas": {
   "sundek": {
-   "acervo_total": 29735,
-   "ativos": 7275,
-   "vendidos": 10057,
-   "removidos": 12403,
-   "candidatos": 28,
-   "compraveis": 22,
+   "acervo_total": 29874,
+   "ativos": 7345,
+   "vendidos": 10080,
+   "removidos": 12449,
+   "candidatos": 29,
+   "compraveis": 23,
    "barganha": 6,
-   "descartados": 7073,
-   "nao_classificados": 105,
+   "descartados": 7139,
+   "nao_classificados": 109,
    "por_motivo": {
-    "sem_elastico_cor_fraca": 6524,
-    "estampado": 1574,
-    "nao_short": 1558,
-    "tamanho_XS": 564,
-    "cor_ruim": 560,
-    "tamanho_invalido": 472,
-    "sem_listra_sundek": 362,
+    "sem_elastico_cor_fraca": 6578,
+    "estampado": 1578,
+    "nao_short": 1577,
+    "tamanho_XS": 568,
+    "cor_ruim": 557,
+    "tamanho_invalido": 485,
+    "sem_listra_sundek": 369,
     "bolso_so_logo_colecao_antiga": 307,
-    "logo_grande": 294,
-    "tamanho_XXL": 241,
-    "infantil": 234,
-    "tecido_brilhoso": 159,
-    "nao_sundek": 134,
+    "logo_grande": 295,
+    "tamanho_XXL": 247,
+    "infantil": 239,
+    "tecido_brilhoso": 158,
+    "nao_sundek": 135,
     "tamanho_numerico_30": 108,
     "listra_na_frente": 107,
     "fechamento_botao": 90,
-    "desbotado": 77,
+    "desbotado": 78,
+    "bicolor": 69,
     "tamanho_numerico_29": 67,
-    "tamanho_numerico_36": 66,
-    "bicolor": 65,
-    "fechamento_velcro": 62,
-    "sem_bolso_traseiro": 37,
+    "tamanho_numerico_36": 65,
+    "fechamento_velcro": 63,
+    "sem_bolso_traseiro": 36,
     "tamanho_numerico_38": 28,
-    "tamanho_numerico_28": 25,
-    "piping_nao_e_listra_sundek": 24,
+    "tamanho_numerico_28": 26,
+    "piping_nao_e_listra_sundek": 25,
     "bolso_frontal": 10,
     "tamanho_numerico_27": 6,
     "tamanho_numerico_39": 3,
     "tamanho_numerico_25": 2
    },
-   "novos": 23,
-   "custo_usd": 0.0,
-   "custo_brl": 0.0,
-   "tok_in": 0,
-   "tok_out": 0,
-   "calls": 0,
+   "novos": 5,
+   "custo_usd": 0.003209,
+   "custo_brl": 0.02,
+   "tok_in": 24413,
+   "tok_out": 1293,
+   "calls": 5,
    "duracao_s": null,
    "custo_piso": false,
-   "por_etapa": {}
+   "por_etapa": {
+    "brand": {
+     "tok_in": 2354,
+     "tok_out": 79,
+     "calls": 1,
+     "custo_usd": 0.000267
+    },
+    "orientacao": {
+     "tok_in": 4112,
+     "tok_out": 390,
+     "calls": 1,
+     "custo_usd": 0.002209
+    },
+    "classify_tipo": {
+     "tok_in": 6860,
+     "tok_out": 62,
+     "calls": 1,
+     "custo_usd": 0.0
+    },
+    "color": {
+     "tok_in": 6674,
+     "tok_out": 31,
+     "calls": 1,
+     "custo_usd": 0.0
+    },
+    "listra": {
+     "tok_in": 4413,
+     "tok_out": 731,
+     "calls": 1,
+     "custo_usd": 0.000734
+    }
+   }
   },
   "vilebrequin": {
-   "acervo_total": 3453,
-   "ativos": 380,
-   "vendidos": 1129,
-   "removidos": 1944,
-   "candidatos": 21,
-   "compraveis": 10,
+   "acervo_total": 3494,
+   "ativos": 396,
+   "vendidos": 1144,
+   "removidos": 1954,
+   "candidatos": 22,
+   "compraveis": 11,
    "barganha": 11,
-   "descartados": 359,
+   "descartados": 374,
    "nao_classificados": 0,
    "por_motivo": {
-    "nao_short": 139,
-    "padrao_outro_nao_compra": 120,
-    "nao_ville": 36,
-    "cor_liso_fora_whitelist": 27,
-    "liso_fora_do_foco": 13,
-    "autenticidade_falsa": 9,
+    "nao_short": 146,
+    "padrao_outro_nao_compra": 123,
+    "nao_ville": 38,
+    "cor_liso_fora_whitelist": 26,
+    "liso_fora_do_foco": 15,
+    "autenticidade_falsa": 11,
     "fecho_fivela": 5,
     "tamanho_invalido": 2,
+    "infantil": 2,
     "fundo_mesclado": 2,
-    "infantil": 1,
     "fundo_gradiente": 1,
-    "desbotado": 1
+    "desbotado": 1,
+    "sem_evidencia_produto": 1
    },
-   "novos": 9,
+   "novos": 3,
    "custo_usd": 0.0,
    "custo_brl": 0.0,
    "tok_in": 0,
    "tok_out": 0,
    "calls": 0,
-   "duracao_s": 0.3,
+   "duracao_s": 0.9,
    "custo_piso": false,
    "por_etapa": {}
   },
   "total": {
-   "acervo_total": 33188,
-   "ativos": 7655,
-   "vendidos": 11186,
-   "removidos": 14347,
-   "candidatos": 49,
-   "compraveis": 32,
+   "acervo_total": 33368,
+   "ativos": 7741,
+   "vendidos": 11224,
+   "removidos": 14403,
+   "candidatos": 51,
+   "compraveis": 34,
    "barganha": 17,
-   "descartados": 7432,
-   "nao_classificados": 105,
-   "novos": 32,
-   "tok_in": 0,
-   "tok_out": 0,
-   "calls": 0,
-   "custo_usd": 0.0,
-   "custo_brl": 0.0
+   "descartados": 7513,
+   "nao_classificados": 109,
+   "novos": 8,
+   "tok_in": 24413,
+   "tok_out": 1293,
+   "calls": 5,
+   "custo_usd": 0.003209,
+   "custo_brl": 0.02
   }
  },
  "produtos_info": {
   "sundek": {
    "candidatos": 97,
-   "descartados_total": 7073,
+   "descartados_total": 7139,
    "descartados_incluidos": 120,
-   "nao_classificados_total": 105,
+   "nao_classificados_total": 109,
    "nao_classificados_incluidos": 40
   },
   "vilebrequin": {
-   "candidatos": 21,
-   "descartados_total": 359,
+   "candidatos": 22,
+   "descartados_total": 374,
    "descartados_incluidos": 120,
    "nao_classificados_total": 0,
    "nao_classificados_incluidos": 0
@@ -1073,22 +1105,21 @@
    }
   },
   {
-   "id": "10896227422",
+   "id": "10926919522",
    "marca": "sundek",
-   "url": "https://www.vinted.es/items/10896227422-maillot-de-bain-sundek-taille-m-bleu-blanc",
-   "titulo": "Maillot de bain sundek taille M bleu blanc",
+   "url": "https://www.vinted.es/items/10926919522-costume-da-bagno",
+   "titulo": "Costume da bagno",
    "tamanho": "M",
-   "estado": "Nuevo sin etiquetas",
-   "preco": "25,00 €",
-   "preco_total": "26,95 €",
+   "estado": "Muy bueno",
+   "preco": "15,00 €",
+   "preco_total": "16,45 €",
    "fotos": [
-    "https://images1.vinted.net/t/03_0041b_AqhUGpsukYcf663VT9RUZeee/f800/2ede4363.webp?s=2033aad0f0f94311f7a5c6e62ebc80b500cde4c4",
-    "https://images1.vinted.net/t/02_00a21_1R3CADsELYVx6h3ABQy3cMUZ/f800/d5b9426f.webp?s=bc13b69de21751749f7fed66fb6a0808a0ff0472",
-    "https://images1.vinted.net/t/01_024b7_3nsApGGxUXU6CFMQAMwznveP/f800/fdbc7a74.webp?s=1ce8c197aa56faa626189bf645ff2c6f238a0d18",
-    "https://images1.vinted.net/t/02_022ef_oDLfcf1HBARvZk8CatN8hqE4/f800/e611142a.webp?s=46663ee0643125c22abf347909bb8698991012ad"
+    "https://images1.vinted.net/t/05_00e51_bwb7iYfC5WskTMMUYYzyPTua/f800/d795059f.webp?s=b7cce90fb13b82c071cc8061c316196a707f7e5e",
+    "https://images1.vinted.net/t/05_01f31_SywChqSRedKcJgyPUKbpvgY3/f800/2941b77e.webp?s=5657b60c672c3d7085029e0dd95ef98be8d3d7df",
+    "https://images1.vinted.net/t/03_024e7_41cpAJuo2EZ2Pbput67haW1M/f800/a21035bf.webp?s=7f3025298209e6795542441c1421036a04c14661"
    ],
-   "coletado_em": "2026-11-20T16:25:47.137071+00:00",
-   "primeiro_visto": "2026-11-20T16:28:10.703770+00:00",
+   "coletado_em": "2026-11-22T16:33:55.072703+00:00",
+   "primeiro_visto": "2026-11-22T16:36:19.991382+00:00",
    "status": "ativo",
    "novo": false,
    "decisao": "compravel",
@@ -1102,53 +1133,53 @@
     "elastico": 30,
     "etiqueta": 0,
     "listra_bonus": 0,
-    "preco": 20,
-    "ratio_preco_teto": 0.6
+    "preco": 30,
+    "ratio_preco_teto": 0.37
    },
    "flags": [],
    "negociacao": {
     "modo": "fechar",
-    "oferta": 20,
-    "msg": "💰 Ofereça €20 (pedem €25). Se recusar, ainda vale pagar €25."
+    "oferta": 12,
+    "msg": "💰 Ofereça €12 (pedem €15). Se recusar, ainda vale pagar €15."
    },
    "criterios": {
     "cor": {
-     "cor_principal": "azul marinho",
+     "cor_principal": "Preto",
      "tier": "maravilhoso",
-     "justificativa": "Azul marinho é profundo e saturado, classificado como maravilhoso.",
+     "justificativa": "O preto é de nylon comum e não apresenta brilho metálico.",
      "cores_listras": [
-      "azul claro",
-      "azul bebê",
-      "bege"
+      "verde-limão",
+      "branco",
+      "laranja"
      ],
      "listra_tier": "neutra",
      "tier_final": "maravilhoso",
-     "combo_motivo": "listras ['azul claro', 'azul bebê', 'bege'] sem impacto no tier 'maravilhoso'"
+     "combo_motivo": "listras ['verde-limão', 'branco', 'laranja'] confirmam tier 'maravilhoso'"
     },
     "elastico": {
      "tem_elastico": true,
-     "foto_elastico": 4,
+     "foto_elastico": 3,
      "tipo_fechamento": "cordao",
-     "evidencia": "Cós com franzido regular e cordão funcional por ilhós. Sem botão ou velcro visível no fly.",
+     "evidencia": "Foto 3: cós com franzido regular de elástico e cordão funcional por ilhós, sem botão ou velcro visível no fly.",
      "botao_fly": {
       "tem_botao": false,
       "tipo": "nenhum",
-      "o_que_vi_no_centro": "Apenas dois ilhóis metálicos onde o cordão passa na cintura frontal, sem nenhum botão ou snap de fechamento.",
-      "evidencia": "Apenas ilhóis do cordão no centro da cintura",
-      "_crop_modo": "faixa_central"
+      "o_que_vi_no_centro": "Dois ilhós/anéis pelos quais passam os cordões brancos de ajuste.",
+      "evidencia": "Apenas ilhós de cordão no centro, sem botão ou snap.",
+      "_crop_modo": "close_up"
      },
      "confere": {
       "tem_elastico": true,
-      "o_que_vejo": "O cós tem pregas finas e franzidas, em sequência, especialmente na parte esquerda, com pespontos paralelos que formam o canal do elástico.",
-      "foto": 1,
+      "o_que_vejo": "Cós traseiro de short preto com faixas listradas; a faixa superior mostra tecido franzido com várias linhas paralelas de costura, sugerindo canal com elástico.",
+      "foto": 2,
       "vista": "costas",
-      "modo": "caixa",
+      "modo": "foto_inteira",
       "modelo": "anthropic/claude-haiku-5.5"
      }
     },
     "etiqueta": {
      "tem_etiqueta": false,
-     "evidencia": "Nenhuma etiqueta de papel ou papelão pendurada por cordão é visível nas fotos; observa-se apenas o logotipo bordado no bolso e o cordão do cós sem tags soltas."
+     "evidencia": "As fotos mostram apenas etiquetas costuradas internamente no cós (tamanho e composição) e um patch na parte traseira, sem qualquer hang tag de papel ou papelão pendurado por cordão."
     },
     "classificacao": {
      "tipo": "liso",
@@ -1157,20 +1188,20 @@
      "aparencia": "ok",
      "tecido_brilhoso": false,
      "listra_na_frente": false,
-     "justificativa": "Corpo do short em uma cor sólida com listras laterais.",
+     "justificativa": "Corpo do short em uma cor sólida com detalhes laterais.",
      "cores_listras": [
-      "azul claro",
-      "azul bebê",
-      "bege"
+      "verde-limão",
+      "branco",
+      "laranja"
      ],
      "e_piping": false,
      "tem_listra_lateral_sundek": true,
      "bicolor": false,
-     "listra_evidencia": "Listra Sundek presente no formato de arco com três faixas coloridas ao redor do bolso traseiro, visível nas costas e laterais do short.",
+     "listra_evidencia": "Listra Sundek presente: arco com faixas verde-limão, branca e laranja contornando o bolso traseiro, visível na foto das costas.",
      "tem_bolso_traseiro": true,
      "bolso_traseiro_tem_nome": true,
      "tem_bolso_frontal": false,
-     "bolso_evidencia": "Bolso traseiro com patch externo azul contendo o sol e a palavra SUNDEK escrita",
+     "bolso_evidencia": "Bolso traseiro direito presente com patch preto contendo o logo e o nome Sundek.",
      "desbotado_check": {
       "confirmado": false,
       "votos": [
@@ -1178,7 +1209,7 @@
        "ok",
        "ok"
       ],
-      "motivo": "desgaste_fisico: não; há apenas um pequeno ponto esbranquiçado na aba do bolso, visível só no close-up",
+      "motivo": "",
       "moletom": false
      }
     },
@@ -1189,7 +1220,7 @@
      "formato_identificado": "short",
      "lote": false,
      "qtd_pecas": 1,
-     "evidencia": "Logo Sundek no bolso traseiro com o desenho do sol com ondas e texto \"SUNDEK\" visível. Faixas coloridas características na lateral."
+     "evidencia": "Etiqueta interna com logo Sundek e \"SUNDEK\", patch na parte traseira com logo Sundek (meio sol com ondas)."
     }
    }
   },
@@ -1765,6 +1796,124 @@
      "lote": false,
      "qtd_pecas": 1,
      "evidencia": "Etiqueta interna com logo Sundek e texto \"SUNDEK\", patch na perna com logo Sundek (meio sol com ondas). Peça com pernas separadas e comprimento de short."
+    }
+   }
+  },
+  {
+   "id": "10922609037",
+   "marca": "sundek",
+   "url": "https://www.vinted.es/items/10922609037-costume-sundek",
+   "titulo": "Costume Sundek",
+   "tamanho": "M",
+   "estado": "Muy bueno",
+   "preco": "10,00 €",
+   "preco_total": "11,20 €",
+   "fotos": [
+    "https://images1.vinted.net/t/01_0115c_jgCiJRNWLUhycEhXhM7LyJEY/f800/0dbaadec.webp?s=0f110571b091832ee7d19c5430dd22bc3750faf5"
+   ],
+   "coletado_em": "2026-11-22T13:15:35.981237+00:00",
+   "primeiro_visto": "2026-11-22T13:17:47.548693+00:00",
+   "status": "ativo",
+   "novo": false,
+   "decisao": "compravel",
+   "score": 95,
+   "teto": 30,
+   "motivo": "elástico + anúncio ≤ €10",
+   "motivo_exclusao": "",
+   "breakdown": {
+    "tier": 15,
+    "tamanho": 20,
+    "elastico": 30,
+    "etiqueta": 0,
+    "listra_bonus": 0,
+    "preco": 30,
+    "ratio_preco_teto": 0.37
+   },
+   "flags": [],
+   "negociacao": {
+    "modo": "fechar",
+    "oferta": 8,
+    "msg": "💰 Ofereça €8 (pedem €10). Se recusar, ainda vale pagar €10."
+   },
+   "criterios": {
+    "cor": {
+     "cor_principal": "azul médio",
+     "tier": "boa",
+     "justificativa": "O azul é claramente médio/claro, não saturado.",
+     "cores_listras": [
+      "verde claro",
+      "preto",
+      "amarelo-limão"
+     ],
+     "listra_tier": "neutra",
+     "tier_final": "boa",
+     "combo_motivo": "listras ['verde claro', 'preto', 'amarelo-limão'] sem impacto no tier 'boa'"
+    },
+    "elastico": {
+     "tem_elastico": true,
+     "foto_elastico": 1,
+     "tipo_fechamento": "indefinido",
+     "evidencia": "Foto 1 mostra elástico nítido no cós traseiro, mas não mostra o fechamento frontal.",
+     "botao_fly": {
+      "tem_botao": null,
+      "tipo": "indefinido",
+      "o_que_vi_no_centro": "A imagem mostra exclusivamente a parte traseira do short, não exibindo a frente ou o fechamento da braguilha.",
+      "evidencia": "A foto disponível exibe apenas as costas da peça.",
+      "_crop_modo": "nao_localizado"
+     },
+     "confere": {
+      "tem_elastico": true,
+      "o_que_vejo": "O cós azul tem muitas pregas pequenas e densas, lado a lado, como sanfona, ao longo da faixa, o que indica elástico.",
+      "foto": 1,
+      "vista": "costas",
+      "modo": "caixa",
+      "modelo": "anthropic/claude-haiku-5.5"
+     }
+    },
+    "etiqueta": {
+     "tem_etiqueta": false,
+     "evidencia": "A foto mostra a parte de trás do short com o logotipo costurado no bolso, mas não há nenhuma etiqueta de papel ou papelão pendurada por cordão ou arame no cós ou em qualquer outra parte da peça."
+    },
+    "classificacao": {
+     "tipo": "liso",
+     "corpo_tem_padrao_repetido": false,
+     "tem_logo_grande": false,
+     "aparencia": "ok",
+     "tecido_brilhoso": false,
+     "listra_na_frente": false,
+     "justificativa": "Corpo do short em uma cor sólida com listras laterais.",
+     "cores_listras": [
+      "verde claro",
+      "preto",
+      "amarelo-limão"
+     ],
+     "e_piping": false,
+     "tem_listra_lateral_sundek": true,
+     "bicolor": false,
+     "listra_evidencia": "Listra Sundek presente no formato de arco nas costas, com três faixas paralelas no corpo do short.",
+     "tem_bolso_traseiro": true,
+     "bolso_traseiro_tem_nome": true,
+     "tem_bolso_frontal": false,
+     "bolso_evidencia": "Bolso traseiro direito com patch contendo o sol Sundek e a palavra SUNDEK visível.",
+     "desbotado_check": {
+      "confirmado": false,
+      "votos": [
+       "ok",
+       "ok",
+       "ok"
+      ],
+      "motivo": "",
+      "moletom": false
+     }
+    },
+    "marca_check": {
+     "e_sundek": "sim",
+     "marca_identificada": null,
+     "e_short": "sim",
+     "formato_identificado": "short",
+     "lote": false,
+     "qtd_pecas": 1,
+     "evidencia": "Patch com logo Sundek no bolso traseiro."
     }
    }
   },
@@ -3936,6 +4085,124 @@
    }
   },
   {
+   "id": "10655735726",
+   "marca": "sundek",
+   "url": "https://www.vinted.es/items/10655735726-costume-sundek-uomo-blu-con-arcobaleno-taglia-s",
+   "titulo": "Costume Sundek uomo blu con arcobaleno – Taglia S",
+   "tamanho": "S",
+   "estado": "Muy bueno",
+   "preco": "22,00 €",
+   "preco_total": "23,80 €",
+   "fotos": [
+    "https://images1.vinted.net/t/01_019ef_XUn8yXmDjNvzbgWiZB9ix1gZ/f800/e0235afe.webp?s=2243b69ac36daa4e43d7cf22df5e8b8d75196ba9",
+    "https://images1.vinted.net/t/02_01eff_mXwH7wBXmH6gqh1Jv3smUbdU/f800/e05f228b.webp?s=bd9c6354f19b3e594e631fef80c14a62b9211701",
+    "https://images1.vinted.net/t/05_015e4_8indVHUYFUEEPeXrBZavvey5/f800/88b48821.webp?s=83925d8ccd41b54f9aec7e78289523d4dfdf4887"
+   ],
+   "coletado_em": "2026-11-03T21:18:55.621633+00:00",
+   "primeiro_visto": "2026-11-03T21:21:27.367102+00:00",
+   "status": "ativo",
+   "novo": false,
+   "decisao": "compravel",
+   "score": 84,
+   "teto": 35,
+   "motivo": "",
+   "motivo_exclusao": "",
+   "breakdown": {
+    "tier": 30,
+    "tamanho": 4,
+    "elastico": 30,
+    "etiqueta": 0,
+    "listra_bonus": 0,
+    "preco": 20,
+    "ratio_preco_teto": 0.68
+   },
+   "flags": [],
+   "negociacao": {
+    "modo": "fechar",
+    "oferta": 20,
+    "msg": "💰 Ofereça €20 (pedem €22). Se recusar, ainda vale pagar €22."
+   },
+   "criterios": {
+    "cor": {
+     "cor_principal": "azul marinho",
+     "tier": "maravilhoso",
+     "justificativa": "Azul marinho é um tom profundo e saturado.",
+     "cores_listras": [
+      "roxa",
+      "laranja"
+     ],
+     "listra_tier": "neutra",
+     "tier_final": "maravilhoso",
+     "combo_motivo": "listras ['roxa', 'laranja'] confirmam tier 'maravilhoso'"
+    },
+    "elastico": {
+     "tem_elastico": true,
+     "foto_elastico": 2,
+     "tipo_fechamento": "cordao",
+     "evidencia": "Foto 2 mostra cós com franzido regular de elástico e cordão por ilhós, sem botão ou velcro visível no fly.",
+     "botao_fly": {
+      "tem_botao": false,
+      "tipo": "nenhum",
+      "o_que_vi_no_centro": "Apenas ilhós metálicos pelos quais passa o cordão de ajuste no cós elástico, sem nenhum botão ou snap de fechamento na braguilha.",
+      "evidencia": "apenas ilhós de cordão no cós elástico",
+      "_crop_modo": "faixa_central"
+     },
+     "confere": {
+      "tem_elastico": true,
+      "o_que_vejo": "Cós azul-marinho com duas linhas de pesponto e o tecido franzido em pregas pequenas e contínuas ao longo da faixa, como sanfona.",
+      "foto": 3,
+      "vista": "costas",
+      "modo": "caixa",
+      "modelo": "anthropic/claude-haiku-5.5"
+     }
+    },
+    "etiqueta": {
+     "tem_etiqueta": false,
+     "evidencia": "São visíveis apenas as etiquetas costuradas internamente no cós (marca e tamanho), não havendo qualquer cartão ou etiqueta de papel pendurada por cordão ou arame."
+    },
+    "classificacao": {
+     "tipo": "liso",
+     "corpo_tem_padrao_repetido": false,
+     "tem_logo_grande": false,
+     "aparencia": "ok",
+     "tecido_brilhoso": false,
+     "listra_na_frente": false,
+     "justificativa": "Corpo do short em uma cor sólida sem padrão gráfico.",
+     "cores_listras": [
+      "roxa",
+      "laranja"
+     ],
+     "e_piping": false,
+     "tem_listra_lateral_sundek": true,
+     "bicolor": false,
+     "listra_evidencia": "Listra Sundek presente: arco com faixas roxa e laranja nas costas, contornando o bolso traseiro.",
+     "tem_bolso_traseiro": true,
+     "bolso_traseiro_tem_nome": true,
+     "tem_bolso_frontal": false,
+     "bolso_evidencia": "Bolso traseiro presente com patch externo contendo o nome SUndek escrito",
+     "desbotado_check": {
+      "confirmado": false,
+      "votos": [
+       "ok",
+       "ok",
+       "ok"
+      ],
+      "motivo": "",
+      "moletom": false
+     }
+    },
+    "marca_check": {
+     "e_sundek": "sim",
+     "marca_identificada": null,
+     "e_short": "sim",
+     "formato_identificado": "short",
+     "lote": false,
+     "qtd_pecas": 1,
+     "evidencia": "Etiqueta interna com logo Sundek e texto \"SUNDEK\", patch na parte traseira com logo Sundek e texto \"SUNDEK\", faixa multicolorida característica no cós."
+    }
+   }
+  },
+  {
    "id": "10883521876",
    "marca": "sundek",
    "url": "https://www.vinted.es/items/10883521876-costume-sundek-taglia-xl",
@@ -4848,124 +5115,6 @@
      "lote": false,
      "qtd_pecas": 1,
      "evidencia": "Etiqueta interna com logo Sundek (sol com ondas) e texto \"SUNDEK\". Cordão com ponta gravada \"SUNDEK\". Ilhós gravados com \"SUNDEK\"."
-    }
-   }
-  },
-  {
-   "id": "10655735726",
-   "marca": "sundek",
-   "url": "https://www.vinted.es/items/10655735726-costume-sundek-uomo-blu-con-arcobaleno-taglia-s",
-   "titulo": "Costume Sundek uomo blu con arcobaleno – Taglia S",
-   "tamanho": "S",
-   "estado": "Muy bueno",
-   "preco": "27,00 €",
-   "preco_total": "29,05 €",
-   "fotos": [
-    "https://images1.vinted.net/t/02_014cd_MUn4xy8HG9jQchU3t5UKigDj/f800/2257acbe.webp?s=d37065d2c82490730924676cbe6f9fdc8d67e33e",
-    "https://images1.vinted.net/t/02_01672_bQF5BxNdTrnGN4c7HfkqrUie/f800/19a080ce.webp?s=008f23adb9d5538b42cfd62f44bb9400449e6602",
-    "https://images1.vinted.net/t/06_0146f_wEASFevFtDk9ez7oY3BuDHxh/f800/9bb6c50e.webp?s=02f6381a9f9016fee35f91272d9ee21303fc619f"
-   ],
-   "coletado_em": "2026-11-03T21:18:55.621633+00:00",
-   "primeiro_visto": "2026-11-03T21:21:27.367102+00:00",
-   "status": "ativo",
-   "novo": false,
-   "decisao": "compravel",
-   "score": 74,
-   "teto": 35,
-   "motivo": "",
-   "motivo_exclusao": "",
-   "breakdown": {
-    "tier": 30,
-    "tamanho": 4,
-    "elastico": 30,
-    "etiqueta": 0,
-    "listra_bonus": 0,
-    "preco": 10,
-    "ratio_preco_teto": 0.83
-   },
-   "flags": [],
-   "negociacao": {
-    "modo": "fechar",
-    "oferta": 25,
-    "msg": "💰 Ofereça €25 (pedem €27). Se recusar, ainda vale pagar €27."
-   },
-   "criterios": {
-    "cor": {
-     "cor_principal": "azul marinho",
-     "tier": "maravilhoso",
-     "justificativa": "Azul marinho é um tom profundo e saturado.",
-     "cores_listras": [
-      "roxa",
-      "laranja"
-     ],
-     "listra_tier": "neutra",
-     "tier_final": "maravilhoso",
-     "combo_motivo": "listras ['roxa', 'laranja'] confirmam tier 'maravilhoso'"
-    },
-    "elastico": {
-     "tem_elastico": true,
-     "foto_elastico": 2,
-     "tipo_fechamento": "cordao",
-     "evidencia": "Foto 2 mostra cós com franzido regular de elástico e cordão por ilhós, sem botão ou velcro visível no fly.",
-     "botao_fly": {
-      "tem_botao": false,
-      "tipo": "nenhum",
-      "o_que_vi_no_centro": "Apenas ilhós metálicos pelos quais passa o cordão de ajuste no cós elástico, sem nenhum botão ou snap de fechamento na braguilha.",
-      "evidencia": "apenas ilhós de cordão no cós elástico",
-      "_crop_modo": "faixa_central"
-     },
-     "confere": {
-      "tem_elastico": true,
-      "o_que_vejo": "Cós azul-marinho com duas linhas de pesponto e o tecido franzido em pregas pequenas e contínuas ao longo da faixa, como sanfona.",
-      "foto": 3,
-      "vista": "costas",
-      "modo": "caixa",
-      "modelo": "anthropic/claude-haiku-5.5"
-     }
-    },
-    "etiqueta": {
-     "tem_etiqueta": false,
-     "evidencia": "São visíveis apenas as etiquetas costuradas internamente no cós (marca e tamanho), não havendo qualquer cartão ou etiqueta de papel pendurada por cordão ou arame."
-    },
-    "classificacao": {
-     "tipo": "liso",
-     "corpo_tem_padrao_repetido": false,
-     "tem_logo_grande": false,
-     "aparencia": "ok",
-     "tecido_brilhoso": false,
-     "listra_na_frente": false,
-     "justificativa": "Corpo do short em uma cor sólida sem padrão gráfico.",
-     "cores_listras": [
-      "roxa",
-      "laranja"
-     ],
-     "e_piping": false,
-     "tem_listra_lateral_sundek": true,
-     "bicolor": false,
-     "listra_evidencia": "Listra Sundek presente: arco com faixas roxa e laranja nas costas, contornando o bolso traseiro.",
-     "tem_bolso_traseiro": true,
-     "bolso_traseiro_tem_nome": true,
-     "tem_bolso_frontal": false,
-     "bolso_evidencia": "Bolso traseiro presente com patch externo contendo o nome SUndek escrito",
-     "desbotado_check": {
-      "confirmado": false,
-      "votos": [
-       "ok",
-       "ok",
-       "ok"
-      ],
-      "motivo": "",
-      "moletom": false
-     }
-    },
-    "marca_check": {
-     "e_sundek": "sim",
-     "marca_identificada": null,
-     "e_short": "sim",
-     "formato_identificado": "short",
-     "lote": false,
-     "qtd_pecas": 1,
-     "evidencia": "Etiqueta interna com logo Sundek e texto \"SUNDEK\", patch na parte traseira com logo Sundek e texto \"SUNDEK\", faixa multicolorida característica no cós."
     }
    }
   },
@@ -6741,117 +6890,6 @@
    }
   },
   {
-   "id": "9896424902",
-   "marca": "sundek",
-   "url": "https://www.vinted.es/items/9896424902-maillot-de-bain-sundek",
-   "titulo": "Maillot de bain Sundek",
-   "tamanho": "L",
-   "estado": "Muy bueno",
-   "preco": "13,00 €",
-   "preco_total": "14,35 €",
-   "fotos": [
-    "https://images1.vinted.net/t/02_00396_bAQ9URZ8fQ4FCK2TRfz6c6xV/f800/5fe86c9c.webp?s=03819e6fd6d419bc9e574474f5186f46a9cb1b3d",
-    "https://images1.vinted.net/t/02_01684_WsSyXzTuB9ijC27ZLeakrJEn/f800/44536808.webp?s=378d6f0c69135c1ae6ec02f73881a221de258405",
-    "https://images1.vinted.net/t/05_02582_p5xNaF3NWUqrFNycA3xLDawF/f800/98c5ccc8.webp?s=3d610d6cbaba745dbd855a89aae2304976bd6e4a",
-    "https://images1.vinted.net/t/05_02482_Bh9wEcGN5KMTqAuccLQ5MPeS/f800/9a380577.webp?s=cebf28f169355772a592f4f26b652396983c3f1e"
-   ],
-   "coletado_em": "2026-09-05T16:23:17.617782+00:00",
-   "primeiro_visto": "2026-09-05T16:29:49.062952+00:00",
-   "status": "ativo",
-   "novo": false,
-   "decisao": "compravel",
-   "score": 61,
-   "teto": 32,
-   "motivo": "sem elástico, Preto ≤ €15",
-   "motivo_exclusao": "",
-   "breakdown": {
-    "tier": 30,
-    "tamanho": 16,
-    "elastico": -15,
-    "etiqueta": 0,
-    "listra_bonus": 0,
-    "preco": 30,
-    "ratio_preco_teto": 0.45
-   },
-   "flags": [],
-   "negociacao": {
-    "modo": "fechar",
-    "oferta": 10,
-    "msg": "💰 Ofereça €10 (pedem €13). Se recusar, ainda vale pagar €13."
-   },
-   "criterios": {
-    "cor": {
-     "cor_principal": "Preto",
-     "tier": "maravilhoso",
-     "justificativa": "O preto de nylon comum é considerado maravilhoso.",
-     "cores_listras": [
-      "branca"
-     ],
-     "listra_tier": "neutra",
-     "tier_final": "maravilhoso",
-     "combo_motivo": "listras ['branca'] sem impacto no tier 'maravilhoso'"
-    },
-    "elastico": {
-     "tem_elastico": false,
-     "tipo_fechamento": "cordao",
-     "evidencia": "Cordão no fly; cós reto com nylon amassado (sem elástico real)."
-    },
-    "etiqueta": {
-     "tem_etiqueta": false,
-     "evidencia": "Não há nenhuma etiqueta de papel ou papelão pendente visível nas fotos."
-    },
-    "classificacao": {
-     "tipo": "liso",
-     "corpo_tem_padrao_repetido": false,
-     "tem_logo_grande": false,
-     "aparencia": "ok",
-     "tecido_brilhoso": false,
-     "listra_na_frente": false,
-     "justificativa": "Corpo do short em uma cor sólida sem padrão gráfico.",
-     "cores_listras": [
-      "branca"
-     ],
-     "e_piping": false,
-     "tem_listra_lateral_sundek": true,
-     "bicolor": false,
-     "listra_evidencia": "Faixa clara na lateral contornando o bolso traseiro, corpo do short é preto.",
-     "tem_bolso_traseiro": true,
-     "bolso_traseiro_tem_nome": true,
-     "tem_bolso_frontal": false,
-     "bolso_evidencia": "Bolso traseiro direito com patch contendo logo e palavra SUNDEK.",
-     "listra_confirma": {
-      "fotos": "Foto 1 é a mais nítida",
-      "forma": "arco_costas",
-      "faixas": [
-       "azul claro",
-       "azul",
-       "branco"
-      ],
-      "n_cores": 3,
-      "evidencia": "Faixa em arco nas costas contornando o bolso.",
-      "rejeitada": false
-     },
-     "desbotado_check": {
-      "confirmado": false,
-      "votos": [
-       "ok",
-       "ok",
-       "ok"
-      ],
-      "motivo": "",
-      "moletom": false
-     }
-    },
-    "marca_check": {
-     "e_sundek": "sim",
-     "marca_identificada": null,
-     "e_short": "sim",
-     "formato_identificado": "short",
-     "evidencia": "Etiqueta interna com 'SUNDEK', logo da marca visível, e formato de short com pernas separadas."
-    }
-   }
-  },
-  {
    "id": "9984487245",
    "marca": "sundek",
    "url": "https://www.vinted.es/items/9984487245-costume-uomo-sundek",
@@ -7068,116 +7106,6 @@
    }
   },
   {
-   "id": "10899709550",
-   "marca": "sundek",
-   "url": "https://www.vinted.es/items/10899709550-costume-sundek",
-   "titulo": "Costume sundek",
-   "tamanho": "L",
-   "estado": "Muy bueno",
-   "preco": "5,00 €",
-   "preco_total": "5,95 €",
-   "fotos": [
-    "https://images1.vinted.net/t/06_00ab5_xSSCcqm9LT8fNPfYB5wRcPep/f800/fe4c86a8.webp?s=aac8e6d05ac3a724c1a56ed58b69c958b210d0ce",
-    "https://images1.vinted.net/t/02_003bf_P4z5gtNJ63TwKtqRfwsEobyn/f800/c61832d2.webp?s=e1ca74cd931bde7054e805c072b3ada687113b37"
-   ],
-   "coletado_em": "2026-11-20T20:56:51.256562+00:00",
-   "primeiro_visto": "2026-11-20T20:58:58.060070+00:00",
-   "status": "ativo",
-   "novo": false,
-   "decisao": "compravel",
-   "score": 61,
-   "teto": 32,
-   "motivo": "sem elástico, Branco ≤ €10",
-   "motivo_exclusao": "",
-   "breakdown": {
-    "tier": 30,
-    "tamanho": 16,
-    "elastico": -15,
-    "etiqueta": 0,
-    "listra_bonus": 0,
-    "preco": 30,
-    "ratio_preco_teto": 0.19
-   },
-   "flags": [],
-   "negociacao": {
-    "modo": "fechar",
-    "oferta": 4,
-    "msg": "💰 Ofereça €4 (pedem €5). Se recusar, ainda vale pagar €5."
-   },
-   "criterios": {
-    "cor": {
-     "cor_principal": "Branco",
-     "tier": "maravilhoso",
-     "justificativa": "Cor branca é altamente procurada e classificada como maravilhosa.",
-     "cores_listras": [
-      "verde-turquesa",
-      "amarelo",
-      "rosa"
-     ],
-     "listra_tier": "neutra",
-     "tier_final": "maravilhoso",
-     "combo_motivo": "listras ['verde-turquesa', 'amarelo', 'rosa'] sem impacto no tier 'maravilhoso'"
-    },
-    "elastico": {
-     "tem_elastico": false,
-     "foto_elastico": null,
-     "tipo_fechamento": "indefinido",
-     "evidencia": "As duas fotos mostram cós sem franzido regular de elástico, mas não mostram o fly nem cordão funcional.",
-     "velcro_fly": {
-      "tem_velcro": null,
-      "foto_braguilha_aberta": -1,
-      "o_que_vi": "nenhuma imagem mostra a braguilha",
-      "evidencia": "nenhuma foto mostra a braguilha"
-     }
-    },
-    "etiqueta": {
-     "tem_etiqueta": false,
-     "evidencia": "As fotos mostram apenas a etiqueta de tecido costurada internamente no cós com a marca e tamanho, sem qualquer cartão ou etiqueta de papel pendurada por cordão."
-    },
-    "classificacao": {
-     "tipo": "liso",
-     "corpo_tem_padrao_repetido": false,
-     "tem_logo_grande": false,
-     "aparencia": "ok",
-     "tecido_brilhoso": false,
-     "listra_na_frente": false,
-     "justificativa": "Corpo do short em uma cor sólida com listras laterais.",
-     "cores_listras": [
-      "verde-turquesa",
-      "amarelo",
-      "rosa"
-     ],
-     "e_piping": false,
-     "tem_listra_lateral_sundek": true,
-     "bicolor": false,
-     "listra_evidencia": "Listra Sundek presente no formato de arco contornando o bolso traseiro do short, com três faixas coloridas no corpo da peça.",
-     "tem_bolso_traseiro": true,
-     "bolso_traseiro_tem_nome": true,
-     "tem_bolso_frontal": false,
-     "bolso_evidencia": "Bolso traseiro presente com patch externo em tom amarelo fluo/neon",
-     "desbotado_check": {
-      "confirmado": false,
-      "votos": [
-       "ok",
-       "ok",
-       "ok"
-      ],
-      "motivo": "",
-      "moletom": false
-     }
-    },
-    "marca_check": {
-     "e_sundek": "sim",
-     "marca_identificada": null,
-     "e_short": "sim",
-     "formato_identificado": "short",
-     "lote": false,
-     "qtd_pecas": 1,
-     "evidencia": "Etiqueta interna com logo Sundek e nome da marca, e patch no bolso traseiro com logo Sundek. Peça com pernas separadas e comprimento de short."
-    }
-   }
-  },
-  {
    "id": "10918795477",
    "marca": "sundek",
    "url": "https://www.vinted.es/items/10918795477-costume-mare-sundek",
@@ -7194,7 +7122,7 @@
    "coletado_em": "2026-11-22T10:00:42.608242+00:00",
    "primeiro_visto": "2026-11-22T10:04:08.947985+00:00",
    "status": "ativo",
-   "novo": true,
+   "novo": false,
    "decisao": "compravel",
    "score": 61,
    "teto": 32,
@@ -8261,6 +8189,116 @@
      "lote": false,
      "qtd_pecas": 1,
      "evidencia": "Logo Sundek no bolso traseiro, texto 'SUNDEK' visível na etiqueta interna, faixa multicolorida característica no cós."
+    }
+   }
+  },
+  {
+   "id": "10937164577",
+   "marca": "sundek",
+   "url": "https://www.vinted.es/items/10937164577-sundek",
+   "titulo": "Sundek",
+   "tamanho": "S",
+   "estado": "Muy bueno",
+   "preco": "12,00 €",
+   "preco_total": "13,30 €",
+   "fotos": [
+    "https://images1.vinted.net/t/02_01a31_ae99h1RisVi57BcickiGeVUk/f800/7ef80573.webp?s=e9669c46a6e5bc040bee8a187addf385f6065cc2",
+    "https://images1.vinted.net/t/03_010ef_dPjZCmqTqN3DjbgxGrLh8Q4G/f800/a63f66aa.webp?s=5b9443553f40634a96dd11768361e72f9ab46a44",
+    "https://images1.vinted.net/t/06_003b4_ViH5iDyibsWYUprgZSAcjK95/f800/706b30e7.webp?s=78f9f966572d4bd71db852abf64f8ae89267b6d8",
+    "https://images1.vinted.net/t/05_00b7d_CsZr755fc99QBUz1rqaRJApD/f800/4237e1f8.webp?s=7f9b9c558380760cca057da93cfe61ae56baad1e"
+   ],
+   "coletado_em": "2026-11-23T10:18:35.942551+00:00",
+   "primeiro_visto": "2026-11-23T10:21:28.021779+00:00",
+   "status": "ativo",
+   "novo": false,
+   "decisao": "compravel",
+   "score": 49,
+   "teto": 27,
+   "motivo": "sem elástico, Preto ≤ €15",
+   "motivo_exclusao": "",
+   "breakdown": {
+    "tier": 30,
+    "tamanho": 4,
+    "elastico": -15,
+    "etiqueta": 0,
+    "listra_bonus": 0,
+    "preco": 30,
+    "ratio_preco_teto": 0.49
+   },
+   "flags": [],
+   "negociacao": {
+    "modo": "fechar",
+    "oferta": 10,
+    "msg": "💰 Ofereça €10 (pedem €12). Se recusar, ainda vale pagar €12."
+   },
+   "criterios": {
+    "cor": {
+     "cor_principal": "Preto",
+     "tier": "maravilhoso",
+     "justificativa": "O preto é de nylon comum e reflete levemente, mantendo sua classificação.",
+     "cores_listras": [
+      "neon verde-limão",
+      "neon laranja"
+     ],
+     "listra_tier": "neutra",
+     "tier_final": "maravilhoso",
+     "combo_motivo": "listras ['neon verde-limão', 'neon laranja'] sem impacto no tier 'maravilhoso'"
+    },
+    "elastico": {
+     "tem_elastico": false,
+     "foto_elastico": null,
+     "tipo_fechamento": "cordao",
+     "evidencia": "Cós reto e estruturado na frente e atrás, com cordão por ilhós; sem elástico demonstrado nem botão/velcro visível no fly.",
+     "velcro_fly": {
+      "tem_velcro": false,
+      "foto_braguilha_aberta": -1,
+      "o_que_vi": "braguilha fechada, cordão e ilhós",
+      "evidencia": "braguilha fechada sem tira felpuda visível"
+     }
+    },
+    "etiqueta": {
+     "tem_etiqueta": false,
+     "evidencia": "As imagens mostram apenas etiquetas de tecido costuradas internamente no cós e um patch na parte externa, sem qualquer cartão ou etiqueta de papel pendurada por cordão."
+    },
+    "classificacao": {
+     "tipo": "liso",
+     "corpo_tem_padrao_repetido": false,
+     "tem_logo_grande": false,
+     "aparencia": "ok",
+     "tecido_brilhoso": false,
+     "listra_na_frente": false,
+     "justificativa": "Corpo do short em uma cor sólida sem padrão gráfico.",
+     "cores_listras": [
+      "neon verde-limão",
+      "neon laranja"
+     ],
+     "e_piping": false,
+     "tem_listra_lateral_sundek": true,
+     "bicolor": false,
+     "listra_evidencia": "Listra Sundek presente: faixa em arco no corpo do short (costas) contornando o bolso traseiro, composta por duas faixas paralelas no painel do short.",
+     "tem_bolso_traseiro": true,
+     "bolso_traseiro_tem_nome": true,
+     "tem_bolso_frontal": false,
+     "bolso_evidencia": "Bolso traseiro com patch escuro contendo o sol laranja e o nome SUNDEK.",
+     "desbotado_check": {
+      "confirmado": false,
+      "votos": [
+       "ok",
+       "ok",
+       "ok"
+      ],
+      "motivo": "",
+      "moletom": false
+     }
+    },
+    "marca_check": {
+     "e_sundek": "sim",
+     "marca_identificada": null,
+     "e_short": "sim",
+     "formato_identificado": "short",
+     "lote": false,
+     "qtd_pecas": 1,
+     "evidencia": "Etiqueta interna com logo Sundek e texto 'SUNDEK'. Patch com logo Sundek no bolso traseiro. Faixa multicolorida característica no cós."
     }
    }
   },
@@ -11706,6 +11744,100 @@
    }
   },
   {
+   "id": "10922230203",
+   "marca": "sundek",
+   "url": "https://www.vinted.es/items/10922230203-costume-mare-uomo-sundek-nero-bande-gialleverdi-tg-33-48-it-m-l",
+   "titulo": "Costume mare uomo Sundek nero bande gialle/verdi – Tg. 33 (48 IT / M-L)",
+   "tamanho": "M",
+   "estado": "Muy bueno",
+   "preco": "16,00 €",
+   "preco_total": "17,50 €",
+   "fotos": [
+    "https://images1.vinted.net/t/05_02118_7zMesuuspFG5AANtzWR2wzBH/f800/fb296a66.webp?s=6cc33880919a842f3a4fc6f7a867162f1956950f",
+    "https://images1.vinted.net/t/06_00dde_HMMbLmJSjaJ2fCrpMC18xQnC/f800/005b58f4.webp?s=6a8b6ff5661b332c28b5ec3a7f6ba68549c78c86",
+    "https://images1.vinted.net/t/03_003d3_aUx6RuE6GbZz3H6w1qft658h/f800/93e2ee23.webp?s=62795221c1e8f96600c2f0964e8ca181f0b59b66",
+    "https://images1.vinted.net/t/01_00667_52VTdBAaQ2s8U3wLn266CQbS/f800/649b9d91.webp?s=047a8f6dce4f41fd96a5dde14b9bd0b2cfb9fd27"
+   ],
+   "coletado_em": "2026-11-22T15:26:18.526120+00:00",
+   "primeiro_visto": "2026-11-22T15:28:17.353039+00:00",
+   "status": "ativo",
+   "novo": false,
+   "decisao": "descartado",
+   "score": 75,
+   "teto": 41,
+   "motivo": "sem elástico, Preto acima de €15",
+   "motivo_exclusao": "",
+   "breakdown": {
+    "tier": 30,
+    "tamanho": 20,
+    "elastico": -15,
+    "etiqueta": 10,
+    "listra_bonus": 0,
+    "preco": 30,
+    "ratio_preco_teto": 0.43
+   },
+   "flags": [],
+   "negociacao": {},
+   "criterios": {
+    "cor": {
+     "cor_principal": "Preto",
+     "tier": "maravilhoso",
+     "justificativa": "O preto é de nylon comum e atende aos critérios de alta demanda.",
+     "cores_listras": [
+      "amarela",
+      "branca",
+      "cinza-clara"
+     ],
+     "listra_tier": "neutra",
+     "tier_final": "maravilhoso",
+     "combo_motivo": "listras ['amarela', 'branca', 'cinza-clara'] confirmam tier 'maravilhoso'"
+    },
+    "elastico": {
+     "tem_elastico": false,
+     "foto_elastico": null,
+     "tipo_fechamento": "indefinido",
+     "evidencia": "Nenhuma foto mostra elástico nítido; cós traseiro plano. Todas as imagens são da traseira ou de detalhes, impossibilitando identificar o fechamento frontal.",
+     "velcro_fly": {
+      "tem_velcro": null,
+      "foto_braguilha_aberta": -1,
+      "o_que_vi": "A braguilha não está visível nas fotos.",
+      "evidencia": "Nenhuma foto mostra a braguilha."
+     }
+    },
+    "classificacao": {
+     "tipo": "liso",
+     "corpo_tem_padrao_repetido": false,
+     "tem_logo_grande": false,
+     "aparencia": "ok",
+     "tecido_brilhoso": false,
+     "listra_na_frente": false,
+     "justificativa": "Corpo do short em uma cor sólida com listras laterais.",
+     "cores_listras": [
+      "amarela",
+      "branca",
+      "cinza-clara"
+     ],
+     "e_piping": false,
+     "tem_listra_lateral_sundek": true,
+     "bicolor": false,
+     "listra_evidencia": "Listra Sundek clássica em arco contornando o bolso traseiro, com 3 faixas paralelas amarela, branca e cinza-clara, visível nas fotos das costas e laterais do short.",
+     "descarte_garantido": {
+      "etapa": "elastico",
+      "motivo": "sem elástico, Preto acima de €15"
+     }
+    },
+    "marca_check": {
+     "e_sundek": "sim",
+     "marca_identificada": null,
+     "e_short": "sim",
+     "formato_identificado": "short",
+     "lote": false,
+     "qtd_pecas": 1,
+     "evidencia": "Logo Sundek no bolso traseiro com texto e desenho do sol com raios em forma de ondas. Faixas laterais características."
+    }
+   }
+  },
+  {
    "id": "10454142550",
    "marca": "sundek",
    "url": "https://www.vinted.es/items/10454142550-costume-uomo-sundek",
@@ -11982,6 +12114,75 @@
    }
   },
   {
+   "id": "10936321392",
+   "marca": "sundek",
+   "url": "https://www.vinted.es/items/10936321392-sundek",
+   "titulo": "Sundek",
+   "tamanho": "M",
+   "estado": "Nuevo sin etiquetas",
+   "preco": "38,00 €",
+   "preco_total": "40,60 €",
+   "fotos": [
+    "https://images1.vinted.net/t/04_01948_o5hMahGqLytNwnfpjdZy3ySX/f800/f4ba8718.webp?s=0004a729f27056d053539f4830c1065a331a792e",
+    "https://images1.vinted.net/t/05_006cc_6EkuGjvcQujYwFotDm9E7aKp/f800/238a96d3.webp?s=63b48172b465f3784f2f2490af6f22f12a6ef804",
+    "https://images1.vinted.net/t/06_01ff0_s286GHKSPuMDQ3CCFZakbe8S/f800/d2e6c7f1.webp?s=a9ab0405aee436935b69e5f8e6b36e2b9a5d19f8"
+   ],
+   "coletado_em": "2026-11-23T10:01:24.270585+00:00",
+   "primeiro_visto": "2026-11-23T10:02:44.974805+00:00",
+   "status": "ativo",
+   "novo": false,
+   "decisao": "descartado",
+   "score": 73,
+   "teto": 27,
+   "motivo": "preço €40.60 acima do teto €27.00 × 1.25",
+   "motivo_exclusao": "",
+   "breakdown": {
+    "tier": 8,
+    "tamanho": 20,
+    "elastico": 30,
+    "etiqueta": 10,
+    "listra_bonus": 5,
+    "preco": 0,
+    "ratio_preco_teto": 1.5
+   },
+   "flags": [],
+   "negociacao": {},
+   "criterios": {
+    "cor": {
+     "cor_principal": "Fucsia",
+     "tier": "ok",
+     "justificativa": "Cor fluorescente, sem apelo de mercado.",
+     "tier_modelo": "ruim",
+     "cores_listras": [],
+     "listra_tier": "sem_listra",
+     "tier_final": "ok",
+     "combo_motivo": "sem listras laterais"
+    },
+    "classificacao": {
+     "tipo": "liso",
+     "corpo_tem_padrao_repetido": false,
+     "tem_logo_grande": false,
+     "aparencia": "ok",
+     "tecido_brilhoso": false,
+     "listra_na_frente": false,
+     "justificativa": "Corpo do short em uma cor sólida sem padrão gráfico.",
+     "descarte_garantido": {
+      "etapa": "cor",
+      "motivo": "preço €40.60 acima do teto €27.00 × 1.25"
+     }
+    },
+    "marca_check": {
+     "e_sundek": "sim",
+     "marca_identificada": null,
+     "e_short": "sim",
+     "formato_identificado": "short",
+     "lote": false,
+     "qtd_pecas": 1,
+     "evidencia": "Etiqueta interna com logo Sundek e texto \"SUNDEK\", patch na perna com logo Sundek."
+    }
+   }
+  },
+  {
    "id": "10725021978",
    "marca": "sundek",
    "url": "https://www.vinted.es/items/10725021978-short-de-bain-sundek",
@@ -12234,6 +12435,100 @@
      "lote": false,
      "qtd_pecas": 1,
      "evidencia": "Logo Sundek (meio-sol com ondas) visível em patch no bolso traseiro e na frente. Texto \"SUNDEK\" visível no patch. Peça com pernas separadas e comprimento de short."
+    }
+   }
+  },
+  {
+   "id": "10931337038",
+   "marca": "sundek",
+   "url": "https://www.vinted.es/items/10931337038-costume-sundek",
+   "titulo": "Costume sundek",
+   "tamanho": "L",
+   "estado": "Muy bueno",
+   "preco": "9,00 €",
+   "preco_total": "10,15 €",
+   "fotos": [
+    "https://images1.vinted.net/t/03_003e6_fcoxHbaFw28j6moFxMeqi3qo/f800/73483e3c.webp?s=6d9b6d0d33a71ef891de2c7a456b189743a8e08e",
+    "https://images1.vinted.net/t/02_013b3_yDKvHApchZTSy5JdebApAv1g/f800/358998e9.webp?s=b7b63cfa98e60b56dc4ae0b3870dd27536361384"
+   ],
+   "coletado_em": "2026-11-22T20:17:40.592895+00:00",
+   "primeiro_visto": "2026-11-22T20:19:20.649522+00:00",
+   "status": "ativo",
+   "novo": false,
+   "decisao": "descartado",
+   "score": 71,
+   "teto": 36,
+   "motivo": "sem elástico, Branco acima de €10",
+   "motivo_exclusao": "",
+   "breakdown": {
+    "tier": 30,
+    "tamanho": 16,
+    "elastico": -15,
+    "etiqueta": 10,
+    "listra_bonus": 0,
+    "preco": 30,
+    "ratio_preco_teto": 0.28
+   },
+   "flags": [],
+   "negociacao": {},
+   "criterios": {
+    "cor": {
+     "cor_principal": "Branco",
+     "tier": "maravilhoso",
+     "justificativa": "Cor branca é classificada como maravilhosa.",
+     "cores_listras": [
+      "azul claro",
+      "verde",
+      "amarelo",
+      "rosa"
+     ],
+     "listra_tier": "neutra",
+     "tier_final": "maravilhoso",
+     "combo_motivo": "listras ['azul claro', 'verde', 'amarelo', 'rosa'] confirmam tier 'maravilhoso'"
+    },
+    "elastico": {
+     "tem_elastico": false,
+     "foto_elastico": null,
+     "tipo_fechamento": "indefinido",
+     "evidencia": "As duas fotos mostram cós plano e estruturado, sem franzido denso e regular; as rugas são do tecido. A primeira mostra a traseira e a segunda o interior do cós. O fly não aparece, impedindo identificar cordão, botão ou velcro frontal.",
+     "velcro_fly": {
+      "tem_velcro": false,
+      "foto_braguilha_aberta": -1,
+      "o_que_vi": "braguilha fechada",
+      "evidencia": "Nenhuma tira felpuda visível"
+     }
+    },
+    "classificacao": {
+     "tipo": "liso",
+     "corpo_tem_padrao_repetido": false,
+     "tem_logo_grande": false,
+     "aparencia": "ok",
+     "tecido_brilhoso": false,
+     "listra_na_frente": false,
+     "justificativa": "Corpo do short em cor sólida com listras laterais.",
+     "cores_listras": [
+      "azul claro",
+      "verde",
+      "amarelo",
+      "rosa"
+     ],
+     "e_piping": false,
+     "tem_listra_lateral_sundek": true,
+     "bicolor": false,
+     "listra_evidencia": "Listra Sundek presente na foto das costas: banda de quatro faixas coloridas em arco contornando o bolso traseiro do short branco.",
+     "descarte_garantido": {
+      "etapa": "elastico",
+      "motivo": "sem elástico, Branco acima de €10"
+     }
+    },
+    "marca_check": {
+     "e_sundek": "sim",
+     "marca_identificada": null,
+     "e_short": "sim",
+     "formato_identificado": "short",
+     "lote": false,
+     "qtd_pecas": 1,
+     "evidencia": "Etiqueta interna com logo Sundek e texto 'SUNDEK'. Logo Sundek (meio-sol com ondas) no bolso traseiro. Faixa multicolorida característica no cós."
     }
    }
   },
@@ -13012,6 +13307,105 @@
      "lote": false,
      "qtd_pecas": 1,
      "evidencia": "Logo Sundek no bolso traseiro e etiqueta interna com logo e nome da marca."
+    }
+   }
+  },
+  {
+   "id": "10921718180",
+   "marca": "sundek",
+   "url": "https://www.vinted.es/items/10921718180-maillot-de-bain-homme-sundek",
+   "titulo": "Maillot de bain homme sundek",
+   "tamanho": "L",
+   "estado": "Nuevo sin etiquetas",
+   "preco": "38,00 €",
+   "preco_total": "40,60 €",
+   "fotos": [
+    "https://images1.vinted.net/t/05_00e46_VY1A7ZVwrQT5veYa8g1b45JY/f800/63737624.webp?s=9a593a08e7f9ffe1cd3009a0f3953ed6e1d260c7",
+    "https://images1.vinted.net/t/06_02550_BwviMNs48GnZv7MvBhZBpjaL/f800/b20631de.webp?s=9215b483f164f71b95617bf1c3465b05c5b979cc",
+    "https://images1.vinted.net/t/01_0124d_zKmDDXZAmGZdsGPWKTBDTmRC/f800/d3ec6bc9.webp?s=5c045da9555ff9fe4c4a4ef0de86bead0b4accd8",
+    "https://images1.vinted.net/t/01_02359_dtYpLD4YQKL3qWmFFPHuKVcU/f800/327571f8.webp?s=6cf12dc3366264e3eb90d0a43a98b9515000a13e"
+   ],
+   "coletado_em": "2026-11-22T12:31:32.570911+00:00",
+   "primeiro_visto": "2026-11-22T12:33:27.190937+00:00",
+   "status": "ativo",
+   "novo": false,
+   "decisao": "descartado",
+   "score": 68,
+   "teto": 32,
+   "motivo": "preço €40.60 acima do teto €32.00 × 1.25",
+   "motivo_exclusao": "",
+   "breakdown": {
+    "tier": 22,
+    "tamanho": 16,
+    "elastico": 30,
+    "etiqueta": 0,
+    "listra_bonus": 0,
+    "preco": 0,
+    "ratio_preco_teto": 1.27
+   },
+   "flags": [],
+   "negociacao": {},
+   "criterios": {
+    "cor": {
+     "cor_principal": "Azul",
+     "tier": "muito_boa",
+     "justificativa": "Azul profundo e saturado.",
+     "cores_listras": [
+      "laranja",
+      "cinza claro",
+      "azul marinho"
+     ],
+     "listra_tier": "neutra",
+     "tier_final": "muito_boa",
+     "combo_motivo": "listras ['laranja', 'cinza claro', 'azul marinho'] confirmam tier 'muito_boa'"
+    },
+    "elastico": {
+     "tem_elastico": true,
+     "foto_elastico": 4,
+     "tipo_fechamento": "cordao",
+     "evidencia": "Cós com elástico nítido na foto 4 e cordão funcional frontal; sem botão ou velcro visível no fly.",
+     "botao_fly": {
+      "tem_botao": false,
+      "tipo": "nenhum",
+      "o_que_vi_no_centro": "Cós elástico franzido com cordão passando por ilhós, sem botão ou snap na frente.",
+      "evidencia": "Apenas ilhós do cordão no centro frontal, sem botão ou snap.",
+      "_crop_modo": "faixa_central"
+     }
+    },
+    "etiqueta": {
+     "tem_etiqueta": false,
+     "evidencia": "Apenas etiquetas de tecido costuradas internamente no cós (marca e tamanho) são visíveis; não há nenhum cartão ou etiqueta de papel pendurada por cordão."
+    },
+    "classificacao": {
+     "tipo": "liso",
+     "corpo_tem_padrao_repetido": false,
+     "tem_logo_grande": false,
+     "aparencia": "ok",
+     "tecido_brilhoso": false,
+     "listra_na_frente": false,
+     "justificativa": "Corpo do short em uma cor sólida com listras laterais.",
+     "cores_listras": [
+      "laranja",
+      "cinza claro",
+      "azul marinho"
+     ],
+     "e_piping": false,
+     "tem_listra_lateral_sundek": true,
+     "bicolor": false,
+     "listra_evidencia": "Listra Sundek presente na forma de arco com 3 faixas paralelas (laranja, cinza claro, azul marinho) contornando o bolso traseiro, visível nas fotos das costas e close.",
+     "tem_bolso_traseiro": true,
+     "bolso_traseiro_tem_nome": true,
+     "tem_bolso_frontal": false,
+     "bolso_evidencia": "Bolso traseiro presente com patch externo contendo o logo e o nome SUNDEK."
+    },
+    "marca_check": {
+     "e_sundek": "sim",
+     "marca_identificada": "null",
+     "e_short": "sim",
+     "formato_identificado": "short",
+     "lote": false,
+     "qtd_pecas": 1,
+     "evidencia": "Logo Sundek (sol com ondas) no bolso traseiro e etiqueta interna com logo e nome da marca."
     }
    }
   },
@@ -15778,6 +16172,143 @@
      "lote": true,
      "qtd_pecas": 3,
      "evidencia": "Três shorts de banho da marca Sundek, com o logo característico do sol com ondas em formato de meia-lua visível em dois deles. O título menciona \"Set x 3 Costumi da bagno Sundek\", confirmando que são 3 peças."
+    }
+   }
+  },
+  {
+   "id": "10922988595",
+   "marca": "sundek",
+   "url": "https://www.vinted.es/items/10922988595-banador-sundek",
+   "titulo": "Bañador Sundek",
+   "tamanho": "S",
+   "estado": "Bueno",
+   "preco": "35,00 €",
+   "preco_total": "37,45 €",
+   "fotos": [
+    "https://images1.vinted.net/t/06_00f12_HB2cWVb5DhiDMKSKFp4ZDuud/f800/c139d107.webp?s=e447ebf8aac1231131327e5c5448926874cb63e4",
+    "https://images1.vinted.net/t/05_025ae_ynM2g9ttEXDuxCWqiwpYraUU/f800/21c3afb1.webp?s=7cac885399d14a0b0c15c2d39f3f24a61f358d2b",
+    "https://images1.vinted.net/t/02_0191c_ryaKd6XYTxFuai3bKQ83itoY/f800/cab6bd7c.webp?s=2d1c04b680a484cd98fa7f0f2475c4db434425b7"
+   ],
+   "coletado_em": "2026-11-22T13:32:22.475811+00:00",
+   "primeiro_visto": "2026-11-22T13:33:47.201798+00:00",
+   "status": "ativo",
+   "novo": false,
+   "decisao": "descartado",
+   "score": 64,
+   "teto": 24,
+   "motivo": "preço €37.45 acima do teto €24.00 × 1.25",
+   "motivo_exclusao": "",
+   "breakdown": {
+    "tier": 15,
+    "tamanho": 4,
+    "elastico": 30,
+    "etiqueta": 10,
+    "listra_bonus": 5,
+    "preco": 0,
+    "ratio_preco_teto": 1.56
+   },
+   "flags": [],
+   "negociacao": {},
+   "criterios": {
+    "cor": {
+     "cor_principal": "Verde escuro",
+     "tier": "boa",
+     "justificativa": "Cor aceitável, mas não é a mais procurada.",
+     "cores_listras": [],
+     "listra_tier": "sem_listra",
+     "tier_final": "boa",
+     "combo_motivo": "sem listras laterais"
+    },
+    "classificacao": {
+     "tipo": "liso",
+     "corpo_tem_padrao_repetido": false,
+     "tem_logo_grande": false,
+     "aparencia": "ok",
+     "tecido_brilhoso": false,
+     "listra_na_frente": false,
+     "justificativa": "Corpo do short em uma cor sólida com listras laterais.",
+     "descarte_garantido": {
+      "etapa": "cor",
+      "motivo": "preço €37.45 acima do teto €24.00 × 1.25"
+     }
+    },
+    "marca_check": {
+     "e_sundek": "sim",
+     "marca_identificada": null,
+     "e_short": "sim",
+     "formato_identificado": "short",
+     "lote": false,
+     "qtd_pecas": 1,
+     "evidencia": "Etiqueta interna com logo Sundek (meio sol com ondas) e texto \"SUNDEK\". Patch no bolso traseiro com logo Sundek (meio sol com ondas). Faixa multicolorida característica no cós."
+    }
+   }
+  },
+  {
+   "id": "10929848350",
+   "marca": "sundek",
+   "url": "https://www.vinted.es/items/10929848350-short-de-bain-sundek-kaki-taille-29-homme",
+   "titulo": "Short de bain SUNDEK kaki – Taille 29 – Homme",
+   "tamanho": "S",
+   "estado": "Muy bueno",
+   "preco": "30,00 €",
+   "preco_total": "32,20 €",
+   "fotos": [
+    "https://images1.vinted.net/t/01_00913_1nCFjFLhVFH49DCoZopCiQfy/f800/e5a74446.webp?s=bd2a6e129f71d070efb6d1c532add22129ab399a",
+    "https://images1.vinted.net/t/06_0108d_YqMiYdSMipUeED9WnWZv9Mc1/f800/647a82d9.webp?s=19b6906a17c86a0ca484742ad419b559e9647922",
+    "https://images1.vinted.net/t/04_025cc_JD8viB1qFZmojhgQSSdd6Xgc/f800/6b843092.webp?s=2f9cdf52621db3ebbf833109ac226f9420f9ede0",
+    "https://images1.vinted.net/t/02_01fb3_CLmjbFiVTgnXVcySbxURtkGr/f800/02dd260e.webp?s=413d2178388ba3c85d6557e8b453f7dd98e3861d"
+   ],
+   "coletado_em": "2026-11-22T18:57:25.120443+00:00",
+   "primeiro_visto": "2026-11-22T18:59:25.668183+00:00",
+   "status": "ativo",
+   "novo": false,
+   "decisao": "descartado",
+   "score": 64,
+   "teto": 24,
+   "motivo": "preço €32.20 acima do teto €24.00 × 1.25",
+   "motivo_exclusao": "",
+   "breakdown": {
+    "tier": 15,
+    "tamanho": 4,
+    "elastico": 30,
+    "etiqueta": 10,
+    "listra_bonus": 5,
+    "preco": 0,
+    "ratio_preco_teto": 1.34
+   },
+   "flags": [],
+   "negociacao": {},
+   "criterios": {
+    "cor": {
+     "cor_principal": "kaki escuro",
+     "tier": "boa",
+     "justificativa": "Cor kaki escuro é aceitável e tem apelo no mercado.",
+     "cores_listras": [],
+     "listra_tier": "sem_listra",
+     "tier_final": "boa",
+     "combo_motivo": "sem listras laterais"
+    },
+    "classificacao": {
+     "tipo": "liso",
+     "corpo_tem_padrao_repetido": false,
+     "tem_logo_grande": false,
+     "aparencia": "ok",
+     "tecido_brilhoso": false,
+     "listra_na_frente": false,
+     "justificativa": "Corpo do short em uma cor sólida sem padrão gráfico.",
+     "descarte_garantido": {
+      "etapa": "cor",
+      "motivo": "preço €32.20 acima do teto €24.00 × 1.25"
+     }
+    },
+    "marca_check": {
+     "e_sundek": "sim",
+     "marca_identificada": null,
+     "e_short": "sim",
+     "formato_identificado": "short",
+     "lote": false,
+     "qtd_pecas": 1,
+     "evidencia": "Etiqueta interna com logo Sundek e texto \"SUNDEK\", patch no bolso traseiro com logo Sundek."
     }
    }
   },
@@ -19070,6 +19601,75 @@
    }
   },
   {
+   "id": "10937112741",
+   "marca": "sundek",
+   "url": "https://www.vinted.es/items/10937112741-costume-sundek",
+   "titulo": "Costume Sundek",
+   "tamanho": "S",
+   "estado": "Muy bueno",
+   "preco": "24,00 €",
+   "preco_total": "25,90 €",
+   "fotos": [
+    "https://images1.vinted.net/t/05_01ccb_um6CuAFHNjUaB1G8SavDqBKB/f800/8cd27b25.webp?s=196a696effaf4ba47bc0eee7fd851b646109c248",
+    "https://images1.vinted.net/t/06_00b40_ERkJWEsCWSjuebkWFQPPEh1M/f800/2f8b3b8a.webp?s=49d621b97e1e05d571c6f0f042eb0c98bec36fde",
+    "https://images1.vinted.net/t/05_01dd0_LGUK5K8LTmgZsuN9xNdNPqCx/f800/38ddf8ae.webp?s=aadaa26f7781ab32c7eff7dc20fd342997583def",
+    "https://images1.vinted.net/t/04_00723_1DYjDUzNXBe53U5GnEDWg1Nf/f800/5ff3ccd5.webp?s=53b6bc580227f96452f24c861891e67bfd19a08b"
+   ],
+   "coletado_em": "2026-11-23T10:13:41.794061+00:00",
+   "primeiro_visto": "2026-11-23T10:16:36.597791+00:00",
+   "status": "ativo",
+   "novo": false,
+   "decisao": "descartado",
+   "score": 57,
+   "teto": 17,
+   "motivo": "preço €25.90 acima do teto €17.00 × 1.25",
+   "motivo_exclusao": "",
+   "breakdown": {
+    "tier": 8,
+    "tamanho": 4,
+    "elastico": 30,
+    "etiqueta": 10,
+    "listra_bonus": 5,
+    "preco": 0,
+    "ratio_preco_teto": 1.52
+   },
+   "flags": [],
+   "negociacao": {},
+   "criterios": {
+    "cor": {
+     "cor_principal": "azul claro",
+     "tier": "ok",
+     "justificativa": "A cor é um azul claro, que se encaixa na categoria 'ok'.",
+     "cores_listras": [],
+     "listra_tier": "sem_listra",
+     "tier_final": "ok",
+     "combo_motivo": "sem listras laterais"
+    },
+    "classificacao": {
+     "tipo": "liso",
+     "corpo_tem_padrao_repetido": false,
+     "tem_logo_grande": false,
+     "aparencia": "ok",
+     "tecido_brilhoso": false,
+     "listra_na_frente": false,
+     "justificativa": "Corpo do short em uma cor sólida com listras laterais.",
+     "descarte_garantido": {
+      "etapa": "cor",
+      "motivo": "preço €25.90 acima do teto €17.00 × 1.25"
+     }
+    },
+    "marca_check": {
+     "e_sundek": "sim",
+     "marca_identificada": null,
+     "e_short": "sim",
+     "formato_identificado": "short",
+     "lote": false,
+     "qtd_pecas": 1,
+     "evidencia": "Etiqueta interna com logo \"SUNDEK\" e \"meio-sol\" com ondas. Patch no bolso traseiro com \"meio-sol\" com ondas. Faixa lateral característica da marca."
+    }
+   }
+  },
+  {
    "id": "10260907747",
    "marca": "sundek",
    "url": "https://www.vinted.es/items/10260907747-lotto-da-2-costumi-sundek",
@@ -20327,647 +20927,6 @@
      "lote": false,
      "qtd_pecas": 1,
      "evidencia": "Etiqueta interna com logo Sundek (meio sol com ondas) e texto \"SUNDEK\"."
-    }
-   }
-  },
-  {
-   "id": "10134285312",
-   "marca": "sundek",
-   "url": "https://www.vinted.es/items/10134285312-sundek",
-   "titulo": "Sundek",
-   "tamanho": "XL",
-   "estado": "Nuevo con etiquetas",
-   "preco": "20,00 €",
-   "preco_total": "21,70 €",
-   "fotos": [
-    "https://images1.vinted.net/t/03_0054a_XNkKtY2TymgfMZGzsm5ACn8w/f800/0cf7a3d7.webp?s=78090f4dc0ba83bcb34a3c5ba1e4dd5269497096",
-    "https://images1.vinted.net/t/06_003ca_ec9QSqisRJQ4ddhmKuMhbeqN/f800/ecbd8a8c.webp?s=c774107caaa566d84d0bea043621f3b5346154fb",
-    "https://images1.vinted.net/t/02_01212_niJhebRh43pANfhCs5vGBSBy/f800/9d0d7694.webp?s=454282975011f00bf74d8779f3b29da7100a7bd9",
-    "https://images1.vinted.net/t/05_02332_DwpEEBRrgsdNtChJV4LbR6xx/f800/b1d7796b.webp?s=8d23d4a0ad5f30272b7b480b1c22dc4c178088fe"
-   ],
-   "coletado_em": "2026-09-25T23:59:32.787155+00:00",
-   "primeiro_visto": "2026-09-26T00:03:49.094601+00:00",
-   "status": "ativo",
-   "novo": false,
-   "decisao": "descartado",
-   "score": 53,
-   "teto": 33,
-   "motivo": "sem elástico, Branco acima de €10",
-   "motivo_exclusao": "",
-   "breakdown": {
-    "tier": 30,
-    "tamanho": 8,
-    "elastico": -15,
-    "etiqueta": 10,
-    "listra_bonus": 0,
-    "preco": 20,
-    "ratio_preco_teto": 0.66
-   },
-   "flags": [],
-   "negociacao": {},
-   "criterios": {
-    "cor": {
-     "cor_principal": "Branco",
-     "tier": "maravilhoso",
-     "justificativa": "Cor branca é classificada como maravilhosa.",
-     "cores_listras": [
-      "azul clara",
-      "azul escura"
-     ],
-     "listra_tier": "neutra",
-     "tier_final": "maravilhoso",
-     "combo_motivo": "listras ['azul clara', 'azul escura'] sem impacto no tier 'maravilhoso'"
-    },
-    "elastico": {
-     "tem_elastico": false,
-     "tipo_fechamento": "cordao",
-     "evidencia": "Cordão no fly; cós plano sem sinais de elástico."
-    },
-    "etiqueta": {
-     "tem_etiqueta": true,
-     "evidencia": "Há uma etiqueta de papel/papelão pendurada por um fio no short, visível na terceira foto."
-    },
-    "classificacao": {
-     "tipo": "liso",
-     "corpo_tem_padrao_repetido": false,
-     "tem_logo_grande": false,
-     "aparencia": "ok",
-     "tecido_brilhoso": false,
-     "listra_na_frente": false,
-     "justificativa": "Corpo do short em uma cor sólida com listras laterais.",
-     "cores_listras": [
-      "azul clara",
-      "azul escura"
-     ],
-     "e_piping": false,
-     "tem_listra_lateral_sundek": true,
-     "bicolor": false,
-     "listra_evidencia": "Duas faixas coloridas (azul clara e azul escura) na lateral do painel traseiro",
-     "tem_bolso_traseiro": true,
-     "bolso_traseiro_tem_nome": true,
-     "tem_bolso_frontal": false,
-     "bolso_evidencia": "Bolso traseiro direito com patch azul contendo sol Sundek e palavra SUNDEK."
-    },
-    "marca_check": {
-     "e_sundek": "sim",
-     "marca_identificada": null,
-     "e_short": "sim",
-     "formato_identificado": "short",
-     "evidencia": "Etiqueta interna com 'SUNDEK', tag de papel com 'SUNDEK', faixa multicolorida no cós, comprimento e formato de short visíveis."
-    }
-   }
-  },
-  {
-   "id": "9662747953",
-   "marca": "sundek",
-   "url": "https://www.vinted.es/items/9662747953-sundek-costume-pantaloncino-uomo-bianco-con-bande-blu-e-azzurre",
-   "titulo": "Sundek costume pantaloncino uomo bianco con bande blu e azzurre",
-   "tamanho": "L",
-   "estado": "Muy bueno",
-   "preco": "16,00 €",
-   "preco_total": "17,50 €",
-   "fotos": [
-    "https://images1.vinted.net/t/02_01151_EWFtFeUkaeby2rJkesi1Aiqr/f800/6710c76c.webp?s=8767e54a156df5e9a12cc4fef8b5d8957ed6268f",
-    "https://images1.vinted.net/t/02_00723_VviDZ6JrgtsuwEWVoFEKZZX2/f800/c6cff15e.webp?s=f50c11d8852373e4d3e9bb08cf8afec0876170ad"
-   ],
-   "coletado_em": "2026-08-14T18:09:57.709883+00:00",
-   "primeiro_visto": "2026-08-14T18:15:20.665847+00:00",
-   "status": "ativo",
-   "novo": false,
-   "decisao": "descartado",
-   "score": 51,
-   "teto": 32,
-   "motivo": "sem elástico, Branco acima de €10",
-   "motivo_exclusao": "",
-   "breakdown": {
-    "tier": 30,
-    "tamanho": 16,
-    "elastico": -15,
-    "etiqueta": 0,
-    "listra_bonus": 0,
-    "preco": 20,
-    "ratio_preco_teto": 0.55
-   },
-   "flags": [],
-   "negociacao": {},
-   "criterios": {
-    "cor": {
-     "cor_principal": "Branco",
-     "tier": "maravilhoso",
-     "justificativa": "Cor branca é classificada como maravilhosa.",
-     "cores_listras": [],
-     "listra_tier": "sem_listra",
-     "tier_final": "maravilhoso",
-     "combo_motivo": "sem listras laterais"
-    },
-    "elastico": {
-     "tem_elastico": false,
-     "foto_elastico": null,
-     "tipo_fechamento": "cordao",
-     "evidencia": "Cós plano com cordão por ilhós; sem franzido regular de elástico visível",
-     "velcro_fly": {
-      "tem_velcro": false,
-      "foto_braguilha_aberta": -1,
-      "o_que_vi": "braguilha fechada sem nenhuma tira felpuda à vista",
-      "evidencia": "braguilha fechada sem velcro visível"
-     },
-     "versao": "v3-22/10"
-    },
-    "etiqueta": {
-     "tem_etiqueta": false,
-     "evidencia": "Não há nenhuma etiqueta pendente visível nas fotos."
-    },
-    "classificacao": {
-     "tipo": "liso",
-     "corpo_tem_padrao_repetido": false,
-     "tem_logo_grande": false,
-     "aparencia": "ok",
-     "tecido_brilhoso": false,
-     "listra_na_frente": false,
-     "justificativa": "Corpo do short em uma cor sólida com listras laterais.",
-     "cores_listras": [],
-     "e_piping": false,
-     "tem_listra_lateral_sundek": true,
-     "bicolor": false,
-     "listra_evidencia": "Duas faixas na lateral: uma azul e uma azul clara, contornando o bolso.",
-     "tem_bolso_traseiro": true,
-     "bolso_traseiro_tem_nome": true,
-     "tem_bolso_frontal": false,
-     "bolso_evidencia": "Bolso traseiro direito com patch azul contendo sol Sundek e palavra SUNDEK.",
-     "confianca": null,
-     "_model": "gpt-4o",
-     "_dc_fotos": "f639981da8c0",
-     "listra_confirma": {
-      "fotos": "Foto 2 é a mais nítida",
-      "forma": "arco_costas",
-      "faixas": [
-       "azul",
-       "azul claro"
-      ],
-      "n_cores": 2,
-      "evidencia": "Faixa em arco nas costas com duas cores visíveis.",
-      "rejeitada": false
-     },
-     "desbotado_check": {
-      "confirmado": false,
-      "votos": [
-       "ok",
-       "ok",
-       "ok"
-      ],
-      "motivo": "",
-      "moletom": false
-     }
-    },
-    "marca_check": {
-     "e_sundek": "sim",
-     "marca_identificada": null,
-     "e_short": "sim",
-     "formato_identificado": "short",
-     "evidencia": "Etiqueta Sundek visível na parte traseira e faixa multicolorida característica no cós."
-    }
-   }
-  },
-  {
-   "id": "9695909216",
-   "marca": "sundek",
-   "url": "https://www.vinted.es/items/9695909216-costume",
-   "titulo": "Costume",
-   "tamanho": "L",
-   "estado": "Bueno",
-   "preco": "20,00 €",
-   "preco_total": "21,70 €",
-   "fotos": [
-    "https://images1.vinted.net/t/01_0005b_97tDRCtGCH2U4ikurrntnvHP/f800/3e36798b.webp?s=f0cfb255531f787637e08fdac9912c8608e2921d",
-    "https://images1.vinted.net/t/03_00fb4_uFUMQKDFzreaXznSuZYP92Se/f800/5454b73c.webp?s=32d15a777936df24974de816f9ad9daa53ffe5b5",
-    "https://images1.vinted.net/t/01_006f4_ofRpb1JB9q6fMwGjQ4CaGNVY/f800/5551b603.webp?s=6473fc5b3307593b8b0e68d87deac39e59ef85e1",
-    "https://images1.vinted.net/t/01_015ac_4n2YkQeQ5WxPcje8dFvChZvJ/f800/1f716bab.webp?s=23c641051377265996fae6a13a0eee1ffd3d5633"
-   ],
-   "coletado_em": "2026-08-18T12:24:53.539004+00:00",
-   "primeiro_visto": "2026-08-18T12:28:21.514126+00:00",
-   "status": "ativo",
-   "novo": false,
-   "decisao": "descartado",
-   "score": 51,
-   "teto": 32,
-   "motivo": "sem elástico, Preto acima de €15",
-   "motivo_exclusao": "",
-   "breakdown": {
-    "tier": 30,
-    "tamanho": 16,
-    "elastico": -15,
-    "etiqueta": 0,
-    "listra_bonus": 0,
-    "preco": 20,
-    "ratio_preco_teto": 0.68
-   },
-   "flags": [],
-   "negociacao": {},
-   "criterios": {
-    "cor": {
-     "cor_principal": "Preto",
-     "tier": "maravilhoso",
-     "justificativa": "O preto de nylon comum é altamente procurado.",
-     "cores_listras": [
-      "azul claro",
-      "branco",
-      "azul escuro"
-     ],
-     "listra_tier": "neutra",
-     "tier_final": "maravilhoso",
-     "combo_motivo": "listras ['azul claro', 'branco', 'azul escuro'] confirmam tier 'maravilhoso'"
-    },
-    "elastico": {
-     "tem_elastico": false,
-     "tipo_fechamento": "cordao",
-     "evidencia": "Cordão no fly; cós reto com nylon amassado (sem elástico real)."
-    },
-    "etiqueta": {
-     "tem_etiqueta": false,
-     "evidencia": "Não há nenhuma etiqueta de papel ou papelão pendente visível nas fotos."
-    },
-    "classificacao": {
-     "tipo": "liso",
-     "corpo_tem_padrao_repetido": false,
-     "tem_logo_grande": false,
-     "aparencia": "ok",
-     "tecido_brilhoso": false,
-     "listra_na_frente": false,
-     "justificativa": "Corpo do short em uma cor sólida com detalhes laterais.",
-     "cores_listras": [
-      "azul claro",
-      "branco",
-      "azul escuro"
-     ],
-     "e_piping": false,
-     "tem_listra_lateral_sundek": true,
-     "bicolor": false,
-     "listra_evidencia": "3 faixas paralelas na lateral (azul claro, branco, azul escuro) caracterizam como listra Sundek.",
-     "tem_bolso_traseiro": true,
-     "bolso_traseiro_tem_nome": true,
-     "tem_bolso_frontal": false,
-     "bolso_evidencia": "Bolso traseiro direito com patch azul contendo sol Sundek e palavra SUNDEK."
-    },
-    "marca_check": {
-     "e_sundek": "sim",
-     "marca_identificada": null,
-     "e_short": "sim",
-     "formato_identificado": "short",
-     "evidencia": "Etiqueta interna com 'SUNDEK', logo na parte traseira e faixa multicolorida característica."
-    }
-   }
-  },
-  {
-   "id": "9924575538",
-   "marca": "sundek",
-   "url": "https://www.vinted.es/items/9924575538-costume-sundek",
-   "titulo": "Costume sundek",
-   "tamanho": "L",
-   "estado": "Muy bueno",
-   "preco": "17,00 €",
-   "preco_total": "18,55 €",
-   "fotos": [
-    "https://images1.vinted.net/t/02_016af_f7tamYVsVrjFhb49XVAsuxzg/f800/c596dc1c.webp?s=51da0676ab4e7d71d203cd091c8277b1a79e1282",
-    "https://images1.vinted.net/t/06_00e7e_qiSfk6jVWcXUZHH79azktPcF/f800/5fc3918d.webp?s=0c75b73cf215629bd3701fd1bb817f30a1c04023",
-    "https://images1.vinted.net/t/06_001ce_isxHMBnJjLJQ5Qptwz3zFKGf/f800/26225c29.webp?s=4382948cc55633f80267f5c3756286acb471c940",
-    "https://images1.vinted.net/t/04_01f32_pmjuxBK17BmyQCefWDJge6Sd/f800/4f539d1c.webp?s=a4130782f023590a0da0eebd322013879f2cc21d"
-   ],
-   "coletado_em": "2026-09-07T20:39:49.157145+00:00",
-   "primeiro_visto": "2026-09-07T20:42:24.984165+00:00",
-   "status": "ativo",
-   "novo": false,
-   "decisao": "descartado",
-   "score": 51,
-   "teto": 32,
-   "motivo": "sem elástico, Branco acima de €10",
-   "motivo_exclusao": "",
-   "breakdown": {
-    "tier": 30,
-    "tamanho": 16,
-    "elastico": -15,
-    "etiqueta": 0,
-    "listra_bonus": 0,
-    "preco": 20,
-    "ratio_preco_teto": 0.58
-   },
-   "flags": [],
-   "negociacao": {},
-   "criterios": {
-    "cor": {
-     "cor_principal": "Branco",
-     "tier": "maravilhoso",
-     "justificativa": "Cor branca é altamente procurada e classificada como maravilhosa.",
-     "cores_listras": [
-      "azul",
-      "rosa",
-      "branco"
-     ],
-     "listra_tier": "neutra",
-     "tier_final": "maravilhoso",
-     "combo_motivo": "listras ['azul', 'rosa', 'branco'] confirmam tier 'maravilhoso'"
-    },
-    "elastico": {
-     "tem_elastico": false,
-     "tipo_fechamento": "cordao",
-     "evidencia": "Cordão funcional visível no fly; cós plano sem sinais de elástico."
-    },
-    "etiqueta": {
-     "tem_etiqueta": false,
-     "evidencia": "Não há nenhuma etiqueta de papel ou papelão pendente visível nas fotos."
-    },
-    "classificacao": {
-     "tipo": "liso",
-     "corpo_tem_padrao_repetido": false,
-     "tem_logo_grande": false,
-     "aparencia": "ok",
-     "tecido_brilhoso": false,
-     "listra_na_frente": false,
-     "justificativa": "Corpo do short em duas cores sólidas com listras laterais.",
-     "cores_listras": [
-      "azul",
-      "rosa",
-      "branco"
-     ],
-     "e_piping": false,
-     "tem_listra_lateral_sundek": true,
-     "bicolor": false,
-     "listra_evidencia": "A faixa colorida na costura lateral é a listra Sundek.",
-     "tem_bolso_traseiro": null,
-     "bolso_traseiro_tem_nome": null,
-     "tem_bolso_frontal": false,
-     "bolso_evidencia": "Sem foto da parte traseira do short — não dá pra avaliar bolso traseiro.",
-     "confianca": null,
-     "_model": "backfill-out2026",
-     "_dc_fotos": "5071322f2ab8"
-    },
-    "marca_check": {
-     "e_sundek": "sim",
-     "marca_identificada": null,
-     "e_short": "sim",
-     "formato_identificado": "short",
-     "evidencia": "Etiqueta interna com 'SUNDEK', logo visível em patch e faixa multicolorida no cós."
-    }
-   }
-  },
-  {
-   "id": "10031077108",
-   "marca": "sundek",
-   "url": "https://www.vinted.es/items/10031077108-short-de-bain-sundek",
-   "titulo": "Short de bain Sundek",
-   "tamanho": "L",
-   "estado": "Muy bueno",
-   "preco": "15,00 €",
-   "preco_total": "16,45 €",
-   "fotos": [
-    "https://images1.vinted.net/t/06_023e7_AXKtJvXvLJVRTnLWj5kPSxRU/f800/cd885ba0.webp?s=63d9b0ca5d4aa556c2e2dbfbc7dfa84bc49d33df",
-    "https://images1.vinted.net/t/01_00895_xzpg8DSZ6TfssidZJTZJ1c8z/f800/066a7cb8.webp?s=38b8fd9a75a4ffd2836c323519bcbd893bac6559",
-    "https://images1.vinted.net/t/02_01783_wbNqL587qfRhYQZSbTPc8w9A/f800/50403f29.webp?s=a2f0fc2491e7e4510c7c939a110c95b152f0d473"
-   ],
-   "coletado_em": "2026-09-17T15:21:02.559937+00:00",
-   "primeiro_visto": "2026-09-17T15:23:33.983710+00:00",
-   "status": "ativo",
-   "novo": false,
-   "decisao": "descartado",
-   "score": 51,
-   "teto": 32,
-   "motivo": "sem elástico, Preto acima de €15",
-   "motivo_exclusao": "",
-   "breakdown": {
-    "tier": 30,
-    "tamanho": 16,
-    "elastico": -15,
-    "etiqueta": 0,
-    "listra_bonus": 0,
-    "preco": 20,
-    "ratio_preco_teto": 0.51
-   },
-   "flags": [],
-   "negociacao": {},
-   "criterios": {
-    "cor": {
-     "cor_principal": "Preto",
-     "tier": "maravilhoso",
-     "justificativa": "O preto é de nylon comum e atende aos critérios de alta demanda.",
-     "cores_listras": [
-      "verde",
-      "vermelho",
-      "branco"
-     ],
-     "listra_tier": "neutra",
-     "tier_final": "maravilhoso",
-     "combo_motivo": "listras ['verde', 'vermelho', 'branco'] confirmam tier 'maravilhoso'"
-    },
-    "elastico": {
-     "tem_elastico": false,
-     "tipo_fechamento": "cordao",
-     "evidencia": "Cordão no fly; cós reto com nylon amassado (sem elástico real)."
-    },
-    "etiqueta": {
-     "tem_etiqueta": false,
-     "evidencia": "Não há nenhuma etiqueta pendente visível nas fotos, apenas etiquetas costuradas internamente."
-    },
-    "classificacao": {
-     "tipo": "liso",
-     "corpo_tem_padrao_repetido": false,
-     "tem_logo_grande": false,
-     "aparencia": "ok",
-     "tecido_brilhoso": false,
-     "listra_na_frente": false,
-     "justificativa": "Corpo do short em uma cor sólida sem padrão gráfico.",
-     "cores_listras": [
-      "verde",
-      "vermelho",
-      "branco"
-     ],
-     "e_piping": false,
-     "tem_listra_lateral_sundek": true,
-     "bicolor": false,
-     "listra_evidencia": "3 faixas coloridas (verde, vermelho e branco) na lateral do painel traseiro.",
-     "tem_bolso_traseiro": true,
-     "bolso_traseiro_tem_nome": true,
-     "tem_bolso_frontal": false,
-     "bolso_evidencia": "Bolso traseiro direito com patch contendo logo e palavra SUNDEK."
-    },
-    "marca_check": {
-     "e_sundek": "sim",
-     "marca_identificada": null,
-     "e_short": "sim",
-     "formato_identificado": "short",
-     "evidencia": "Etiqueta Sundek visível, faixa multicolorida característica no cós, comprimento e formato de short com pernas separadas."
-    }
-   }
-  },
-  {
-   "id": "9352546886",
-   "marca": "sundek",
-   "url": "https://www.vinted.es/items/9352546886-costume-sundek",
-   "titulo": "Costume sundek",
-   "tamanho": "S",
-   "estado": "Muy bueno",
-   "preco": "12,00 €",
-   "preco_total": "13,30 €",
-   "fotos": [
-    "https://images1.vinted.net/t/04_02501_kZKGjFeeAD3TBcnhwA6eJ7dx/f800/1f663920.webp?s=0153ee7ef965afb20f2b27639b698c05caa43b17",
-    "https://images1.vinted.net/t/06_01948_nCpdGVwAj13n64TqWKFrRCCF/f800/8e7f3305.webp?s=8d42b373feea0604641772fd560f585a3ba6904a"
-   ],
-   "coletado_em": "2026-07-08T15:41:08.199914+00:00",
-   "primeiro_visto": "2026-07-08T15:47:17.800139+00:00",
-   "status": "ativo",
-   "novo": false,
-   "decisao": "descartado",
-   "score": 49,
-   "teto": 27,
-   "motivo": "sem elástico, Branco acima de €10",
-   "motivo_exclusao": "",
-   "breakdown": {
-    "tier": 30,
-    "tamanho": 4,
-    "elastico": -15,
-    "etiqueta": 0,
-    "listra_bonus": 0,
-    "preco": 30,
-    "ratio_preco_teto": 0.49
-   },
-   "flags": [],
-   "negociacao": {},
-   "criterios": {
-    "cor": {
-     "cor_principal": "Branco",
-     "tier": "maravilhoso",
-     "justificativa": "Cor branca é altamente procurada e tem máxima liquidez.",
-     "cores_listras": [
-      "azul escuro",
-      "azul claro",
-      "verde"
-     ],
-     "listra_tier": "neutra",
-     "tier_final": "maravilhoso",
-     "combo_motivo": "listras ['azul escuro', 'azul claro', 'verde'] confirmam tier 'maravilhoso'"
-    },
-    "elastico": {
-     "tem_elastico": false,
-     "tipo_fechamento": "cordao",
-     "evidencia": "Cós com leve franzido não uniforme (nylon), fly com cordão passando por ilhós."
-    },
-    "etiqueta": {
-     "tem_etiqueta": false,
-     "evidencia": "Não há hang tag visível pendente nas fotos."
-    },
-    "classificacao": {
-     "tipo": "liso",
-     "corpo_tem_padrao_repetido": false,
-     "tem_logo_grande": false,
-     "aparencia": "ok",
-     "tecido_brilhoso": false,
-     "listra_na_frente": false,
-     "justificativa": "Corpo do short em uma cor sólida sem padrão gráfico.",
-     "cores_listras": [
-      "azul escuro",
-      "azul claro",
-      "verde"
-     ],
-     "e_piping": false,
-     "tem_listra_lateral_sundek": true,
-     "bicolor": false,
-     "listra_evidencia": "3 faixas curvas (azul escuro, azul claro, verde) no painel traseiro contornando o bolso",
-     "tem_bolso_traseiro": true,
-     "bolso_traseiro_tem_nome": true,
-     "tem_bolso_frontal": false,
-     "bolso_evidencia": "Bolso traseiro direito com patch contendo logo e palavra SUNDEK."
-    },
-    "marca_check": {
-     "e_sundek": "sim",
-     "marca_identificada": null,
-     "e_short": "sim",
-     "formato_identificado": "short",
-     "evidencia": "Logo Sundek visível na etiqueta traseira e faixa multicolorida característica no cós."
-    }
-   }
-  },
-  {
-   "id": "9389904063",
-   "marca": "sundek",
-   "url": "https://www.vinted.es/items/9389904063-costume-sundek-bianco-uomo",
-   "titulo": "costume Sundek bianco uomo",
-   "tamanho": "S",
-   "estado": "Bueno",
-   "preco": "9,00 €",
-   "preco_total": "10,15 €",
-   "fotos": [
-    "https://images1.vinted.net/t/02_0146a_BZou7GHeGEZCETVCfnogceYu/f800/cc7fe7dc.webp?s=dc20a5599c31ceb81901156fafd7cbdb52d92e9e",
-    "https://images1.vinted.net/t/05_02263_k8wYUGBzaQDE4AgftYkZ5i2Y/f800/8350430f.webp?s=4da3ec6354e201c30449c020a5747aa177d8b8a8",
-    "https://images1.vinted.net/t/02_000ca_FQ96kn13kcaTu7xLPtej3e4B/f800/f3fac829.webp?s=c78e02dec081f54cb255caa8ff6bc35e963942b5",
-    "https://images1.vinted.net/t/02_02429_YtbPWPacPNPpftfq6f7vs11S/f800/b80feed9.webp?s=f6381b6abc0bb87e2f69d2491389a1654d841d65"
-   ],
-   "coletado_em": "2026-07-13T16:21:52.016482+00:00",
-   "primeiro_visto": "2026-07-13T16:37:16.745167+00:00",
-   "status": "ativo",
-   "novo": false,
-   "decisao": "descartado",
-   "score": 49,
-   "teto": 27,
-   "motivo": "sem elástico, Branco acima de €10",
-   "motivo_exclusao": "",
-   "breakdown": {
-    "tier": 30,
-    "tamanho": 4,
-    "elastico": -15,
-    "etiqueta": 0,
-    "listra_bonus": 0,
-    "preco": 30,
-    "ratio_preco_teto": 0.38
-   },
-   "flags": [],
-   "negociacao": {},
-   "criterios": {
-    "cor": {
-     "cor_principal": "Branco",
-     "tier": "maravilhoso",
-     "justificativa": "Cor branca é altamente procurada e classificada como maravilhosa.",
-     "cores_listras": [
-      "azul claro",
-      "azul escuro"
-     ],
-     "listra_tier": "neutra",
-     "tier_final": "maravilhoso",
-     "combo_motivo": "listras ['azul claro', 'azul escuro'] confirmam tier 'maravilhoso'"
-    },
-    "elastico": {
-     "tem_elastico": false,
-     "tipo_fechamento": "cordao",
-     "evidencia": "Cordão no fly; cós reto com nylon amassado (sem elástico real)."
-    },
-    "etiqueta": {
-     "tem_etiqueta": false,
-     "evidencia": "Não há nenhuma etiqueta de papel ou papelão pendente visível nas fotos."
-    },
-    "classificacao": {
-     "tipo": "liso",
-     "corpo_tem_padrao_repetido": false,
-     "tem_logo_grande": false,
-     "aparencia": "ok",
-     "tecido_brilhoso": false,
-     "listra_na_frente": false,
-     "justificativa": "Corpo do short em uma cor sólida com listras laterais.",
-     "cores_listras": [
-      "azul claro",
-      "azul escuro"
-     ],
-     "e_piping": false,
-     "tem_listra_lateral_sundek": true,
-     "bicolor": false,
-     "listra_evidencia": "Duas faixas azuis paralelas na lateral do short, contornando o bolso traseiro.",
-     "tem_bolso_traseiro": true,
-     "bolso_traseiro_tem_nome": true,
-     "tem_bolso_frontal": false,
-     "bolso_evidencia": "Bolso traseiro direito com patch contendo sol Sundek e palavra SUNDEK."
-    },
-    "marca_check": {
-     "e_sundek": "sim",
-     "marca_identificada": null,
-     "e_short": "sim",
-     "formato_identificado": "short",
-     "evidencia": "Etiqueta interna com 'SUNDEK', logo na parte de trás e faixa multicolorida característica."
     }
    }
   },
@@ -22335,7 +22294,7 @@
    "coletado_em": "2026-11-22T10:01:50.447735+00:00",
    "primeiro_visto": "2026-11-22T10:02:37.957061+00:00",
    "status": "ativo",
-   "novo": true,
+   "novo": false,
    "decisao": "compravel",
    "score": 96,
    "teto": 80,
@@ -22419,6 +22378,102 @@
     "fecho": {
      "tipo_fechamento": "cordao",
      "evidencia": "Na foto 1 é possível ver claramente o cós com elástico e o cordão/cadarço azul amarrado na parte frontal.",
+     "confianca": 1.0
+    }
+   }
+  },
+  {
+   "id": "10935714270",
+   "marca": "vilebrequin",
+   "url": "https://www.vinted.es/items/10935714270-costume-uomo-s",
+   "titulo": "Costume uomo S",
+   "tamanho": "S",
+   "estado": "Nuevo sin etiquetas",
+   "preco": "5,00 €",
+   "preco_total": "5,95 €",
+   "fotos": [
+    "https://images1.vinted.net/t/05_00d6f_qWNt9bMaLj1Yzs5e2nFcDw2V/f800/abe88e6b.webp?s=cd2fd504bb2f74139a3e396b6d93d571e9edbd76",
+    "https://images1.vinted.net/t/01_026e9_sfumLDtjGnwiaL7m3CHigVen/f800/e04a38c7.webp?s=7c903725854df875afc5f935826d2ebdccb2e58c",
+    "https://images1.vinted.net/t/06_00219_UAgB3wdnbZwuA596R5X8sLzW/f800/7f10d3a3.webp?s=39106979d56108cdc9d7bf9b86e8d12083b9f6f4"
+   ],
+   "coletado_em": "2026-11-23T10:05:40.471284+00:00",
+   "primeiro_visto": "2026-11-23T10:03:38.736175+00:00",
+   "status": "ativo",
+   "novo": false,
+   "decisao": "compravel",
+   "score": 95,
+   "teto": 80,
+   "motivo": "",
+   "motivo_exclusao": "",
+   "breakdown": {
+    "padrao": 40,
+    "cor": 12,
+    "tamanho": 8,
+    "etiqueta": 0,
+    "autenticidade": 5,
+    "preco": 30,
+    "ratio_preco_teto": 0.07,
+    "cor_bucket": "neutra",
+    "fundo_problema": false,
+    "colecao_antiga": false
+   },
+   "flags": [],
+   "negociacao": {
+    "modo": "fechar",
+    "oferta": 4,
+    "msg": "💰 Oferecer €4 — \"por 4 aceita?\". Se recusar, ainda vale o preço pedido."
+   },
+   "criterios": {
+    "cor": {
+     "cor_principal": "musgo",
+     "cor_fundo": "musgo",
+     "neon": false,
+     "metalico": false,
+     "evidencia": "As fotos mostram um fundo verde escuro, comparado com a cor das tartarugas que são amarelas.",
+     "confianca": 0.9
+    },
+    "etiqueta": {
+     "tem_etiqueta": false,
+     "evidencia": "Não há hang tag de papel ou papelão pendurado por cordão; a única etiqueta visível é um patch retangular costurado no bolso traseiro, que não se enquadra na definição de etiqueta solta."
+    },
+    "classificacao": {
+     "tipo": "tartaruga_grande",
+     "autenticidade": "original"
+    },
+    "marca_check": {
+     "e_vilebrequin": "sim",
+     "e_short": "sim",
+     "evidencia": "Etiqueta com 'VILEBREQUIN' visível e estampa de tartarugas característica. Short de banho masculino com cordão na cintura.",
+     "confianca": 1.0
+    },
+    "tartaruga": {
+     "tipo": "tartaruga_grande",
+     "cor_principal": "verde",
+     "fundo_padrao": "uniforme",
+     "tartaruga_variedade": "tartarugas amarelas",
+     "padrao_identificado": null,
+     "aparencia": "ok",
+     "justificativa": "Short verde com tartarugas amarelas grandes e reconhecíveis.",
+     "confianca": 0.95
+    },
+    "autenticidade": {
+     "cortes": [
+      "base do bolso: a tartaruga horizontal junto à costura encosta na tartaruga vertical do tecido abaixo, formando um encontro deformado."
+     ],
+     "autenticidade": "original",
+     "sinal": "nenhum",
+     "foto_bolso": 3,
+     "evidencia": "Na foto 3, vejo apenas um encontro irregular na base; no restante do contorno não identifico outro corte ou sobreposição evidente, e as tartarugas mantêm desenho, tamanho e espaçamento semelhantes. Não aparece etiquetinha interna com número; pelo critério solicitado, um ponto isolado não basta para acusar falsificação.",
+     "confianca": 0.76
+    },
+    "cordao": {
+     "cordao_cor": "colorido",
+     "evidencia": "Na primeira foto, o cordão amarrado na parte frontal do cós é visível na cor amarela/verde-limão.",
+     "confianca": 1.0
+    },
+    "fecho": {
+     "tipo_fechamento": "cordao",
+     "evidencia": "Na foto 1, é possível ver claramente o cós com elástico e o cordão/cadarço amarelo amarrado na frente.",
      "confianca": 1.0
     }
    }
@@ -23374,8 +23429,8 @@
    "titulo": "Dissolvable Men’s Swim trunks",
    "tamanho": "L",
    "estado": "New with tags",
-   "preco": "11,14 €",
-   "preco_total": "12,53 €",
+   "preco": "11,11 €",
+   "preco_total": "12,51 €",
    "fotos": [
     "https://images1.vinted.net/t/05_02470_KvddFEHsqPGHvvUiTw9v8dEW/f800/7b575623.webp?s=0b0c521ecc4e43798b7762c67d9d27efb3946eea"
    ],
@@ -23469,11 +23524,13 @@
    "titulo": "Vilebrequin Moorea Swim Shorts Turtles World Map Navy L",
    "tamanho": "L",
    "estado": "Nuevo sin etiquetas",
-   "preco": "42,00 €",
-   "preco_total": "44,80 €",
+   "preco": "70,00 €",
+   "preco_total": "74,20 €",
    "fotos": [
-    "https://images1.vinted.net/t/06_015c3_6kACUjS2ufgtGc72MAa1Y8Pm/f800/e0d82e7c.webp?s=ef8e54c2cad4ed94725531a87ee7de6b87fccdae",
-    "https://images1.vinted.net/t/05_005c9_WcMp8LJSsP5E4akMftcm27wn/f800/d939be20.webp?s=1c247467ecd5ea5ee9e54700355e32f6d385dca1"
+    "https://images1.vinted.net/t/05_00d8b_p2QnvHpJMDHfmePhSoJtby3Q/f800/0c75e594.webp?s=98eba7aeb79d090705c49ad5aa067006913b0db5",
+    "https://images1.vinted.net/t/03_0211c_DrUfMshhK8mJfGt8EwRvMEgb/f800/7c813a2b.webp?s=04a71cd4e7c5cd02528352e6a6c233273a054918",
+    "https://images1.vinted.net/t/03_00889_YGhnpeB2cWA2h6ygNEYkefEG/f800/a34bdd94.webp?s=5d5a531d17072e2f2f03d9e18180887d9046254d",
+    "https://images1.vinted.net/t/04_014f1_9JFr5sDik6buJqpWUvGkaH2r/f800/3741cb4a.webp?s=9d2a1063827773d55c49ce9de7031ac3ce36969d"
    ],
    "coletado_em": "2026-11-13T14:56:43.433496+00:00",
    "primeiro_visto": "2026-11-13T14:58:48.446064+00:00",
@@ -24459,187 +24516,6 @@
    }
   },
   {
-   "id": "10914991722",
-   "marca": "vilebrequin",
-   "url": "https://www.vinted.co.uk/items/10914991722-vilebrequin-x-corona-moorea-mens-swim-shorts",
-   "titulo": "Vilebrequin x Corona Moorea Mens Swim Shorts",
-   "tamanho": "M",
-   "estado": "New with tags",
-   "preco": "96,00 €",
-   "preco_total": "101,64 €",
-   "fotos": [
-    "https://images1.vinted.net/t/01_0023c_4mvBpmaHPqTmYhxtnJqTDava/f800/191519dc.webp?s=ecddc308ddfb238fa866c99f40e97358e3b7dc90",
-    "https://images1.vinted.net/t/04_01d81_GaLX2KhjwCihpX2wwszoD1e6/f800/bd0975fc.webp?s=52c8b4c155c0117541d36178ab2b51192508f4aa",
-    "https://images1.vinted.net/t/04_01910_Nv98HBtRNtYtcwd2wDBW76sA/f800/1418a774.webp?s=19d9bb3efdc28e3a383f14dbe8eae584d31a3ac0"
-   ],
-   "coletado_em": "2026-11-21T22:11:42.908825+00:00",
-   "primeiro_visto": "2026-11-21T22:12:10.888938+00:00",
-   "status": "ativo",
-   "novo": false,
-   "decisao": "descartado",
-   "score": 80,
-   "teto": 80,
-   "motivo": "preço €101.64 acima da faixa (€100)",
-   "motivo_exclusao": "",
-   "breakdown": {
-    "padrao": 40,
-    "cor": 15,
-    "tamanho": 15,
-    "etiqueta": 5,
-    "autenticidade": 5,
-    "preco": 0,
-    "ratio_preco_teto": 1.27,
-    "cor_bucket": "preferida",
-    "fundo_problema": false,
-    "colecao_antiga": false
-   },
-   "flags": [],
-   "negociacao": {},
-   "criterios": {
-    "cor": {
-     "cor_principal": "azul marinho",
-     "cor_fundo": "azul marinho",
-     "neon": false,
-     "metalico": false,
-     "evidencia": "As fotos mostram um fundo escuro que se compara claramente ao forro, que é mais claro e não apresenta azul.",
-     "confianca": 0.9
-    },
-    "etiqueta": {
-     "tem_etiqueta": true,
-     "evidencia": "A terceira foto mostra claramente uma hang tag de papelão preto com a marca Vilebrequin pendurada por um cordão no cós do short."
-    },
-    "classificacao": {
-     "tipo": "tartaruga_grande",
-     "autenticidade": "original"
-    },
-    "marca_check": {
-     "e_vilebrequin": "sim",
-     "e_short": "sim",
-     "evidencia": "Etiqueta interna e tag de papel com 'VILEBREQUIN' visíveis. Short de banho masculino com cordão na cintura.",
-     "confianca": 1.0
-    },
-    "tartaruga": {
-     "tipo": "tartaruga_grande",
-     "cor_principal": "azul escuro",
-     "fundo_padrao": "uniforme",
-     "tartaruga_variedade": "tartarugas brancas",
-     "padrao_identificado": null,
-     "aparencia": "ok",
-     "justificativa": "Short azul escuro com tartarugas brancas grandes e reconhecíveis espalhadas pelo tecido.",
-     "confianca": 0.95
-    },
-    "autenticidade": {
-     "cortes": [],
-     "autenticidade": "original",
-     "sinal": "nenhum",
-     "foto_bolso": 2,
-     "evidencia": "Na foto 2, a estampa do bolso traseiro se integra à do short, mantendo desenho, tamanho e espaçamento, sem cortes retos ou tartarugas grudadas visíveis no contorno. A foto 3 mostra etiquetas internas, mas não a etiquetinha com o número clonado.",
-     "confianca": 0.9
-    },
-    "cordao": {
-     "cordao_cor": "colorido",
-     "evidencia": "Na primeira foto é possível ver claramente o cordão escuro (navy/preto) amarrado na frente do cós do short.",
-     "confianca": 1.0
-    },
-    "fecho": {
-     "tipo_fechamento": "cordao",
-     "evidencia": "Na foto 1 é possível ver claramente o cordão escuro saindo do cós franzido na parte da frente do short.",
-     "confianca": 1.0
-    }
-   }
-  },
-  {
-   "id": "10895711632",
-   "marca": "vilebrequin",
-   "url": "https://www.vinted.es/items/10895711632-short-vilebrequin",
-   "titulo": "Short vilebrequin",
-   "tamanho": "L",
-   "estado": "Nuevo sin etiquetas",
-   "preco": "100,00 €",
-   "preco_total": "105,70 €",
-   "fotos": [
-    "https://images1.vinted.net/t/06_021d1_Cifer4iyvwD433GPn8kQo9vk/f800/26a38140.webp?s=a7b62c762ec916aa02fda0c074c51fa1f09ea8a3",
-    "https://images1.vinted.net/t/05_01074_faH4nDi4QnSrAqCi4jC9MAkc/f800/9b06a6b9.webp?s=002facd7dacf97e93f173b8c24ce3436b70ee5f5",
-    "https://images1.vinted.net/t/02_01aa3_dFxMD5D2fFLD8xYh4zG7AbEF/f800/29d1b56b.webp?s=3298d64235fc8d3baf6d134d11374bf209892ad1",
-    "https://images1.vinted.net/t/06_00d8f_WWWfcF41PEcNbqN8KuEvrjgy/f800/72079469.webp?s=bd17411caab0e23e43487b85b8c161fdf2ae2bea"
-   ],
-   "coletado_em": "2026-11-20T15:48:10.581015+00:00",
-   "primeiro_visto": "2026-11-20T15:50:52.799426+00:00",
-   "status": "ativo",
-   "novo": false,
-   "decisao": "descartado",
-   "score": 63,
-   "teto": 80,
-   "motivo": "preço €105.70 acima da faixa (€100)",
-   "motivo_exclusao": "",
-   "breakdown": {
-    "padrao": 40,
-    "cor": 6,
-    "tamanho": 12,
-    "etiqueta": 0,
-    "autenticidade": 5,
-    "preco": 0,
-    "ratio_preco_teto": 1.32,
-    "cor_bucket": "aceitavel",
-    "fundo_problema": false,
-    "colecao_antiga": false
-   },
-   "flags": [],
-   "negociacao": {},
-   "criterios": {
-    "cor": {
-     "cor_principal": "azul claro",
-     "cor_fundo": "azul claro",
-     "neon": false,
-     "metalico": false,
-     "evidencia": "Na primeira foto, o fundo entre as estampas é visivelmente azul claro, comparado ao que é branco na etiqueta.",
-     "confianca": 0.9
-    },
-    "etiqueta": {
-     "tem_etiqueta": false,
-     "evidencia": "As imagens mostram apenas a etiqueta de marca costurada na cintura e o label interno de tamanho com cordão de segurança fixado, sem qualquer cartão de papel ou papelão pendurado solto."
-    },
-    "classificacao": {
-     "tipo": "tartaruga_grande",
-     "autenticidade": "original"
-    },
-    "marca_check": {
-     "e_vilebrequin": "sim",
-     "e_short": "sim",
-     "evidencia": "Etiqueta interna com 'VILEBREQUIN' visível, estampa característica de tartarugas, cordão na cintura.",
-     "confianca": 1.0
-    },
-    "tartaruga": {
-     "tipo": "tartaruga_grande",
-     "cor_principal": "azul",
-     "fundo_padrao": "uniforme",
-     "tartaruga_variedade": "tartarugas brancas",
-     "padrao_identificado": null,
-     "aparencia": "ok",
-     "justificativa": "Short azul com padrão de tartarugas grandes e brancas sobre fundo uniforme.",
-     "confianca": 0.95
-    },
-    "autenticidade": {
-     "cortes": [],
-     "autenticidade": "original",
-     "sinal": "nenhum",
-     "foto_bolso": 1,
-     "evidencia": "Na foto 1, o bolso traseiro é embutido, com abertura de zíper, sem aba ou retalho estampado para comparar. A foto 4 mostra a etiqueta interna e o tamanho L, mas não aparece a numeração clonada indicada.",
-     "confianca": 0.9
-    },
-    "cordao": {
-     "cordao_cor": "colorido",
-     "evidencia": "Nas fotos 2 e 3 é possível ver claramente que o cordão da cintura é azul escuro.",
-     "confianca": 1.0
-    },
-    "fecho": {
-     "tipo_fechamento": "cordao",
-     "evidencia": "Nas fotos 2 e 3 é possível ver claramente o cordão trançado azul na parte frontal do cós com as ponteiras metálicas gravadas com a marca Vilebrequin.",
-     "confianca": 1.0
-    }
-   }
-  },
-  {
    "id": "10869967617",
    "marca": "vilebrequin",
    "url": "https://www.vinted.co.uk/items/10869967617-mens-vilebrequin-swim-shorts",
@@ -25535,7 +25411,7 @@
    "coletado_em": "2026-11-22T10:00:57.769298+00:00",
    "primeiro_visto": "2026-11-22T10:02:37.957061+00:00",
    "status": "ativo",
-   "novo": true,
+   "novo": false,
    "decisao": "descartado",
    "score": 32,
    "teto": 42,
@@ -28844,8 +28720,8 @@
    "titulo": "Short de bain Vilebrequin imprimé fleurs tropicales - Maillot Homme multicolore taille M cordon #289",
    "tamanho": "M",
    "estado": "Muy bueno",
-   "preco": "56,00 €",
-   "preco_total": "59,50 €",
+   "preco": "50,00 €",
+   "preco_total": "53,20 €",
    "fotos": [
     "https://images1.vinted.net/t/06_00ef9_vrHLyMHe8ZFWQREDwsA2EG2g/f800/74b7d562.webp?s=ad769d58a887d757683abc09228a51f30833511a",
     "https://images1.vinted.net/t/02_01f66_porxLQGATk5JPBPyk4wKzWAM/f800/6710c94e.webp?s=f01a4ef0a234b526b31d62a85e932c843d62402e",
@@ -30249,6 +30125,88 @@
      "tipo": "nao_short",
      "motivo": "camiseta",
      "confianca": 1
+    }
+   }
+  },
+  {
+   "id": "10733322195",
+   "marca": "vilebrequin",
+   "url": "https://www.vinted.es/items/10733322195-polo-vilebrequin-taille-m",
+   "titulo": "Polo Vilebrequin Taille M",
+   "tamanho": "M",
+   "estado": "Muy bueno",
+   "preco": "20,00 €",
+   "preco_total": "21,70 €",
+   "fotos": [
+    "https://images1.vinted.net/t/06_01a18_Gb32D2y3EFBMWi55bUjkHfEy/f800/5a2b9541.webp?s=df829053ff886cda36424572b7e77550b0b1b0ab",
+    "https://images1.vinted.net/t/04_02619_EKv9eqbQzPYJvqn2Qd8nigRY/f800/832a6b8c.webp?s=9b660c09c6cd89e254999cd368b629797ccdd6f0"
+   ],
+   "coletado_em": "2026-11-09T11:28:54.754048+00:00",
+   "primeiro_visto": "2026-11-09T11:30:08.494758+00:00",
+   "status": "ativo",
+   "novo": false,
+   "decisao": "descartado",
+   "score": 0,
+   "teto": 0,
+   "motivo": "",
+   "motivo_exclusao": "nao_short",
+   "breakdown": {},
+   "flags": [],
+   "negociacao": {},
+   "criterios": {
+    "classificacao": {
+     "tipo": "nao_short",
+     "motivo": "polo",
+     "confianca": 1
+    }
+   }
+  },
+  {
+   "id": "10733560607",
+   "marca": "vilebrequin",
+   "url": "https://www.vinted.es/items/10733560607-banador-vilebrequin-talla-xl",
+   "titulo": "Bañador Vilebrequin Talla  XL",
+   "tamanho": "XL",
+   "estado": "Muy bueno",
+   "preco": "50,00 €",
+   "preco_total": "53,20 €",
+   "fotos": [
+    "https://images1.vinted.net/t/04_000fb_31DgbmVYBVy5xvyJdSWGZJJQ/f800/db244596.webp?s=e718014777753d2270705cc0f1ed0fba420fb663",
+    "https://images1.vinted.net/t/02_02128_YrswQCGyybtv7f7BcoTCuy3d/f800/836b4d0f.webp?s=6fd6999f52466bbd4a446cf0a73ff031938601aa",
+    "https://images1.vinted.net/t/05_023e4_aQFzonLi9LmLNdj8FNa6sfMy/f800/f8ed75a5.webp?s=f32c523260e8d36c23540f1d30a5d52a93afdc20"
+   ],
+   "coletado_em": "2026-11-09T11:49:26.255124+00:00",
+   "primeiro_visto": "2026-11-09T11:51:24.511602+00:00",
+   "status": "ativo",
+   "novo": false,
+   "decisao": "descartado",
+   "score": 0,
+   "teto": 0,
+   "motivo": "",
+   "motivo_exclusao": "padrao_outro_nao_compra",
+   "breakdown": {},
+   "flags": [],
+   "negociacao": {},
+   "criterios": {
+    "classificacao": {
+     "tipo": "outro",
+     "autenticidade": "indefinido"
+    },
+    "marca_check": {
+     "e_vilebrequin": "sim",
+     "e_short": "sim",
+     "evidencia": "Etiqueta interna com 'VILEBREQUIN' visível e design característico de short de banho.",
+     "confianca": 1.0
+    },
+    "tartaruga": {
+     "tipo": "outro",
+     "cor_principal": "azul",
+     "fundo_padrao": "uniforme",
+     "tartaruga_variedade": null,
+     "padrao_identificado": "caranguejos",
+     "aparencia": "ok",
+     "justificativa": "Short azul com padrão de caranguejos vermelhos e detalhes brancos.",
+     "confianca": 1.0
     }
    }
   }
