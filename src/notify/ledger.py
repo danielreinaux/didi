@@ -18,25 +18,32 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent.parent
 LEDGER_PATH = ROOT / "data" / "notificados.json"
+# Ville com e-mail próprio (24/11/2026): o job ville avisa a Ville logo depois da análise dele e
+# registra aqui. Cada arquivo tem UM escritor (job sundek → notificados.json; job ville → este),
+# então os dois jobs em paralelo não colidem no push. Para não reavisar, o notify lê os dois
+# (as entradas antigas da Ville seguem no notificados.json até a poda de 30 dias).
+LEDGER_VILLE_PATH = ROOT / "data" / "notificados-ville.json"
 
 
 def _agora() -> str:
     return datetime.now(timezone.utc).isoformat()
 
 
-def carregar() -> dict:
-    if not LEDGER_PATH.exists():
+def carregar(caminho: Path | None = None) -> dict:
+    caminho = caminho or LEDGER_PATH
+    if not caminho.exists():
         return {}
     try:
-        return json.loads(LEDGER_PATH.read_text(encoding="utf-8"))
+        return json.loads(caminho.read_text(encoding="utf-8"))
     except Exception:
         # Ledger corrompido não pode derrubar a rodada — começa vazio.
         return {}
 
 
-def salvar(ledger: dict) -> None:
-    LEDGER_PATH.parent.mkdir(parents=True, exist_ok=True)
-    LEDGER_PATH.write_text(json.dumps(ledger, indent=2, ensure_ascii=False), encoding="utf-8")
+def salvar(ledger: dict, caminho: Path | None = None) -> None:
+    caminho = caminho or LEDGER_PATH
+    caminho.parent.mkdir(parents=True, exist_ok=True)
+    caminho.write_text(json.dumps(ledger, indent=2, ensure_ascii=False), encoding="utf-8")
 
 
 def ja_viu_marca(ledger: dict, marca: str | None) -> bool:

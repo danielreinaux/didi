@@ -84,8 +84,12 @@ def ids_conhecidos(acervo: Path) -> set[str]:
         return set()
 
 
-def coletar(browser, url_catalogo: str, acervo: Path, ja_coletados: set[str] | None = None) -> list[dict]:
-    """Anúncios novos do catálogo do UK, já convertidos para euro. Nunca lança exceção."""
+def coletar(browser, url_catalogo: str, acervo: Path, ja_coletados: set[str] | None = None,
+            marca_nav: str | None = None) -> list[dict]:
+    """Anúncios novos do catálogo do UK, já convertidos para euro. Nunca lança exceção.
+    `marca_nav`: marca do navegador para o teto por anúncio (scrape/vigia.py)."""
+    from ..config import TETO_ANUNCIO_S
+    from ..scrape import vigia
     from ..scrape.extract import extract_item
     from .vinted import listar_urls_items
 
@@ -109,13 +113,19 @@ def coletar(browser, url_catalogo: str, acervo: Path, ja_coletados: set[str] | N
               + (f" (abrindo {UK_MAX_NOVOS} nesta rodada)" if len(novos) > UK_MAX_NOVOS else ""))
         for i, u in enumerate(novos[:UK_MAX_NOVOS]):
             print(f"    [UK {i + 1}/{min(len(novos), UK_MAX_NOVOS)}] {u}")
-            try:
-                item = converter(extract_item(page, u))
-                print(f"        {item['titulo']} — {item.get('preco_gbp')} (≈ {item['preco']}) · "
-                      f"{item['tamanho']} · {item['estado']} · {len(item.get('fotos') or [])} fotos")
-                coletados.append(item)
-            except Exception as e:  # noqa: BLE001
-                print(f"        ERRO: {str(e)[:120]}")
+            with vigia.Teto(TETO_ANUNCIO_S, marca_nav) as teto:
+                try:
+                    item = converter(extract_item(page, u))
+                    print(f"        {item['titulo']} — {item.get('preco_gbp')} (≈ {item['preco']}) · "
+                          f"{item['tamanho']} · {item['estado']} · {len(item.get('fotos') or [])} fotos")
+                    coletados.append(item)
+                except Exception as e:  # noqa: BLE001
+                    print(f"        ERRO: {str(e)[:120]}")
+            if teto.estourou:
+                # O navegador foi fechado à força: o resto do UK fica para a rodada seguinte
+                # (anúncio não coletado continua "ainda não visto").
+                print(f"        TRAVOU: passou de {TETO_ANUNCIO_S} s neste anúncio; o resto do UK fica para a próxima rodada")
+                break
     except Exception as e:  # noqa: BLE001 — o UK nunca derruba a coleta da Espanha
         print(f"    [UK] falhou: {str(e)[:200]}")
     finally:

@@ -11,7 +11,8 @@ from pathlib import Path
 from playwright.sync_api import sync_playwright
 
 from ..utils.browser import abrir_sessao_vinted
-from ..config import MAX_ITEMS_POR_RODADA, VINTED_UK
+from ..config import MAX_ITEMS_POR_RODADA, TETO_ANUNCIO_S, VINTED_UK
+from . import vigia
 from .extract import extract_item
 from .guard import checar_fotos
 from ..utils.historico import atualizar_com_scrape
@@ -32,7 +33,8 @@ def main() -> None:
 
     with sync_playwright() as p:
         print("[1] Abrindo sessão (vinted.pt → Espanha → cookies)")
-        browser, _, page = abrir_sessao_vinted(p)
+        marca_nav = vigia.nova_marca()
+        browser, _, page = abrir_sessao_vinted(p, marca_nav)
 
         url = montar_url_sundek_hombre()
         print(f"[2] Catálogo filtrado:\n    {url}")
@@ -63,18 +65,31 @@ def main() -> None:
         for i, u in enumerate(urls):
             idx = f"{i + 1:02d}"
             print(f"    [{i + 1}/{len(urls)}] {u}")
-            try:
-                item = extract_item(page, u)
-                page.screenshot(path=str(SHOTS / f"short-{idx}.png"))
-                print(
-                    f"        {item['titulo']} — {item['preco']} · "
-                    f"{item['tamanho']} · {item['estado']} · {item['cor']}"
-                )
-                coletados.append(item)
-            except Exception as e:
-                msg = str(e)[:120]
-                print(f"        ERRO: {msg}")
-                coletados.append({"url": u, "erro": str(e)})
+            # Teto por anúncio (scrape/vigia.py): página travada fecha o navegador em vez de parar
+            # a coleta até o teto do passo (10 min) + 5 min de espera da rodada com falha.
+            with vigia.Teto(TETO_ANUNCIO_S, marca_nav) as teto:
+                try:
+                    item = extract_item(page, u)
+                    page.screenshot(path=str(SHOTS / f"short-{idx}.png"))
+                    print(
+                        f"        {item['titulo']} — {item['preco']} · "
+                        f"{item['tamanho']} · {item['estado']} · {item['cor']}"
+                    )
+                    coletados.append(item)
+                except Exception as e:
+                    msg = str(e)[:120]
+                    print(f"        ERRO: {msg}")
+                    coletados.append({"url": u, "erro": str(e)})
+
+            if teto.estourou:
+                print(f"        TRAVOU: passou de {TETO_ANUNCIO_S} s neste anúncio; navegador fechado à força "
+                      "(o anúncio entra na rodada seguinte). Reabrindo o navegador.")
+                try:
+                    marca_nav = vigia.nova_marca()
+                    browser, _, page = abrir_sessao_vinted(p, marca_nav)
+                except Exception as e:  # noqa: BLE001
+                    print(f"        não reabriu ({str(e)[:120]}) — fim da coleta desta rodada")
+                    break
 
             if (i + 1) % 20 == 0:
                 out.write_text(json.dumps(coletados, indent=2, ensure_ascii=False))
@@ -86,7 +101,8 @@ def main() -> None:
         #      Ficam fora do histórico e do guard abaixo, que continuam só com a Espanha.
         if VINTED_UK:
             uk = vinted_uk.coletar(browser, montar_url_sundek_hombre(vinted_uk.BASE_URL, vinted_uk.MOEDA),
-                                   DATA / "coleta-classificada.json", {c.get("id") for c in coletados})
+                                   DATA / "coleta-classificada.json", {c.get("id") for c in coletados},
+                                   marca_nav=marca_nav)
             if uk:
                 out.write_text(json.dumps(coletados + uk, indent=2, ensure_ascii=False))
                 print(f"    {len(coletados) + len(uk)} itens em data/coleta.json ({len(uk)} do UK)")
@@ -105,7 +121,10 @@ def main() -> None:
 
         print(f"\n    duração total: {time.time() - t0:.1f}s")
 
-        browser.close()
+        try:
+            browser.close()
+        except Exception:  # noqa: BLE001 — navegador já fechado à força pelo teto
+            pass
 
 
 if __name__ == "__main__":

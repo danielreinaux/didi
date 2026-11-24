@@ -26,9 +26,11 @@ from pathlib import Path
 
 from playwright.sync_api import sync_playwright
 
+from ..config import TETO_ANUNCIO_S
 from ..utils.browser import abrir_sessao_vinted
 from ..sources import vinted_uk
 from ..utils.acervo_io import salvar_lista
+from . import vigia
 
 ROOT = Path(__file__).resolve().parent.parent.parent
 DATA = ROOT / "data"
@@ -221,9 +223,18 @@ def main() -> None:
 
     seguidos: list = []  # "removido" em sequência = sinal de bloqueio → desfaz e para a rodada
     with sync_playwright() as p:
-        browser, _, page = abrir_sessao_vinted(p)
+        marca_nav = vigia.nova_marca()
+        browser, _, page = abrir_sessao_vinted(p, marca_nav)
         for i, item in enumerate(candidatos):
-            status = _checar_status(page, item["url"])
+            # Teto por página (scrape/vigia.py): travou, o navegador é fechado e a verificação para
+            # aqui; o que já foi visto é salvo e o resto fica para a rodada seguinte (antes o passo
+            # parava até o teto de 6 min e a rodada perdia tudo o que tinha verificado).
+            with vigia.Teto(TETO_ANUNCIO_S, marca_nav) as teto:
+                status = _checar_status(page, item["url"])
+            if teto.estourou:
+                print(f"  [{i+1}/{len(candidatos)}] travou mais de {TETO_ANUNCIO_S} s nesta página — "
+                      "navegador fechado; o resto fica para a próxima rodada.")
+                break
             seguidos = seguidos + [item] if status == "removido" else []
             if len(seguidos) >= 4:
                 for x in seguidos[:-1]:
@@ -235,11 +246,21 @@ def main() -> None:
             item["status"] = status if status != "ativo" else "ativo"
             item["verificado_em"] = agora
             mudancas[status] += 1
-            extra = _atualizar_dados(page, item) if status == "ativo" else ""
+            extra = ""
+            if status == "ativo":
+                with vigia.Teto(TETO_ANUNCIO_S, marca_nav) as teto:
+                    extra = _atualizar_dados(page, item)
             print(f"  [{i+1}/{len(candidatos)}] {status:<8} {(item.get('titulo') or '')[:45]}"
                   + (f"  ({extra})" if extra else ""))
+            if teto.estourou:
+                print(f"  travou mais de {TETO_ANUNCIO_S} s lendo fotos e preço — navegador fechado; "
+                      "o resto fica para a próxima rodada.")
+                break
             time.sleep(1.5)  # era 0,4s: com os do app revistos a cada 6h, o Vinted passou a limitar
-        browser.close()
+        try:
+            browser.close()
+        except Exception:  # noqa: BLE001 — navegador já fechado à força pelo teto
+            pass
 
     salvar_lista(caminho, acervo, enxuga=True)
     print(f"\n=== Resumo ===")

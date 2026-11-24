@@ -1,9 +1,11 @@
 """Filtros de busca e configuração da IA. Derivados do manual de regras."""
 
 # Vilebrequin desligada em 20/10/2026 (foco 100% na Sundek), religada em 05/11/2026 só no app
-# (modo sombra) e com o E-MAIL LIGADO em 13/11/2026: as ofertas novas dela vão no mesmo e-mail do
-# Sundek, numa seção própria. Com VILLE_EMAIL = False ela volta à sombra: fica no app e os
-# candidatos entram no registro de avisados sem envio (por isso ligar não mandou o acumulado).
+# (modo sombra) e com o E-MAIL LIGADO em 13/11/2026. Desde 24/11/2026 o e-mail dela sai do próprio
+# job ville, logo depois da análise (antes ia no e-mail da rodada seguinte do Sundek, ~6 min depois),
+# com registro próprio em data/notificados-ville.json. Com VILLE_EMAIL = False ela volta à sombra:
+# fica no app e os candidatos entram no registro de avisados sem envio (por isso ligar não mandou
+# o acumulado).
 # Para desligar tudo: VILLE_ATIVA = False + `if: false` no job `ville` do workflow.
 VILLE_ATIVA = True
 VILLE_EMAIL = True
@@ -79,6 +81,11 @@ UK_MAX_NOVOS = 10   # desses, quantos ainda não vistos são abertos por rodada 
 # Override pontual via env MAX_ITEMS (ex: testar com 100 sem mexer no padrão).
 import os as _os
 MAX_ITEMS_POR_RODADA = int(_os.environ.get("MAX_ITEMS", "60"))
+
+# Teto por anúncio na coleta e no verifica_vendidos (24/11/2026, scrape/vigia.py): passou disso,
+# o navegador é fechado à força, o anúncio fica para a rodada seguinte e a coleta segue. Um anúncio
+# normal leva de 3 a 15 s (o pior caso com os tetos do goto e do networkidle fica perto de 45 s).
+TETO_ANUNCIO_S = 60
 
 # Modelo de IA pra classificação visual.
 IA = {

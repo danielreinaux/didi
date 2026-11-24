@@ -38,6 +38,10 @@ jobs:
       group: scrape-sundek
       cancel-in-progress: false
     steps:
+      # Hora de início da rodada, para o disparo da próxima saber se a falha foi rápida (ver lá).
+      - name: Marca o início da rodada
+        run: echo "INICIO_RODADA=$(date +%s)" >> "$GITHUB_ENV"
+
       - name: Checkout repo
         uses: actions/checkout@v4
         with:
@@ -98,9 +102,10 @@ jobs:
       #   rodada que ficou na fila desde antes do commit da anterior não reenvia o que ela mandou.
       # - continue-on-error: SMTP fora do ar não marca a rodada como falha (a corrente esperaria
       #   5 min). Sem registro no ledger, o aviso sai na rodada seguinte.
-      # - A Ville entra com o que ela commitou até o checkout (e-mail dela ligado em 13/11/2026;
-      #   config.VILLE_EMAIL = False deixa a Ville só no app).
-      - name: Notificar por email (Sundek + Ville)
+      # - Só Sundek desde 24/11/2026: a Ville é avisada pelo próprio job ville, logo depois da
+      #   análise dela (passo "Notificar por email (Ville)"). Antes ela ia aqui, com o que tinha
+      #   commitado até o checkout desta rodada: ~6 min a mais do anúncio ao e-mail.
+      - name: Notificar por email (Sundek)
         timeout-minutes: 3
         if: always()
         continue-on-error: true
@@ -112,7 +117,7 @@ jobs:
           set +e
           git fetch -q origin main && git show origin/main:data/notificados.json > /tmp/ledger.json \
             && [ -s /tmp/ledger.json ] && cp /tmp/ledger.json data/notificados.json
-          python -m src.build.votacao_items && python -m src.notify.run
+          python -m src.build.votacao_items && python -m src.notify.run --marca sundek
           rc=$?
           git checkout -- votacao/public/items.json votacao/public/status.json votacao/public/descartados.json
           exit $rc
@@ -202,7 +207,17 @@ jobs:
             disparar despertador.yml --repo "${{ github.repository }}" --ref main
             exit 0
           fi
-          if [ "${{ job.status }}" != "success" ]; then echo "rodada com falha — esperando 5 min"; sleep 300; fi
+          if [ "${{ job.status }}" != "success" ]; then
+            # Só a falha RÁPIDA espera 5 min (24/11/2026): é ela que faria um laço de falhas. A
+            # rodada que falhou por estourar um teto de tempo já ficou parada o bastante; esperar
+            # mais 5 min deixava o radar 15 a 20 min sem olhar o Vinted.
+            DUR=$(( $(date +%s) - ${INICIO_RODADA:-$(date +%s)} ))
+            if [ "$DUR" -lt 300 ]; then
+              echo "rodada com falha em ${DUR}s — esperando 5 min"; sleep 300
+            else
+              echo "rodada com falha depois de ${DUR}s — dispara a próxima sem esperar"
+            fi
+          fi
           disparar scrape-cron.yml --repo "${{ github.repository }}" --ref main -f automatico=true
 
   # Vilebrequin: mesma cadência do Sundek, agora EM PARALELO com ele (sem needs).
@@ -217,9 +232,9 @@ jobs:
   # O deploy segue needs:[sundek, ville].
   ville:
     # Ville desligada em 20/10/2026, religada em 05/11/2026 só no app e com e-mail desde 13/11/2026
-    # (config.VILLE_EMAIL; o envio é o passo "Notificar por email" do job sundek). Para desligar de
-    # novo: `if: false` aqui e VILLE_ATIVA = False em src/config.py. Tetos de tempo iguais aos do
-    # job sundek.
+    # (config.VILLE_EMAIL; desde 24/11/2026 o envio é o passo "Notificar por email (Ville)" deste
+    # job). Para desligar de novo: `if: false` aqui e VILLE_ATIVA = False em src/config.py. Tetos
+    # de tempo iguais aos do job sundek.
     runs-on: ubuntu-latest
     timeout-minutes: 60
     concurrency:
@@ -271,6 +286,34 @@ jobs:
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
         run: python -m src.classify.ville_run --workers 2
 
+      # E-mail da Ville LOGO DEPOIS da análise dela (24/11/2026). Antes ela ia no e-mail da rodada
+      # SEGUINTE do job sundek, que só via o que a Ville tinha commitado até o checkout dele: ~6 min
+      # a mais do anúncio ao e-mail (mediana de 9 min na Ville contra 5 no Sundek). Mesmas regras do
+      # passo do sundek:
+      # - registro próprio, data/notificados-ville.json, que só este job escreve (o sundek segue dono
+      #   do data/notificados.json). O notify lê os dois, do main de agora, para não reavisar;
+      # - items.json montado só para ler e desfeito no fim (dono: job 'deploy'); o notificados.json
+      #   lido do main também volta ao do checkout, porque este job não o commita;
+      # - continue-on-error: SMTP fora do ar não marca a rodada como falha.
+      - name: Notificar por email (Ville)
+        timeout-minutes: 3
+        if: always()
+        continue-on-error: true
+        env:
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS }}
+          NOTIFY_TO: ${{ secrets.NOTIFY_TO }}
+        run: |
+          set +e
+          git fetch -q origin main
+          for f in notificados.json notificados-ville.json; do
+            git show "origin/main:data/$f" > "/tmp/$f" 2>/dev/null && [ -s "/tmp/$f" ] && cp "/tmp/$f" "data/$f"
+          done
+          python -m src.build.votacao_items && python -m src.notify.run --marca vilebrequin
+          rc=$?
+          git checkout -- votacao/public/items.json votacao/public/status.json votacao/public/descartados.json data/notificados.json
+          exit $rc
+
       # Revisita itens do acervo Ville que sumiram do scrape e marca vendidos/removidos.
       # Espelha o passo do Sundek (mesma sessão Vinted, só muda --marca). Sem isso, a
       # página oferta_ville mostrava anúncios já vendidos como se estivessem à venda.
@@ -303,7 +346,12 @@ jobs:
           git config user.name "Didi Bot"
           git config user.email "bot@didi.local"
           # items.json saiu daqui — agora é dono único do job 'deploy' (ver comentário no build).
+          # O passo do e-mail monta um items.json só para ler e lê o notificados.json do main; se
+          # ele morreu no meio (timeout), desfaz aqui, senão o rebase recusa a árvore suja.
+          git checkout -- votacao/public/items.json votacao/public/status.json votacao/public/descartados.json data/notificados.json 2>/dev/null || true
           git add data/coleta-ville.json data/coleta-ville-classificada.json data/analise-ville.html votacao/public/oferta_ville.html
+          # Registro dos e-mails da Ville (só este job escreve; só existe depois do 1º aviso).
+          git add data/notificados-ville.json 2>/dev/null || true
           # Custo é opcional: se o ville_run quebrou antes de gravar o custo_ville.json,
           # NÃO deixa o git add abortar o step (senão perde o checkpoint dos dados).
           git add data/custo_ville.json 2>/dev/null || true

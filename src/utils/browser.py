@@ -9,10 +9,13 @@ from ..config import VINTED
 HEADLESS = os.environ.get("HEADLESS", "").lower() == "true"
 
 
-def abrir_sessao_vinted(playwright):
+def abrir_sessao_vinted(playwright, marca: str | None = None):
+    """`marca` (scrape/vigia.py) vai na linha de comando do Chromium para o teto por anúncio
+    achar e fechar este navegador se uma página travar."""
     browser = playwright.chromium.launch(
         headless=HEADLESS,
         slow_mo=0 if HEADLESS else 60,
+        args=[marca] if marca else [],
     )
     context = browser.new_context(
         viewport={"width": 1440, "height": 900},
