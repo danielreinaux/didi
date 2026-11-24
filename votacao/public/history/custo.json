@@ -1,51 +1,6 @@
 {
- "gerado_em": "2026-11-24T17:50:43.203481-03:00",
+ "gerado_em": "2026-11-24T17:54:58.234457-03:00",
  "rodadas": [
-  {
-   "run_id": "45267150066",
-   "quando": "2026-11-23T18:15:52.124296-03:00",
-   "status": "ok",
-   "custo_brl": 0.0,
-   "custo_usd": 0.0,
-   "calls": 0,
-   "tok_in": 0,
-   "tok_out": 0,
-   "novos": 3,
-   "candidatos": 54,
-   "ativos": 7770,
-   "descartados": 7543,
-   "sundek_usd": 0.0,
-   "ville_usd": 0.0,
-   "etapas": {},
-   "marcas": [
-    "sundek",
-    "vilebrequin"
-   ],
-   "por_marca": {
-    "sundek": {
-     "custo_brl": 0.0,
-     "custo_usd": 0.0,
-     "calls": 0,
-     "tok_in": 0,
-     "tok_out": 0,
-     "novos": 3,
-     "candidatos": 33,
-     "ativos": 7364,
-     "descartados": 7158
-    },
-    "vilebrequin": {
-     "custo_brl": 0.0,
-     "custo_usd": 0.0,
-     "calls": 0,
-     "tok_in": 0,
-     "tok_out": 0,
-     "novos": 0,
-     "candidatos": 21,
-     "ativos": 406,
-     "descartados": 385
-    }
-   }
-  },
   {
    "run_id": "45267808487",
    "quando": "2026-11-23T18:19:36.177185-03:00",
@@ -9248,6 +9203,58 @@
      "candidatos": 21,
      "ativos": 408,
      "descartados": 387
+    }
+   }
+  },
+  {
+   "run_id": "45484922354",
+   "quando": "2026-11-24T17:54:54.323555-03:00",
+   "status": "ok",
+   "custo_brl": 0.01,
+   "custo_usd": 0.001994,
+   "calls": 6,
+   "tok_in": 28925,
+   "tok_out": 1304,
+   "novos": 2,
+   "candidatos": 54,
+   "ativos": 7766,
+   "descartados": 7539,
+   "sundek_usd": 0.001994,
+   "ville_usd": 0.0,
+   "etapas": {
+    "sundek:brand": 0.000262,
+    "sundek:orientacao": 0.001043,
+    "sundek:classify_tipo": 0.0,
+    "sundek:color": 0.0,
+    "sundek:listra": 0.000689,
+    "sundek:elastico": 0.0
+   },
+   "marcas": [
+    "sundek",
+    "vilebrequin"
+   ],
+   "por_marca": {
+    "sundek": {
+     "custo_brl": 0.01,
+     "custo_usd": 0.001994,
+     "calls": 6,
+     "tok_in": 28925,
+     "tok_out": 1304,
+     "novos": 2,
+     "candidatos": 33,
+     "ativos": 7359,
+     "descartados": 7153
+    },
+    "vilebrequin": {
+     "custo_brl": 0.0,
+     "custo_usd": 0.0,
+     "calls": 0,
+     "tok_in": 0,
+     "tok_out": 0,
+     "novos": 0,
+     "candidatos": 21,
+     "ativos": 407,
+     "descartados": 386
     }
    }
   }
