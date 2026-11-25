@@ -1,51 +1,6 @@
 {
- "gerado_em": "2026-11-25T10:20:17.440492-03:00",
+ "gerado_em": "2026-11-25T10:24:35.814369-03:00",
  "rodadas": [
-  {
-   "run_id": "45402223726",
-   "quando": "2026-11-24T10:22:20.079607-03:00",
-   "status": "erro",
-   "custo_brl": 0.0,
-   "custo_usd": 0.0,
-   "calls": 0,
-   "tok_in": 0,
-   "tok_out": 0,
-   "novos": 0,
-   "candidatos": 53,
-   "ativos": 7775,
-   "descartados": 7549,
-   "sundek_usd": 0.0,
-   "ville_usd": 0.0,
-   "etapas": {},
-   "marcas": [
-    "sundek",
-    "vilebrequin"
-   ],
-   "por_marca": {
-    "sundek": {
-     "custo_brl": 0.0,
-     "custo_usd": 0.0,
-     "calls": 0,
-     "tok_in": 0,
-     "tok_out": 0,
-     "novos": 0,
-     "candidatos": 32,
-     "ativos": 7367,
-     "descartados": 7162
-    },
-    "vilebrequin": {
-     "custo_brl": 0.0,
-     "custo_usd": 0.0,
-     "calls": 0,
-     "tok_in": 0,
-     "tok_out": 0,
-     "novos": 0,
-     "candidatos": 21,
-     "ativos": 408,
-     "descartados": 387
-    }
-   }
-  },
   {
    "run_id": "45402677192",
    "quando": "2026-11-24T10:26:02.128851-03:00",
@@ -9311,6 +9266,55 @@
      "candidatos": 21,
      "ativos": 412,
      "descartados": 391
+    }
+   }
+  },
+  {
+   "run_id": "45622443224",
+   "quando": "2026-11-25T10:24:32.172981-03:00",
+   "status": "ok",
+   "custo_brl": 0.01,
+   "custo_usd": 0.002643,
+   "calls": 6,
+   "tok_in": 18129,
+   "tok_out": 686,
+   "novos": 8,
+   "candidatos": 54,
+   "ativos": 7788,
+   "descartados": 7561,
+   "sundek_usd": 0.0,
+   "ville_usd": 0.002643,
+   "etapas": {
+    "ville:marca": 0.0,
+    "ville:orientacao": 0.002643,
+    "ville:tartaruga": 0.0
+   },
+   "marcas": [
+    "sundek",
+    "vilebrequin"
+   ],
+   "por_marca": {
+    "sundek": {
+     "custo_brl": 0.0,
+     "custo_usd": 0.0,
+     "calls": 0,
+     "tok_in": 0,
+     "tok_out": 0,
+     "novos": 4,
+     "candidatos": 33,
+     "ativos": 7374,
+     "descartados": 7168
+    },
+    "vilebrequin": {
+     "custo_brl": 0.01,
+     "custo_usd": 0.002643,
+     "calls": 6,
+     "tok_in": 18129,
+     "tok_out": 686,
+     "novos": 4,
+     "candidatos": 21,
+     "ativos": 414,
+     "descartados": 393
     }
    }
   }
